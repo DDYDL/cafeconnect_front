@@ -8,6 +8,17 @@ import { Menu,MenuHandler,MenuList,MenuItem,Button } from "@material-tailwind/re
 const StoreHeader = ()=>{
     return(
         <div>
+            <Menu>
+                <MenuHandler>
+                    <Button>Menu</Button>
+                </MenuHandler>
+                <MenuList>
+                    <MenuItem>Menu Item 1</MenuItem>
+                    <MenuItem>Menu Item 2</MenuItem>
+                    <MenuItem>Menu Item 3</MenuItem>
+                </MenuList>
+            </Menu>
+            
             <h.Div class="navbar">
                 <h.DivLogo>
                     <NavLink to="/shopMain"><h.Logo src="/logo.svg" /></NavLink>
