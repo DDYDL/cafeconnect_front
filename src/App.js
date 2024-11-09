@@ -5,8 +5,8 @@ import StoreHeader from './component/Header/StoreHeader';
 function App() {
   return (
     <div>
-      {/* <Header/> */}
-      <StoreHeader/>
+      <Header/>
+      {/* <StoreHeader/> */}
       {/* <MainStoreHeader/> */}
       {/* <Footer/> */}
     </div>

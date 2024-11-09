@@ -21,9 +21,11 @@ const Header = ()=>{
                 </h.DivSide>
 
                 <h.DivMenu>
+                    <h.DivMenuInside>
                     <h.NavLinkMenu to="/store">가맹점</h.NavLinkMenu>
                     <h.NavLinkMenu to="/menu">메뉴</h.NavLinkMenu>
                     <h.NavLinkMenu to="/complain">고객의 소리</h.NavLinkMenu>
+                    </h.DivMenuInside>
                 </h.DivMenu>
             </h.Div>
             <Routes>
