@@ -1,8 +1,7 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
 
 import {useState} from "react";
-import { ChevronUpIcon } from "@heroicons/react/24/solid";
 import { Menu,MenuHandler,MenuList,MenuItem,Button } from "@material-tailwind/react";
 
 const StoreHeader = ()=>{
@@ -83,22 +82,6 @@ const StoreHeader = ()=>{
                     <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png" /></h.NavLinkIcon>
                 </h.DivIcon>
             </h.Div>
-            <Routes>
-                {/* <Route exect path="/changeStore" element={<Store/>} /> */}
-                {/* <Route exect path="/logout" element={<IntroMain/>} /> */}
-
-                {/* <Route exect path="/shopMain" element={<MenuList/>} /> */}
-                {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
-                {/* <Route exect path="/orderList" element={<LoginStore/>} /> */}
-                {/* <Route exect path="/salesManagement" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/myAlarmList" element={<JoinStore/>}/> */}
-
-                {/* <Route exect path="/alarm" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/repairList" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/wishList" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/cartList" element={<JoinStore/>}/> */}
-            </Routes>
         </div>
     )
 }

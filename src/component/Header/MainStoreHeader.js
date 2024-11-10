@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
 
 const MainStoreHeader = ()=>{
@@ -28,18 +28,6 @@ const MainStoreHeader = ()=>{
                     <h.NavLinkIcon to="/shopMain"><h.Icon src="/shop.png" /></h.NavLinkIcon>
                 </h.DivIcon>
             </h.Div>
-            <Routes>
-                {/* <Route exect path="/logout" element={<Store/>} /> */}
-
-                {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
-                {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
-                {/* <Route exect path="/menuList" element={<Complain/>} /> */}
-                {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
-                {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-
-                {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
-                {/* <Route exect path="/shopMain" element={<JoinStore/>}/> */}
-            </Routes>
         </div>
     )
 }

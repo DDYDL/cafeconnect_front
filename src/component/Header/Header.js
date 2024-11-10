@@ -1,12 +1,9 @@
-import {Routes,Route, NavLink} from 'react-router-dom';
-import IntroMain from '../Main/IntroMain';
+import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
-import Store from '../Main/Store.js';
-import MenuList from '../Main/MenuList.js';
-import Complain from '../Main/Complain.js';
-import LoginStore from '../Main/LoginStore.js';
 
 const Header = ()=>{
+    if (window.location.pathname === '/loginStore') return;
+    else if (window.location.pathname === '/loginMainStore') return;
     return(
         <div>
             <h.Div class="navbar">
@@ -28,15 +25,6 @@ const Header = ()=>{
                     </h.DivMenuInside>
                 </h.DivMenu>
             </h.Div>
-            <Routes>
-                <Route exect path="/" element={<IntroMain/>}/>
-                <Route exect path="/loginStore" element={<LoginStore/>}/>
-                {/* <Route exect path="/joinStore" element={<JoinStore/>}/> */}
-                
-                <Route exect path="/store" element={<Store/>}/>
-                <Route exect path="/menu" element={<MenuList/>}/>
-                <Route exect path="/complain" element={<Complain/>}/>
-            </Routes>
         </div>
     )
 }
