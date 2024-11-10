@@ -17,10 +17,9 @@ export const SignatureDiv = styled.div`
     width:1000px;
     position:absolute;
     top:650px;
-    left:700px;
+    left:550px;
     display:flex;
     float:left;
-
     cursor:pointer;
 `;
 
@@ -37,11 +36,29 @@ export const Circle = styled.div`
     border-radius:50%;
     background-color:rgba(255, 255, 255, 1);
     z-index:1;
+
+    -webkit-transition: .5s ease-in-out;
+	transition: .5s ease-in-out;
+
+    ${SignatureDiv}:hover &{
+        margin-left: 120px;
+	    -webkit-transition: .8s ease-in-out;
+	    transition: .8s ease-in-out;
+    }
 `;
 
 export const SignatureMenuImage = styled.img`
     position:relative;
     z-index:2;
+
+    -webkit-transition: .5s ease-in-out;
+	transition: .5s ease-in-out;
+
+    ${SignatureDiv}:hover &{
+        margin-left: 120px;
+	    -webkit-transition: .8s ease-in-out;
+	    transition: .8s ease-in-out;
+    }
 `;
 
 export const SignatureMenuP = styled.p<Container>`

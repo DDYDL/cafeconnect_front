@@ -44,11 +44,10 @@ const Store = () => {
             
             <s.ContentDiv>
                 <s.SearchDiv className="p-2">
-                    <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="Search" />
+                    <Input icon={<MagnifyingGlassIcon className="h-5 w-5"/>} label="매장명 검색"/>
                 </s.SearchDiv>
                 <img src='/map.png'/>
             </s.ContentDiv>
-
         </>
     )
 }

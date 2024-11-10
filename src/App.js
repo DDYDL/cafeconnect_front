@@ -26,7 +26,7 @@ function App() {
   
   return (
     <div>
-      {path===true? <Header/>:null}
+      {path===true? <Header/>:null}<br/>
       {/* <StoreHeader/> */}
       {/* <MainStoreHeader/> */}
       {/* <Footer/> */}

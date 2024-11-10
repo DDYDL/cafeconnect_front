@@ -78,32 +78,42 @@ const MenuList = () => {
                 </Carousel>
             </m.CarouselDiv>
 
-            <s.ContentDiv>
-            <h.DivMenuInside>
-                <h.NavLinkMenu to="/shopMain">커피</h.NavLinkMenu>
-                <h.NavLinkMenu to="/stockAdd">더치커피</h.NavLinkMenu>
-                <h.NavLinkMenu to="/orderList">주스</h.NavLinkMenu>
-                <h.NavLinkMenu to="/salesManagement">스무디</h.NavLinkMenu>
-                <h.NavLinkMenu to="/noticeList">티</h.NavLinkMenu>
-                <h.NavLinkMenu to="/myAlarmList">에이드</h.NavLinkMenu>
-                <h.NavLinkMenu to="/myAlarmList">프라페</h.NavLinkMenu>
-                <h.NavLinkMenu to="/myAlarmList">디저트</h.NavLinkMenu>
-                <h.NavLinkMenu to="/myAlarmList">MD상품</h.NavLinkMenu>
-            </h.DivMenuInside>
+            <s.MenuBarDiv>
+                <s.MenuBarLinkDiv borderLeft="none"><s.MenuBarLink to="/shopMain">커피</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/stockAdd">더치커피</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/orderList">주스</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/salesManagement">스무디</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/noticeList">티</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">에이드</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">프라페</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">디저트</s.MenuBarLink></s.MenuBarLinkDiv>
+                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">MD상품</s.MenuBarLink></s.MenuBarLinkDiv>
+            </s.MenuBarDiv>
 
+            <s.MenuImgDiv>
             <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3">
                 {data.map(({ imageLink }, index) => (
-                    <div key={index}>
-                        <img 
-                            className="h-50 w-30 object-cover object-center"
+                    <s.OneImgAndPDiv key={index}>
+                        <s.ImgHoverText>⚬ 카페인 : 208mg<br/>
+                            ⚬ 열량(kcal) : 258.3<br/>
+                            ⚬ 탄수화물(g) : 32.5<br/>
+                            ⚬ 당류(g) : 29.5<br/>
+                            ⚬ 단백질(g) : 7.5<br/>
+                            ⚬ 나트륨(mg) : 142.5<br/>
+                            ⚬ 지방(g) : 10
+                        </s.ImgHoverText>
+                    <s.ImgDiv>
+                        <s.ImgStyle 
+                            className="object-center"
                             src={imageLink}
                             alt="gallery-photo"
-                        />
-                        <p>메뉴명</p>
-                    </div>
+                            />
+                    <s.TitleText>메뉴명</s.TitleText>
+                    </s.ImgDiv>
+                    </s.OneImgAndPDiv>
                 ))}
             </div>
-            </s.ContentDiv>
+            </s.MenuImgDiv>
         </>
     )
 }

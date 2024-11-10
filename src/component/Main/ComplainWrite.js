@@ -6,21 +6,23 @@ import { Button } from "@material-tailwind/react";
 const ComplainWrite = ()=>{
     return (
         <>
-            <s.ContentDiv>
-                <p>글 작성</p>
+            <s.ContentListDiv width='800px;' marginLeft='580px'>
+                <s.MainTitleText>글 작성</s.MainTitleText>
 
-                <table>
+                <s.TableList width='800px' textAlign='left'>
                     <tbody>
-                        <tr><td><label>성함</label><input type='text' /></td></tr>
-                        <tr><td><label>전화번호</label><input type='text' /></td></tr>
-                        <tr><td><label>가맹점명</label><input type='text'/><Button>조회</Button></td></tr>
-                        <tr><td><label>제목</label><input type='text' /></td></tr>
-                        <tr><td><label>내용</label><input type='textarea'/></td></tr>
+                        <s.TrStyle><s.TableTextTd>성함 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text'/></s.TableTextTd></s.TrStyle>
+                        <s.TrStyle><s.TableTextTd>전화번호 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text'/></s.TableTextTd></s.TrStyle>
+                        <s.TrStyle><s.TableTextTd>가맹점명 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text' width='520px'/>&nbsp;&nbsp;<s.ButtonStyle>조회</s.ButtonStyle></s.TableTextTd></s.TrStyle>
+                        <s.TrStyle><s.TableTextTd>제목 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text'/></s.TableTextTd></s.TrStyle>
+                        <s.TrStyle><s.TableTextTd>내용 *</s.TableTextTd><s.TableTextTd><s.TextareaStyle rows={4} cols={83}/></s.TableTextTd></s.TrStyle>
                     </tbody>
-                </table>
-                <Button variant="outlined"><Link to='/complain'>취소</Link></Button>
-                <Button><Link to='/complain'>등록하기</Link></Button>
-            </s.ContentDiv>
+                </s.TableList>
+                <s.ButtonDiv>
+                    <s.ButtonStyle variant="outlined" bgColor="white"><Link to='/complain'>취소</Link></s.ButtonStyle>&nbsp;&nbsp;
+                    <s.ButtonStyle><Link to='/complain'>등록하기</Link></s.ButtonStyle>
+                </s.ButtonDiv>
+            </s.ContentListDiv>
         </>
     )
 }
