@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, ButtonGroup, IconButton } from "@material-tailwind/react";
 
@@ -8,6 +8,8 @@ interface Container {
     bgColor:string;
     width:string;
     marginLeft:string;
+    marginTop:string;
+    fontSize:string;
 }
 
 export const ContentDiv = styled.div`
@@ -185,4 +187,85 @@ export const TextareaStyle = styled.textarea`
     margin-top:10px;
     margin-bottom:5px;
     border-radius:5px;
+`;
+
+export const LoginAlign = styled.div`
+    width:100%;
+    display: flex;
+    justify-content: center;
+`;
+
+export const LoginAlignLeft = styled.div<Container>`
+    width:100%;
+    float:left;
+    font-size:${(props) => props.fontSize ? props.fontSize : "16px"};
+    text-align:${(props) => props.textAlign ? props.textAlign : "center"};
+    margin-top:${(props) => props.marginTop ? props.marginTop : "45px"};
+    margin-bottom:15px;
+`;
+
+export const HrStyle = styled.hr`
+    float:left;
+    width:181px;
+    margin-top:8px;
+    border:1px solid rgba(234, 234, 234, 1);
+`;
+
+export const SwitchText = styled(Link)`
+    margin-left:80px;
+    margin-right:80px;
+`;
+
+export const SwitchButtoninput = styled.input`
+    display:none;
+`;
+
+export const SwitchButton = styled.label`
+    display:block;
+    position:relative;
+    top:70px;
+    width:400px;
+    height:5px;
+    background:#d3d3d3;
+    border-radius:60px;
+    transition:background 0.4s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left:0;
+        top:0;
+        width: 200px;
+        height: 5px;
+        border-radius:10px;;
+        background-color: rgba(38, 38, 38, 1);
+        transform: translateY(-0%);
+        box-shadow: 1px 3px 4px rgba(0,0,0,0.1);
+        transition: all 0.4s;
+    }
+
+    &::before {
+        content: "";
+        font-size: 24px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        left:0;
+        top:0;
+        transform: translateY(-50%);
+        transition: all 0.4s;
+    }
+
+    ${SwitchButtoninput}:checked + &{
+        background:#d3d3d3;
+    }
+
+    ${SwitchButtoninput}:checked + &::after{
+        left:200px;
+    }
+
+    ${SwitchButtoninput}:checked + &::before{
+        content: "";
+        color: #fff;
+        left: 15px;
+    }
 `;
