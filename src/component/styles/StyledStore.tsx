@@ -151,7 +151,7 @@ export const TableTextTh = styled.th`
 export const TableTextTd = styled.td`
     font-size:16px;
     padding-left:20px;
-    padding-right:23px;
+    padding-right:0px;
 `;
 
 export const TableTextTr = styled.tr`

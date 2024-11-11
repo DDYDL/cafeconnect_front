@@ -15,7 +15,7 @@ const ComplainWrite = ()=>{
                         <s.TrStyle><s.TableTextTd>전화번호 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text'/></s.TableTextTd></s.TrStyle>
                         <s.TrStyle><s.TableTextTd>가맹점명 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text' width='520px'/>&nbsp;&nbsp;<s.ButtonStyle>조회</s.ButtonStyle></s.TableTextTd></s.TrStyle>
                         <s.TrStyle><s.TableTextTd>제목 *</s.TableTextTd><s.TableTextTd><s.InputStyle type='text'/></s.TableTextTd></s.TrStyle>
-                        <s.TrStyle><s.TableTextTd>내용 *</s.TableTextTd><s.TableTextTd><s.TextareaStyle rows={4} cols={83}/></s.TableTextTd></s.TrStyle>
+                        <s.TrStyle><s.TableTextTd>내용 *</s.TableTextTd><s.TableTextTd><s.TextareaStyle rows={4} cols={77}/></s.TableTextTd></s.TrStyle>
                     </tbody>
                 </s.TableList>
                 <s.ButtonDiv>
