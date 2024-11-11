@@ -55,11 +55,13 @@ const StoreHeader = ()=>{
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>주문내역</MenuItem>
+                            {/* <h.NavLinkMenu to="/orderList">주문내역</h.NavLinkMenu> */}
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>매출입력</MenuItem>
                             <MenuItem>매출분석</MenuItem>
                             <MenuItem>지출내역</MenuItem>
+                            {/* <h.NavLinkMenu to="/expenseList">지출내역</h.NavLinkMenu> */}
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>공지사항</MenuItem>

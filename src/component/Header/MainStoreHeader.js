@@ -22,7 +22,7 @@ const MainStoreHeader = ()=>{
                     <h.NavLinkMenu to="/itemRevenue">매출관리</h.NavLinkMenu>
                     <h.NavLinkMenu to="/noticeList">커뮤니티</h.NavLinkMenu>
                 </h.DivMenu>
-
+                 {/* <h.NavLinkMenu to="/mainStoreOrderList">주문접수관리</h.NavLinkMenu> */}
                 <h.DivIcon>
                     <h.NavLinkIcon to="/joinAccount"><h.Icon src="/addmainstore.png" /></h.NavLinkIcon>
                     <h.NavLinkIcon to="/shopMain"><h.Icon src="/shop.png" /></h.NavLinkIcon>
