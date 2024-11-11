@@ -81,6 +81,18 @@ function App() {
 
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
         {/* <Route exect path="/shopMain" element={<JoinStore/>}/> */}
+
+        {/*가맹점 페이지 링크 (상민)*/}
+        {/*<Route exact path="/noticeList" element={<NoticeList />} />*/}
+        {/*<Route exact path="/askWrite" element={<AskWrite />} />*/}
+        {/*<Route exact path="/askList" element={<AskList />} />*/}
+        {/*<Route exact path="/salesWrite" element={<SalesWrite />} />*/}
+        {/*<Route exact path="/complainList" element={<ComplainList />} />*/}
+        {/*<Route exact path="/complainDetail" element={<ComplainDetail />} />*/}
+
+        {/*본사 페이지 링크(상민)*/}
+        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
+
       </Routes>
     </div>
   );
