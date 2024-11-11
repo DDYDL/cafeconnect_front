@@ -21,6 +21,7 @@ const ProductItem = ({ item }) => {
   };
 
   const handleAddToCart = (e) => {
+    
     e.stopPropagation();
     console.log(`Added ${quantity} of ${item.name} to cart`);
   };
