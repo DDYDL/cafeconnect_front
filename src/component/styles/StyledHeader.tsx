@@ -3,13 +3,14 @@ import { NavLink } from 'react-router-dom';
 
 export const Div = styled.div`
     width:100%;
+    position:absolute;
 `;
 
 export const DivLogo = styled.div`
-    width:100%;
+    width:100px;
     height:60px;
     display:inline-block;
-    left:48%;
+    left:46%;
     vertical-align:bottom;
     margin-top:20px;
     position:absolute;
