@@ -55,11 +55,13 @@ const StoreHeader = ()=>{
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>주문내역</MenuItem>
+                            {/* <h.NavLinkMenu to="/orderList">주문내역</h.NavLinkMenu> */}
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>매출입력</MenuItem>
                             <MenuItem>매출분석</MenuItem>
                             <MenuItem>지출내역</MenuItem>
+                            {/* <h.NavLinkMenu to="/expenseList">지출내역</h.NavLinkMenu> */}
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>공지사항</MenuItem>
@@ -82,6 +84,20 @@ const StoreHeader = ()=>{
                     <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png" /></h.NavLinkIcon>
                 </h.DivIcon>
             </h.Div>
+
+            {/*<MenuItem> 상민*/}
+            {/*    <StyledLink to="/Home">커뮤니티</StyledLink>*/}
+
+            {/*    <DropdownMenu>*/}
+            {/*        <StyledLink to="/community/noticeList">공지사항</StyledLink>*/}
+            {/*        <StyledLink to="/community/askWrite">1:1 문의 작성</StyledLink>*/}
+            {/*        <StyledLink to="/community/askList">1:1 문의</StyledLink>*/}
+            {/*        <StyledLink to="/community/complainList">컴플레인 공지</StyledLink>*/}
+            {/*        <StyledLink to="/community/complainDetail">컴플레인 상세</StyledLink>*/}
+            {/*    </DropdownMenu>*/}
+            {/*</MenuItem>*/}
+
+
         </div>
     )
 }
