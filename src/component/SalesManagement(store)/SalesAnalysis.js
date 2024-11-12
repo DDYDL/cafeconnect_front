@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { CustomButton, TempSaveButton } from "../Button/Button.style";
 import { CustomHorizontal } from "../Horizin/Horizin.style";
 
-const SalesWrite = () => {
+const SalesAnalysis = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -199,17 +199,17 @@ const SalesWrite = () => {
 };
 
 const Wrapper = styled.div`
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-
-  margin-top: 120px;
-  box-sizing: border-box;
-
+  justify-content: flex-start;
   position: relative;
+  background-color: lightgrey;
+  width: 800px;
+  height: 600px;
 `;
 
 const Form = styled.form`
@@ -220,7 +220,7 @@ const Form = styled.form`
 `;
 
 const HeadingContainer = styled.div`
-  width: 800px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -253,22 +253,24 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
+// const TableHeader = styled.div`
+//   display: flex;
+//   width: 800px;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding-left: 20px;
+//   padding-right: 20px;
+//   box-sizing: border-box;
+// `;
+
 const TableHeader = styled.div`
   display: flex;
+  width: 100%; /* 부모 컨테이너와 동일한 너비 */
   justify-content: space-between;
   align-items: center;
-
-  width: 800px;
-  height: 50px;
-  font-weight: bold;
-
-  & > div:first-child {
-    margin-left: 30px;
-  }
-
-  & > div:last-child {
-    margin-right: 80px;
-  }
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box; /* padding을 포함하여 크기 설정 */
 `;
 
 const TableHeaderItem = styled.div`
@@ -366,4 +368,4 @@ const ProductItem = styled.div`
   }
 `;
 
-export default SalesWrite;
+export default SalesAnalysis;
