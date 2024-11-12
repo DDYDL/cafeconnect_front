@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 export const WishItemWrapper = styled.div`
     position: relative;
-    width: 1240px;
+    //width: 1240px;
+    width:1000px;
     padding: 0;
 
 `;
 export const FilterWrapper = styled.div`    
     margin-top: 60px;
-    li{
-        display: inline-block;
-    }
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
 `;
 
 export const CountWrapper = styled.div`
@@ -68,16 +69,18 @@ export const CheckWrap = styled.div`
 `;
 export const ItemListUl = styled.ul`
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(242px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(4, 1fr);  // 4개의 균등한 컬
+    /* grid-template-columns: repeat(auto-fill, minmax(242px, 1fr)); 1240ver. */
+    gap: 20px;
     margin: 0;
     padding: 0;
     list-style: none;
+    position: relative; // 아이콘 포함시킴 
 `;
 
 export const ItemListLi = styled.li`
     position: relative;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 `;
 
 export const ItemListChekcWrap = styled.div`
@@ -85,7 +88,7 @@ export const ItemListChekcWrap = styled.div`
 `;
 
 export const ItemListImg = styled.div`
-    height: 272px;
+    height: 230px;
     position: relative;
     margin-bottom: 16px;
     overflow: hidden;
@@ -99,7 +102,7 @@ export const ItemListImg = styled.div`
 
 export const ItemListTextBox = styled.div`
     padding: 0 4px 0 6px;
-    height: 94px;
+    height: 80px;
 `;
 
 export const ItemTitle = styled.div`
@@ -131,11 +134,39 @@ export const ItemStorageLabelP = styled.p`
     margin: 0;
 `;
 
-export const ItemStorageType = styled.span<{ bgColor?: string }>`
-    background: ${props => props.bgColor || '#45b0da'};
+export const ItemStorageType = styled.span<{ storageType?: string }>`
+${({ storageType }) =>
+    storageType === "냉동" &&
+    `
+    background: #45b0da;
     color: #fff;
-    padding: 2px 6px;
-    font-size: 11px;
+    padding: 4px 6px;
+    font-size: 10px;
     line-height: 14px;
     border-radius: 2px;
+  `}
+`;
+
+export const CartIconWrapper = styled.div`
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: rgba(203, 210, 164, 0.2);
+        transform: scale(1.1);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        color: #54473F;
+    }
 `;

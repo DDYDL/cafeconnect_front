@@ -4,10 +4,10 @@ import styled from 'styled-components';
 export const ProductDetail = styled.div`
     
     position: relative;
-    width: 1240px;
-    // width:1000px;
+    //width: 1240px;
+    width:1000px;
+    margin:0 auto;
     padding: 0;
-    /* margin-top: 60px; */
 `;
 export const PdtDetailHead = styled.div`
     position: relative;
@@ -15,20 +15,20 @@ export const PdtDetailHead = styled.div`
     justify-content:space-between;
     width: 100%;
     margin-bottom: 30px; /* 아래 요소와의 간격 */
+    gap: 60px;
 `
 ;
 export const PdtDetailLeft = styled.div`
-    width: 525px;
+    width: 525px; //400(1000)
     position: relative;
-`
-    ;
+`;
 export const PdtDetailItemImg = styled.div`
     position: relative;
     margin-bottom: 30px;
 `;
 export const PdtDetailItemImgArea = styled.div`
     width: 100%;
-    height: 600px;
+    height: 540px; 
     position: relative;
     img {
         width: 100%;
@@ -38,8 +38,8 @@ export const PdtDetailItemImgArea = styled.div`
 `;
 
 export const PdtDetailRight = styled.div`
-    width: 615px;
-    height: 600px;
+    width: 540px; //615(1240ver)
+    height: 520px;
 `
 ;
 export const PdtDetailItemTitleGroup = styled.div`
@@ -94,7 +94,6 @@ export const PdtDetailItemInfoDd = styled.dd`
     margin: 0;
 `;
 export const PdtDetailItemOtherGroup = styled.div`
-
   display: block;
 `;
 export const QuantityControlWrapper = styled.div`
@@ -136,8 +135,8 @@ export const QuantityDisplay = styled.span`
 
 export const PriceWapper = styled.div`
     border-top: 1px solid #000;
-    margin-top: 3rem;
-    padding: 4rem 0;
+    margin-top: 2rem;
+    padding: 3rem 0;
     align-items: center;
     display: flex;
     font-weight: 500;
@@ -176,6 +175,7 @@ export const WishlistButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     

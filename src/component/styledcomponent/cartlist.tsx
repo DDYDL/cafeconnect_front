@@ -1,122 +1,79 @@
 import styled from 'styled-components'; 
+import {
+  BaseGridHeader,
+  BaseGridItem
+} from './common.tsx';
 
-
-export const CartListWrapper = styled.div`
- width: 1240px;
- margin: 0 auto;
- `;
+// export const CartListWrapper = styled.div`  
+//  //width: 1240px;
+//  width :1000px;
+//  margin: 0 auto;
+//  `;
+ export const AddPreviousOrderItem = styled.div`
+ margin-top:30px;
+ margin-bottom: 10px;
+ display: flex;
+ justify-content: flex-end;
  
-export const CartWrap = styled.div`
-    margin-top: 60px;
+`;
+
+export const CartWrap = styled.div` //list 부분 통합 
     position: relative;
+    margin: 0 auto; // 추가 
     margin-bottom: 60px;
-
 `;
-// export const CartTable = styled.table`
-//     width: 100%;
-//     border-collapse: collapse;
-//     border-top: 2px solid #000;
-//     margin-top: 20px;
+//common으로 통합함 
+// export const CartHeader = styled.div`
+//   display: grid;
+//   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
+//   grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
+//   background: #f9f9f9;
+//   padding: 20px 0;
+//   border-top: 2px solid #000;
+//   border-bottom: 1px solid #000; // #e8e8e8;
+//   text-align: center;
+//   font-size: 14px;
+//   font-weight: 500;
+//   align-items: center;
+
+//   > div {
+//     padding: 0 10px;  //0 15px (1240ver)
+    
+//   }
 // `;
 
-// export const TableHeader = styled.th`
-//     padding: 15px 0;
-//     border-bottom: 1px solid #e8e8e8;
-//     font-weight: 500;
-//     font-size: 14px;
-//     text-align: center;
-//     background: #f9f9f9;
-// `;
 
-// export const TableCell = styled.td`
-//     padding: 20px 0;
-//     border-bottom: 1px solid #e8e8e8;
-//     text-align: center;
-//     vertical-align: middle;
-// `;
+export const CartHeader = styled(BaseGridHeader)`
+ //   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
+ grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
+`;
 
-// export const ProductInfo = styled.div`
-//     display: flex;
-//     align-items: center;
-//     gap: 20px;
-//     padding: 0 20px;
-// `;
+export const CartItem = styled(BaseGridItem)`
+  //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
+ grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
+`;
 
-// export const ProductImage = styled.img`
-//     width: 92px;
-//     height: 92px;
-//     object-fit: cover;
-// `;
-
-// export const ProductDetails = styled.div`
-//     text-align: left;
-// `;
-
-// export const ProductName = styled.strong`
-//     display: block;
-//     font-size: 16px;
-//     margin-bottom: 8px;
-// `;
-
-// export const ProductOption = styled.div`
-//     font-size: 14px;
-//     color: #666;
-// `;
-
-// export const QuantityControl = styled.div`
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     gap: 5px;
-// `;
-
-// export const QuantityInput = styled.input`
-//     width: 50px;
-//     height: 32px;
-//     text-align: center;
-//     border: 1px solid #e8e8e8;
-// `;
-
-// export const SummarySection = styled.div`
-//     margin-top: 30px;
-//     padding: 20px;
-//     background: #f9f9f9;
-//     text-align: right;
-//     font-size: 16px;
-
-//     strong {
-//         font-size: 20px;
-//         color: #000;
-//         margin-left: 10px;
-//     }
-// `;
-
-// export const ButtonSection = styled.div`
+//common으로 통합함
+// export const CartItem = styled.div`
+//   display: grid;
+//   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
+//   grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
+//   padding: 25px 0;  
+//   border-bottom: 1px solid #e8e8e8;
+//   align-items: center;
+//   text-align: center;
+//   font-size: 14px;
+//   font-weight: 400;
+ 
+//   > div {
+//     padding: 0 10px;  //0 15px (1240ver)
 //     display: flex;
 //     justify-content: center;
-//     gap: 10px;
-//     margin-top: 40px;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+    
+//   }
 // `;
-export const CartHeader = styled.div`
-  display: grid;
-  grid-template-columns: 120px minmax(300px, 1fr) 120px 150px 120px 100px;
-  background: #f9f9f9;
-  padding: 15px 0;
-  border-top: 2px solid #000;
-  border-bottom: 1px solid #e8e8e8;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-`;
-
-export const CartItem = styled.div`
-  display: grid;
-  grid-template-columns: 120px minmax(300px, 1fr) 120px 150px 120px 100px;
-  padding: 20px 0;
-  border-bottom: 1px solid #e8e8e8;
-  align-items: center;
-  text-align: center;
-`;
 
 export const ProductImage = styled.img`
   width: 92px;
@@ -126,46 +83,73 @@ export const ProductImage = styled.img`
 `;
 
 export const ProductInfo = styled.div`
-  text-align: left;
+  text-align: left !important;  // 상품정보는 좌측 정렬우선되도록 함
+  justify-content: flex-start !important; // 왼쪽 우선 
   padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+
+  div{
+    display: flex;
+    justify-content: flex-start; 
+    
+  }
+
 `;
 
-export const ProductName = styled.strong`
+export const ProductName = styled.span`
   display: block;
   font-size: 16px;
   margin-bottom: 8px;
 `;
 
-export const ProductOption = styled.div`
-  font-size: 14px;
-  color: #666;
-`;
-
 export const QuantityControl = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 5px;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
 `;
 
 export const QuantityInput = styled.input`
-  width: 50px;
-  height: 32px;
+  width: 56px;
+  height: 36px;
   text-align: center;
   border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  font-size: 13px;
+  /* number type input의 화살표 스타일링 */
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 36px;
+    position: relative;
+    top: 0;
+  }
+`;
+export const CategoryInfo = styled.div`
+  white-space: normal;   //줄바꿈     
+  word-wrap: break-word;   //긴단어 줄바꿈           
+  text-align: center;        
+  line-height: 1.4;      
+  padding: 0 5px;           
 `;
 
 export const SummarySection = styled.div`
-  margin-top: 30px;
-  padding: 20px;
-  background: #f9f9f9;
+  margin-top: 40px;
+  padding: 30px;
+  background: rgba(234, 234, 234, 0.28);
   text-align: right;
-  font-size: 16px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: 1px solid #EAEAEA;
 
   strong {
     font-size: 20px;
-    color: #000;
-    margin-left: 10px;
+    color: #333;
+    margin: 0 6px;
+    font-weight: 600;
   }
 `;
 
