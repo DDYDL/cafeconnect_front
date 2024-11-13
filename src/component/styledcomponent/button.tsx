@@ -112,7 +112,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
   /* 크기 스타일 적용 */
   ${props => SIZES[props.size || 'md']}
   
-  //테마 지정 
+  //색상 및 호버 적용 
   ${props => THEMES[props.theme || 'white'](props)}
   
  /* 아이콘만 있는 경우 너비 설정 기본은 md이 됨 */

@@ -2,11 +2,12 @@ import {CommonWrapper,CommonContainer,ContainerTitleArea,} from "../styledcompon
 import * as ol from '../styledcomponent/orderlist.tsx';
 import {StyledButton} from '../styledcomponent/button.tsx';
 import { Datepicker } from 'flowbite-react';
-import { Select, Option } from "@material-tailwind/react";
+import { Select, Option,Input} from "@material-tailwind/react";
 import {ProductInfo,ProductName,CategoryInfo} from '../styledcomponent/cartlist.tsx';
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
-function OrderListForStore() {
+
+function OrderListForMainStore() {
     const navigate= useNavigate();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -37,7 +38,7 @@ function OrderListForStore() {
     return(
     <CommonWrapper>
         <CommonContainer size="1000px">
-            <ContainerTitleArea><h2>주문내역</h2></ContainerTitleArea>
+            <ContainerTitleArea><h2>주문서관리</h2></ContainerTitleArea>
             <ol.DatePickerWrap>
             <ol.DatePickerInputWrap>
             <Datepicker
@@ -61,22 +62,26 @@ function OrderListForStore() {
           <StyledButton size="sm" theme="brown">조회</StyledButton>
         </ol.DatePickerWrap>
         <ol.OrderListWrap>
-        <ol.FilterWrapForStore>
+        <ol.FilterWrapForMainStore>
             <div className="total-count">
               총 <strong>2</strong>건
             </div>
-            <div className="status-option">
+            <form>
+            <div className=".search-option">
             <Select
               value={status}
               onChange={(val) => setStatus(val)}  
             >
               <Option value="">전체</Option>
-              <Option value="preparing">상품준비중</Option>
-              <Option value="shipping">배송중</Option>
-              <Option value="completed">배송완료</Option>
+              <Option value="">주문상태</Option>
+              <Option value="store">가맹점</Option>
             </Select>
             </div>
-          </ol.FilterWrapForStore>
+            <div>
+            <Input></Input>
+            </div>
+            </form>
+          </ol.FilterWrapForMainStore>
 
           <ol.OrderHeader>
             <div>주문일자</div>
@@ -123,4 +128,4 @@ function OrderListForStore() {
     </CommonWrapper>
     )
 }
-export default OrderListForStore;
+export default OrderListForMainStore;

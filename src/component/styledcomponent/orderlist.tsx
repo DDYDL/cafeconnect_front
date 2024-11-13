@@ -41,7 +41,7 @@ export const DatePickerInputWrap =styled.div`
     color: #333;
   }
 `;
-export const FilterWrap = styled.div`
+export const FilterWrapForStore = styled.div`
     margin: 30px 0 16px;
     display: flex;
     gap: 10px;
@@ -59,15 +59,53 @@ export const FilterWrap = styled.div`
         margin-right: 4px;
       }
     }
+
     .status-option{
-        min-width: 36px;
+       min-width: 36px;
+       
        span,li{
-        font-size: 16px;
-        color: #333;
+       font-size: 16px;
+       color: #333;
+       
        }
     }
 
+
 `;
+
+export const FilterWrapForMainStore = styled.div`
+    margin: 30px 0 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+
+    .total-count {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+      font-size: 16px;
+      color: #333;
+
+      strong {
+        color: #333;
+        margin-right: 4px;
+      }
+    }
+
+    .search-option{
+       min-width: 36px;
+       
+       span,li{
+       font-size: 16px;
+       color: #333;
+       
+       }
+    
+       }
+
+`;
+
+
 export const OrderListWrap = styled.div`
     position: relative;
     margin: 0 auto; 

@@ -161,7 +161,7 @@ function Order() {
               </o.PriceRow>
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <StyledButton theme={"brown"} size="lg"
-                onClick={() => navigate("/shopmain")}
+                onClick={() => navigate("/orderList")}
               >
                 {calculateTotalPrice().toLocaleString()}원 결제하기
               </StyledButton>

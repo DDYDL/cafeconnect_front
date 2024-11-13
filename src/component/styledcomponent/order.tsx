@@ -139,7 +139,7 @@ export const PriceRow = styled.div`
   }
 `;
 
-// 입력 필드 스타일
+// 입력
 export const InputField = styled.input`
   width: 70%;
   padding: 10px;

@@ -21,7 +21,8 @@ import MainStoreHeader from './component/Header/MainStoreHeader';
 import Order from './component/Shop/OrderForm.js';
 import OrderListForStore from './component/Shop/OrderListForStore.js';
 import OrderDetailForStore from './component/Shop/OrderDetailForStore.js';
-
+import OrderListForMainStore from './component/Shop/OrderListForMainStore.js';
+import OrderDetailForMainStore from './component/Shop/OrderDetailForMainStore.js'
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
@@ -83,9 +84,11 @@ function App() {
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
+        <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
+        <Route exect path="//mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/shopMain" element={<JoinStore/>}/> */}
+        {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
 
         {/*가맹점 페이지 링크 (상민)*/}
         {/*<Route exact path="/noticeList" element={<NoticeList />} />*/}
