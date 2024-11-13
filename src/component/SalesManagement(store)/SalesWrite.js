@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
-import { Button, TempSaveButton } from "../Button/Button.style";
+import { CustomButton, TempSaveButton } from "../Button/Button.style";
 import { CustomHorizontal } from "../Horizin/Horizin.style";
 
 const SalesWrite = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const [value, setValue] = useState({
+    startDate: null,
+    endDate: null,
+  });
 
   // 가상의 상품 목록 데이터
   const products = [
@@ -29,10 +35,11 @@ const SalesWrite = () => {
 
   // 총합계 계산
   const calculateTotal = () => {
-    return rows.reduce((total, row) => {
+    const total = rows.reduce((total, row) => {
       const 매출합계 = parseFloat(row.매출합계) || 0;
       return total + 매출합계;
     }, 0);
+    return total.toLocaleString();
   };
 
   // 상품 선택
@@ -98,63 +105,40 @@ const SalesWrite = () => {
         <HeadingContainer>
           <Heading>매출 입력</Heading>
         </HeadingContainer>
+
         <HeadingContainer1>
           <HeadingDataAndSave>
-            <div>매출일자</div>
-            <div>달력 선택</div>
+            <SelectData>
+              <SalesDateText>매출 일자</SalesDateText>
+
+              <Datepicker
+                useRange={false}
+                asSingle={true}
+                value={value}
+                onChange={newValue => setValue(newValue)}
+              />
+            </SelectData>
+
             <TempSaveButton>임시저장</TempSaveButton>
-            <Button>등록</Button>
+            <CustomButton>등록</CustomButton>
           </HeadingDataAndSave>
 
           <HeadingSummary>
-            <div>총합계: </div>
-            <div>{calculateTotal()}원</div> {/* 총합계 계산된 값 표시 */}
+            <div style={{ fontWeight: "bold" }}>총 합계: </div>
+            <div style={{ color: "blue", fontWeight: "bold" }}>{calculateTotal()}원</div>{" "}
+            {/* 총합계 계산된 값 표시 */}
           </HeadingSummary>
         </HeadingContainer1>
-        <CustomHorizontal width="basic" bg="black" />
-        <TableHeader>
-          <TableHeaderItem>순번</TableHeaderItem>
-          <TableHeaderItem>상품명</TableHeaderItem>
-          <TableHeaderItem>수량</TableHeaderItem>
-          <TableHeaderItem>매출 합계</TableHeaderItem>
-        </TableHeader>
-        <CustomHorizontal width="basic" bg="black" />
+        <CustomHorizontal width="basic" bg="black" style={{ marginTop: "10px" }} />
 
-        {/* {rows.map((row, index) => (
-          <TableRow key={index}>
-            <OrderInput name="순번" type="number" placeholder="순번" value={row.순번} readOnly />
-            <ProductSearchInput
-              name="상품명"
-              type="text"
-              placeholder="상품명 검색"
-              value={row.상품명}
-              onChange={event => handleInputChange(index, event)}
-              onKeyDown={event => handleEnterKey(event, index)}
-            />
-            {/* <ProductList>
-              {filteredProducts.map(product => (
-                <ProductItem key={product.id} onClick={() => handleProductSelect(index, product)}>
-                  {product.name}
-                </ProductItem>
-              ))}
-            </ProductList> */}
-        {/* <QuantityInput
-              name="수량"
-              type="number"
-              placeholder="수량 입력"
-              value={row.수량}
-              onChange={event => handleInputChange(index, event)}
-            />
-            <TotalInput
-              name="매출합계"
-              type="number"
-              placeholder="매출 합계 입력"
-              value={row.매출합계}
-              onChange={event => handleInputChange(index, event)}
-              onKeyDown={event => handleEnterKey(event, index)} */}
-        {/* /> */}
-        {/* </TableRow> */}
-        {/* ))} */}
+        <TableHeader>
+          <TableHeaderItem1>순번</TableHeaderItem1>
+          <TableHeaderItem2>상품명</TableHeaderItem2>
+          <TableHeaderItem3>수량</TableHeaderItem3>
+          <TableHeaderItem4>매출 합계</TableHeaderItem4>
+        </TableHeader>
+
+        <CustomHorizontal width="basic" bg="black" />
 
         {rows.map((row, index) => (
           <TableRow key={index}>
@@ -179,14 +163,14 @@ const SalesWrite = () => {
             <QuantityInput
               name="수량"
               type="number"
-              placeholder="수량 입력"
+              placeholder="수량"
               value={row.수량}
               onChange={event => handleInputChange(index, event)}
             />
             <TotalInput
               name="매출합계"
               type="number"
-              placeholder="매출 합계 입력"
+              placeholder="매출 합계"
               value={row.매출합계}
               onChange={event => handleInputChange(index, event)}
               onKeyDown={event => handleEnterKey(event, index)}
@@ -199,17 +183,17 @@ const SalesWrite = () => {
 };
 
 const Wrapper = styled.div`
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+
+  margin-top: 120px;
+  box-sizing: border-box;
+
   position: relative;
-  background-color: lightgrey;
-  width: 800px;
-  height: 600px;
 `;
 
 const Form = styled.form`
@@ -220,12 +204,13 @@ const Form = styled.form`
 `;
 
 const HeadingContainer = styled.div`
-  width: 100%;
+  width: 800px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  margin-bottom: 38px;
+  // margin-bottom: 38px;
+  margin-bottom: 50px;
 `;
 
 const HeadingContainer1 = styled.div`
@@ -253,33 +238,49 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
-// const TableHeader = styled.div`
-//   display: flex;
-//   width: 800px;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding-left: 20px;
-//   padding-right: 20px;
-//   box-sizing: border-box;
-// `;
-
 const TableHeader = styled.div`
   display: flex;
-  width: 100%; /* 부모 컨테이너와 동일한 너비 */
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box; /* padding을 포함하여 크기 설정 */
+
+  width: 800px;
+  height: 50px;
+  font-weight: bold;
+  font-size: 14px;
 `;
 
-const TableHeaderItem = styled.div`
+const TableHeaderItem1 = styled.div`
   display: flex;
   justify-content: center;
+  text-align: left;
   align-items: center;
-  flex: 1;
+  width: 100px;
 `;
 
+const TableHeaderItem2 = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+  width: 450px;
+`;
+
+const TableHeaderItem3 = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+  width: 100px;
+  margin-left: 50px;
+`;
+
+const TableHeaderItem4 = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  align-items: center;
+  width: 100px;
+`;
 // const TableRow = styled.div`
 //   display: flex;
 //   width: 800px;
@@ -297,54 +298,91 @@ const TableRow = styled.div`
   position: relative; /* 여기에 추가 */
 `;
 
-const OrderInput = styled.input`
-  width: 80px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
+const SelectData = styled.div`
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 240px;
+  border: 1px solid lightblue;
   border-radius: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
+  padding-left: 10px;
+`;
+
+const SalesDate = styled.div`
+  display: flex;
+  width: 200px;
+`;
+
+const SalesDateText = styled.div`
+  display: flex;
+  width: 100px;
+`;
+
+const OrderInput = styled.input`
+  width: 40px;
+  height: 40px;
+
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #f8f8f8;
+
+  padding-left: 13px;
+  padding-top: 5px;
+  padding-bottom: 7px;
+
+  font-size: 16px;
+  // border: 1px solid #ddd;
+  border: none;
+  border-radius: 5px;
+  margin-left: 30px;
+  margin-right: 50px;
 `;
 
 const ProductSearchInput = styled.input`
-  width: 200px;
+  width: 600px;
+  height: 40px;
+
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 5px;
   position: relative;
+
+  // margin-right: 30px;
 `;
 
 const QuantityInput = styled.input`
-  width: 100px;
-  padding: 8px;
-  font-size: 16px;
+  width: 50px;
+  height: 40px;
+
+  // padding: 8px;
+  font-size: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin-left: 20px;
+
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 7px;
 `;
 
 const TotalInput = styled.input`
-  width: 120px;
-  padding: 8px;
-  font-size: 16px;
+  width: 90px;
+  height: 40px;
+
+  font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-left: 10px;
+  margin-left: 20px;
   margin-right: 10px;
-`;
 
-// const ProductList = styled.div`
-//   position: absolute;
-//   top: 40px; /* input 아래쪽으로 위치 설정 */
-//   left: 0; /* 왼쪽 정렬 */
-//   background-color: white;
-//   width: 200px;
-//   max-height: 150px;
-//   overflow-y: auto;
-//   z-index: 10;
-//   border: 1px solid #ddd;
-// `;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 7px;
+`;
 
 const ProductList = styled.div`
   position: absolute;
