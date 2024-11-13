@@ -12,7 +12,7 @@ const NoticeWrite = () => {
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
-    navigate("/home");
+    navigate("/shopMain");
   };
 
   const handleRegister = () => {

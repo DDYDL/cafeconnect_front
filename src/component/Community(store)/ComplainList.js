@@ -188,6 +188,7 @@ const HeadingContainer1 = styled.div`
 
 const Heading = styled.h2`
   font-size: 24px;
+  font-weight: bold;
   text-align: center;
   flex-grow: 1;
 `;

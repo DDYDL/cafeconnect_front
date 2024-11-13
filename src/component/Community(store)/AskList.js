@@ -18,7 +18,7 @@ const AskList = () => {
   };
 
   const askWrite = () => {
-    navigate("/community/askWrite");
+    navigate("/askWrite");
   };
 
   const handleChange = (id, value) => {
@@ -128,7 +128,7 @@ const AskList = () => {
         <div key={id}>
           <TableInfoList onClick={() => handleItemClick(id)}>
             <div>{id}</div>
-            <div>[주요 공지사항] 더치원액 팩 1000ml 액상 (브라질산으로 변경됨)</div>
+            <div>배송시간 단축 요청 - 배송이 지연되면서 ...</div>
             <div>2024-10-11 13:49:46</div>
           </TableInfoList>
 
@@ -141,7 +141,8 @@ const AskList = () => {
                 onChange={e => handleChange(id, e.target.value)}
                 placeholder="답변을 작성하세요"
               />
-              <SubmitButton onClick={e => handleSubmit(id, e)}>답변 저장</SubmitButton>
+              {/* <SubmitButton onClick={e => handleSubmit(id, e)}>답변 저장</SubmitButton>
+              <CancelButton>답변 삭제</CancelButton> */}
             </AnswerContainer>
           )}
         </div>
@@ -183,6 +184,7 @@ const HeadingContainer1 = styled.div`
 
 const Heading = styled.h2`
   font-size: 24px;
+  font-weight: bold;
   text-align: center;
   flex-grow: 1;
 `;
@@ -309,6 +311,22 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background-color: lightblue;
+  }
+`;
+
+const CancelButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  background-color: pink;
 
   &:hover {
     background-color: lightblue;

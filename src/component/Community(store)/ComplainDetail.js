@@ -32,9 +32,7 @@ const ComplainDetail = () => {
             <Navigation>
               <span>홈 / 커뮤니티</span>
               <span> / </span>
-              <BoldText>컴플레인 공지</BoldText>
-              <span> / </span>
-              <BoldText>상세보기</BoldText>
+              <BoldText>컴플레인 공지 상세</BoldText>
             </Navigation>
           </HeadingContainer>
 
@@ -101,7 +99,7 @@ const Heading = styled.h2`
 const Navigation = styled.div`
   font-size: 10px;
   position: absolute;
-  margin-right: 470px;
+  margin-right: 560px;
   right: 0;
 `;
 
