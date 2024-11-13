@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Routes,Route } from 'react-router-dom';
 
+
 import Header from './component/Header/Header';
 import Store from './component/Main/Store.js';
 import MenuList from './component/Main/MenuList.js';
@@ -18,11 +19,25 @@ import ItemDetail from './component/Shop/ItemDetail.js';
 import WishItem from './component/Shop/WishItem.js';
 import CartList from './component/Shop/CartList.js';
 import MainStoreHeader from './component/Header/MainStoreHeader';
+
 import Order from './component/Shop/OrderForm.js';
 import OrderListForStore from './component/Shop/OrderListForStore.js';
 import OrderDetailForStore from './component/Shop/OrderDetailForStore.js';
 import OrderListForMainStore from './component/Shop/OrderListForMainStore.js';
 import OrderDetailForMainStore from './component/Shop/OrderDetailForMainStore.js'
+import RepairList from './component/MainStore/RepairList.js';
+import RepairDetail from './component/MainStore/RepairDetail.js';
+import Category from './component/MainStore/Category.js';
+import ItemInsert from './component/MainStore/ItemInsert.js'
+import ItemUpdate from './component/MainStore/ItemUpdate.js'
+import MenuInsert from './component/MainStore/MenuInsert.js'
+import MenuUpdate from './component/MainStore/MenuUpdate.js';
+import MainStore_MenuDetail from './component/MainStore/MenuDetail.js';
+import MainStore_ItemDetail from './component/MainStore/ItemDetail.js';
+import InsertMainStore from './component/MainStore/InsertMainStore.js';
+import MainStore_ItemList from './component/MainStore/ItemList.js'
+import MainStore_MenuList from './component/MainStore/MenuList.js'
+
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
@@ -100,7 +115,20 @@ function App() {
 
         {/*본사 페이지 링크(상민)*/}
         {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
-
+        
+        <Route path='/repairList' element={<RepairList />}/>
+        <Route path='/repairDetail' element={<RepairDetail />}/>
+        <Route path='/category' element={<Category />}/>
+        <Route path='/itemInsert' element={<ItemInsert />}/>
+        <Route path='/itemUpdate' element={<ItemUpdate />}/>
+        <Route path='/menuInsert' element={<MenuInsert />}/>
+        <Route path='/menuUpdate' element={<MenuUpdate />}/>
+        <Route path='/mainmenuDetail' element={<MainStore_MenuDetail />}/>
+        <Route path='/mainItemDetail' element={<MainStore_ItemDetail />}/>
+        <Route path='/insertMainStore' element={<InsertMainStore />}/>
+        <Route path='/mainItemList' element={<MainStore_ItemList />}/>
+        <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
+        
       </Routes>
     </div>
   );

@@ -1,0 +1,984 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:500,400,700,300|Aboreto:400|Noto+Serif+Malayalam:700|Montserrat:300,700");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
+
+
+
+.screen a {
+  display: contents;
+  text-decoration: none;
+}
+
+.container-center-horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+  
+}
+
+.container-center-horizontal > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+:root { 
+    --alabaster: #fbfbfb;
+    --black: #000000;
+    --bon-jour: #e1e1e1;
+    --coconut: #fdfdfd;
+    --cotton-seed: #c4bbbb;
+    --gray-nurse: #eaeaea;
+    --pumice: #c8c8c8;
+    --shark: #262626;
+   
+    --font-size-l: 18px;
+    --font-size-m: 16px;
+    --font-size-s: 14px;
+    --font-size-xl: 20px;
+    --font-size-xs: 12px;
+    --font-size-xxl: 48px;
+    --font-size-xxs: 11px;
+   
+    --font-family-aboreto: "Aboreto", Helvetica;
+    --font-family-montserrat: "Montserrat", Helvetica;
+    --font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
+    --font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
+  }
+  .notosanskr-light-shark-16px {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 300;
+  }
+  
+  .notosanskr-medium-shark-16px {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 500;
+  }
+  
+  .notosanskr-light-cotton-seed-20px {
+    color: var(--cotton-seed);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xl);
+    font-style: normal;
+    font-weight: 300;
+  }
+  
+  .notosanskr-normal-shark-18px {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-l);
+    font-style: normal;
+    font-weight: 400;
+  }
+  
+  .montserrat-light-pumice-16px {
+    color: var(--pumice);
+    font-family: var(--font-family-montserrat);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 300;
+  }
+  
+  .notosanskr-light-coconut-12px {
+    color: var(--coconut);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xs);
+    font-style: normal;
+    font-weight: 300;
+  }
+/* screen - repairlist */
+
+.repairlist {
+    align-items: flex-start;
+    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    height : 100%;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  .repairlist .header {
+    align-items: flex-start;
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-start;
+    margin-top: 18px;
+    min-width: 1922px;
+    width: auto;
+  }
+  
+  .repairlist .overlap-group1 {
+    height: 126px;
+    position: relative;
+    width: 1920px;
+  }
+  
+  .repairlist .overlap-group {
+    height: 126px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 1920px;
+  }
+  
+  .repairlist .container {
+    align-items: center;
+    background-color: #ffffff80;
+    display: flex;
+    height: 65px;
+    left: 0;
+    padding: 16px 29px;
+    position: absolute;
+    top: 61px;
+    width: 1920px;
+  }
+  
+  .repairlist .sidebar {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 1.0px;
+    min-height: 24px;
+    width: 25px;
+  }
+  
+  .repairlist .border {
+    border-bottom-style: solid;
+    border-bottom-width: 3px;
+    border-color: var(--shark);
+    border-top-style: solid;
+    border-top-width: 3px;
+    height: 3px;
+    width: 25px;
+  }
+  
+  .repairlist .horizontal-border {
+    border-color: var(--shark);
+    border-top-style: solid;
+    border-top-width: 3px;
+    height: 6px;
+    width: 25px;
+  }
+  
+  .repairlist .navbar {
+    align-items: flex-start;
+    align-self: flex-end;
+    display: flex;
+    gap: 78px;
+    height: 22px;
+    margin-bottom: 2px;
+    margin-left: 557px;
+    min-width: 722px;
+  }
+  
+  .repairlist .navbar-link-text-4 {
+    width: 86px;
+  }
+  
+  .repairlist .navbar-link-text-1 {
+    width: 100px;
+  }
+  
+  .repairlist .navbar-link-text-5 {
+    width: 74px;
+  }
+  
+  .repairlist .navbar-link-text-2 {
+    align-self: flex-end;
+    color: var(--shark);
+    font-family: var(--font-family-aboreto);
+    font-size: var(--font-size-l);
+    font-weight: 400;
+    width: 70px;
+  }
+  
+  .repairlist .navbar-link-text-3 {
+    width: 70px;
+  }
+  
+  .repairlist .image-1 {
+    align-self: flex-start;
+    height: 31px;
+    margin-left: 443px;
+    object-fit: cover;
+    width: 31px;
+  }
+  
+  .repairlist .group {
+    height: 24px;
+    margin-bottom: 0.5px;
+    margin-left: 34px;
+    width: 26px;
+  }
+  
+  .repairlist .cc {
+    color: transparent;
+    font-family: var(--font-family-noto_serif_malayalam);
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    height: 71px;
+    left: 916px;
+    letter-spacing: -4.00px;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    width: 89px;
+  }
+  
+  .repairlist .span {
+    color: var(--shark);
+    letter-spacing: -1.92px;
+  }
+  
+  .repairlist .span1 {
+    color: #cbd2a4;
+    letter-spacing: -1.92px;
+  }
+  
+  .repairlist .sidemenu {
+    align-items: flex-end;
+    display: flex;
+    gap: 17px;
+    height: 17px;
+    left: 1738px;
+    min-width: 145px;
+    position: absolute;
+    top: 32px;
+  }
+  
+  .repairlist .text-7 {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-s);
+    font-weight: 500;
+    height: 17px;
+    letter-spacing: 0;
+    line-height: normal;
+    width: 40px;
+  }
+  
+  .repairlist .vertical-divider {
+    background-color: #bbbbbb;
+    height: 12px;
+    margin-bottom: 1px;
+    width: 1px;
+  }
+  
+  .repairlist .text-6 {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-s);
+    font-weight: 500;
+    height: 17px;
+    letter-spacing: 0;
+    line-height: normal;
+    width: 66px;
+  }
+  
+  .repairlist .overlap-group5 {
+    height: 1626px;
+    margin-left: -3px;
+    position: relative;
+    width: 1920px;
+  }
+  
+  .repairlist .background {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 1505px;
+    left: 363px;
+    position: absolute;
+    top: 0;
+    width: 1200px;
+  }
+  
+  .repairlist .heading-2 {
+    color: #202020;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: 24px;
+    font-weight: 700;
+    height: 39px;
+    letter-spacing: -1.00px;
+    line-height: 38.5px;
+    margin-top: -1px;
+    min-width: 90px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .repairlist .flex-row {
+    align-items: center;
+    align-self: flex-start;
+    display: flex;
+    height: 38px;
+    margin-left: 28px;
+    margin-top: 42px;
+    min-width: 628px;
+  }
+  
+  .repairlist .frame-104 {
+    align-items: flex-start;
+    background-color: var(--alabaster);
+    border: 1px solid;
+    border-color: var(--bon-jour);
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    padding: 6px 10px;
+    position: relative;
+    width: 109px;
+  }
+  
+  .repairlist .frame-105 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 11px;
+    position: relative;
+  }
+  
+  .repairlist .text-4 {
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .sort-down {
+    height: 20px;
+    position: relative;
+    width: 20px;
+  }
+  
+  .repairlist .frame-container {
+    border-radius: 8px;
+    height: 34px;
+    margin-left: 21px;
+    position: relative;
+    width: 109px;
+  }
+  
+  .repairlist .frame-10 {
+    align-items: flex-start;
+    background-color: var(--alabaster);
+    border: 1px solid;
+    border-color: var(--bon-jour);
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    left: 0;
+    padding: 6px 10px;
+    position: absolute;
+    top: 0;
+    width: 109px;
+  }
+  
+  .repairlist .frame-110 {
+    align-items: flex-start;
+    background-color: var(--alabaster);
+    border: 1px solid;
+    border-color: var(--bon-jour);
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    margin-left: 21px;
+    padding: 6px 10px;
+    position: relative;
+    width: 109px;
+  }
+  
+  .repairlist .frame-107 {
+    align-items: flex-start;
+    background-color: #f5f5f5;
+    border: 1px solid;
+    border-color: var(--bon-jour);
+    border-radius: 8px;
+    display: flex;
+    gap: 149px;
+    margin-left: 32px;
+    padding: 6px 10px;
+    position: relative;
+    width: 227px;
+  }
+  
+  .repairlist .text-48 {
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: -0.50px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .img {
+    height: 24px;
+    margin-right: -3.00px;
+    position: relative;
+    width: 24px;
+  }
+  
+  .repairlist .overlap-group2 {
+    height: 1160px;
+    margin-top: 9px;
+    position: relative;
+    width: 1200px;
+  }
+  
+  .repairlist .horizontal-border-1 {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: #deebff;
+    height: 48px;
+    left: 30px;
+    position: absolute;
+    top: 13px;
+    width: 1140px;
+  }
+  
+  .repairlist .frame-92 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 1200px;
+  }
+  
+  .repairlist .frame-87 {
+    align-items: center;
+    align-self: stretch;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--black);
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    position: relative;
+    width: 100%;
+  }
+  
+  .repairlist .cell-1 {
+    width: 131px;
+  }
+  
+  .repairlist .text-8 {
+    height: 21px;
+    left: 44px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 18px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .cell-2 {
+    width: 306px;
+  }
+  
+  .repairlist .text-9 {
+    height: 21px;
+    left: 133px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 18px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .cell-3 {
+    width: 143px;
+  }
+  
+  .repairlist .text-10 {
+    height: 21px;
+    left: 40px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 18px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .cell-4 {
+    width: 180px;
+  }
+  
+  .repairlist .text-11 {
+    height: 21px;
+    left: 70px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 18px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .cell {
+    height: 60px;
+    position: relative;
+    width: 107px;
+  }
+  
+  .repairlist .text-12 {
+    height: 21px;
+    left: 33px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 19px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .text-13 {
+    height: 21px;
+    left: 24px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 19px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .frame {
+    align-items: center;
+    align-self: stretch;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    position: relative;
+    width: 100%;
+  }
+  
+  .repairlist .data {
+    height: 110px;
+    position: relative;
+    width: 131px;
+  }
+  
+  .repairlist .a12345 {
+    height: 21px;
+    left: 51px;
+    letter-spacing: -1.00px;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 44px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .data-1 {
+    width: 308px;
+  }
+  
+  .repairlist .frame-89 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    left: 121px;
+    position: relative;
+    top: 44px;
+    width: 159px;
+  }
+  
+  .repairlist .text {
+    align-self: stretch;
+    letter-spacing: 0;
+    line-height: 21px;
+    margin-top: -1.00px;
+    position: relative;
+  }
+  
+  .repairlist .data-2 {
+    width: 141px;
+  }
+  
+  .repairlist .date {
+    height: 21px;
+    left: 29px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 43px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .data-3 {
+    width: 178px;
+  }
+  
+  .repairlist .text-1 {
+    height: 20px;
+    left: 57px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 44px;
+    white-space: nowrap;
+    width: 85px;
+  }
+  
+  .repairlist .data-4 {
+    width: 107px;
+  }
+  
+  .repairlist .strong-8900 {
+    height: 21px;
+    left: 26px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: right;
+    top: 44px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .text-2 {
+    height: 21px;
+    left: 31px;
+    letter-spacing: 0;
+    line-height: 21px;
+    position: absolute;
+    text-align: center;
+    top: 43px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .flex-row-1 {
+    margin-right: 20.0px;
+    margin-top: 39px;
+    min-width: 186px;
+  }
+  
+  .repairlist .component-2 {
+    padding: 0px 11.77px 0px 11.75px;
+    position: relative;
+    width: 30px;
+  }
+  
+  .repairlist .text-5 {
+    color: #0e347e;
+    font-family: var(--font-family-montserrat);
+    font-size: var(--font-size-m);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 30px;
+    margin-left: -0.26px;
+    margin-right: -0.26px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .component-3 {
+    padding: 0px 10.5px 0px 10.48px;
+    position: relative;
+    width: 30px;
+  }
+  
+  .repairlist .text-14 {
+    letter-spacing: 0;
+    line-height: 30px;
+    margin-left: -0.49px;
+    margin-right: -0.49px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .component-4 {
+    padding: 0px 10.53px;
+    position: relative;
+    width: 30px;
+  }
+  
+  .repairlist .text-3 {
+    letter-spacing: 0;
+    line-height: 30px;
+    margin-left: -0.03px;
+    margin-right: -0.03px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .component-5 {
+    padding: 0px 9.76px 0px 9.77px;
+    position: relative;
+    width: 30px;
+  }
+  
+  .repairlist .text-15 {
+    letter-spacing: 0;
+    line-height: 30px;
+    margin-left: -0.27px;
+    margin-right: -0.27px;
+    margin-top: -1.00px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .repairlist .overlap-group3 {
+    height: 30px;
+    position: relative;
+    width: 66px;
+  }
+  
+  .repairlist .component-1 {
+    left: 0;
+    padding: 0px 35.53px 0px 10.53px;
+    position: absolute;
+    top: 0;
+    width: 55px;
+  }
+  
+  .repairlist .border-1 {
+    align-items: center;
+    border: 1px solid;
+    border-color: #eeeeee;
+    display: flex;
+    height: 30px;
+    left: 36px;
+    min-width: 30px;
+    padding: 0 12.5px;
+    position: absolute;
+    top: 0;
+  }
+  
+  .repairlist .image {
+    height: 6px;
+    width: 5px;
+  }
+  
+  .repairlist .footer {
+    align-items: flex-end;
+    background-color: #9a7e6f;
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+    justify-content: flex-start;
+    left: 0;
+    min-width: 1920px;
+    padding: 10px 0;
+    position: absolute;
+    top: 1426px;
+    width: auto;
+  }
+  
+  .repairlist .footer-contents {
+    align-items: flex-end;
+    display: flex;
+    gap: 19px;
+    height: 150px;
+    padding: 22.1px 340px;
+    width: 1920px;
+  }
+  
+  .repairlist .flex-row-2 {
+    gap: 30px;
+    min-width: 893px;
+  }
+  
+  .repairlist .flex-col {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 0.12px;
+    min-height: 59px;
+    width: 862px;
+  }
+  
+  .repairlist .overlap-group-1 {
+    height: 39px;
+    position: relative;
+    width: 862px;
+  }
+  
+  .repairlist .x {
+    height: 37px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    width: 606px;
+  }
+  
+  .repairlist .text-49 {
+    color: #ffffff;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xs);
+    font-weight: 300;
+    height: 17px;
+    left: 421px;
+    letter-spacing: 0;
+    line-height: 18px;
+    position: absolute;
+    text-align: center;
+    top: 21px;
+    white-space: nowrap;
+    width: 77px;
+  }
+  
+  .repairlist .text-50 {
+    height: 17px;
+    left: 508px;
+    letter-spacing: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 20px;
+    white-space: nowrap;
+    width: 354px;
+  }
+  
+  .repairlist .copyright {
+    height: 17px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-bottom: -3px;
+    white-space: nowrap;
+  }
+  
+  .repairlist .vertical-divider-1 {
+    background-color: #e5e5e5;
+    height: 87px;
+    width: 1px;
+  }
+  
+  .repairlist .flex-col-1 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 2.21px;
+    min-height: 86px;
+    width: 319px;
+  }
+  
+  .repairlist .heading-3 {
+    color: var(--coconut);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    height: 53px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    width: 294px;
+  }
+  
+  .repairlist .span0 {
+    font-weight: 500;
+    letter-spacing: -0.06px;
+  }
+  
+  .repairlist .span1-1 {
+    font-weight: 300;
+    letter-spacing: -0.06px;
+  }
+  
+  .repairlist .text-container {
+    align-items: center;
+    display: flex;
+    gap: 17px;
+    min-width: 319px;
+  }
+  
+  .repairlist .text-51 {
+    height: 18px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    white-space: nowrap;
+    width: 211px;
+  }
+  
+  .repairlist .text-52 {
+    color: #ffffff;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xxs);
+    font-weight: 300;
+    height: 16px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    margin-bottom: 0.46px;
+    text-align: center;
+    white-space: nowrap;
+    width: 91px;
+  }
+  
+  .repairlist .cell-5 {
+    height: 60px;
+    position: relative;
+  }
+  
+  .repairlist .component {
+    align-items: flex-start;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .repairlist .data-5 {
+    height: 110px;
+    position: relative;
+  }
+  
+  .repairlist .flex-row-3 {
+    align-items: flex-start;
+    display: flex;
+  }
+  
+  .repairlist .navbar-link-text {
+    height: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: center;
+    white-space: nowrap;
+  }
+    
