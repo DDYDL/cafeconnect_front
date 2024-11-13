@@ -1,0 +1,736 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,700,400,500|Aboreto:400|Noto+Serif+Malayalam:700|Inter:500,400");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
+
+
+
+.screen a {
+  display: contents;
+  text-decoration: none;
+}
+
+.container-center-horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+}
+
+.container-center-horizontal > * {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+:root { 
+    --black: #000000;
+    --coconut: #fdfdfd;
+    --gray-nurse: #eaeaea;
+    --gray-nurse-2: #e8e8e8;
+    --shark: #262626;
+    --white: #ffffff;
+   
+    --font-size-l: 14px;
+    --font-size-m: 12px;
+    --font-size-s: 11px;
+    --font-size-xl: 16px;
+    --font-size-xxl: 18px;
+    --font-size-xxxl: 24px;
+    --font-size-xxxxl: 48px;
+   
+    --font-family-aboreto: "Aboreto", Helvetica;
+    --font-family-inter: "Inter", Helvetica;
+    --font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
+    --font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
+  }
+  .notosanskr-medium-black-16px {
+    color: var(--black);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xl);
+    font-style: normal;
+    font-weight: 500;
+  }
+  
+  .notosanskr-light-black-16px {
+    color: var(--black);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xl);
+    font-style: normal;
+    font-weight: 300;
+  }
+  
+  .notosanskr-normal-shark-18px {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xxl);
+    font-style: normal;
+    font-weight: 400;
+  }
+  
+  .notosanskr-light-coconut-12px {
+    color: var(--coconut);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 300;
+  }
+/* screen - repairdetail */
+
+.repairdetail {
+    align-items: center;
+    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    height : 100%;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  .repairdetail .header {
+    align-items: flex-start;
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-start;
+    margin-left: 2.0px;
+    margin-top: 17px;
+    min-width: 1922px;
+    width: auto;
+  }
+  
+  .repairdetail .overlap-group2 {
+    height: 126px;
+    position: relative;
+    width: 1920px;
+  }
+  
+  .repairdetail .overlap-group1 {
+    height: 126px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 1920px;
+  }
+  
+  .repairdetail .container {
+    align-items: center;
+    background-color: #ffffff80;
+    display: flex;
+    height: 65px;
+    left: 0;
+    padding: 16px 29px;
+    position: absolute;
+    top: 61px;
+    width: 1920px;
+  }
+  
+  .repairdetail .sidebar {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 1.0px;
+    min-height: 24px;
+    width: 25px;
+  }
+  
+  .repairdetail .border {
+    border-bottom-style: solid;
+    border-bottom-width: 3px;
+    border-color: var(--shark);
+    border-top-style: solid;
+    border-top-width: 3px;
+    height: 3px;
+    width: 25px;
+  }
+  
+  .repairdetail .horizontal-border {
+    border-color: var(--shark);
+    border-top-style: solid;
+    border-top-width: 3px;
+    height: 6px;
+    width: 25px;
+  }
+  
+  .repairdetail .navbar {
+    align-items: flex-start;
+    align-self: flex-end;
+    display: flex;
+    gap: 78px;
+    height: 22px;
+    margin-bottom: 2px;
+    margin-left: 557px;
+    min-width: 722px;
+  }
+  
+  .repairdetail .navbar-link-text-8 {
+    width: 86px;
+  }
+  
+  .repairdetail .navbar-link-text-5 {
+    width: 100px;
+  }
+  
+  .repairdetail .navbar-link-text-9 {
+    width: 74px;
+  }
+  
+  .repairdetail .navbar-link-text-6 {
+    align-self: flex-end;
+    color: var(--shark);
+    font-family: var(--font-family-aboreto);
+    font-size: var(--font-size-xxl);
+    font-weight: 400;
+    width: 70px;
+  }
+  
+  .repairdetail .navbar-link-text-7 {
+    width: 70px;
+  }
+  
+  .repairdetail .image-1 {
+    align-self: flex-start;
+    height: 31px;
+    margin-left: 443px;
+    object-fit: cover;
+    width: 31px;
+  }
+  
+  .repairdetail .group {
+    height: 24px;
+    margin-bottom: 0.5px;
+    margin-left: 34px;
+    width: 26px;
+  }
+  
+  .repairdetail .cc {
+    color: transparent;
+    font-family: var(--font-family-noto_serif_malayalam);
+    font-size: var(--font-size-xxxxl);
+    font-weight: 700;
+    height: 71px;
+    left: 916px;
+    letter-spacing: -4.00px;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    width: 89px;
+  }
+  
+  .repairdetail .span {
+    color: var(--shark);
+    letter-spacing: -1.92px;
+  }
+  
+  .repairdetail .span1 {
+    color: #cbd2a4;
+    letter-spacing: -1.92px;
+  }
+  
+  .repairdetail .sidemenu {
+    align-items: flex-end;
+    display: flex;
+    gap: 17px;
+    height: 17px;
+    left: 1738px;
+    min-width: 145px;
+    position: absolute;
+    top: 32px;
+  }
+  
+  .repairdetail .text-11 {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-l);
+    font-weight: 500;
+    height: 17px;
+    letter-spacing: 0;
+    line-height: normal;
+    width: 40px;
+  }
+  
+  .repairdetail .vertical-divider {
+    background-color: #bbbbbb;
+    height: 12px;
+    margin-bottom: 1px;
+    width: 1px;
+  }
+  
+  .repairdetail .text-10 {
+    color: var(--shark);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-l);
+    font-weight: 500;
+    height: 17px;
+    letter-spacing: 0;
+    line-height: normal;
+    width: 66px;
+  }
+  
+  .repairdetail .heading-2 {
+    color: #202020;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-xxxl);
+    font-weight: 700;
+    height: 39px;
+    letter-spacing: -1.00px;
+    line-height: 38.5px;
+    margin-top: 61px;
+    min-width: 90px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .frame-container {
+    height: 131px;
+    margin-top: 21px;
+    position: relative;
+    width: 1200px;
+  }
+  
+  .repairdetail .frame-119 {
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    height: 60px;
+    left: 0;
+    padding: 0px 80px;
+    position: absolute;
+    top: 0;
+    width: 1200px;
+  }
+  
+  .repairdetail .frame-117 {
+    height: 24px;
+    position: relative;
+    width: 265px;
+  }
+  
+  .repairdetail .text {
+    height: 24px;
+    left: 0;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    position: absolute;
+    top: -1px;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .frame-118 {
+    height: 56px;
+    margin-right: -51.00px;
+    position: relative;
+    width: 826px;
+  }
+  
+  .repairdetail .text-13 {
+    height: 24px;
+    left: 9px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    position: absolute;
+    top: 15px;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .frame-120 {
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    height: 72px;
+    left: 0;
+    padding: 3px 80px;
+    position: absolute;
+    top: 59px;
+    width: 1200px;
+  }
+  
+  .repairdetail .input {
+    align-items: flex-start;
+    background-color: var(--white);
+    border: 1px solid;
+    border-color: var(--gray-nurse-2);
+    border-radius: 8px;
+    display: flex;
+    height: 56px;
+    overflow: hidden;
+    padding: 15px 13px;
+    width: 437px;
+  }
+  
+  .repairdetail .text-15 {
+    height: 24px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .frame-12 {
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    height: 72px;
+    padding: 3px 80px;
+    position: relative;
+    width: 1200px;
+  }
+  
+  .repairdetail .frame-1 {
+    height: 56px;
+    position: relative;
+    width: 775px;
+  }
+  
+  .repairdetail .frame-134 {
+    align-items: center;
+    display: flex;
+    gap: 9px;
+    position: relative;
+    width: 437px;
+  }
+  
+  .repairdetail .input-1 {
+    height: 56px;
+    position: relative;
+    width: 333px;
+  }
+  
+  .repairdetail .a12345 {
+    height: 24px;
+    left: 13px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    position: absolute;
+    top: 16px;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .input-2 {
+    align-items: flex-start;
+    display: flex;
+    height: 56px;
+    padding: 15px 13px;
+    width: 775px;
+  }
+  
+  .repairdetail .date {
+    height: 24px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    width: 159px;
+  }
+  
+  .repairdetail .frame-124 {
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    height: 72px;
+    margin-top: 5px;
+    padding: 3px 80px;
+    position: relative;
+    width: 1200px;
+  }
+  
+  .repairdetail .input-3 {
+    align-items: flex-end;
+    display: flex;
+    height: 56px;
+    padding: 15px 13px;
+    width: 775px;
+  }
+  
+  .repairdetail .text-19 {
+    height: 24px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    width: 159px;
+  }
+  
+  .repairdetail .frame-123 {
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--gray-nurse);
+    display: flex;
+    height: 240px;
+    margin-top: 5px;
+    padding: 3px 80px;
+    position: relative;
+    width: 1200px;
+  }
+  
+  .repairdetail .frame-118-1 {
+    height: 222px;
+    position: relative;
+    width: 775px;
+  }
+  
+  .repairdetail .input-4 {
+    align-items: flex-start;
+    display: flex;
+    height: 222px;
+    padding: 17px 13px;
+    width: 775px;
+  }
+  
+  .repairdetail .text-21 {
+    height: 24px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
+    width: 159px;
+  }
+  
+  .repairdetail .button {
+    align-items: flex-start;
+    background: linear-gradient(180deg, rgb(79, 70, 229) 4.27%, rgb(99, 102, 241) 100%);
+    border-radius: 4px;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 868.3px;
+    margin-top: 79px;
+    min-width: 172px;
+    padding: 0 1.3px;
+  }
+  
+  .repairdetail .overlap-group3 {
+    border-radius: 2px;
+    height: 53px;
+    position: relative;
+    width: 169px;
+  }
+  
+  .repairdetail .text-22 {
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    height: 20px;
+    left: 21px;
+    letter-spacing: 0;
+    line-height: 24px;
+    position: absolute;
+    text-align: center;
+    top: 16px;
+    white-space: nowrap;
+    width: 127px;
+  }
+  
+  .repairdetail .small-btn_brown {
+    align-items: flex-start;
+    background-color: #54473f;
+    border-radius: 2px;
+    display: flex;
+    height: 53px;
+    left: 0;
+    min-width: 169px;
+    padding: 20px 36px;
+    position: absolute;
+    top: 0;
+  }
+  
+  .repairdetail .text-23 {
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-xl);
+    font-weight: 400;
+    height: 12px;
+    letter-spacing: 0;
+    line-height: 18px;
+    text-align: center;
+    white-space: nowrap;
+    width: 97px;
+  }
+  
+  .repairdetail .footer {
+    align-items: flex-end;
+    background-color: #9a7e6f;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    height: 200px;
+    justify-content: flex-start;
+    margin-top: 78px;
+    min-width: 1920px;
+    padding: 14px 0;
+    width: auto;
+  }
+  
+  .repairdetail .footer-contents {
+    align-items: flex-end;
+    display: flex;
+    gap: 19px;
+    height: 150px;
+    padding: 22.1px 340px;
+    width: 1920px;
+  }
+  
+  .repairdetail .flex-row {
+    gap: 30px;
+    min-width: 893px;
+  }
+  
+  .repairdetail .flex-col {
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 0.12px;
+    min-height: 59px;
+    width: 862px;
+  }
+  
+  .repairdetail .overlap-group {
+    height: 39px;
+    position: relative;
+    width: 862px;
+  }
+  
+  .repairdetail .x {
+    height: 37px;
+    left: 0;
+    letter-spacing: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 0;
+    width: 606px;
+  }
+  
+  .repairdetail .text-1 {
+    color: var(--white);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-weight: 300;
+    height: 17px;
+    left: 421px;
+    letter-spacing: 0;
+    line-height: 18px;
+    position: absolute;
+    text-align: center;
+    top: 21px;
+    white-space: nowrap;
+    width: 77px;
+  }
+  
+  .repairdetail .text-2 {
+    height: 17px;
+    left: 508px;
+    letter-spacing: 0;
+    line-height: 20px;
+    position: absolute;
+    top: 20px;
+    white-space: nowrap;
+    width: 354px;
+  }
+  
+  .repairdetail .copyright {
+    height: 17px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-bottom: -3px;
+    white-space: nowrap;
+  }
+  
+  .repairdetail .vertical-divider-1 {
+    background-color: #e5e5e5;
+    height: 87px;
+    width: 1px;
+  }
+  
+  .repairdetail .flex-col-1 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 2.21px;
+    min-height: 86px;
+    width: 319px;
+  }
+  
+  .repairdetail .heading-3 {
+    color: var(--coconut);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-weight: 400;
+    height: 53px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    width: 294px;
+  }
+  
+  .repairdetail .span0 {
+    font-weight: 500;
+    letter-spacing: -0.06px;
+  }
+  
+  .repairdetail .span1-1 {
+    font-weight: 300;
+    letter-spacing: -0.06px;
+  }
+  
+  .repairdetail .text-container {
+    align-items: center;
+    display: flex;
+    gap: 17px;
+    min-width: 319px;
+  }
+  
+  .repairdetail .text-3 {
+    height: 18px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    white-space: nowrap;
+    width: 211px;
+  }
+  
+  .repairdetail .text-4 {
+    color: var(--white);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-s);
+    font-weight: 300;
+    height: 16px;
+    letter-spacing: -0.50px;
+    line-height: 18px;
+    margin-bottom: 0.46px;
+    text-align: center;
+    white-space: nowrap;
+    width: 91px;
+  }
+  
+  .repairdetail .flex {
+    align-items: flex-start;
+    display: flex;
+  }
+  
+  .repairdetail .input-5 {
+    background-color: var(--white);
+    border: 1px solid;
+    border-color: var(--gray-nurse-2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .repairdetail .navbar-link-text {
+    height: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: center;
+    white-space: nowrap;
+  }
+    
