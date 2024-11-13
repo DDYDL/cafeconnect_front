@@ -20,7 +20,11 @@ import WishItem from './component/Shop/WishItem.js';
 import CartList from './component/Shop/CartList.js';
 import MainStoreHeader from './component/Header/MainStoreHeader';
 
-
+import Order from './component/Shop/OrderForm.js';
+import OrderListForStore from './component/Shop/OrderListForStore.js';
+import OrderDetailForStore from './component/Shop/OrderDetailForStore.js';
+import OrderListForMainStore from './component/Shop/OrderListForMainStore.js';
+import OrderDetailForMainStore from './component/Shop/OrderDetailForMainStore.js'
 import RepairList from './component/MainStore/RepairList.js';
 import RepairDetail from './component/MainStore/RepairDetail.js';
 import Category from './component/MainStore/Category.js';
@@ -33,6 +37,7 @@ import MainStore_ItemDetail from './component/MainStore/ItemDetail.js';
 import InsertMainStore from './component/MainStore/InsertMainStore.js';
 import MainStore_ItemList from './component/MainStore/ItemList.js'
 import MainStore_MenuList from './component/MainStore/MenuList.js'
+
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
@@ -75,7 +80,8 @@ function App() {
 
         <Route exect path="/shopMain" element={<ShopMain/>} />
         {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
-        {/* <Route exect path="/orderList" element={<LoginStore/>} /> */}
+        <Route exect path="/orderList" element={<OrderListForStore/>} />
+        <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
         {/* <Route exect path="/salesManagement" element={<JoinStore/>}/> */}
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
         {/* <Route exect path="/myAlarmList" element={<JoinStore/>}/> */}
@@ -84,6 +90,7 @@ function App() {
         {/* <Route exect path="/repairList" element={<JoinStore/>}/> */}
         <Route exect path="/wishList" element={<WishItem/>}/>
         <Route exect path="/cartList" element={<CartList/>}/>
+        <Route exect path="/order" element={<Order/>}/>
         <Route path='/itemDetail/:itemCode' element={<ItemDetail/>}></Route>
 
         {/* 본사 페이지 링크 */}
@@ -92,9 +99,11 @@ function App() {
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
+        <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
+        <Route exect path="//mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/shopMain" element={<JoinStore/>}/> */}
+        {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
 
         {/*가맹점 페이지 링크 (상민)*/}
         {/*<Route exact path="/noticeList" element={<NoticeList />} />*/}

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Carousel } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import * as s from '../styledcomponent/shopmain.tsx'
-import * as ss from '../styles/StyledStore.tsx';
+
 
 const ProductItem = ({ item }) => {
   const [quantity, setQuantity] = useState(1);
@@ -27,7 +27,6 @@ const ProductItem = ({ item }) => {
   };
 
   return (
-  
     <s.ItemListLi>
         <s.ItemListImg>
           <img src={item.imageUrl} alt={item.name} />
@@ -49,7 +48,7 @@ const ProductItem = ({ item }) => {
           <s.ItemPrice>{item.price}</s.ItemPrice>
           {item.storageType && (
             <s.ItemStorageLabelP>
-              <s.ItemStorageType bgColor={item.bgColor}>
+              <s.ItemStorageType storageType={item.storageType}>
                 {item.storageType}
               </s.ItemStorageType>
             </s.ItemStorageLabelP>
@@ -63,8 +62,7 @@ const ProductItem = ({ item }) => {
 function ShopMain() {
 
   const renderProductSection = (title) => (
-    <s.ShopMainWrapper>
-      <s.ShopMainContainer>
+ 
         <s.ShopMainContent>
           <s.ShopMainTitle>
             {title}
@@ -78,8 +76,6 @@ function ShopMain() {
             </s.ItemListUl>
           </s.ShopMainItemList>
         </s.ShopMainContent>
-      </s.ShopMainContainer>
-    </s.ShopMainWrapper>
   );
 
   const bannerImages = [
@@ -148,9 +144,8 @@ function ShopMain() {
 
 
   return (
-
-    <div className="h-[480px] mt-16">
-
+    <s.ShopMainWrapper>
+          <div className="h-[480px] mt-16">
       <Carousel
         className="rounded-xl"
         autoplay={true}
@@ -169,6 +164,7 @@ function ShopMain() {
           </div>
         )}
       >
+        
         {/* 배너 이미지 */}
         {bannerImages.map((banner) => (
           <img key={banner.id}
@@ -178,15 +174,17 @@ function ShopMain() {
           />
         ))}
       </Carousel>
+      </div>
+      <s.ShopMainContainer>
+
       {/* 상품 목록 시작*/}
 
       {renderProductSection("커피자재")}
       {renderProductSection("분말가공")}
       {renderProductSection("유가공품")}
       {/* 상품 목록 끝 */}
-
-    </div>
-   
+    </s.ShopMainContainer>
+    </s.ShopMainWrapper>  
   )
 }
 export default ShopMain;

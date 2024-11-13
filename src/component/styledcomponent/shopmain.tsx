@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 
 export const ShopMainWrapper = styled.div`
     display: block;
-
-`
-;
+    margin-top: 150px;
+`;
 export const ShopMainContainer = styled.div`
     
     width:1580px;
@@ -52,10 +51,10 @@ export const ShopMainItemList = styled.div`
 export const ItemListUl = styled.ul`
     margin: 0;
     padding: 0;
-    margin-right: -22px;
+    display: flex;
+    /* gap:16px; */
 
-`
-    ;
+`;
 export const ItemListLi = styled.li`
     width: 242px;
     margin-right: 22px;
@@ -128,20 +127,21 @@ export const ItemStorageLabelP = styled.p`
         margin: 0;
 `
     ;
-interface ItemStorageTypeProps {
-    bgColor: string;
-}
 
-export const ItemStorageType = styled.span<ItemStorageTypeProps>`
-    background: ${(props) => props.bgColor};
+export const ItemStorageType = styled.span<{ storageType?: string }>`
+     ${({ storageType }) => 
+     storageType === "냉동" &&
+    `
+    background: #45b0da;
     color: #fff;
     width: auto;
     padding: 2px 6px;
     text-indent: initial;
     font-size: 11px;
     line-height: 14px;
-`
-    ;
+  `}
+
+`;
 
     export const HoverControls = styled.div`
     position: absolute;

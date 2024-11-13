@@ -4,8 +4,9 @@ import { CommonWrapper, CommonContainer } from "../styledcomponent/common.tsx";
 import { useState } from "react";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
-
+import {useNavigate} from 'react-router-dom';
 const ItemDetail = ({ itemCode }) => {
+  const navigate = useNavigate();
   const item = {
     itemCode: 1,
     name: "에티오피아 코케허니 G1스페셜티",
@@ -42,7 +43,7 @@ const ItemDetail = ({ itemCode }) => {
             <d.PdtDetailLeft>
               <d.PdtDetailItemImg>
                 <d.PdtDetailItemImgArea>
-                  <img src={item.imageUrl}></img>
+                  <img src={item.imageUrl} alt=""></img>
                 </d.PdtDetailItemImgArea>
               </d.PdtDetailItemImg>
             </d.PdtDetailLeft>
@@ -81,7 +82,7 @@ const ItemDetail = ({ itemCode }) => {
                       {isAdded ? <SolidHeartIcon /> : <OutlineHeartIcon />}
                     </d.WishlistIcon>
                   </d.WishlistButton>
-                  <StyledButton size="extralg" theme="brown">
+                  <StyledButton size="extralg" theme="brown" onClick={()=>navigate("/cartList")}>
                     장바구니
                   </StyledButton>
                 </d.ButtonWrapper>
