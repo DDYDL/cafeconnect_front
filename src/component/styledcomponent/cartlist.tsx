@@ -94,7 +94,6 @@ export const ProductInfo = styled.div`
     justify-content: flex-start; 
     
   }
-
 `;
 
 export const ProductName = styled.span`
@@ -129,11 +128,17 @@ export const QuantityInput = styled.input`
   }
 `;
 export const CategoryInfo = styled.div`
-  white-space: normal;   //줄바꿈     
-  word-wrap: break-word;   //긴단어 줄바꿈           
-  text-align: center;        
-  line-height: 1.4;      
-  padding: 0 5px;           
+ display: -webkit-box;
+  -webkit-line-clamp: 2; // 2줄 제한
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all; //즐바꿈
+  line-height: 1.4;
+  padding: 0 5px;
+  text-align: left;  // ProductInfo 내부에서 사용될 때 왼쪽 정렬
+       
 `;
 
 export const SummarySection = styled.div`
