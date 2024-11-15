@@ -146,12 +146,14 @@ export const TableListThead = styled.thead`
 export const TableTextTh = styled.th`
     font-size:16px;
     fint-weight:bold;
+    vertical-align:middle;
 `;
 
 export const TableTextTd = styled.td`
     font-size:16px;
     padding-left:20px;
     padding-right:0px;
+    vertical-align:middle;
 `;
 
 export const TableTextTr = styled.tr`
@@ -179,13 +181,16 @@ export const TrStyle = styled.tr`
 
 export const InputStyle = styled.input<Container>`
     width:${(props) => props.width ? props.width : "630px"};
+    margin-top:${(props) => props.marginTop ? props.marginTop : "0px"};
     height:40px;
+    border:1px solid rgba(234, 234, 234, 1);
     border-radius:5px;
 `;
 
 export const TextareaStyle = styled.textarea`
     margin-top:10px;
     margin-bottom:5px;
+    border:1px solid rgba(234, 234, 234, 1);
     border-radius:5px;
 `;
 
@@ -206,8 +211,8 @@ export const LoginAlignLeft = styled.div<Container>`
 
 export const HrStyle = styled.hr`
     float:left;
-    width:181px;
-    margin-top:8px;
+    width:178px;
+    margin-top:7px;
     border:1px solid rgba(234, 234, 234, 1);
 `;
 

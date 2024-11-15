@@ -73,7 +73,7 @@ export const NavLinkMenu = styled(NavLink)`
     text-decoration:none;
     color:rgba(38, 38, 38, 1);
     position:relative;
-    top:3px;
+    top:13px;
     text-align:center;
     margin-left:20px;
     margin-right:75px;

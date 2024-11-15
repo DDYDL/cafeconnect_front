@@ -20,8 +20,8 @@ const LoginStore = () => {
                 <s.LoginAlign>
                 <table>
                     <tbody>
-                        <tr><td><s.InputStyle width='400px' type="text" placeholder='   Username'/></td></tr>
-                        <tr><td><s.InputStyle width='400px' type="password" placeholder='   Password' /></td></tr>
+                        <tr><td><s.InputStyle width='400px' marginTop='20px' type="text" placeholder='   Username'/></td></tr>
+                        <tr><td><s.InputStyle width='400px' marginTop='10px' type="password" placeholder='   Password' /></td></tr>
                     </tbody>
                 </table>
                 </s.LoginAlign>
@@ -35,7 +35,7 @@ const LoginStore = () => {
                     <s.ButtonStyle><Link to='shopMain'>로그인</Link></s.ButtonStyle>
                 </s.ButtonDiv>
 
-                <s.LoginAlignLeft marginTop='13px' fontSize='12px'><s.HrStyle /><span style={{ float: 'left' }}>&nbsp;&nbsp;또는&nbsp;&nbsp;</span><s.HrStyle/></s.LoginAlignLeft>
+                <s.LoginAlignLeft marginTop='13px' fontSize='12px'><s.HrStyle/><span style={{ float: 'left' }}>&nbsp;&nbsp;또는&nbsp;&nbsp;</span><s.HrStyle/></s.LoginAlignLeft>
                 
                 <s.LoginAlign>
                     <span><img src='./kakaologin.png'/></span>&nbsp;&nbsp;&nbsp;
