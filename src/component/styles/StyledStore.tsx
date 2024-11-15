@@ -10,6 +10,7 @@ interface Container {
     marginLeft:string;
     marginTop:string;
     fontSize:string;
+    float:string;
 }
 
 export const ContentDiv = styled.div`
@@ -26,8 +27,8 @@ export const ContentListDiv = styled.div<Container>`
     margin-bottom:80px;
 `;
 
-export const SearchDiv = styled.div`
-    width:400px;
+export const SearchDiv = styled.div<Container>`
+    width:${(props) => props.width ? props.width : "400px"};
     margin:0 auto;
     margin-bottom:20px;
 `;
@@ -118,15 +119,23 @@ export const MenuImgDiv = styled.div`
 `;
 
 export const ButtonDiv = styled.div<Container>`
+    text-align:${(props) => props.textAlign ? props.textAlign :"center"};
+    display:inline-block;
+    float:${(props) => props.float ? props.float : "left"};
+`;
+
+export const SearchButtonDiv = styled.div<Container>`
+    margin-top:40px;
     text-align:${(props) => props.textAlign ? props.textAlign : "center"};
 `;
 
 export const ButtonStyle = styled(Button)<Container>`
     display:inline-block;
-    width:100px;
+    width:${(props) => props.width ? props.width : "100px"};
     height:30px;
     padding-top:7px;
     border-radius:3px;
+    padding:0px;
     background-color:${(props) => props.bgColor ? props.bgColor : "rgba(84, 71, 63, 1)"};
 `;
 
@@ -146,11 +155,13 @@ export const TableListThead = styled.thead`
 export const TableTextTh = styled.th`
     font-size:16px;
     fint-weight:bold;
+    padding-left:20px;
+    padding-right:0px;
     vertical-align:middle;
 `;
 
 export const TableTextTd = styled.td`
-    font-size:16px;
+    font-size:14px;
     padding-left:20px;
     padding-right:0px;
     vertical-align:middle;
@@ -161,7 +172,11 @@ export const TableTextTr = styled.tr`
     border-bottom:1px solid rgba(234, 234, 234, 1);
 `;
 
-export const ButtonGroupDiv = styled.div`
+export const CategoryButtonGroupDiv = styled.div`
+    text-align:center;
+`;
+
+export const PageButtonGroupDiv = styled.div`
     text-align:center;
 `;
 

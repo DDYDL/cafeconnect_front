@@ -37,6 +37,10 @@ import MainStore_ItemDetail from './component/MainStore/ItemDetail.js';
 import InsertMainStore from './component/MainStore/InsertMainStore.js';
 import MainStore_ItemList from './component/MainStore/ItemList.js'
 import MainStore_MenuList from './component/MainStore/MenuList.js'
+import StockOrderItemAdd from './component/Stock/StockOrderItemAdd.js';
+import StockManage from './component/Stock/StockManage.js';
+import StockOrderStore from './component/Stock/StockOtherStore.js';
+import StockOrderStoreItem from './component/Stock/StockOtherStoreItem.js';
 
 function App() {
   const [path, setPath] = useState(false);
@@ -50,8 +54,8 @@ function App() {
   
   return (
     <div>
-      {path===true? <Header/>:null}<br/>
-      {/* <StoreHeader/> */}
+      {/* {path===true? <Header/>:null}<br/> */}
+      <StoreHeader/>
       {/* <MainStoreHeader/> */}
       {/* <Footer/> */}
 
@@ -68,15 +72,10 @@ function App() {
         <Route path='/complainWrite' element={<ComplainWrite/>}/>
         <Route path='/loginMainStore' element={<LoginMainStore />}/>
 
-
         {/* <Route exect path="/logout" element={<Store/>} /> */}
 
-
         {/* 가맹점 페이지 링크 */}
-
-        
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
-        {/* <Route exect path="/logout" element={<IntroMain/>} /> */}
 
         <Route exect path="/shopMain" element={<ShopMain/>} />
         {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
@@ -92,6 +91,12 @@ function App() {
         <Route exect path="/cartList" element={<CartList/>}/>
         <Route exect path="/order" element={<Order/>}/>
         <Route path='/itemDetail/:itemCode' element={<ItemDetail/>}></Route>
+
+        <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
+        <Route exect path="/stockManage" element={<StockManage/>}/>
+        <Route exect path="/stockOtherStore" element={<StockOrderStore/>}/>
+
+        <Route exect path="/stockOtherStoreItem" element={<StockOrderStoreItem/>}/>
 
         {/* 본사 페이지 링크 */}
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
