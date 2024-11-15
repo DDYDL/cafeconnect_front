@@ -117,14 +117,14 @@ function App() {
         {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
         
         <Route path='/repairList' element={<RepairList />}/>
-        <Route path='/repairDetail' element={<RepairDetail />}/>
+        <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
         <Route path='/category' element={<Category />}/>
         <Route path='/itemInsert' element={<ItemInsert />}/>
-        <Route path='/itemUpdate' element={<ItemUpdate />}/>
+        <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
-        <Route path='/menuUpdate' element={<MenuUpdate />}/>
-        <Route path='/mainmenuDetail' element={<MainStore_MenuDetail />}/>
-        <Route path='/mainItemDetail' element={<MainStore_ItemDetail />}/>
+        <Route path='/menuUpdate/:menuCode' element={<MenuUpdate />}/>
+        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
+        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
         <Route path='/insertMainStore' element={<InsertMainStore />}/>
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
