@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
-import { Select, Checkbox } from "@material-tailwind/react";
+import { Select, Checkbox, Dialog } from "@material-tailwind/react";
 
 interface Container {
     fontColor:string;
     fontWeight:string;
+    width:string;
     height:string;
     marginTop:string;
 }
@@ -62,7 +63,7 @@ export const TableInfoTd = styled.td`
 
 export const AlarmDiv = styled.div<Container>`
     padding:23px 30px;
-    width:800px;
+    width:${(props) => props.width ? props.width : "800px"};
     height:${(props) => props.height ? props.height :"90px"};
     background-color:rgba(255, 255, 255, 1);
     border:1px solid rgba(234, 234, 234, 1);
@@ -103,4 +104,21 @@ export const StoreButtonDiv = styled.div`
     display:inline-block;
     float:right;
     margin-top:20px;
+`;
+
+export const ModalDialog = styled.div`
+    padding:10px 15px;
+    width:400px;
+    min-width:400px;
+    max-width:400px;
+    height:500px;
+    position:absolute;
+    top:105px;
+    right:40px;
+    margin:0px;
+    overflow:scroll;
+    scrollbar-width:thin;
+    overflow-x:hidden;
+    border-radius:5px;
+    background-color:rgb(255, 255, 255);
 `;

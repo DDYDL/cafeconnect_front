@@ -1,11 +1,20 @@
 import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
+import * as m from '../styles/StyledMypage.tsx';
 
 import {useState} from "react";
-import { Menu,MenuHandler,MenuList,MenuItem,Button } from "@material-tailwind/react";
+import {
+    Menu, MenuHandler, MenuList, MenuItem,
+    Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
 
 const StoreHeader = ()=>{
     const [openMenu, setOpenMenu] = useState(false);
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () =>{
+        setOpen(!open);
+    }
+
     return(
         <div>
             <h.Div class="navbar">
@@ -77,12 +86,55 @@ const StoreHeader = ()=>{
                 </h.DivMenu>
                 
                 <h.DivIcon>
-                    <h.NavLinkIcon to="/alarm"><h.Icon src="/alarm.png" /></h.NavLinkIcon>
-                    <h.NavLinkIcon to="/repairList"><h.Icon src="/repair.png" /></h.NavLinkIcon>
-                    <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png" /></h.NavLinkIcon>
-                    <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png" /></h.NavLinkIcon>
+                    <h.NavLinkIcon><h.Icon src="/alarm.png" onClick={handleOpen}/></h.NavLinkIcon>
+                    <h.NavLinkIcon to="/repairList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
+                    <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png"/></h.NavLinkIcon>
+                    <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png"/></h.NavLinkIcon>
                 </h.DivIcon>
             </h.Div>
+
+            {open && <m.ModalDialog>
+                <DialogHeader style={{ padding:'10px 0px'}}>알림</DialogHeader>
+                <DialogBody style={{padding:'0px'}}>
+                    <m.AlarmDiv width='100%' height='130px'>
+                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
+                        <m.AlarmInnerDiv>
+                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
+                            <h.VerticalLine marginRight='10px'/>
+                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
+                        </m.AlarmInnerDiv>
+                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
+                    </m.AlarmDiv>
+                    <m.AlarmDiv width='100%' height='130px'>
+                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
+                        <m.AlarmInnerDiv>
+                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
+                            <h.VerticalLine marginRight='10px' />
+                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
+                        </m.AlarmInnerDiv>
+                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
+                    </m.AlarmDiv>
+                    <m.AlarmDiv width='100%' height='130px'>
+                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
+                        <m.AlarmInnerDiv>
+                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
+                            <h.VerticalLine marginRight='10px' />
+                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
+                        </m.AlarmInnerDiv>
+                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
+                    </m.AlarmDiv>
+                    <m.AlarmDiv width='100%' height='130px'>
+                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
+                        <m.AlarmInnerDiv>
+                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
+                            <h.VerticalLine marginRight='10px' />
+                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
+                        </m.AlarmInnerDiv>
+                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
+                    </m.AlarmDiv>
+                </DialogBody>
+            </m.ModalDialog>
+            }
         </div>
     )
 }
