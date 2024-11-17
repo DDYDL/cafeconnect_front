@@ -154,7 +154,7 @@ export const TableListThead = styled.thead`
 
 export const TableTextTh = styled.th`
     font-size:16px;
-    fint-weight:bold;
+    font-weight:bold;
     padding-left:20px;
     padding-right:0px;
     vertical-align:middle;
@@ -257,7 +257,7 @@ export const SwitchButton = styled.label`
         top:0;
         width: 200px;
         height: 5px;
-        border-radius:10px;;
+        border-radius:10px;
         background-color: rgba(38, 38, 38, 1);
         transform: translateY(-0%);
         box-shadow: 1px 3px 4px rgba(0,0,0,0.1);

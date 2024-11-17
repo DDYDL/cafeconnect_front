@@ -15,6 +15,13 @@ import IntroMain from './component/Main/IntroMain';
 import StoreHeader from './component/Header/StoreHeader';
 import ShopMain from './component/Shop/ShopMain.js';
 import ItemDetail from './component/Shop/ItemDetail.js';
+import MyAlarmList from './component/Mypage/MyAlarmList.js';
+import MyStoreInfo from './component/Mypage/MyStoreInfo.js';
+import MyStoreManage from './component/Mypage/MyStoreManage.js';
+import StockOrderItemAdd from './component/Stock/StockOrderItemAdd.js';
+import StockManage from './component/Stock/StockManage.js';
+import StockOrderStore from './component/Stock/StockOtherStore.js';
+import StockOrderStoreItem from './component/Stock/StockOtherStoreItem.js';
 
 import WishItem from './component/Shop/WishItem.js';
 import CartList from './component/Shop/CartList.js';
@@ -37,10 +44,7 @@ import MainStore_ItemDetail from './component/MainStore/ItemDetail.js';
 import InsertMainStore from './component/MainStore/InsertMainStore.js';
 import MainStore_ItemList from './component/MainStore/ItemList.js'
 import MainStore_MenuList from './component/MainStore/MenuList.js'
-import StockOrderItemAdd from './component/Stock/StockOrderItemAdd.js';
-import StockManage from './component/Stock/StockManage.js';
-import StockOrderStore from './component/Stock/StockOtherStore.js';
-import StockOrderStoreItem from './component/Stock/StockOtherStoreItem.js';
+
 
 function App() {
   const [path, setPath] = useState(false);
@@ -95,8 +99,11 @@ function App() {
         <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
         <Route exect path="/stockManage" element={<StockManage/>}/>
         <Route exect path="/stockOtherStore" element={<StockOrderStore/>}/>
-
         <Route exect path="/stockOtherStoreItem" element={<StockOrderStoreItem/>}/>
+
+        <Route exect path="/myAlarmList" element={<MyAlarmList/>}/>
+        <Route exect path="/myStoreInfo" element={<MyStoreInfo/>} />
+        <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
 
         {/* 본사 페이지 링크 */}
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}

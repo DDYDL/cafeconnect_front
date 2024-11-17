@@ -68,9 +68,9 @@ const StoreHeader = ()=>{
                             <MenuItem><NavLink to="/community/askList">1:1 문의</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
-                            <MenuItem>알림 모아보기</MenuItem>
-                            <MenuItem>가맹점 정보</MenuItem>
-                            <MenuItem>내 가맹점 관리</MenuItem>
+                            <MenuItem><NavLink to="/myAlarmList">알림 모아보기</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/myStoreInfo">가맹점 정보</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/myStoreManage">내 가맹점 관리</NavLink></MenuItem>
                         </h.MenuListDiv>
                     </h.MenuListOut>
                 </Menu>

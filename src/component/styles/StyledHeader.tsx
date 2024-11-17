@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { Menu, MenuItem, MenuList } from '@material-tailwind/react';
 
+interface Container {
+    marginRight:string;
+}
+
 export const Div = styled.div`
     width:100%;
     top:0px;
@@ -66,12 +70,12 @@ export const Icon = styled.img`
     height:23px;
 `;
 
-export const VerticalLine = styled.div`
+export const VerticalLine = styled.div<Container>`
     border-left:thin solid rgba(38, 38, 38, 0.7);
     display:inline-block;
     width:1px;
     height:10px;
-    margin-right:20px;
+    margin-right:${(props) => props.marginRight ? props.marginRight : "20px"};
 `;
 
 export const NavLinkMenu = styled(NavLink)`
