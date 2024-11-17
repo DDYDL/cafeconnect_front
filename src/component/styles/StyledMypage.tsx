@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Select, Checkbox, Dialog } from "@material-tailwind/react";
+import { Select, Checkbox } from "@material-tailwind/react";
 
 interface Container {
     fontColor:string;

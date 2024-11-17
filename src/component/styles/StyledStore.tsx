@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button, ButtonGroup, IconButton } from "@material-tailwind/react";
+import { Button, ButtonGroup, IconButton, Select } from "@material-tailwind/react";
 
 interface Container {
     borderLeft:string;
@@ -11,6 +11,7 @@ interface Container {
     marginTop:string;
     fontSize:string;
     float:string;
+    height:string;
 }
 
 export const ContentDiv = styled.div`
@@ -119,9 +120,22 @@ export const MenuImgDiv = styled.div`
 `;
 
 export const ButtonDiv = styled.div<Container>`
+    width:${(props) => props.width ? props.width : "800px"};
+    height:40px;
+    margin-top:40px;
+    margin-bottom:7px;
+    position:relative;
     text-align:${(props) => props.textAlign ? props.textAlign :"center"};
-    display:inline-block;
     float:${(props) => props.float ? props.float : "left"};
+`;
+
+export const ButtonInnerDiv = styled.div<Container>`
+    float:left;
+    margin-right:140px;
+`;
+
+export const SelectStyle = styled(Select)`
+    display:inline-block;
 `;
 
 export const SearchButtonDiv = styled.div<Container>`
@@ -144,15 +158,19 @@ export const TableList = styled.table<Container>`
     text-align:${(props) => props.textAlign ? props.textAlign : "center"};
     margin-top:8px;
     margin-bottom:20px;
+
+    table-layout:fixed;
 `;
 
 export const TableListThead = styled.thead`
     height:45px;
     border-top:1px solid rgba(109, 109, 109, 1);
     border-bottom:1px solid rgba(109, 109, 109, 1);
+    text-align:center;
 `;
 
-export const TableTextTh = styled.th`
+export const TableTextTh = styled.th<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
     font-size:16px;
     font-weight:bold;
     padding-left:20px;
@@ -161,14 +179,18 @@ export const TableTextTh = styled.th`
 `;
 
 export const TableTextTd = styled.td`
+    height:60px;
     font-size:14px;
-    padding-left:20px;
+    padding-right:20px;
     padding-right:0px;
     vertical-align:middle;
 `;
 
-export const TableTextTr = styled.tr`
-    height:45px;
+export const TableTextTr = styled.tr<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
+    background-color:${(props) => props.bgColor ? props.bgColor : ""};
+    height:${(props) => props.height ? props.height : "45px"};
+    max-height:45px;
     border-bottom:1px solid rgba(234, 234, 234, 1);
 `;
 
@@ -288,4 +310,26 @@ export const SwitchButton = styled.label`
         color: #fff;
         left: 15px;
     }
+`;
+
+export const ImageSize = styled.img`
+    width:60px;
+    height:60px;
+    float:left;
+    margin-right:10px;
+    vertical-align:middle;
+`;
+
+export const SpanSizeDiv = styled.div`
+    width:190px;
+    height:45px;
+    text-align:left;
+    margin-top:18px;
+    overflow:hidden;
+    white-space:nowrap;
+`;
+
+export const SpanSize = styled.span`
+    overflow:hidden;
+    white-space:nowrap;
 `;

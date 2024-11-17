@@ -4,8 +4,7 @@ import * as m from '../styles/StyledMypage.tsx';
 
 import {useState} from "react";
 import {
-    Menu, MenuHandler, MenuList, MenuItem,
-    Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
+    Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
 
 const StoreHeader = ()=>{
     const [openMenu, setOpenMenu] = useState(false);
