@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Textarea } from "flowbite-react";
 import {BaseGridHeader,BaseGridItem} from "./common.tsx";
+import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 
 export const RepairFormtWrap = styled.div`
@@ -74,3 +76,126 @@ export const RepairItem = styled(BaseGridItem)`
     padding-left: 20px;
   }
    `;
+
+
+//모달 스타일 시작 
+export const StyledDialog = styled(Dialog)`
+  .dialog-content {
+    max-width: 800px;
+    width: 100%;
+  }
+`;
+
+export const StyledDialogHeader = styled(DialogHeader)`
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+`;
+
+export const StyledDialogBody = styled(DialogBody)`
+  padding: 1.5rem;
+  height: 40rem;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+`;
+
+export const ModalTitle = styled.h4`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+`;
+
+export const DetailSection = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+export const ProductInfo = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+  }
+`;
+
+export const InfoLabel = styled.div`
+  font-size: 0.875rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+`;
+
+export const InfoValue = styled.div`
+  font-weight: 500;
+  color: #333;
+`;
+
+export const ContentSection = styled.div`
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1rem;
+`;
+
+export const ContentTitle = styled.h5`
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+`;
+
+export const ContentBox = styled.div<{ minHeight: string }>`
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  min-height: ${({ minHeight }) => minHeight || "100px"};
+`;
+
+
+export const RepairStatusSection = styled.div`
+  margin-top: 2rem;
+`;
+
+export const StatusFlow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(233, 238, 217, 0.25);
+  padding: 2rem;
+  margin-top: 1rem;
+`;
+
+export const StatusCircle = styled.div<{isActive:Boolean}>`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #E9EED9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ isActive }) => isActive ? "#FF5757" : "#333"};
+  font-weight: ${({ isActive }) => isActive ? "600" : "normal"};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const StatusArrow = styled(ChevronRightIcon)`
+  flex: 1;
+  color: #333;
+  height: 2rem;
+  width: 2rem;
+`;

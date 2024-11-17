@@ -39,7 +39,7 @@ import MainStore_ItemList from './component/MainStore/ItemList.js'
 import MainStore_MenuList from './component/MainStore/MenuList.js'
 import RepairRequestList from './component/Shop/RepairRequestList.js';
 import RepairRequestForm from './component/Shop/RepairRequestForm.js';
-
+import CategoryItemList from './component/Shop/CategoryItemList.js';
 
 function App() {
   const [path, setPath] = useState(false);
@@ -82,6 +82,7 @@ function App() {
         {/* <Route exect path="/logout" element={<IntroMain/>} /> */}
 
         <Route exect path="/shopMain" element={<ShopMain/>} />
+        <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
         {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
         <Route exect path="/orderList" element={<OrderListForStore/>} />
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
