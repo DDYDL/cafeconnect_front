@@ -30,8 +30,8 @@ import MainStoreHeader from './component/Header/MainStoreHeader';
 import Order from './component/Shop/OrderForm.js';
 import OrderListForStore from './component/Shop/OrderListForStore.js';
 import OrderDetailForStore from './component/Shop/OrderDetailForStore.js';
-import OrderListForMainStore from './component/Shop/OrderListForMainStore.js';
-import OrderDetailForMainStore from './component/Shop/OrderDetailForMainStore.js'
+import OrderListForMainStore from './component/MainStore/OrderListForMainStore.js';
+import OrderDetailForMainStore from './component/MainStore/OrderDetailForMainStore.js'
 import RepairList from './component/MainStore/RepairList.js';
 import RepairDetail from './component/MainStore/RepairDetail.js';
 import Category from './component/MainStore/Category.js';
@@ -50,6 +50,9 @@ import CategoryItemList from './component/Shop/CategoryItemList.js';
 import AddStoreMain from './component/StoreManagement/AddStoreMain.js';
 import StoreDetailMain from './component/StoreManagement/StoreDetailMain.js';
 import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
+
+import StoreItemRevenue from './component/MainStore/StoreItemRevenue..js';
+import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
 // import NoticeList from './component/Community(store)/NoticeList.js';
 // import AskWrite from './component/Community(store)/AskWrite.js';
 // import AskList from './component/Community(store)/AskList.js';
@@ -106,6 +109,8 @@ function App() {
         <Route exect path="/cartList" element={<CartList/>}/>
         <Route exect path="/order" element={<Order/>}/>
         <Route path='/itemDetail/:itemCode' element={<ItemDetail/>}></Route>
+        <Route exect path="/expenseList" element={<ExpenseListByItems/>}/>
+
 
         <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
         <Route exect path="/stockManage" element={<StockManage/>}/>
@@ -115,6 +120,7 @@ function App() {
         <Route exect path="/myAlarmList" element={<MyAlarmList/>}/>
         <Route exect path="/myStoreInfo" element={<MyStoreInfo/>}/>
         <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
+
 
         {/* <Route exact path="/noticeList" element={<NoticeList/>} />
         <Route exact path="/askWrite" element={<AskWrite/>} />
@@ -131,7 +137,7 @@ function App() {
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
         {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
-        {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
+        <Route exect path="/storeItemRevenue" element={<StoreItemRevenue/>} />
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
         {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
 
