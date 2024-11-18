@@ -47,6 +47,9 @@ import MainStore_MenuList from './component/MainStore/MenuList.js'
 import RepairRequestList from './component/Shop/RepairRequestList.js';
 import RepairRequestForm from './component/Shop/RepairRequestForm.js';
 import CategoryItemList from './component/Shop/CategoryItemList.js';
+import AddStoreMain from './component/StoreManagement/AddStoreMain.js';
+import StoreDetailMain from './component/StoreManagement/StoreDetailMain.js';
+import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
 // import NoticeList from './component/Community(store)/NoticeList.js';
 // import AskWrite from './component/Community(store)/AskWrite.js';
 // import AskList from './component/Community(store)/AskList.js';
@@ -122,22 +125,21 @@ function App() {
 
 
         {/* 본사 페이지 링크 */}
+        
+        {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
 
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
         {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
+        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
+
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
-
-        {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
-
-        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
         
         <Route path='/repairList' element={<RepairList />}/>
-        <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
+        <Route path='/repairDetail/:repairNum' element={<RepairDetail/>}/>
         <Route path='/category' element={<Category />}/>
         <Route path='/itemInsert' element={<ItemInsert />}/>
         <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
@@ -148,6 +150,10 @@ function App() {
         <Route path='/insertMainStore' element={<InsertMainStore />}/>
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
+
+        <Route exect path="/addStoreMain" element={<AddStoreMain/>}/>
+        <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
+        <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
         
       </Routes>
     </div>

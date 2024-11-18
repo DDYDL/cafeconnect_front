@@ -1,14 +1,16 @@
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button, ButtonGroup, IconButton, Select } from "@material-tailwind/react";
+import { Button, ButtonGroup, IconButton, Input, Select } from "@material-tailwind/react";
 
 interface Container {
     borderLeft:string;
     textAlign:string;
     bgColor:string;
     width:string;
+    margin:string;
     marginLeft:string;
     marginTop:string;
+    marginBottom:string;
     fontSize:string;
     float:string;
     height:string;
@@ -30,8 +32,8 @@ export const ContentListDiv = styled.div<Container>`
 
 export const SearchDiv = styled.div<Container>`
     width:${(props) => props.width ? props.width : "400px"};
-    margin:0 auto;
-    margin-bottom:20px;
+    margin:${(props) => props.margin ? props.margin : "0 auto"};
+    margin-bottom:${(props) => props.marginBottom ? props.marginBottom : "20px"};
 `;
 
 export const ImgDiv = styled.div`
@@ -332,4 +334,11 @@ export const SpanSizeDiv = styled.div`
 export const SpanSize = styled.span`
     overflow:hidden;
     white-space:nowrap;
+`;
+
+export const InputStyleSearch = styled(Input)`
+    margin-bottom:10px;
+    border-radius:5px;
+    background-color:rgb(255, 255, 255);
+    height:40px;
 `;
