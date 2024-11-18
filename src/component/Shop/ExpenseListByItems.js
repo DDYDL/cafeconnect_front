@@ -6,10 +6,12 @@ import {
 import { Datepicker } from "flowbite-react";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
 function ExpenseListByItems (){
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    
     return(
         <CommonWrapper>
         <CommonContainer>
@@ -38,7 +40,7 @@ function ExpenseListByItems (){
             조회
           </StyledButton>
         </ol.DatePickerWrap>
-
+           
             </CommonContainer>
         </CommonWrapper >
     )
