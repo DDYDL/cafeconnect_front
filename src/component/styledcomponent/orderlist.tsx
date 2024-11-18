@@ -188,10 +188,7 @@ export const StatusAreaWrapper = styled.div`
     min-width: 36px;
     
   }
-  button {
-    min-width: 50px;
-  
-  }
+
   div, input, span, li, p {
       font-family: 'Noto Sans KR' !important;
       font-size: 16px !important;
