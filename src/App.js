@@ -47,12 +47,17 @@ import MainStore_MenuList from './component/MainStore/MenuList.js'
 import RepairRequestList from './component/Shop/RepairRequestList.js';
 import RepairRequestForm from './component/Shop/RepairRequestForm.js';
 import CategoryItemList from './component/Shop/CategoryItemList.js';
+import StoreListMain from './component/StoreManagement/StoreListMain.js';
+import DeleteReqStoreMain from './component/StoreManagement/DeleteReqStoreMain.js';
+import RestoreStoreMain from './component/StoreManagement/RestoreStoreMain.js';
+
 import AddStoreMain from './component/StoreManagement/AddStoreMain.js';
 import StoreDetailMain from './component/StoreManagement/StoreDetailMain.js';
 import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
 
 import StoreItemRevenue from './component/MainStore/StoreItemRevenue..js';
 import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
+
 // import NoticeList from './component/Community(store)/NoticeList.js';
 // import AskWrite from './component/Community(store)/AskWrite.js';
 // import AskList from './component/Community(store)/AskList.js';
@@ -134,7 +139,9 @@ function App() {
         
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
 
-        {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
+        <Route exect path="/storeListMain" element={<StoreListMain/>} />
+        <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>} />
+        <Route exect path="/restoreStoreMain" element={<RestoreStoreMain/>} />
         {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         <Route exect path="/storeItemRevenue" element={<StoreItemRevenue/>} />
