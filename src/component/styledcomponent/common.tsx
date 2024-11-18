@@ -30,7 +30,6 @@ export const ContainerTitleArea =styled.div`
 
 
 // 기본 리스트 컴포넌트
-
 export const BaseGridHeader = styled.div`
   display: grid;
   background: #f9f9f9;
@@ -54,12 +53,15 @@ export const BaseGridItem = styled.div`
   text-align: center;
   font-size: 16x;
   font-weight: 400;
+  width: 100%;
+  min-height: 60px;  
 
   > div {
     padding: 0 10px;  //0 15px (1240ver)
     display: flex;
     justify-content: center;
+    align-items: center; 
     overflow: hidden;
-    text-overflow: ellipsis;
+
   }
 `;

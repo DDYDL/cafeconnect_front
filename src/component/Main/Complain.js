@@ -41,7 +41,7 @@ const Complain = () => {
                 </tbody>
             </s.TableList>
 
-                <s.ButtonGroupDiv>
+                <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
                     <s.IconButtonStyle>
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
@@ -55,7 +55,7 @@ const Complain = () => {
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                     </s.IconButtonStyle>
                     </s.ButtonGroupStyle>
-                </s.ButtonGroupDiv>
+                </s.PageButtonGroupDiv>
             </s.ContentListDiv>
         </>
     )

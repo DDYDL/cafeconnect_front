@@ -3,12 +3,8 @@ import {
   BaseGridHeader,
   BaseGridItem
 } from './common.tsx';
+import { Dialog } from "@material-tailwind/react";
 
-// export const CartListWrapper = styled.div`  
-//  //width: 1240px;
-//  width :1000px;
-//  margin: 0 auto;
-//  `;
  export const AddPreviousOrderItem = styled.div`
  margin-top:30px;
  margin-bottom: 10px;
@@ -22,26 +18,6 @@ export const CartWrap = styled.div` //list 부분 통합
     margin: 0 auto; // 추가 
     margin-bottom: 60px;
 `;
-//common으로 통합함 
-// export const CartHeader = styled.div`
-//   display: grid;
-//   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
-//   grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
-//   background: #f9f9f9;
-//   padding: 20px 0;
-//   border-top: 2px solid #000;
-//   border-bottom: 1px solid #000; // #e8e8e8;
-//   text-align: center;
-//   font-size: 14px;
-//   font-weight: 500;
-//   align-items: center;
-
-//   > div {
-//     padding: 0 10px;  //0 15px (1240ver)
-    
-//   }
-// `;
-
 
 export const CartHeader = styled(BaseGridHeader)`
  //   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
@@ -53,27 +29,6 @@ export const CartItem = styled(BaseGridItem)`
  grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
 `;
 
-//common으로 통합함
-// export const CartItem = styled.div`
-//   display: grid;
-//   //grid-template-columns: 120px minmax(250px, 1fr) 120px 150px 150px 120px 100px 100px;
-//   grid-template-columns: 100px minmax(200px, 1fr) 100px 120px 120px 100px 80px 80px;
-//   padding: 25px 0;  
-//   border-bottom: 1px solid #e8e8e8;
-//   align-items: center;
-//   text-align: center;
-//   font-size: 14px;
-//   font-weight: 400;
- 
-//   > div {
-//     padding: 0 10px;  //0 15px (1240ver)
-//     display: flex;
-//     justify-content: center;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-    
-//   }
-// `;
 
 export const ProductImage = styled.img`
   width: 92px;
@@ -94,7 +49,6 @@ export const ProductInfo = styled.div`
     justify-content: flex-start; 
     
   }
-
 `;
 
 export const ProductName = styled.span`
@@ -129,11 +83,17 @@ export const QuantityInput = styled.input`
   }
 `;
 export const CategoryInfo = styled.div`
-  white-space: normal;   //줄바꿈     
-  word-wrap: break-word;   //긴단어 줄바꿈           
-  text-align: center;        
-  line-height: 1.4;      
-  padding: 0 5px;           
+ display: -webkit-box;
+  -webkit-line-clamp: 2; // 2줄 제한
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all; //즐바꿈
+  line-height: 1.4;
+  padding: 0 5px;
+  text-align: left;  // ProductInfo 내부에서 사용될 때 왼쪽 정렬
+       
 `;
 
 export const SummarySection = styled.div`
@@ -158,4 +118,92 @@ export const ButtonSection = styled.div`
   justify-content: center;
   gap: 10px;
   margin-top: 40px;
+`;
+
+//모달 스타일 시작 
+export const StyledDialog = styled(Dialog)`
+  .dialog-content {
+    max-width: 1000px;
+    width: 100%;
+  }
+`;
+
+export const ModalHeader = styled.div`
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const ModalTitle = styled.h4`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+`;
+
+export const DateNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 0;
+
+  .date {
+    font-size: 1rem;
+    font-weight: 500;
+    background: #f3f4f6;
+    padding: 8px 16px;
+    border-radius: 4px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    
+    &:hover {
+      background: #f3f4f6;
+      border-radius: 4px;
+    }
+  }
+`;
+
+export const ModalTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    background: #f9f9f9;
+    font-weight: 500;
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #000;
+  }
+
+  td {
+    font-size: 14px;
+  }
+`;
+
+export const ModalFooter = styled.div`
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  border-top: 1px solid #e5e7eb;
+`;
+
+export const CheckboxCell = styled.td`
+  input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
 `;

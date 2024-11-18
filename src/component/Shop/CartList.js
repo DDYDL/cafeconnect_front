@@ -12,9 +12,14 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import {useState} from 'react';
 import { useNavigate } from "react-router-dom";
+import PreviousOrderItemsModal from './PreviousOrderItemModal.js';
+
 
 function CartList() {
+  
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [cartItems, setCartItems] = useState([
     {
       itemCode: 1,
@@ -39,8 +44,19 @@ function CartList() {
   
   ]);
 
-  const handleAddPreviousItems = () => {};
-  
+  // 선택된 이전 상품들을 현재 장바구니에 추가하는 로직
+  const handleAddPreviousItems = (items) => {
+    setCartItems(prevItems => [...prevItems, ...items.map(item => ({
+      itemCode: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      image: "/image/item1.jpg", // 기본 이미지
+      category: item.category,
+      shipping: "기본배송",
+    }))]);
+  };
+
   const handleQuantityChange = (itemCode, value) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -56,11 +72,19 @@ function CartList() {
           <h2>장바구니</h2>
         </ContainerTitleArea>
         <c.AddPreviousOrderItem>
-          <StyledButton size="sm" theme="brown" hasIcon>
+          <StyledButton size="sm" theme="brown" hasIcon onClick={() => setIsModalOpen(true)}>
             <PlusIcon />
             이전 상품 추가
           </StyledButton>
         </c.AddPreviousOrderItem>
+
+       {/* 모달 추가 */}
+       <PreviousOrderItemsModal 
+          open={isModalOpen}
+          handleClose={() => setIsModalOpen(false)}
+          onAddItems={handleAddPreviousItems}
+        />
+
         <c.CartWrap>
           <c.CartHeader>
             <div>이미지</div>

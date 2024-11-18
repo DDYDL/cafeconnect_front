@@ -37,7 +37,7 @@ export const OrderItemRow = styled(BaseGridItem)`
   gap: 10px;
 `;
 
-export const ProductCell = styled.div`
+export const ProductWrap = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
@@ -58,9 +58,9 @@ export const ProductImage = styled.div`
 `;
 
 export const ProductInfo = styled.div`
-  text-align: left;
-
-  .category {
+  
+  .categoryformat {
+    text-align: left;
     font-size: 14px;
     color: #333;
     margin-bottom: 5px;
@@ -74,6 +74,7 @@ export const ProductInfo = styled.div`
   }
 
   .storage-type {
+    text-align: left;
     font-size: 14px;
     color: #333;
   }
@@ -101,8 +102,7 @@ export const PaymentInfoGrid = styled.div`
 `;
 
 export const PaymentColumn = styled.div`
-  & + & {
-
+  & + & { // 2,3번째 컬럼만 적용 
     border-left: 1px solid #e8e8e8;
   }
 `;
@@ -112,9 +112,10 @@ export const PaymentRow = styled.div<{ isHeader?: boolean }>`
   display: grid;
   grid-template-columns: 1fr;
   padding: 15px 20px;
-  
+ 
   ${props => props.isHeader && `
     border-bottom: 1px solid #e8e8e8;
+     background-color: white;
   `}
 
   .payment-item {
@@ -129,12 +130,12 @@ export const PaymentRow = styled.div<{ isHeader?: boolean }>`
 
     .label {
       color: #333;
+    
     }
 
     .value {
       color: #333;
       font-weight: ${props => props.isHeader ? '600' : '400'};
-      
       &.red {
         color: #ff3b3b;
       }
@@ -142,28 +143,39 @@ export const PaymentRow = styled.div<{ isHeader?: boolean }>`
   }
 `;
 
+
 export const InfoTable = styled.table`
   width: 100%;
   border-top: 1px solid #e8e8e8;
   border-collapse: collapse;
   margin-bottom: 30px;
   
-  th {
-    width: 210px;
-    background: #f9f9f9;
+  th, td {
     padding: 15px 20px;
-    text-align: left;
     border-bottom: 1px solid #e8e8e8;
     font-size: 14px;
+  }
+  
+  th {
+    width: 120px;
+    background: rgba(217, 217, 217, 0.25);
+    border-right: 1px solid #e8e8e8;
+    text-align: left;
     font-weight: 500;
   }
   
-  td {
-    padding: 15px 20px;
-    border-bottom: 1px solid #e8e8e8;
-    font-size: 14px;
+  // For paired columns
+  tr td:nth-child(2) {
+    width: 280px;
   }
 `;
+
+
+
+
+
+
+
 
 export const ButtonWrapper = styled.div`
   display: flex;

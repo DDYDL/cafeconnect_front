@@ -397,6 +397,7 @@
     display: flex;
     overflow: hidden;
     width: 126px;
+    cursor: pointer;
   }
   
   .menudetail .overlap-group {

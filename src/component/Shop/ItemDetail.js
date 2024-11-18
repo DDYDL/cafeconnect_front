@@ -5,6 +5,9 @@ import { useState } from "react";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import {useNavigate} from 'react-router-dom';
+  
+
+
 const ItemDetail = ({ itemCode }) => {
   const navigate = useNavigate();
   const item = {
