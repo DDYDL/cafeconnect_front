@@ -1,8 +1,15 @@
 import * as m from '../styles/StyledMain.tsx';
 import React from 'react'
 import '../styles/MenuDetail.css'
+import { useNavigate } from 'react-router';
 
 function MenuDetail() {
+    
+    
+    
+    
+    
+    
     return (
         <>
             <m.CarouselDiv>
