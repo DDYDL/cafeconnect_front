@@ -1,8 +1,109 @@
 import * as m from '../styles/StyledMain.tsx';
-import React from 'react'
+import React, { useState } from 'react'
 import '../styles/ItemInsert.css'
 import upload_file from '../assets/img/upload-files-4ee86225-svg.svg'
+import { useNavigate } from 'react-router';
+import { useRef } from 'react';
 function ItemInsert() {
+
+
+    const [item, setItem] = useState({
+        'itemName': '상품명을 입력하세요',
+        'itemPrice': '공급가를 입력하세요',
+        'itemCapacity': '용량을 선택하세요',
+        'itemUnitQuantity': '단위수량을 입력하세요',
+        'itemUnit': '단위를 선택하세요',
+        'itemStandard': {
+            'itemX': '가로(cm)',
+            'itemY': '세로(cm)',
+            'itemZ': '높이(cm)',
+        },
+        'itemStorage': '보관상태를 선택하세요',
+        'itemCountryOrigin': '원산지를 입력하세요',
+        'itemMajorCategory': '대분류',
+        'itemMiddleCategory': '중분류',
+        'itemSubCategory': '소분류',
+        'file': '',
+
+    })
+
+
+
+    const imageInput = useRef();
+    const navigate = useNavigate();
+    const handleChangeInputExceptStandard = (e) => {
+
+        const name = e.target.name;
+        const value = e.target.value;
+
+
+        const newItem = {
+            ...item,
+            'itemStandard': { ...item['itemStandard'] },
+            [name]: value,
+
+        }
+
+        setItem(newItem);
+    }
+
+    const handleClickInputExceptStandard = (e) => {
+        if (e.target.value == '상품명을 입력하세요') {
+            const name = e.target.name;
+            const value = '';
+
+            const newItem = {
+                ...item,
+                'itemStandard': { ...item['itemStandard'] },
+                [name]: value,
+
+            }
+
+            setItem(newItem);
+        }
+        return;
+
+    }
+
+    const handleChangeStandardInput = (e) => {
+        console.log('handleChangeStandardInput')
+
+
+        const name = e.target.name;
+        const value = e.target.value;
+        const newItem = {
+            ...item,
+            'itemStandard': {
+                ...item['itemStandard'],
+                [name]: value,
+            },
+
+
+        }
+        setItem(newItem);
+
+    }
+
+
+
+    const handleSubmit = () => {
+
+        navigate('/mainItemList');
+    }
+
+
+    const handleUploadImage = (e) => {
+
+        imageInput.current.click();
+    }
+
+    const handleImageInput = () => {
+
+    }
+
+
+
+
     return (
         <>
             <m.CarouselDiv>
@@ -23,9 +124,9 @@ function ItemInsert() {
                                     </div>
                                     <div class="input">
                                         <div class="container">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                상품명을 입력하세요
-                                            </div>
+                                            <input class="text valign-text-middle notosanskr-light-pink-swan-15px" name='itemName' onClick={handleClickInputExceptStandard} onChange={handleChangeInputExceptStandard} value={item.itemName} style={{ outline: 'none' }}>
+
+                                            </input>
                                         </div>
                                     </div>
                                 </div>
@@ -35,8 +136,8 @@ function ItemInsert() {
                                     </div>
                                     <div class="input-1 input-8">
                                         <div class="container-1">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                단위를 선택하세요
+                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name='itemUnit' onInput={handleChangeInputExceptStandard}>
+                                                {item.itemUnit}
                                             </div>
                                         </div>
                                         <img
@@ -52,8 +153,8 @@ function ItemInsert() {
                                     </div>
                                     <div class="input-1 input-8">
                                         <div class="container-1">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                단위를 선택하세요
+                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name='itemStorage' onInput={handleChangeInputExceptStandard}>
+                                                {item.itemStorage}
                                             </div>
                                         </div>
                                         <img
@@ -70,23 +171,23 @@ function ItemInsert() {
                                         </div>
                                         <div class="input-3 input-8">
                                             <div class="container-3">
-                                                <div class="cm valign-text-middle notosanskr-light-pink-swan-15px">
-                                                    가로(cm)
+                                                <div class="cm valign-text-middle notosanskr-light-pink-swan-15px" name="itemX">
+                                                    {item.itemStandard['itemX']}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="input-4 input-8">
                                         <div class="container-3">
-                                            <div class="cm-3 valign-text-middle notosanskr-light-pink-swan-15px">
-                                                세로(cm)
+                                            <div class="cm-3 valign-text-middle notosanskr-light-pink-swan-15px" name="itemY">
+                                                {item.itemStandard['itemY']}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="input-5 input-8">
                                         <div class="container-3">
-                                            <div class="cm-3 valign-text-middle notosanskr-light-pink-swan-15px">
-                                                높이(cm)
+                                            <div class="cm-3 valign-text-middle notosanskr-light-pink-swan-15px" name="itemZ">
+                                                {item.itemStandard['itemZ']}
                                             </div>
                                         </div>
                                     </div>
@@ -97,8 +198,8 @@ function ItemInsert() {
                                     </div>
                                     <div class="input">
                                         <div class="container">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                원산지를 입력하세요
+                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name="itemCountryOrigin" onInput={handleChangeInputExceptStandard}>
+                                                {item.itemCountryOrigin}
                                             </div>
                                         </div>
                                     </div>
@@ -107,13 +208,13 @@ function ItemInsert() {
                             <div class="flex-col-3 flex-col-7">
                                 <div class="flex-row-1 notosanskr-light-pink-swan-15px">
                                     <div class="flex-col-4 flex-col-7">
-                                        <div class="label-4 valign-text-middle notosanskr-bold-black-16px">
+                                        <div class="label-4 valign-text-middle notosanskr-bold-black-16px" >
                                             카테고리
                                         </div>
                                         <div class="input-6 input-8">
                                             <div class="container-4">
-                                                <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                    대분류
+                                                <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name="itemMajorCategory" onInput={handleChangeInputExceptStandard}>
+                                                    {item.itemMajorCategory}
                                                 </div>
                                             </div>
                                             <img
@@ -128,7 +229,7 @@ function ItemInsert() {
                                     </div>
                                     <div class="input-2 input-8">
                                         <div class="container-4">
-                                            <div class="text valign-text-middle">중분류</div>
+                                            <div class="text valign-text-middle" name="itemMiddleCategory" onInput={handleChangeInputExceptStandard}>{item.itemMiddleCategory}</div>
                                         </div>
                                         <img
                                             class="sort-down"
@@ -138,7 +239,7 @@ function ItemInsert() {
                                     </div>
                                     <div class="input-2 input-8">
                                         <div class="container-4">
-                                            <div class="text valign-text-middle">소분류</div>
+                                            <div class="text valign-text-middle" name="itemSubCategory" onInput={handleChangeInputExceptStandard}>{item.itemSubCategory}</div>
                                         </div>
                                         <img
                                             class="sort-down"
@@ -149,8 +250,8 @@ function ItemInsert() {
                                 </div>
                                 <div class="input-7 input-8">
                                     <div class="container">
-                                        <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                            공급가를 입력하세요
+                                        <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name="itemPrice" onInput={handleChangeInputExceptStandard}>
+                                            {item.itemPrice}
                                         </div>
                                     </div>
                                 </div>
@@ -160,8 +261,8 @@ function ItemInsert() {
                                     </div>
                                     <div class="input-1 input-8">
                                         <div class="container-1">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                용량을 선택하세요
+                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name="itemCapacity" onInput={handleChangeInputExceptStandard}>
+                                                {item.itemCapacity}
                                             </div>
                                         </div>
                                         <img
@@ -177,8 +278,8 @@ function ItemInsert() {
                                     </div>
                                     <div class="input">
                                         <div class="container">
-                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px">
-                                                단위수량을 입력하세요
+                                            <div class="text valign-text-middle notosanskr-light-pink-swan-15px" name='itemUnitQuantity' onInput={handleChangeInputExceptStandard}>
+                                                {item.itemUnitQuantity}
                                             </div>
                                         </div>
                                     </div>
@@ -186,7 +287,17 @@ function ItemInsert() {
                                 <div class="label-3 valign-text-middle label-4 notosanskr-bold-black-16px">
                                     이미지 등록
                                 </div>
-                                <div class="border-1">
+                                <div class="border-1" onClick={handleUploadImage}>
+
+                                    <input
+                                        type="file"
+                                        accept="image/jpg, image/jpeg, image/png"
+                                        multiple
+                                        ref={imageInput}
+                                        onChange={handleImageInput}
+                                        style={{ display: 'none' }}
+                                    />
+
                                     <img
                                         class="upload-files4ee86225svg"
                                         src={upload_file}
@@ -202,7 +313,7 @@ function ItemInsert() {
                                     </div>
                                 </div>
                                 <div class="product-thumb-1bfdce747webp"></div>
-                                <div class="small-btn_brown">
+                                <div class="small-btn_brown" onInput={handleSubmit}>
                                     <div class="text-19 valign-text-middle">상품 등록</div>
                                 </div>
                             </div>

@@ -15,9 +15,12 @@ module.exports = withMT({
   theme: {
     extend: {
       fontFamily: {
-      sans: ["'Noto Sans KR'", "sans-serif"], // 전체 글꼴을 Noto Sans KR로 설정
+      sans: ["'Noto Sans KR'", "sans-serif"], // tailwind material 전체 글꼴을 Noto Sans KR로 설정
     },
-  },
+    textColor: { 
+      DEFAULT: '#000',
+    },
+    },
   },
   plugins: [
       // Flowbite 플러그인 추가

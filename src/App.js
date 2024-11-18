@@ -44,6 +44,9 @@ import MainStore_ItemDetail from './component/MainStore/ItemDetail.js';
 import InsertMainStore from './component/MainStore/InsertMainStore.js';
 import MainStore_ItemList from './component/MainStore/ItemList.js'
 import MainStore_MenuList from './component/MainStore/MenuList.js'
+import RepairRequestList from './component/Shop/RepairRequestList.js';
+import RepairRequestForm from './component/Shop/RepairRequestForm.js';
+import CategoryItemList from './component/Shop/CategoryItemList.js';
 
 
 function App() {
@@ -82,6 +85,7 @@ function App() {
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
 
         <Route exect path="/shopMain" element={<ShopMain/>} />
+        <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
         {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
         <Route exect path="/orderList" element={<OrderListForStore/>} />
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
@@ -90,7 +94,8 @@ function App() {
         {/* <Route exect path="/myAlarmList" element={<JoinStore/>}/> */}
 
         {/* <Route exect path="/alarm" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/repairList" element={<JoinStore/>}/> */}
+        <Route exect path="/repairRequestList" element={<RepairRequestList/>}/>
+        <Route exect path="/repairRequest" element={<RepairRequestForm/>} />
         <Route exect path="/wishList" element={<WishItem/>}/>
         <Route exect path="/cartList" element={<CartList/>}/>
         <Route exect path="/order" element={<Order/>}/>
@@ -112,7 +117,7 @@ function App() {
         {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
         {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
-        <Route exect path="//mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
+        <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
         {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
@@ -129,14 +134,14 @@ function App() {
         {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
         
         <Route path='/repairList' element={<RepairList />}/>
-        <Route path='/repairDetail' element={<RepairDetail />}/>
+        <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
         <Route path='/category' element={<Category />}/>
         <Route path='/itemInsert' element={<ItemInsert />}/>
-        <Route path='/itemUpdate' element={<ItemUpdate />}/>
+        <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
-        <Route path='/menuUpdate' element={<MenuUpdate />}/>
-        <Route path='/mainmenuDetail' element={<MainStore_MenuDetail />}/>
-        <Route path='/mainItemDetail' element={<MainStore_ItemDetail />}/>
+        <Route path='/menuUpdate/:menuCode' element={<MenuUpdate />}/>
+        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
+        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
         <Route path='/insertMainStore' element={<InsertMainStore />}/>
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
