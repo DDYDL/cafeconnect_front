@@ -147,18 +147,18 @@ function App() {
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
         
-        <Route path='/repairList' element={<RepairList />}/>
-        <Route path='/repairDetail/:repairNum' element={<RepairDetail/>}/>
         <Route path='/category' element={<Category />}/>
+        <Route path='/insertMainStore' element={<InsertMainStore />}/>
+        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
+        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
+        <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
+        <Route path='/repairList' element={<RepairList />}/>
+        <Route path='/mainItemList' element={<MainStore_ItemList />}/>
+        <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
         <Route path='/itemInsert' element={<ItemInsert />}/>
         <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
         <Route path='/menuUpdate/:menuCode' element={<MenuUpdate />}/>
-        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
-        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
-        <Route path='/insertMainStore' element={<InsertMainStore />}/>
-        <Route path='/mainItemList' element={<MainStore_ItemList />}/>
-        <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
 
         <Route exect path="/addStoreMain" element={<AddStoreMain/>}/>
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
