@@ -4,6 +4,8 @@ import { Menu, MenuItem, MenuList } from '@material-tailwind/react';
 
 interface Container {
     marginRight:string;
+    marginLeft:string;
+    height:string;
 }
 
 export const Div = styled.div`
@@ -34,9 +36,9 @@ export const DivSide = styled.div`
     position:absolute;
 `;
 
-export const DivMenu = styled.div`
+export const DivMenu = styled.div<Container>`
     width:100%;
-    height:40px;
+    height:${(props) => props.height ? props.height : "40px"};
     background-color:rgba(255, 255, 255, 0.7);
     margin-top:65px;
 `;
@@ -88,18 +90,18 @@ export const NavLinkMenu = styled(NavLink)`
     margin-right:75px;
 `;
 
-export const MenuListOut = styled(MenuList)`
-    margin-left:500px;
+export const MenuListOut = styled(MenuList)<Container>`
+    margin-left:${(props) => props.marginLeft ? props.marginLeft : "500px"};
 `;
     
-export const MenuListDiv = styled.div`
+export const MenuListDiv = styled.div<Container>`
     width:130px;
-    height:130px;
+    height:${(props) => props.height ? props.height : "130px"};
     font-size:14px;
     float:left;
     padding-left:0px;
     padding-right:0px;
-    margin-left:12px;
+    margin-left:${(props) => props.marginLeft ? props.marginLeft : "12px"};
     margin-right:0px;
 `;
 
