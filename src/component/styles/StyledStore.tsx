@@ -181,6 +181,7 @@ export const TableTextTh = styled.th<Container>`
 `;
 
 export const TableTextTd = styled.td`
+    width:100px;
     height:60px;
     font-size:14px;
     padding-right:20px;

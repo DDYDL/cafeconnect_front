@@ -78,9 +78,9 @@ function App() {
   
   return (
     <div>
-      {/* {path===true? <Header/>:null}<br/> */}
+      {path===true? <Header/>:null}<br/>
       {/* <StoreHeader/> */}
-      <MainStoreHeader/>
+      {/* <MainStoreHeader/> */}
       {/* <Footer/> */}
 
       <Routes>
