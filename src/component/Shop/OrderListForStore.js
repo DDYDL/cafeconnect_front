@@ -3,7 +3,6 @@ import * as ol from '../styledcomponent/orderlist.tsx';
 import {StyledButton} from '../styledcomponent/button.tsx';
 import { Datepicker } from 'flowbite-react';
 import { Select, Option } from "@material-tailwind/react";
-import {ProductInfo,ProductName,CategoryInfo} from '../styledcomponent/cartlist.tsx';
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
 function OrderListForStore() {
@@ -15,7 +14,7 @@ function OrderListForStore() {
         {
           orderDate: '2024-10-21',
           orderNumber: '20241021-0000240',
-          productInfo: '과테말라 코반 스페셜티....',
+          productInfo: "과테말라 코반 스페셜티/에티오피아 코케허니 G1스페셜티/케냐AA드립백세트(6개입/1box)/에티오피아 코케허니 G1스페셜티 ",
           category: '가공식품/캔류/디카페인',
           quantity: 1,
           price: 8900,
@@ -92,10 +91,7 @@ function OrderListForStore() {
             <ol.OrderItem key={index} onClick={()=>navigate("/orderDetail")}>
               <div>{order.orderDate}</div>
               <div>{order.orderNumber}</div>
-              <ProductInfo>
-                <CategoryInfo>{order.category}</CategoryInfo>
-                <ProductName>{order.productInfo}</ProductName>
-              </ProductInfo>
+              <div>{order.productInfo}</div>
               <div>{order.quantity}</div>
               <div>{order.price.toLocaleString()}원</div>
               <div>{order.status}</div>

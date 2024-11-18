@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {CommonWrapper, CommonContainer, ContainerTitleArea} from "../styledcomponent/common.tsx";
 import * as od from '../styledcomponent/orderdetail.tsx';
 import {StyledButton} from '../styledcomponent/button.tsx';
@@ -71,20 +71,20 @@ function OrderDetailForStore() {
 
                     {orderDetail.items.map((item, index) => (
                         <od.OrderItemRow key={index}>
-                            <od.ProductCell>
+                            <od.ProductWrap>
                                 <od.ProductImage>
                                     <img src={item.image} alt={item.name} />
                                 </od.ProductImage>
                                 <od.ProductInfo>
-                                    <p className="category">{item.category}</p>
+                                    <p className="categoryformat">{item.category}</p>
                                     <p className="name">{item.name}</p>
                                     <p className="storage-type">{item.storageType}</p>
                                 </od.ProductInfo>
-                            </od.ProductCell>
+                            </od.ProductWrap>
                             <div>{item.quantity}</div>
                             <div>{(item.price * item.quantity).toLocaleString()}원</div>
                             <div>{item.shipping}</div>
-                            <div>{item.status || '배송준비중'}</div>
+                            <div>배송완료</div>
                         </od.OrderItemRow>
                     ))}
                     <od.SectionTitle>
@@ -167,7 +167,7 @@ function OrderDetailForStore() {
                     </od.InfoTable>
 
                     <od.ButtonWrapper>
-                        <StyledButton size="lg" theme="brown">목록</StyledButton>
+                        <StyledButton size="md" theme="brown">목록</StyledButton>
                     </od.ButtonWrapper>
                 </od.OrderDetailWrap>
             </CommonContainer>
