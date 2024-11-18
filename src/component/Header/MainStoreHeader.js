@@ -49,7 +49,8 @@ const MainStoreHeader = ()=>{
                             <MenuItem><NavLink to="/mainMenuList">메뉴 조회</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv marginLeft='20px'>
-                            <MenuItem><NavLink to="/itemRevenue">상품별 매출 조회</NavLink></MenuItem>
+                            <MenuItem>상품별 매출 조회</MenuItem>
+                            <MenuItem><NavLink to="/storeItemRevenue">가맹점별상품매출</NavLink></MenuItem>
                             <MenuItem><NavLink to="/mainStoreOrderList">주문접수관리</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv marginLeft='20px'>
