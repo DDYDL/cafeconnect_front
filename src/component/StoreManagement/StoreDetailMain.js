@@ -3,11 +3,11 @@ import * as s from '../styles/StyledStore.tsx';
 
 import { Link } from 'react-router-dom';
 
-const MyStoreInfo = () => {
+const StoreDetailMain = ()=>{
     return (
         <>
             <s.ContentListDiv>
-            <s.MainTitleText>가맹점 정보 수정하기</s.MainTitleText>
+            <s.MainTitleText>Kosta커피 독산역점</s.MainTitleText>
 
             <m.TableInfo>
                     <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
@@ -26,15 +26,15 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>02)452-7851</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>9:00 ~ 21:00</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>매주 월요일</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약채결일</m.TableTitleSpan></m.TableInfoTd>
@@ -55,40 +55,32 @@ const MyStoreInfo = () => {
                 <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>아이디</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
-                    </m.TableInfoTr>
-                    <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>비밀번호</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
-                    </m.TableInfoTr>
-                    <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>김커피</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>010-1234-5678</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>강아침</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' value=''/></m.TableInfoTd>
+                        <m.TableInfoTd>010-4678-4256</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd colSpan={2}>
                        <s.SearchButtonDiv textAlign='right'>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}}><Link to="/">저장</Link></s.ButtonStyle>
+                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}}><Link to="/modifyStoreMain">수정</Link></s.ButtonStyle>
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
-            </s.ContentListDiv>
+            </s.ContentListDiv >
         </>
     )
 }
-export default MyStoreInfo;
+export default StoreDetailMain;
