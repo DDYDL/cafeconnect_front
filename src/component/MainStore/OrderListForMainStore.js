@@ -52,7 +52,7 @@ function OrderListForMainStore() {
     <CommonWrapper>
       <CommonContainer size="1000px">
         <ContainerTitleArea>
-          <h2>주문서관리</h2>
+          <h2>주문접수 관리</h2>
         </ContainerTitleArea>
         <ol.DatePickerWrap>
           <ol.DatePickerInputWrap>

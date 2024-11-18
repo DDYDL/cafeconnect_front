@@ -142,11 +142,7 @@ function App() {
         <Route exect path="/storeListMain" element={<StoreListMain/>} />
         <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>} />
         <Route exect path="/restoreStoreMain" element={<RestoreStoreMain/>} />
-        {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
-        {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         <Route exect path="/storeItemRevenue" element={<StoreItemRevenue/>} />
-        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
 
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
@@ -168,6 +164,8 @@ function App() {
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
         
+        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
+        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
       </Routes>
     </div>
   );

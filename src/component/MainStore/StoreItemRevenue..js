@@ -32,7 +32,7 @@ function StoreItemRevenue() {
     return (
         <CommonWrapper>
             <CommonContainer>
-                <ContainerTitleArea><h2>가맹점별상세주문내역</h2></ContainerTitleArea>
+                <ContainerTitleArea><h2>상품별 매출 조회</h2></ContainerTitleArea>
 
                 <sr.FilterWrapWithDatePicker>
                     <sr.StoreChooseWrap>

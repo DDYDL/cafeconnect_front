@@ -27,20 +27,20 @@ const MainStoreHeader = ()=>{
                     <MenuHandler className="items-center justify-between">
                         <h.DivMenuItem>
                             <h.DivMenuInside>
-                                <h.NavLinkMenu to="/storeList">가맹점관리</h.NavLinkMenu>
-                                <h.NavLinkMenu to="/mainItemList">판매상품관리</h.NavLinkMenu>
-                                <h.NavLinkMenu to="/mainMenuList">메뉴관리</h.NavLinkMenu>
-                                <h.NavLinkMenu to="/itemRevenue">매출관리</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/storeListMain">가맹점 관리</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/mainItemList">판매상품 관리</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/mainMenuList">메뉴 관리</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/itemRevenue">매출 관리</h.NavLinkMenu>
                                 <h.NavLinkMenu to="/noticeList">커뮤니티</h.NavLinkMenu>
                             </h.DivMenuInside>
                         </h.DivMenuItem>
                     </MenuHandler>
                     <h.MenuListOut marginLeft='550px'>
                         <h.MenuListDiv height='140px'>
-                            <MenuItem><NavLink to="/storeList">가맹점 조회</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/storeListMain">가맹점 조회</NavLink></MenuItem>
                             <MenuItem><NavLink to="/addStoreMain">가맹점 등록</NavLink></MenuItem>
-                            <MenuItem>가맹점 복구</MenuItem>
-                            <MenuItem>가맹점 삭제</MenuItem>
+                            <MenuItem><NavLink to="/restoreStoreMain">가맹점 복구</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/deleteReqStoreMain">가맹점 삭제</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv marginLeft='20px'>
                             <MenuItem><NavLink to="/mainItemList">상품 조회</NavLink></MenuItem>
@@ -49,9 +49,8 @@ const MainStoreHeader = ()=>{
                             <MenuItem><NavLink to="/mainMenuList">메뉴 조회</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv marginLeft='20px'>
-                            <MenuItem>상품별 매출 조회</MenuItem>
-                            <MenuItem><NavLink to="/storeItemRevenue">가맹점별상품매출</NavLink></MenuItem>
-                            <MenuItem><NavLink to="/mainStoreOrderList">주문접수관리</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/storeItemRevenue">상품별 매출 조회</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/mainStoreOrderList">주문접수 관리</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv marginLeft='20px'>
                             <MenuItem><NavLink to="/noticeListMain">공지사항</NavLink></MenuItem>
