@@ -15,6 +15,13 @@ import IntroMain from './component/Main/IntroMain';
 import StoreHeader from './component/Header/StoreHeader';
 import ShopMain from './component/Shop/ShopMain.js';
 import ItemDetail from './component/Shop/ItemDetail.js';
+import MyAlarmList from './component/Mypage/MyAlarmList.js';
+import MyStoreInfo from './component/Mypage/MyStoreInfo.js';
+import MyStoreManage from './component/Mypage/MyStoreManage.js';
+import StockOrderItemAdd from './component/Stock/StockOrderItemAdd.js';
+import StockManage from './component/Stock/StockManage.js';
+import StockOrderStore from './component/Stock/StockOtherStore.js';
+import StockOrderStoreItem from './component/Stock/StockOtherStoreItem.js';
 
 import WishItem from './component/Shop/WishItem.js';
 import CartList from './component/Shop/CartList.js';
@@ -40,6 +47,13 @@ import MainStore_MenuList from './component/MainStore/MenuList.js'
 import RepairRequestList from './component/Shop/RepairRequestList.js';
 import RepairRequestForm from './component/Shop/RepairRequestForm.js';
 import CategoryItemList from './component/Shop/CategoryItemList.js';
+// import NoticeList from './component/Community(store)/NoticeList.js';
+// import AskWrite from './component/Community(store)/AskWrite.js';
+// import AskList from './component/Community(store)/AskList.js';
+// import SalesWrite from './component/Community(store)/SalesWrite.js';
+// import ComplainList from './component/Community(store)/ComplainList.js';
+// import ComplainDetail from './component/Community(store)/ComplainDetail.js';
+
 
 function App() {
   const [path, setPath] = useState(false);
@@ -53,16 +67,15 @@ function App() {
   
   return (
     <div>
-      {path===true? <Header/>:null}<br/>
+      {/* {path===true? <Header/>:null}<br/> */}
       {/* <StoreHeader/> */}
-      {/* <MainStoreHeader/> */}
+      <MainStoreHeader/>
       {/* <Footer/> */}
 
       <Routes>
         {/* 메인 페이지 링크 */}
         <Route exect path="/" element={<IntroMain/>} />
         <Route exect path="/loginStore" element={<LoginStore/>}/>
-        {/* <Route exect path="/joinStore" element={<JoinStore/>}/> */}
 
         <Route exect path="/store" element={<Store/>}/>
         <Route exect path="/menu" element={<MenuList/>}/>
@@ -71,26 +84,19 @@ function App() {
         <Route path='/complainWrite' element={<ComplainWrite/>}/>
         <Route path='/loginMainStore' element={<LoginMainStore />}/>
 
-
-        {/* <Route exect path="/logout" element={<Store/>} /> */}
+        <Route exect path="/logout" element={<IntroMain/>}/>
+        {/* <Route exect path="/joinStore" element={<JoinStore/>}/> */}
 
 
         {/* 가맹점 페이지 링크 */}
 
-        
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
-        {/* <Route exect path="/logout" element={<IntroMain/>} /> */}
 
         <Route exect path="/shopMain" element={<ShopMain/>} />
         <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
-        {/* <Route exect path="/stockAdd" element={<Complain/>} /> */}
         <Route exect path="/orderList" element={<OrderListForStore/>} />
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
-        {/* <Route exect path="/salesManagement" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-        {/* <Route exect path="/myAlarmList" element={<JoinStore/>}/> */}
 
-        {/* <Route exect path="/alarm" element={<JoinStore/>}/> */}
         <Route exect path="/repairRequestList" element={<RepairRequestList/>}/>
         <Route exect path="/repairRequest" element={<RepairRequestForm/>} />
         <Route exect path="/wishList" element={<WishItem/>}/>
@@ -98,7 +104,25 @@ function App() {
         <Route exect path="/order" element={<Order/>}/>
         <Route path='/itemDetail/:itemCode' element={<ItemDetail/>}></Route>
 
+        <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
+        <Route exect path="/stockManage" element={<StockManage/>}/>
+        <Route exect path="/stockOtherStore" element={<StockOrderStore/>}/>
+        <Route exect path="/stockOtherStoreItem" element={<StockOrderStoreItem/>}/>
+
+        <Route exect path="/myAlarmList" element={<MyAlarmList/>}/>
+        <Route exect path="/myStoreInfo" element={<MyStoreInfo/>}/>
+        <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
+
+        {/* <Route exact path="/noticeList" element={<NoticeList/>} />
+        <Route exact path="/askWrite" element={<AskWrite/>} />
+        <Route exact path="/askList" element={<AskList />} />
+        <Route exact path="/salesWrite" element={<SalesWrite />} />
+        <Route exact path="/complainList" element={<ComplainList />} />
+        <Route exact path="/complainDetail" element={<ComplainDetail />} /> */}
+
+
         {/* 본사 페이지 링크 */}
+
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
         {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
@@ -110,15 +134,6 @@ function App() {
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
         {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
 
-        {/*가맹점 페이지 링크 (상민)*/}
-        {/*<Route exact path="/noticeList" element={<NoticeList />} />*/}
-        {/*<Route exact path="/askWrite" element={<AskWrite />} />*/}
-        {/*<Route exact path="/askList" element={<AskList />} />*/}
-        {/*<Route exact path="/salesWrite" element={<SalesWrite />} />*/}
-        {/*<Route exact path="/complainList" element={<ComplainList />} />*/}
-        {/*<Route exact path="/complainDetail" element={<ComplainDetail />} />*/}
-
-        {/*본사 페이지 링크(상민)*/}
         {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
         
         <Route path='/repairList' element={<RepairList />}/>
