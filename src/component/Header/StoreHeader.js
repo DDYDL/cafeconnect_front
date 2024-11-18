@@ -27,15 +27,6 @@ const StoreHeader = ()=>{
                     <h.NavLinkSide to="/logout">로그아웃</h.NavLinkSide>
                 </h.DivSide>
 
-                {/* <h.DivMenu>
-                    <h.NavLinkMenu to="/shopMain">쇼핑몰</h.NavLinkMenu>
-                    <h.NavLinkMenu to="/stockAdd">재고관리</h.NavLinkMenu>
-                    <h.NavLinkMenu to="/orderList">주문관리</h.NavLinkMenu>
-                    <h.NavLinkMenu to="/salesManagement">재무관리</h.NavLinkMenu>
-                    <h.NavLinkMenu to="/noticeList">커뮤니티</h.NavLinkMenu>
-                    <h.NavLinkMenu to="/myAlarmList">마이페이지</h.NavLinkMenu>
-                </h.DivMenu> */}
-
                 <h.DivMenu>
                 <Menu placement="bottom-start" open={openMenu}
                     handler={setOpenMenu} allowHover offset={0}>
@@ -53,16 +44,15 @@ const StoreHeader = ()=>{
                     </MenuHandler>
                     <h.MenuListOut>
                         <h.MenuListDiv>
-                            <MenuItem>Home</MenuItem>
-                        </h.MenuListDiv>
+                            <MenuItem><NavLink to="/shopMain">Home</NavLink></MenuItem>
+                        </h.MenuListDiv>s
                         <h.MenuListDiv>
                             <MenuItem><NavLink to="/stockOrderItemAdd">주문상품재고추가</NavLink></MenuItem>
                             <MenuItem><NavLink to="/stockManage">매장재고관리</NavLink></MenuItem>
                             <MenuItem><NavLink to="/stockOtherStore">타매장재고조회</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
-                            <MenuItem>주문내역</MenuItem>
-                            {/* <h.NavLinkMenu to="/orderList">주문내역</h.NavLinkMenu> */}
+                            <MenuItem><NavLink to="/orderList">주문내역</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem>매출입력</MenuItem>
@@ -71,9 +61,9 @@ const StoreHeader = ()=>{
                             {/* <h.NavLinkMenu to="/expenseList">지출내역</h.NavLinkMenu> */}
                         </h.MenuListDiv>
                         <h.MenuListDiv>
-                            <MenuItem><NavLink to="/community/noticeList">공지사항</NavLink></MenuItem>
-                            <MenuItem><NavLink to="/community/complainList">컴플레인 공지</NavLink></MenuItem>
-                            <MenuItem><NavLink to="/community/askList">1:1 문의</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/noticeList">공지사항</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/complainList">컴플레인 공지</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/askList">1:1 문의</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem><NavLink to="/myAlarmList">알림 모아보기</NavLink></MenuItem>
