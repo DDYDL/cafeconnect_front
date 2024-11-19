@@ -1,9 +1,3 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
-@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:500,400,700,300|Aboreto:400|Noto+Serif+Malayalam:700|Montserrat:300,700");
-/* The following line is used to measure usage of this code. You can remove it if you want. */
-@import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
-
-
 
 .screen a {
   display: contents;
@@ -16,7 +10,6 @@
   justify-content: center;
   pointer-events: none;
   width: 100%;
-  
 }
 
 .container-center-horizontal > * {
@@ -33,15 +26,234 @@
 * {
   box-sizing: border-box;
 }
+
+
 :root { 
     --alabaster: #fbfbfb;
-    --black: #000000;
+    --attrangscokralabaster: #000000;
+    --attrangscokralmond: #000000;
+    --attrangscokralto: #000000;
+    --attrangscokramericano: #000000;
+    --attrangscokramour: #000000;
+    --attrangscokrantique-brass: #000000;
+    --attrangscokrapricot: #000000;
+    --attrangscokrarapawa: #000000;
+    --attrangscokrarrowtown: #000000;
+    --attrangscokrash: #000000;
+    --attrangscokrbison-hide: #000000;
+    --attrangscokrblack: #000000;
+    --attrangscokrblizzard-blue: #000000;
+    --attrangscokrblue-romance: #000000;
+    --attrangscokrbone: #000000;
+    --attrangscokrbronco: #000000;
+    --attrangscokrbutterfly-bush: #000000;
+    --attrangscokrcan-can: #000000;
+    --attrangscokrcape-palliser: #000000;
+    --attrangscokrcaper: #000000;
+    --attrangscokrcardinal: #000000;
+    --attrangscokrcarnation: #000000;
+    --attrangscokrcarnation-pink: #000000;
+    --attrangscokrcashmere: #000000;
+    --attrangscokrchambray: #000000;
+    --attrangscokrchamois: #000000;
+    --attrangscokrchelsea-cucumber: #000000;
+    --attrangscokrchicago: #000000;
+    --attrangscokrchino: #000000;
+    --attrangscokrcioccolato: #000000;
+    --attrangscokrconcrete: #000000;
+    --attrangscokrcupid: #000000;
+    --attrangscokrdi-serria: #000000;
+    --attrangscokrdolly: #000000;
+    --attrangscokrdusty-gray: #000000;
+    --attrangscokreast-bay: #000000;
+    --attrangscokreast-side: #000000;
+    --attrangscokreastern-blue: #000000;
+    --attrangscokrecru-white: #000000;
+    --attrangscokremperor: #000000;
+    --attrangscokrenvy: #000000;
+    --attrangscokrfall-green: #000000;
+    --attrangscokrfantasy: #000000;
+    --attrangscokrfrench-rose: #000000;
+    --attrangscokrfuscous-gray: #000000;
+    --attrangscokrfuzzy-wuzzy-brown: #000000;
+    --attrangscokrgallery: #000000;
+    --attrangscokrgeraldine: #000000;
+    --attrangscokrgeraldine-14: #000000;
+    --attrangscokrgranny-smith: #000000;
+    --attrangscokrgray: #000000;
+    --attrangscokrgun-powder: #000000;
+    --attrangscokrhampton: #000000;
+    --attrangscokrindian-khaki: #000000;
+    --attrangscokrjewel: #000000;
+    --attrangscokrjust-right: #000000;
+    --attrangscokrkabul: #000000;
+    --attrangscokrkobi: #000000;
+    --attrangscokrmandys-pink: #000000;
+    --attrangscokrmarigold-yellow: #000000;
+    --attrangscokrmercury: #000000;
+    --attrangscokrmine-shaft: #000000;
+    --attrangscokrmuddy-waters: #000000;
+    --attrangscokrnobel: #000000;
+    --attrangscokrolivine: #000000;
+    --attrangscokronahau: #000000;
+    --attrangscokrorchid: #000000;
+    --attrangscokroxley: #000000;
+    --attrangscokrpablo: #000000;
+    --attrangscokrpadua: #000000;
+    --attrangscokrpapaya-whip: #000000;
+    --attrangscokrparsley: #000000;
+    --attrangscokrpicasso: #000000;
+    --attrangscokrpine-glade: #000000;
+    --attrangscokrpink: #000000;
+    --attrangscokrpolo-blue: #000000;
+    --attrangscokrport-gore: #000000;
+    --attrangscokrprelude: #000000;
+    --attrangscokrpurple: #000000;
+    --attrangscokrquicksand: #000000;
+    --attrangscokrroman-coffee: #000000;
+    --attrangscokrromantic: #000000;
+    --attrangscokrroyal-blue: #000000;
+    --attrangscokrsandstone: #000000;
+    --attrangscokrsandy-brown: #000000;
+    --attrangscokrscorpion: #000000;
+    --attrangscokrscotch-mist: #000000;
+    --attrangscokrseagull: #000000;
+    --attrangscokrsilk: #000000;
+    --attrangscokrsilver: #000000;
+    --attrangscokrsilver-chalice: #000000;
+    --attrangscokrsoft-amber: #000000;
+    --attrangscokrspindle: #000000;
+    --attrangscokrsprout: #000000;
+    --attrangscokrstark-white: #000000;
+    --attrangscokrswirl: #000000;
+    --attrangscokrtapestry: #000000;
+    --attrangscokrthunderbird: #000000;
+    --attrangscokrtundora: #000000;
+    --attrangscokrvalencia: #000000;
+    --attrangscokrvalhalla: #000000;
+    --attrangscokrvanilla: #000000;
+    --attrangscokrvarden: #000000;
+    --attrangscokrvermilion: #000000;
+    --attrangscokrvin-rouge: #000000;
+    --attrangscokrwe-peep: #000000;
+    --attrangscokrwheat: #000000;
+    --attrangscokrwheatfield: #000000;
+    --attrangscokrwhite: #000000;
+    --attrangscokrwhite-95: #000000;
+    --attrangscokrwhite-rock: #000000;
+    --attrangscokrwild-sand: #000000;
+    --attrangscokrzorba: #000000;
     --bon-jour: #e1e1e1;
     --coconut: #fdfdfd;
+    --coffeehomecokrblack: #000000;
+    --coffeehomecokrboulder: #000000;
+    --coffeehomecokrcloud-burst: #000000;
+    --coffeehomecokrcrimson: #000000;
+    --coffeehomecokrdove-gray: #000000;
+    --coffeehomecokremperor: #000000;
+    --coffeehomecokrfair-pink: #000000;
+    --coffeehomecokrmine-shaft: #000000;
+    --coffeehomecokrpomegranate: #000000;
+    --coffeehomecokrsilver-chalice: #000000;
+    --coffeehomecokrwax-flower: #000000;
+    --coffeehomecokrwhite: #000000;
+    --coffeehomecokrwild-sand: #000000;
     --cotton-seed: #c4bbbb;
     --gray-nurse: #eaeaea;
+    --helpwhalenavercomalto: #000000;
+    --helpwhalenavercomblack: #000000;
+    --helpwhalenavercomblack-10: #000000;
+    --helpwhalenavercomblack-12: #000000;
+    --helpwhalenavercomboulder: #000000;
+    --helpwhalenavercomdiesel-15: #000000;
+    --helpwhalenavercomroyal-blue: #000000;
+    --helpwhalenavercomscience-blue: #000000;
+    --helpwhalenavercomwhite: #ffffff;
+    --helpwhalenavercomzircon: #000000;
+    --krpinterestcomalabaster: #000000;
+    --krpinterestcombastille: #000000;
+    --krpinterestcomblack-4: #000000;
+    --krpinterestcomblack-6: #000000;
+    --krpinterestcombright-red: #000000;
+    --krpinterestcomcape-cod: #000000;
+    --krpinterestcomcod-gray: #000000;
+    --krpinterestcomgallery: #000000;
+    --krpinterestcomguardsman-red: #000000;
+    --krpinterestcomiron: #000000;
+    --krpinterestcommercury: #000000;
+    --krpinterestcomseashell: #000000;
+    --krpinterestcomwhite: #000000;
+    --krpinterestcomwhite-02: #000000;
+    --krpinterestcomwhite-90: #000000;
+    --krpinterestcomwhite-95: #000000;
+    --membershinsegaepointcomalabaster: #000000;
+    --membershinsegaepointcomalizarin-crimson: #000000;
+    --membershinsegaepointcomblack: #000000;
+    --membershinsegaepointcomboulder: #000000;
+    --membershinsegaepointcomemperor: #000000;
+    --membershinsegaepointcomgallery: #000000;
+    --membershinsegaepointcommercury: #000000;
+    --membershinsegaepointcomsilver: #000000;
+    --membershinsegaepointcomwhite: #000000;
+    --membershinsegaepointcomwild-sand: #000000;
+    --priumgithubioaqua-haze: #000000;
+    --priumgithubioathens-gray: #000000;
+    --priumgithubiobali-hai-80: #000000;
+    --priumgithubioblue-ribbon: #000000;
+    --priumgithubiochardonnay-24: #000000;
+    --priumgithubiochristine-20: #000000;
+    --priumgithubiocomet-80: #000000;
+    --priumgithubiocomet-85: #000000;
+    --priumgithubiododger-blue-20: #000000;
+    --priumgithubiolimeade-20: #000000;
+    --priumgithubiolochmara: #000000;
+    --priumgithubiomelrose: #000000;
+    --priumgithubiomirage: #000000;
+    --priumgithubiomischka: #000000;
+    --priumgithubiomischka-54: #000000;
+    --priumgithubiowhite: #000000;
+    --priumgithubiowhite-catskill-white: #000000;
+    --priumgithubiozumthor: #000000;
     --pumice: #c8c8c8;
     --shark: #262626;
+    --themewagongithubioalto: #000000;
+    --themewagongithubioblack: #000000;
+    --themewagongithubioblack-6: #000000;
+    --themewagongithubioblack-9: #000000;
+    --themewagongithubioblue-ribbon-4: #000000;
+    --themewagongithubiobright-turquoise: #000000;
+    --themewagongithubiocinderella: #000000;
+    --themewagongithubiogreen-haze: #000000;
+    --themewagongithubiohumming-bird: #000000;
+    --themewagongithubiomartinique: #000000;
+    --themewagongithubiomedium-purple: #000000;
+    --themewagongithubiomirage: #000000;
+    --themewagongithubiopattens-blue: #000000;
+    --themewagongithubioscarlet: #000000;
+    --themewagongithubiowhisper: #000000;
+    --themewagongithubiowhite: #ffffff;
+    --themewagongithubiowhite-whisper: #000000;
+    --themewagongithubiozircon: #000000;
+    --wwwdaisomallcokrathens-gray: #000000;
+    --wwwdaisomallcokrblack: #000000;
+    --wwwdaisomallcokrblack-40: #000000;
+    --wwwdaisomallcokrdodger-blue: #000000;
+    --wwwdaisomallcokrebony-clay: #000000;
+    --wwwdaisomallcokrghost: #000000;
+    --wwwdaisomallcokrgray: #000000;
+    --wwwdaisomallcokrgray-25: #000000;
+    --wwwdaisomallcokrmercury: #000000;
+    --wwwdaisomallcokrmine-shaft: #000000;
+    --wwwdaisomallcokrmirage: #000000;
+    --wwwdaisomallcokrmonza: #000000;
+    --wwwdaisomallcokrnevada: #000000;
+    --wwwdaisomallcokroxford-blue: #000000;
+    --wwwdaisomallcokrportage: #000000;
+    --wwwdaisomallcokrselago: #000000;
+    --wwwdaisomallcokrsilver: #000000;
+    --wwwdaisomallcokrwhite: #000000;
+    --wwwdaisomallcokrwhite-02: #000000;
+    --wwwediyacomwhite-white: #000000;
    
     --font-size-l: 18px;
     --font-size-m: 16px;
@@ -103,20 +315,22 @@
     font-style: normal;
     font-weight: 300;
   }
-/* screen - repairlist */
 
-.repairlist {
+  
+  /* screen - RepairListCopy */
+
+.RepairListCopy {
     align-items: flex-start;
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
     gap: 60px;
-    height : 100%;
+    min-height: 100%;
     overflow-x: hidden;
     width: 100%;
   }
   
-  .repairlist .header {
+  .RepairListCopy .header {
     align-items: flex-start;
     background-color: transparent;
     display: flex;
@@ -128,13 +342,13 @@
     width: auto;
   }
   
-  .repairlist .overlap-group1 {
+  .RepairListCopy .overlap-group1 {
     height: 126px;
     position: relative;
     width: 1920px;
   }
   
-  .repairlist .overlap-group {
+  .RepairListCopy .overlap-group {
     height: 126px;
     left: 0;
     position: absolute;
@@ -142,7 +356,7 @@
     width: 1920px;
   }
   
-  .repairlist .container {
+  .RepairListCopy .container {
     align-items: center;
     background-color: #ffffff80;
     display: flex;
@@ -154,7 +368,7 @@
     width: 1920px;
   }
   
-  .repairlist .sidebar {
+  .RepairListCopy .sidebar {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -164,7 +378,7 @@
     width: 25px;
   }
   
-  .repairlist .border {
+  .RepairListCopy .border {
     border-bottom-style: solid;
     border-bottom-width: 3px;
     border-color: var(--shark);
@@ -174,7 +388,7 @@
     width: 25px;
   }
   
-  .repairlist .horizontal-border {
+  .RepairListCopy .horizontal-border {
     border-color: var(--shark);
     border-top-style: solid;
     border-top-width: 3px;
@@ -182,7 +396,7 @@
     width: 25px;
   }
   
-  .repairlist .navbar {
+  .RepairListCopy .navbar {
     align-items: flex-start;
     align-self: flex-end;
     display: flex;
@@ -193,19 +407,19 @@
     min-width: 722px;
   }
   
-  .repairlist .navbar-link-text-4 {
+  .RepairListCopy .navbar-link-text-4 {
     width: 86px;
   }
   
-  .repairlist .navbar-link-text-1 {
+  .RepairListCopy .navbar-link-text-1 {
     width: 100px;
   }
   
-  .repairlist .navbar-link-text-5 {
+  .RepairListCopy .navbar-link-text-5 {
     width: 74px;
   }
   
-  .repairlist .navbar-link-text-2 {
+  .RepairListCopy .navbar-link-text-2 {
     align-self: flex-end;
     color: var(--shark);
     font-family: var(--font-family-aboreto);
@@ -214,11 +428,11 @@
     width: 70px;
   }
   
-  .repairlist .navbar-link-text-3 {
+  .RepairListCopy .navbar-link-text-3 {
     width: 70px;
   }
   
-  .repairlist .image-1 {
+  .RepairListCopy .image-1 {
     align-self: flex-start;
     height: 31px;
     margin-left: 443px;
@@ -226,14 +440,14 @@
     width: 31px;
   }
   
-  .repairlist .group {
+  .RepairListCopy .group {
     height: 24px;
     margin-bottom: 0.5px;
     margin-left: 34px;
     width: 26px;
   }
   
-  .repairlist .cc {
+  .RepairListCopy .cc {
     color: transparent;
     font-family: var(--font-family-noto_serif_malayalam);
     font-size: var(--font-size-xxl);
@@ -247,17 +461,17 @@
     width: 89px;
   }
   
-  .repairlist .span {
+  .RepairListCopy .span {
     color: var(--shark);
     letter-spacing: -1.92px;
   }
   
-  .repairlist .span1 {
+  .RepairListCopy .span1 {
     color: #cbd2a4;
     letter-spacing: -1.92px;
   }
   
-  .repairlist .sidemenu {
+  .RepairListCopy .sidemenu {
     align-items: flex-end;
     display: flex;
     gap: 17px;
@@ -268,7 +482,7 @@
     top: 32px;
   }
   
-  .repairlist .text-7 {
+  .RepairListCopy .text-7 {
     color: var(--shark);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-s);
@@ -279,14 +493,14 @@
     width: 40px;
   }
   
-  .repairlist .vertical-divider {
+  .RepairListCopy .vertical-divider {
     background-color: #bbbbbb;
     height: 12px;
     margin-bottom: 1px;
     width: 1px;
   }
   
-  .repairlist .text-6 {
+  .RepairListCopy .text-6 {
     color: var(--shark);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-s);
@@ -297,49 +511,34 @@
     width: 66px;
   }
   
-  .repairlist .overlap-group5 {
-    height: 1626px;
-    margin-left: -3px;
+  .RepairListCopy .overlap-group6 {
+    height: 1715px;
+    margin-left: 2px;
     position: relative;
     width: 1920px;
   }
   
-  .repairlist .background {
-    align-items: center;
+  .RepairListCopy .background {
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
-    height: 1505px;
-    left: 363px;
+    height: 1409px;
+    left: 358px;
     position: absolute;
     top: 0;
     width: 1200px;
+    margin-top:60px;
   }
   
-  .repairlist .heading-2 {
-    color: #202020;
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: 24px;
-    font-weight: 700;
-    height: 39px;
-    letter-spacing: -1.00px;
-    line-height: 38.5px;
-    margin-top: -1px;
-    min-width: 90px;
-    text-align: center;
-    white-space: nowrap;
-  }
-  
-  .repairlist .flex-row {
-    align-items: center;
-    align-self: flex-start;
+  .RepairListCopy .flex-row {
+    align-items: flex-end;
     display: flex;
-    height: 38px;
     margin-left: 28px;
-    margin-top: 42px;
+    margin-top: -1px;
     min-width: 628px;
   }
   
-  .repairlist .frame-104 {
+  .RepairListCopy .frame-104 {
     align-items: flex-start;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -347,12 +546,13 @@
     border-radius: 8px;
     display: flex;
     gap: 5px;
+    margin-bottom: 2px;
     padding: 6px 10px;
     position: relative;
     width: 109px;
   }
   
-  .repairlist .frame-105 {
+  .RepairListCopy .frame-105 {
     align-items: flex-start;
     display: inline-flex;
     flex: 0 0 auto;
@@ -360,7 +560,7 @@
     position: relative;
   }
   
-  .repairlist .text-4 {
+  .RepairListCopy .text-4 {
     letter-spacing: 0;
     line-height: 20px;
     margin-top: -1.00px;
@@ -370,21 +570,22 @@
     width: fit-content;
   }
   
-  .repairlist .sort-down {
+  .RepairListCopy .sort-down {
     height: 20px;
     position: relative;
     width: 20px;
   }
   
-  .repairlist .frame-container {
+  .RepairListCopy .frame-container {
     border-radius: 8px;
     height: 34px;
+    margin-bottom: 2px;
     margin-left: 21px;
     position: relative;
     width: 109px;
   }
   
-  .repairlist .frame-10 {
+  .RepairListCopy .frame-10 {
     align-items: flex-start;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -399,7 +600,7 @@
     width: 109px;
   }
   
-  .repairlist .frame-110 {
+  .RepairListCopy .frame-110 {
     align-items: flex-start;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -407,13 +608,36 @@
     border-radius: 8px;
     display: flex;
     gap: 5px;
+    margin-bottom: 2px;
     margin-left: 21px;
     padding: 6px 10px;
     position: relative;
     width: 109px;
   }
   
-  .repairlist .frame-107 {
+  .RepairListCopy .overlap-group3 {
+    height: 71px;
+    margin-left: 32px;
+    position: relative;
+    width: 227px;
+  }
+  
+  .RepairListCopy .heading-2 {
+    color: #202020;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: 24px;
+    font-weight: 700;
+    height: 39px;
+    
+    letter-spacing: -1.00px;
+    line-height: 38.5px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    white-space: nowrap;
+  }
+  
+  .RepairListCopy .frame-107 {
     align-items: flex-start;
     background-color: #f5f5f5;
     border: 1px solid;
@@ -421,13 +645,14 @@
     border-radius: 8px;
     display: flex;
     gap: 149px;
-    margin-left: 32px;
+    left: 0;
     padding: 6px 10px;
-    position: relative;
+    position: absolute;
+    top: 33px;
     width: 227px;
   }
   
-  .repairlist .text-48 {
+  .RepairListCopy .text-48 {
     letter-spacing: 0;
     line-height: 20px;
     margin-top: -0.50px;
@@ -437,21 +662,21 @@
     width: fit-content;
   }
   
-  .repairlist .img {
+  .RepairListCopy .img {
     height: 24px;
     margin-right: -3.00px;
     position: relative;
     width: 24px;
   }
   
-  .repairlist .overlap-group2 {
+  .RepairListCopy .overlap-group4 {
     height: 1160px;
-    margin-top: 9px;
+    margin-top: 57px;
     position: relative;
     width: 1200px;
   }
   
-  .repairlist .horizontal-border-1 {
+  .RepairListCopy .horizontal-border-1 {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     border-color: #deebff;
@@ -462,7 +687,7 @@
     width: 1140px;
   }
   
-  .repairlist .frame-92 {
+  .RepairListCopy .frame-92 {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -472,12 +697,12 @@
     width: 1200px;
   }
   
-  .repairlist .frame-87 {
+  .RepairListCopy .frame-87 {
     align-items: center;
     align-self: stretch;
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-color: var(--black);
+    border-color: var(--attrangscokralabaster);
     display: flex;
     flex: 0 0 auto;
     gap: 10px;
@@ -485,75 +710,75 @@
     width: 100%;
   }
   
-  .repairlist .cell-1 {
-    width: 131px;
+  .RepairListCopy .cell {
+    height: 60px;
+    position: relative;
+    width: 274px;
   }
   
-  .repairlist .text-8 {
+  .RepairListCopy .text-8 {
     height: 21px;
-    left: 44px;
+    left: 107px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 18px;
+    top: 19px;
     white-space: nowrap;
   }
   
-  .repairlist .cell-2 {
+  .RepairListCopy .cell-1 {
     width: 306px;
   }
   
-  .repairlist .text-9 {
+  .RepairListCopy .text-9 {
     height: 21px;
-    left: 133px;
+    left: 123px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 18px;
+    top: 19px;
     white-space: nowrap;
   }
   
-  .repairlist .cell-3 {
+  .RepairListCopy .cell-2 {
     width: 143px;
   }
   
-  .repairlist .text-10 {
+  .RepairListCopy .text-10 {
     height: 21px;
     left: 40px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 18px;
+    top: 19px;
     white-space: nowrap;
   }
   
-  .repairlist .cell-4 {
+  .RepairListCopy .cell-3 {
     width: 180px;
   }
   
-  .repairlist .text-11 {
+  .RepairListCopy .text-11 {
     height: 21px;
-    left: 70px;
+    left: 60px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 18px;
+    top: 19px;
     white-space: nowrap;
   }
   
-  .repairlist .cell {
-    height: 60px;
-    position: relative;
+  .RepairListCopy .cell-4 {
     width: 107px;
   }
   
-  .repairlist .text-12 {
+  .RepairListCopy .text-12 {
     height: 21px;
-    left: 33px;
+    left: 31px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -562,9 +787,13 @@
     white-space: nowrap;
   }
   
-  .repairlist .text-13 {
+  .RepairListCopy .cell-5 {
+    width: 101px;
+  }
+  
+  .RepairListCopy .text-13 {
     height: 21px;
-    left: 24px;
+    left: 19px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -573,7 +802,7 @@
     white-space: nowrap;
   }
   
-  .repairlist .frame {
+  .RepairListCopy .frame {
     align-items: center;
     align-self: stretch;
     border-bottom-style: solid;
@@ -586,15 +815,15 @@
     width: 100%;
   }
   
-  .repairlist .data {
+  .RepairListCopy .data {
     height: 110px;
     position: relative;
-    width: 131px;
+    width: 274px;
   }
   
-  .repairlist .a12345 {
+  .RepairListCopy .a12345 {
     height: 21px;
-    left: 51px;
+    left: 112px;
     letter-spacing: -1.00px;
     line-height: 21px;
     position: absolute;
@@ -603,22 +832,22 @@
     white-space: nowrap;
   }
   
-  .repairlist .data-1 {
-    width: 308px;
+  .RepairListCopy .data-1 {
+    width: 306px;
   }
   
-  .repairlist .frame-89 {
+  .RepairListCopy .frame-89 {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
     gap: 13px;
-    left: 121px;
+    left: 113px;
     position: relative;
-    top: 44px;
-    width: 159px;
+    top: 45px;
+    width: 80px;
   }
   
-  .repairlist .text {
+  .RepairListCopy .text {
     align-self: stretch;
     letter-spacing: 0;
     line-height: 21px;
@@ -626,28 +855,28 @@
     position: relative;
   }
   
-  .repairlist .data-2 {
-    width: 141px;
+  .RepairListCopy .data-2 {
+    width: 143px;
   }
   
-  .repairlist .date {
+  .RepairListCopy .date {
     height: 21px;
-    left: 29px;
+    left: 30px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 43px;
+    top: 44px;
     white-space: nowrap;
   }
   
-  .repairlist .data-3 {
-    width: 178px;
+  .RepairListCopy .data-3 {
+    width: 180px;
   }
   
-  .repairlist .text-1 {
+  .RepairListCopy .text-1 {
     height: 20px;
-    left: 57px;
+    left: 47px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -657,13 +886,13 @@
     width: 85px;
   }
   
-  .repairlist .data-4 {
+  .RepairListCopy .data-4 {
     width: 107px;
   }
   
-  .repairlist .strong-8900 {
+  .RepairListCopy .strong-8900 {
     height: 21px;
-    left: 26px;
+    left: 31px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -672,30 +901,35 @@
     white-space: nowrap;
   }
   
-  .repairlist .text-2 {
+  .RepairListCopy .data-5 {
+    width: 101px;
+  }
+  
+  .RepairListCopy .text-2 {
     height: 21px;
-    left: 31px;
+    left: 28px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 43px;
+    top: 44px;
     white-space: nowrap;
   }
   
-  .repairlist .flex-row-1 {
+  .RepairListCopy .flex-row-1 {
+    align-self: center;
     margin-right: 20.0px;
     margin-top: 39px;
     min-width: 186px;
   }
   
-  .repairlist .component-2 {
+  .RepairListCopy .component-2 {
     padding: 0px 11.77px 0px 11.75px;
     position: relative;
     width: 30px;
   }
   
-  .repairlist .text-5 {
+  .RepairListCopy .text-5 {
     color: #0e347e;
     font-family: var(--font-family-montserrat);
     font-size: var(--font-size-m);
@@ -711,13 +945,13 @@
     width: fit-content;
   }
   
-  .repairlist .component-3 {
+  .RepairListCopy .component-3 {
     padding: 0px 10.5px 0px 10.48px;
     position: relative;
     width: 30px;
   }
   
-  .repairlist .text-14 {
+  .RepairListCopy .text-14 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.49px;
@@ -729,13 +963,13 @@
     width: fit-content;
   }
   
-  .repairlist .component-4 {
+  .RepairListCopy .component-4 {
     padding: 0px 10.53px;
     position: relative;
     width: 30px;
   }
   
-  .repairlist .text-3 {
+  .RepairListCopy .text-3 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.03px;
@@ -747,13 +981,13 @@
     width: fit-content;
   }
   
-  .repairlist .component-5 {
+  .RepairListCopy .component-5 {
     padding: 0px 9.76px 0px 9.77px;
     position: relative;
     width: 30px;
   }
   
-  .repairlist .text-15 {
+  .RepairListCopy .text-15 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.27px;
@@ -765,13 +999,13 @@
     width: fit-content;
   }
   
-  .repairlist .overlap-group3 {
+  .RepairListCopy .overlap-group2 {
     height: 30px;
     position: relative;
     width: 66px;
   }
   
-  .repairlist .component-1 {
+  .RepairListCopy .component-1 {
     left: 0;
     padding: 0px 35.53px 0px 10.53px;
     position: absolute;
@@ -779,7 +1013,7 @@
     width: 55px;
   }
   
-  .repairlist .border-1 {
+  .RepairListCopy .border-1 {
     align-items: center;
     border: 1px solid;
     border-color: #eeeeee;
@@ -792,12 +1026,12 @@
     top: 0;
   }
   
-  .repairlist .image {
+  .RepairListCopy .image {
     height: 6px;
     width: 5px;
   }
   
-  .repairlist .footer {
+  .RepairListCopy .footer {
     align-items: flex-end;
     background-color: #9a7e6f;
     display: flex;
@@ -806,13 +1040,14 @@
     justify-content: flex-start;
     left: 0;
     min-width: 1920px;
-    padding: 10px 0;
+    padding: 13px 0;
     position: absolute;
-    top: 1426px;
+    top: 1455px;
     width: auto;
+    margin-top:60px;
   }
   
-  .repairlist .footer-contents {
+  .RepairListCopy .footer-contents {
     align-items: flex-end;
     display: flex;
     gap: 19px;
@@ -821,12 +1056,12 @@
     width: 1920px;
   }
   
-  .repairlist .flex-row-2 {
+  .RepairListCopy .flex-row-2 {
     gap: 30px;
     min-width: 893px;
   }
   
-  .repairlist .flex-col {
+  .RepairListCopy .flex-col {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -836,13 +1071,13 @@
     width: 862px;
   }
   
-  .repairlist .overlap-group-1 {
+  .RepairListCopy .overlap-group-1 {
     height: 39px;
     position: relative;
     width: 862px;
   }
   
-  .repairlist .x {
+  .RepairListCopy .x {
     height: 37px;
     left: 0;
     letter-spacing: 0;
@@ -852,8 +1087,8 @@
     width: 606px;
   }
   
-  .repairlist .text-49 {
-    color: #ffffff;
+  .RepairListCopy .text-49 {
+    color: var(--helpwhalenavercomwhite);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xs);
     font-weight: 300;
@@ -868,7 +1103,7 @@
     width: 77px;
   }
   
-  .repairlist .text-50 {
+  .RepairListCopy .text-50 {
     height: 17px;
     left: 508px;
     letter-spacing: 0;
@@ -879,7 +1114,7 @@
     width: 354px;
   }
   
-  .repairlist .copyright {
+  .RepairListCopy .copyright {
     height: 17px;
     letter-spacing: 0;
     line-height: 20px;
@@ -887,13 +1122,13 @@
     white-space: nowrap;
   }
   
-  .repairlist .vertical-divider-1 {
+  .RepairListCopy .vertical-divider-1 {
     background-color: #e5e5e5;
     height: 87px;
     width: 1px;
   }
   
-  .repairlist .flex-col-1 {
+  .RepairListCopy .flex-col-1 {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -903,7 +1138,7 @@
     width: 319px;
   }
   
-  .repairlist .heading-3 {
+  .RepairListCopy .heading-3 {
     color: var(--coconut);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xs);
@@ -914,24 +1149,24 @@
     width: 294px;
   }
   
-  .repairlist .span0 {
+  .RepairListCopy .span0 {
     font-weight: 500;
     letter-spacing: -0.06px;
   }
   
-  .repairlist .span1-1 {
+  .RepairListCopy .span1-1 {
     font-weight: 300;
     letter-spacing: -0.06px;
   }
   
-  .repairlist .text-container {
+  .RepairListCopy .text-container {
     align-items: center;
     display: flex;
     gap: 17px;
     min-width: 319px;
   }
   
-  .repairlist .text-51 {
+  .RepairListCopy .text-51 {
     height: 18px;
     letter-spacing: -0.50px;
     line-height: 18px;
@@ -939,8 +1174,8 @@
     width: 211px;
   }
   
-  .repairlist .text-52 {
-    color: #ffffff;
+  .RepairListCopy .text-52 {
+    color: var(--helpwhalenavercomwhite);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xxs);
     font-weight: 300;
@@ -953,32 +1188,51 @@
     width: 91px;
   }
   
-  .repairlist .cell-5 {
+  .RepairListCopy .cell-6 {
     height: 60px;
     position: relative;
   }
   
-  .repairlist .component {
+  .RepairListCopy .component {
     align-items: flex-start;
     display: flex;
     justify-content: center;
   }
   
-  .repairlist .data-5 {
+  .RepairListCopy .data-6 {
     height: 110px;
     position: relative;
   }
   
-  .repairlist .flex-row-3 {
+  .RepairListCopy .flex-row-3 {
     align-items: flex-start;
     display: flex;
   }
   
-  .repairlist .navbar-link-text {
+  .RepairListCopy .navbar-link-text {
     height: 20px;
     letter-spacing: 0;
     line-height: normal;
     text-align: center;
     white-space: nowrap;
   }
+  
+
+  .RepairListCopy .text-47{
+    color: var(--attrangscokralabaster);
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: var(--font-size-m);
+    font-weight: 300;
+    height: 39px;
+    letter-spacing: 0;
+    line-height: 24px;
     
+    text-align: end;
+    width: 1200px;
+  }
+
+  .valign-text-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
