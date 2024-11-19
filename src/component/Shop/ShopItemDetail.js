@@ -8,7 +8,7 @@ import {useNavigate} from 'react-router-dom';
   
 
 
-const ItemDetail = ({ itemCode }) => {
+const ShopItemDetail = ({ itemCode }) => {
   const navigate = useNavigate();
   const item = {
     itemCode: 1,
@@ -114,4 +114,4 @@ const ItemDetail = ({ itemCode }) => {
     </CommonWrapper>
   );
 };
-export default ItemDetail;
+export default ShopItemDetail;
