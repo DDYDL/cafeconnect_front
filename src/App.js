@@ -165,8 +165,11 @@ function App() {
         <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
         <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
         <Route path='/repairList' element={<RepairList />}/>
+        
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
+        
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
+        
         <Route path='/itemInsert' element={<ItemInsert />}/>
         <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
