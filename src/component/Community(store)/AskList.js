@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CustomButton } from "../Button/Button.style.js";
-import { CustomHorizontal } from "../Horizin/Horizin.style.js";
+import { CustomButton } from "../styledcomponent/Button.style.js";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 
 const AskList = () => {
   const [title, setTitle] = useState("");

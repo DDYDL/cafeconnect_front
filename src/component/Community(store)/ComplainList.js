@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CustomHorizontal } from "../Horizin/Horizin.style.js";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 
 const ComplainListSample = () => {
   const [title, setTitle] = useState("");
