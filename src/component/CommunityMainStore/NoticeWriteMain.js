@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
 import { ButtonContainer, CustomButton } from "../styledcomponent/Button.style.js";
-import { CustomHorizontal } from "../styledcomponent/Horizin.style";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import { InputMedium, InputSmall, Textarea } from "../styledcomponent/Input.style.js";
 
-const NoticeWrite = () => {
+const NoticeWriteMain = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
@@ -213,4 +213,4 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-export default NoticeWrite;
+export default NoticeWriteMain;
