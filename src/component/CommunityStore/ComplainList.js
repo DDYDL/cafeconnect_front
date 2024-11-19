@@ -19,7 +19,7 @@ const ComplainListSample = () => {
   const handleItemClick = id => {
     // setSelectedItem(selectedItem === id ? null : id); // Toggle answer form visibility
 
-    navigate(`/ComplainDetail/${id}`);
+    navigate(`/complainDetail/${id}`);
   };
 
   const handleButtonClick = buttonId => {

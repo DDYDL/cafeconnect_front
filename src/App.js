@@ -55,16 +55,18 @@ import AddStoreMain from './component/StoreManagement/AddStoreMain.js';
 import StoreDetailMain from './component/StoreManagement/StoreDetailMain.js';
 import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
 
-import StoreItemRevenue from './component/MainStore/StoreItemRevenue..js';
+import StoreItemRevenue from './component/MainStore/StoreItemRevenue.js';
 import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
 import ShopLayout from './component/Shop/ShopLayout.js';
 
-// import NoticeList from './component/Community(store)/NoticeList.js';
-// import AskWrite from './component/Community(store)/AskWrite.js';
-// import AskList from './component/Community(store)/AskList.js';
-// import SalesWrite from './component/Community(store)/SalesWrite.js';
-// import ComplainList from './component/Community(store)/ComplainList.js';
-// import ComplainDetail from './component/Community(store)/ComplainDetail.js';
+import NoticeList from './component/CommunityStore/NoticeList.js';
+import AskWrite from './component/CommunityStore/AskWrite.js';
+import AskList from './component/CommunityStore/AskList.js';
+import ComplainList from './component/CommunityStore/ComplainList.js';
+import ComplainDetail from './component/CommunityStore/ComplainDetail.js';
+
+import SalesWrite from './component/CommunityStore/SalesWrite.js';
+import SalesAnalysis from './component/CommunityStore/SalesAnalysis.js';
 
 
 function App() {
@@ -79,7 +81,7 @@ function App() {
   
   return (
     <div>
-      {/* {path===true? <Header/>:null}<br/> */}
+      {/* {path===true? <Header/>:null} */}
       {/* <StoreHeader/> */}
       <MainStoreHeader/>
       {/* <Footer/> */}
@@ -104,9 +106,8 @@ function App() {
 
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
 
-        {/* <Route exect path="/shopMain" element={<ShopMain/>} /> */}
         {/* 중첩 라우팅 설정 */}
-        <Route path="/shopMain" element={<ShopLayout />}>
+        <Route path="/shopMain" element={<ShopLayout/>}>
           <Route index element={<ShopMain />} />
         </Route>
 
@@ -133,18 +134,18 @@ function App() {
         <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
 
 
-        {/* <Route exact path="/noticeList" element={<NoticeList/>} />
+        <Route exact path="/noticeList" element={<NoticeList/>} />
+        {/* <Route exact path="/noticeDetail" element={<NoticeDetail/>} /> */}
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
-        <Route exact path="/salesWrite" element={<SalesWrite />} />
         <Route exact path="/complainList" element={<ComplainList />} />
-        <Route exact path="/complainDetail" element={<ComplainDetail />} /> */}
+        <Route exact path="/complainDetail" element={<ComplainDetail />} />
+
+        <Route exact path="/salesAnalysis" element={<SalesAnalysis/>}/>
+        <Route exact path="/salesWrite" element={<SalesWrite/>}/>
 
 
         {/* 본사 페이지 링크 */}
-        
-        {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
-
         <Route exect path="/storeListMain" element={<StoreListMain/>} />
         <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>} />
         <Route exect path="/restoreStoreMain" element={<RestoreStoreMain/>} />
@@ -169,9 +170,16 @@ function App() {
         <Route exect path="/addStoreMain" element={<AddStoreMain/>}/>
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
+
+        {/* <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
+        <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
+
+        <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         
-        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
+        <Route exact path="/askListMain" element={<AskListMain/>} />
+        <Route exact path="/askDetailMain" element={<AskDetailMain />} />
+        <Route exact path="/complainListMain" element={<ComplainListMain />} />
+        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} /> */}
       </Routes>
     </div>
   );

@@ -55,10 +55,9 @@ const StoreHeader = ()=>{
                             <MenuItem><NavLink to="/orderList">주문내역</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
-                            <MenuItem>매출입력</MenuItem>
-                            <MenuItem>매출분석</MenuItem>
-                            <MenuItem>지출내역</MenuItem>
-                            {/* <h.NavLinkMenu to="/expenseList">지출내역</h.NavLinkMenu> */}
+                            <MenuItem><NavLink to="/salesWrite">매출입력</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/salesAnalysis">매출분석</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/expenseList">지출내역</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem><NavLink to="/noticeList">공지사항</NavLink></MenuItem>
@@ -76,7 +75,7 @@ const StoreHeader = ()=>{
                 
                 <h.DivIcon>
                     <h.NavLinkIcon><h.Icon src="/alarm.png" onClick={handleOpen}/></h.NavLinkIcon>
-                    <h.NavLinkIcon to="/repairList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
+                    <h.NavLinkIcon to="/repairRequestList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
                     <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png"/></h.NavLinkIcon>
                     <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png"/></h.NavLinkIcon>
                 </h.DivIcon>
