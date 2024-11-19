@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
-import { CustomButton, TempSaveButton } from "../Button/Button.style";
-import { CustomHorizontal } from "../Horizin/Horizin.style";
+import { CustomButton, TempSaveButton } from "../styledcomponent/Button.style";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style";
 
 const SalesWrite = () => {
   const [title, setTitle] = useState("");
@@ -31,7 +31,9 @@ const SalesWrite = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   // 순번, 상품명, 수량, 매출 합계 상태 (배열로 관리)
-  const [rows, setRows] = useState([{ 순번: 1, 상품명: "", 수량: "", 매출합계: "" }]);
+  const [rows, setRows] = useState([
+    { 순번: 1, 상품명: "", 수량: "", 매출합계: "", filteredProducts: [] },
+  ]);
 
   // 총합계 계산
   const calculateTotal = () => {
@@ -46,8 +48,11 @@ const SalesWrite = () => {
   const handleProductSelect = (index, product) => {
     const updatedRows = [...rows];
     updatedRows[index].상품명 = product.name;
+    updatedRows[index].filteredProducts = []; // 해당 행의 검색결과만 비움
     setRows(updatedRows);
-    setFilteredProducts([]); // 검색결과 리스트 숨기기
+
+    // 전역 검색 결과 비움
+    setFilteredProducts([]);
   };
 
   const handleInputChange = (index, event) => {
@@ -124,7 +129,7 @@ const SalesWrite = () => {
           </HeadingDataAndSave>
 
           <HeadingSummary>
-            <div style={{ fontWeight: "bold" }}>총 합계: </div>
+            <div style={{ fontWeight: "bold", marginRight: "20px" }}>총 합계: </div>
             <div style={{ color: "blue", fontWeight: "bold" }}>{calculateTotal()}원</div>{" "}
             {/* 총합계 계산된 값 표시 */}
           </HeadingSummary>
@@ -271,7 +276,7 @@ const TableHeaderItem3 = styled.div`
   text-align: left;
   align-items: center;
   width: 100px;
-  margin-left: 50px;
+  // margin-right: 20px;
 `;
 
 const TableHeaderItem4 = styled.div`
@@ -279,15 +284,10 @@ const TableHeaderItem4 = styled.div`
   justify-content: center;
   text-align: left;
   align-items: center;
-  width: 100px;
+
+  margin-right: 20px;
+  width: 140px;
 `;
-// const TableRow = styled.div`
-//   display: flex;
-//   width: 800px;
-//   justify-content: space-between;
-//   align-items: center;
-//   margin-top: 10px;
-// `;
 
 const TableRow = styled.div`
   display: flex;
@@ -304,8 +304,8 @@ const SelectData = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 240px;
-  border: 1px solid lightblue;
+  width: 340px;
+  // border: 1px solid lightblue;
   border-radius: 5px;
   padding-left: 10px;
 `;
@@ -321,7 +321,7 @@ const SalesDateText = styled.div`
 `;
 
 const OrderInput = styled.input`
-  width: 40px;
+  width: 50px;
   height: 40px;
 
   justify-content: center;
@@ -355,7 +355,7 @@ const ProductSearchInput = styled.input`
 `;
 
 const QuantityInput = styled.input`
-  width: 50px;
+  width: 64px;
   height: 40px;
 
   // padding: 8px;
@@ -364,13 +364,13 @@ const QuantityInput = styled.input`
   border-radius: 5px;
   margin-left: 20px;
 
-  padding-left: 10px;
+  // padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 7px;
 `;
 
 const TotalInput = styled.input`
-  width: 90px;
+  width: 140px;
   height: 40px;
 
   font-size: 14px;
