@@ -42,7 +42,7 @@ const ProductItem = ({ item }) => {
             </s.CartButton>
           </s.HoverControls>
         </s.ItemListImg>
-        <s.ItemListA to={`/itemDetail/${item.itemCode}`}>
+        <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
         <s.ItemListTextBox>
           <s.ItemTitle>{item.name}</s.ItemTitle>
           <s.ItemPrice>{item.price}</s.ItemPrice>
