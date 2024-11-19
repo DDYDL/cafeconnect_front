@@ -57,6 +57,7 @@ import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
 
 import StoreItemRevenue from './component/MainStore/StoreItemRevenue..js';
 import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
+import ShopLayout from './component/Shop/ShopLayout.js';
 
 // import NoticeList from './component/Community(store)/NoticeList.js';
 // import AskWrite from './component/Community(store)/AskWrite.js';
@@ -103,7 +104,12 @@ function App() {
 
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
 
-        <Route exect path="/shopMain" element={<ShopMain/>} />
+        {/* <Route exect path="/shopMain" element={<ShopMain/>} /> */}
+        {/* 중첩 라우팅 설정 */}
+        <Route path="/shopMain" element={<ShopLayout />}>
+          <Route index element={<ShopMain />} />
+        </Route>
+
         <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
         <Route exect path="/orderList" element={<OrderListForStore/>} />
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
