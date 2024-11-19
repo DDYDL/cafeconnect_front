@@ -1,7 +1,7 @@
 import ApexCharts from "apexcharts"; // ApexCharts 임포트
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { CustomButton } from "../Button/Button.style";
+import { CustomButton } from "../styledcomponent/Button.style";
 
 const SalesAnalysis = () => {
   const [title, setTitle] = useState(""); // 제목 상태

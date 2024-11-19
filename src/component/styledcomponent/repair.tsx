@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Textarea } from "flowbite-react";
+// @ts-ignore
 import {BaseGridHeader,BaseGridItem} from "./common.tsx";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";

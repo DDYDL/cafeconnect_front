@@ -58,12 +58,13 @@ import ModifyStoreMain from './component/StoreManagement/ModifyStoreMain.js';
 import StoreItemRevenue from './component/MainStore/StoreItemRevenue..js';
 import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
 
-// import NoticeList from './component/Community(store)/NoticeList.js';
-// import AskWrite from './component/Community(store)/AskWrite.js';
-// import AskList from './component/Community(store)/AskList.js';
-// import SalesWrite from './component/Community(store)/SalesWrite.js';
-// import ComplainList from './component/Community(store)/ComplainList.js';
-// import ComplainDetail from './component/Community(store)/ComplainDetail.js';
+import NoticeList from './component/Community(store)/NoticeList.js';
+import AskWrite from './component/Community(store)/AskWrite.js';
+import AskList from './component/Community(store)/AskList.js';
+import SalesWrite from './component/Community(store)/SalesWrite.js';
+import ComplainList from './component/Community(store)/ComplainList.js';
+import ComplainDetail from './component/Community(store)/ComplainDetail.js';
+import NoticeModal from "./component/Community(store)/NoticeModal";
 
 
 function App() {
@@ -127,24 +128,25 @@ function App() {
         <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
 
 
-        {/* <Route exact path="/noticeList" element={<NoticeList/>} />
+        <Route exact path="/noticeList" element={<NoticeList/>} />
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
         <Route exact path="/salesWrite" element={<SalesWrite />} />
         <Route exact path="/complainList" element={<ComplainList />} />
-        <Route exact path="/complainDetail" element={<ComplainDetail />} /> */}
-
+        <Route exact path="/complainDetail" element={<ComplainDetail />} />
+        <Route exact path="/noticeModal" element={<NoticeModal />} />
 
         {/* 본사 페이지 링크 */}
         {/* <Route exect path="/storeList" element={<IntroMain/>} /> */}
         {/* <Route exect path="/itemList" element={<MenuList/>} /> */}
         {/* <Route exect path="/menuList" element={<Complain/>} /> */}
         {/* <Route exect path="/itemRevenue" element={<LoginStore/>} /> */}
-        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
+
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="//mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
         {/* <Route exect path="/joinAccount" element={<JoinStore/>}/> */}
+        {/* <Route exect path="/shopMain" element={<ShopMain/>}/> */}
 
         <Route exect path="/storeListMain" element={<StoreListMain/>} />
         <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>} />
@@ -171,8 +173,6 @@ function App() {
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
 
-        {/* <Route exect path="/noticeList" element={<JoinStore/>}/> */}
-        {/*<Route exact path="/noticeWrite" element={<NoticeWrite />} />*/}
       </Routes>
     </div>
   );

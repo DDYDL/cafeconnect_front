@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
-import { ButtonContainer, CustomButton } from "../Button/Button.style.js";
-import { CustomHorizontal } from "../Horizin/Horizin.style.js";
-import { InputMedium, Textarea } from "../Input/Input.style.js";
+import { ButtonContainer, CustomButton } from "../styledcomponent/Button.style.js";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import { InputMedium, Textarea } from "../styledcomponent/Input.style.js";
 
 const AskWrite = () => {
   const [title, setTitle] = useState("");

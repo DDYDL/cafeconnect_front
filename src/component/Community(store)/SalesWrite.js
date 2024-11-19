@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
-import { CustomButton, TempSaveButton } from "../Button/Button.style";
-import { CustomHorizontal } from "../Horizin/Horizin.style";
+import { CustomButton, TempSaveButton } from "../styledcomponent/Button.style";
+import { CustomHorizontal } from "../styledcomponent/Horizin.style";
 
 const SalesWrite = () => {
   const [title, setTitle] = useState("");
