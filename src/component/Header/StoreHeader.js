@@ -44,8 +44,8 @@ const StoreHeader = ()=>{
                     </MenuHandler>
                     <h.MenuListOut>
                         <h.MenuListDiv>
-                            <MenuItem><NavLink to="/shopMain">Home</NavLink></MenuItem>
-                        </h.MenuListDiv>s
+                            <MenuItem><NavLink to="/shopMain">쇼핑몰</NavLink></MenuItem>
+                        </h.MenuListDiv>
                         <h.MenuListDiv>
                             <MenuItem><NavLink to="/stockOrderItemAdd">주문상품재고추가</NavLink></MenuItem>
                             <MenuItem><NavLink to="/stockManage">매장재고관리</NavLink></MenuItem>
