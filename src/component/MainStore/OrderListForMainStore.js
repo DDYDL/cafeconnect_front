@@ -1,14 +1,10 @@
-import {
-  CommonWrapper,
-  CommonContainer,
-  ContainerTitleArea,
-} from "../styledcomponent/common.tsx";
-import * as ol from "../styledcomponent/orderlist.tsx";
-import { StyledButton } from "../styledcomponent/button.tsx";
+import { Input, Option, Select } from "@material-tailwind/react";
 import { Datepicker } from "flowbite-react";
-import { Select, Option, Input } from "@material-tailwind/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { StyledButton } from "../styledcomponent/button.tsx";
+import { CommonContainer, CommonWrapper, ContainerTitleArea } from "../styledcomponent/common.tsx";
+import * as ol from "../styledcomponent/orderlist.tsx";
 
 function OrderListForMainStore() {
   const navigate = useNavigate();
@@ -40,25 +36,26 @@ function OrderListForMainStore() {
     },
   ]);
 
- const handleStatusChange = (orderNumber, newStatus) => {
-  setOrders((prevOrders) =>
-    prevOrders.map((order) =>
-      order.orderNumber === orderNumber ? { ...order, status: newStatus } : order
-    )
-  );
-};
- 
+  const handleStatusChange = (orderNumber, newStatus) => {
+    setOrders(prevOrders =>
+      prevOrders.map(order =>
+        order.orderNumber === orderNumber ? { ...order, status: newStatus } : order
+      )
+    );
+  };
+
   return (
     <CommonWrapper>
       <CommonContainer size="1000px">
         <ContainerTitleArea>
           <h2>주문접수 관리</h2>
         </ContainerTitleArea>
+
         <ol.DatePickerWrap>
           <ol.DatePickerInputWrap>
             <Datepicker
               value={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={date => setStartDate(date)}
               className="flowbite-datepicker"
               showTodayButton={true}
               showClearButton={true}
@@ -67,7 +64,7 @@ function OrderListForMainStore() {
             <span>~</span>
             <Datepicker
               value={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={date => setEndDate(date)}
               className="flowbite-datepicker"
               showTodayButton={true}
               showClearButton={true}
@@ -85,11 +82,7 @@ function OrderListForMainStore() {
             </div>
             <form>
               <div className="select-wrap">
-                <Select
-                  value={searchType}
-                  onChange={(val) => setSearchType(val)}
-                  label="검색구분"
-                >
+                <Select value={searchType} onChange={val => setSearchType(val)} label="검색구분">
                   <Option value="">전체</Option>
                   <Option value="status">주문상태</Option>
                   <Option value="store">가맹점</Option>
@@ -98,7 +91,7 @@ function OrderListForMainStore() {
               <div className="input-wrap">
                 <Input
                   value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  onChange={e => setSearchKeyword(e.target.value)}
                   label="검색어를 입력하세요"
                 />
               </div>
@@ -116,19 +109,18 @@ function OrderListForMainStore() {
             <div>상품구매금액</div>
             <div>주문처리</div>
           </ol.MainStoreOrderHeader>
-          {orders.map((order) => (
-            <ol.MainStoreOrderItem key={order.orderNumber} onClick={()=>navigate("/mainStoreOrderDetail")}>
+          {orders.map(order => (
+            <ol.MainStoreOrderItem
+              key={order.orderNumber}
+              onClick={() => navigate("/mainStoreOrderDetail")}
+            >
               <div>{order.orderDate}</div>
               <div>{order.orderNumber}</div>
               <div>{order.productInfo}</div>
               <div>{order.quantity}</div>
               <div>{order.price.toLocaleString()}원</div>
               <ol.StatusAreaWrapper>
-                <Select
-                  label="선택"
-                  value={order.status}
-                  disabled={order.status === "배송완료"} 
-                >
+                <Select label="선택" value={order.status} disabled={order.status === "배송완료"}>
                   <Option value="">주문처리상태</Option>
                   <Option value="주문확인중">주문확인중</Option>
                   <Option value="결제완료">결제완료</Option>
@@ -136,12 +128,15 @@ function OrderListForMainStore() {
                   <Option value="배송중">배송중</Option>
                   <Option value="배송완료">배송완료</Option>
                 </Select>
-                <StyledButton size="sm" theme="white"
-                disabled={order.status === "배송완료"}
-                onClick={(e) =>{
-                  e.stopPropagation(); 
-                  handleStatusChange(order.orderNumber, selectedStatus[order.orderNumber]);
-                }}>
+                <StyledButton
+                  size="sm"
+                  theme="white"
+                  disabled={order.status === "배송완료"}
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleStatusChange(order.orderNumber, selectedStatus[order.orderNumber]);
+                  }}
+                >
                   변경
                 </StyledButton>
               </ol.StatusAreaWrapper>

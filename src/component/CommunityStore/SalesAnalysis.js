@@ -1,7 +1,11 @@
 import ApexCharts from "apexcharts"; // ApexCharts 임포트
+import { Datepicker } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CustomButton } from "../styledcomponent/Button.style";
+import { StyledButton } from "../styledcomponent/button.tsx";
+import * as ol from "../styledcomponent/orderlist.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const SalesAnalysis = () => {
   const [title, setTitle] = useState(""); // 제목 상태
@@ -312,7 +316,7 @@ const SalesAnalysis = () => {
   };
 
   return (
-    <Wrapper>
+    <ContentListDiv>
       <HeadingContainer>
         <Heading>매출 분석</Heading>
         <Navigation>
@@ -334,7 +338,34 @@ const SalesAnalysis = () => {
                 <option value="사용자 지정">사용자 지정</option>
               </Select>
             </Option1>
+
             <Option2>
+              <ol.DatePickerWrap>
+                <ol.DatePickerInputWrap>
+                  <Datepicker
+                    value={startDate}
+                    onChange={date => setStartDate(date)}
+                    className="flowbite-datepicker"
+                    showTodayButton={true}
+                    showClearButton={true}
+                    dateFormat="yyyy-MM-dd"
+                  />
+                  <span>~</span>
+                  <Datepicker
+                    value={endDate}
+                    onChange={date => setEndDate(date)}
+                    className="flowbite-datepicker"
+                    showTodayButton={true}
+                    showClearButton={true}
+                    dateFormat="yyyy-MM-dd"
+                  />
+                </ol.DatePickerInputWrap>
+                <StyledButton size="sm" theme="brown">
+                  조회
+                </StyledButton>
+              </ol.DatePickerWrap>
+
+              {/*         
               <Title2>기간 상세</Title2>
               {selectedPeriod === "사용자 지정" ? (
                 <DateRow>
@@ -368,11 +399,11 @@ const SalesAnalysis = () => {
                     disabled={true} // 비활성화 처리
                   />
                 </DateRow>
-              )}
+              )} */}
             </Option2>
 
             <Option3>
-              <Title3>카테고리:</Title3>
+              <Title3>카테고리</Title3>
               <Select onChange={e => setCategory(e.target.value)} value={category}>
                 <option value="음료">음료</option>
                 <option value="식품">식품</option>
@@ -380,22 +411,24 @@ const SalesAnalysis = () => {
               </Select>
             </Option3>
 
-            <CustomButton type="button" onClick={handleQuery} style={{ marginLeft: "50px" }}>
+            <CustomButton type="button" onClick={handleQuery}>
               조회
             </CustomButton>
           </HeadingDataAndSave>
         </HeadingContainer1>
 
-        <Title4>매출 현황</Title4>
-        <MetricsRow>
-          {metricsData.map((metric, index) => (
-            <MetricBox key={index}>
-              <MetricTitle>{metric.title}</MetricTitle>
-              <MetricValue>{metric.value}</MetricValue>
-              <MetricCategory>{metric.category}</MetricCategory>
-            </MetricBox>
-          ))}
-        </MetricsRow>
+        <FirstBody>
+          <Title4>매출 현황</Title4>
+          <MetricsRow>
+            {metricsData.map((metric, index) => (
+              <MetricBox key={index}>
+                <MetricTitle>{metric.title}</MetricTitle>
+                <MetricValue>{metric.value}</MetricValue>
+                <MetricCategory>{metric.category}</MetricCategory>
+              </MetricBox>
+            ))}
+          </MetricsRow>
+        </FirstBody>
 
         {/* 전체 상품 데이터 테이블 */}
         <SalesTable>
@@ -427,68 +460,62 @@ const SalesAnalysis = () => {
       <GraphContainer>
         <div id="line-chart" ref={chartRef}></div> {/* chartRef를 div에 연결 */}
       </GraphContainer>
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-// 스타일링 부분
-const Wrapper = styled.div`
-  margin: 0 auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 800px;
-  height: 600px;
-  margin-top: 120px;
-`;
-
 const Form = styled.form`
-  width: 800px;
-  height: 669px;
+  // height: 669px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  width: 100%;
 `;
 
 const Navigation = styled.div`
   font-size: 10px;
   position: absolute;
-  margin-left: 290px;
+  right: 0;
 `;
 
 const HeadingContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 38px;
+  position: relative;
+  // margin-bottom: 38px;
+  margin-bottom: 60px;
 `;
 
 const HeadingContainer1 = styled.div`
-  width: 800px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  justify-content: flex-left;
+  // align-items: center;
+  margin-bottom: 15px;
+  // width: 100%;
 `;
 
 const HeadingDataAndSave = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 120px;
+  padding-right: 30px;
+  width: 1000px;
+
   background-color: #f2f2f2;
 `;
 
 const Heading = styled.h2`
   font-size: 24px;
+  font-weight: bold;
   text-align: center;
   flex-grow: 1;
 `;
 
 const Title1 = styled.div`
-  font-size: 20px;
+  font-size: 14px;
   margin-bottom: 10px;
 `;
 
@@ -500,21 +527,25 @@ const Title2 = styled.div`
 `;
 
 const Title3 = styled.div`
-  font-size: 20px;
+  font-size: 14px;
   margin-bottom: 10px;
 `;
 
 const Title4 = styled.div`
+  display: flex;
+  justify-content: left;
   font-size: 20px;
   margin-top: 30px;
   margin-left: 20px;
 `;
 
 const Select = styled.select`
-  padding: 5px;
+  padding-bottom: 10px;
   border-radius: 5px;
   position: relative;
   z-index: 10;
+  height: 24px;
+  margin-bottom: 10px;
 `;
 
 const Option1 = styled.div`
@@ -539,12 +570,18 @@ const Option3 = styled.div`
   margin-right: 50px;
 `;
 
+const FirstBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+`;
+
 const MetricsRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 20px;
-  gap: 10px;
   margin-bottom: 20px;
+  gap: 30px;
 `;
 
 const MetricBox = styled.div`
@@ -555,7 +592,9 @@ const MetricBox = styled.div`
   border-radius: 5px;
   width: 180px;
   height: 100px;
-  padding-left: 10px;
+  padding-left: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background-color: white;
   border: 1px solid lightblue;
 `;
@@ -576,9 +615,7 @@ const MetricCategory = styled.div`
 
 const SalesTable = styled.table`
   width: 100%;
-  border-collapse: collapse;
   margin-top: 20px;
-
   margin-bottom: 50px;
 `;
 
@@ -627,7 +664,7 @@ const options = {
   chart: {
     type: "line",
     height: "350px",
-    width: "900px",
+    // width: "900px",
   },
   series: [
     {
