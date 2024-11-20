@@ -17,10 +17,6 @@ const StoreDetailMain = ()=>{
                         <m.TableInfoTd>01230</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>가맹점명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>Kosta커피 독산역점</m.TableInfoTd>
-                    </m.TableInfoTr>
-                    <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 주소</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>(04872)서울 금천구 독산동 271-1 1층</m.TableInfoTd>
                     </m.TableInfoTr>
@@ -37,7 +33,7 @@ const StoreDetailMain = ()=>{
                         <m.TableInfoTd>매주 월요일</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>계약채결일</m.TableTitleSpan></m.TableInfoTd>
+                        <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>2024.10.12</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>

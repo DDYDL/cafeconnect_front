@@ -17,9 +17,11 @@ const StoreListMain = ()=>{
             <s.ContentListDiv>
                 <s.MainTitleText>가맹점 조회</s.MainTitleText>
                 <s.CategoryButtonGroupDiv flexDirection='row' alignItems='flex-end'>
+                    <s.ButtonDiv>
                     <s.SearchDiv width='200px'>
                         <Input icon={<MagnifyingGlassIcon className="h-5 w-5"/>} label="매장명 검색" />
                     </s.SearchDiv>
+                    </s.ButtonDiv>
                     <s.ButtonInnerDiv className='w-16'>
                         <s.SelectStyle label="지역">
                             <Option>Material Tailwind HTML</Option>

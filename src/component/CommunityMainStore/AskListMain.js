@@ -9,7 +9,7 @@ import {useState} from "react";
 const AskListMain = ()=>{
     const [detail, setDetail] = useState(false);
 
-    const storeDetail = ()=>{
+    const askDetail = ()=>{
         setDetail(!detail);
     }
 
@@ -17,9 +17,9 @@ const AskListMain = ()=>{
         <>
             <s.ContentListDiv>
                 <s.MainTitleText>1:1 문의</s.MainTitleText>
-
+                <s.CategoryButtonGroupDiv >
                     <s.ButtonDiv>총 10건</s.ButtonDiv>
-
+                </s.CategoryButtonGroupDiv>
 
                 <s.TableList>
                     <s.TableListThead>
@@ -31,7 +31,7 @@ const AskListMain = ()=>{
                         <s.TableTextTh width='130px'>답변상태</s.TableTextTh>
                     </s.TableListThead>
                     <tbody>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                             <s.TableTextTd width='50px'>82</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='300px'>판매상품 재고문의</s.TableTextTd>
@@ -39,7 +39,7 @@ const AskListMain = ()=>{
                             <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
                             <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                         <s.TableTextTd width='160px'>81</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
@@ -47,7 +47,7 @@ const AskListMain = ()=>{
                             <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
                             <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                         <s.TableTextTd width='160px'>80</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
@@ -55,7 +55,7 @@ const AskListMain = ()=>{
                             <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
                             <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                         <s.TableTextTd width='160px'>79</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
@@ -63,7 +63,7 @@ const AskListMain = ()=>{
                             <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
                             <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                         <s.TableTextTd width='160px'>78</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
@@ -71,7 +71,7 @@ const AskListMain = ()=>{
                             <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
                             <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={storeDetail}>
+                        <s.TableTextTr onClick={askDetail}>
                         <s.TableTextTd width='160px'>77</s.TableTextTd>
                             <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
                             <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
