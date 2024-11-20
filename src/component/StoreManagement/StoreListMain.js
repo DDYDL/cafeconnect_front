@@ -1,4 +1,5 @@
 import * as s from '../styles/StyledStore.tsx';
+import * as h from '../styles/HStyledStore.tsx';
 
 import { Link } from 'react-router-dom';
 import { Input, Select, Option } from "@material-tailwind/react";
@@ -16,22 +17,20 @@ const StoreListMain = ()=>{
         <>
             <s.ContentListDiv>
                 <s.MainTitleText>가맹점 조회</s.MainTitleText>
-                <s.CategoryButtonGroupDiv flexDirection='row' alignItems='flex-end'>
-                    <s.ButtonDiv>
-                    <s.SearchDiv width='200px'>
+                <h.CategoryButtonGroupDiv>
+                    <h.SearchDiv>
                         <Input icon={<MagnifyingGlassIcon className="h-5 w-5"/>} label="매장명 검색" />
-                    </s.SearchDiv>
-                    </s.ButtonDiv>
-                    <s.ButtonInnerDiv className='w-16'>
-                        <s.SelectStyle label="지역">
+                    </h.SearchDiv>
+                    <h.ButtonInnerDiv className='w-16'>
+                        <h.SelectStyle label="지역">
                             <Option>Material Tailwind HTML</Option>
                             <Option>Material Tailwind React</Option>
                             <Option>Material Tailwind Vue</Option>
                             <Option>Material Tailwind Angular</Option>
                             <Option>Material Tailwind Svelte</Option>
-                        </s.SelectStyle>
-                    </s.ButtonInnerDiv>
-                </s.CategoryButtonGroupDiv>
+                        </h.SelectStyle>
+                    </h.ButtonInnerDiv>
+                </h.CategoryButtonGroupDiv>
 
                 <s.TableList>
                     <s.TableListThead><s.TableTextTh width='160px'>지역</s.TableTextTh>

@@ -31,9 +31,7 @@ export const ContentListDiv = styled.div<Container>`
 `;
 
 export const SearchDiv = styled.div<Container>`
-    width:${(props) => props.width ? props.width : "400px"};
-    margin:${(props) => props.margin ? props.margin : "0 auto"};
-    margin-bottom:${(props) => props.marginBottom ? props.marginBottom : "20px"};
+    width:${(props) => props.width ? props.width : "200px"};
 `;
 
 export const ImgDiv = styled.div`
@@ -126,9 +124,7 @@ export const ButtonDiv = styled.div<Container>`
     height:40px;
     margin-top:40px;
     margin-bottom:7px;
-    position:relative;
     text-align:${(props) => props.textAlign ? props.textAlign :"center"};
-    float:${(props) => props.float ? props.float : "left"};
 `;
 
 export const ButtonInnerDiv = styled.div<Container>`
@@ -203,6 +199,9 @@ export const TableTextTr = styled.tr<Container>`
 `;
 
 export const CategoryButtonGroupDiv = styled.div`
+    margin-top:40px;
+    display:flex;
+    flex-direction:row-reverse;
     text-align:center;
 `;
 
