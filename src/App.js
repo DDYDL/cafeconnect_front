@@ -14,7 +14,7 @@ import IntroMain from './component/Main/IntroMain';
 
 import StoreHeader from './component/Header/StoreHeader';
 import ShopMain from './component/Shop/ShopMain.js';
-import ItemDetail from './component/Shop/ItemDetail.js';
+import ShopItemDetail from './component/Shop/ShopItemDetail.js';
 import MyAlarmList from './component/Mypage/MyAlarmList.js';
 import MyStoreInfo from './component/Mypage/MyStoreInfo.js';
 import MyStoreManage from './component/Mypage/MyStoreManage.js';
@@ -74,6 +74,7 @@ import SalesWrite from './component/CommunityStore/SalesWrite.js';
 import SalesAnalysis from './component/CommunityStore/SalesAnalysis.js';
 
 
+
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
@@ -125,7 +126,7 @@ function App() {
         <Route exect path="/wishList" element={<WishItem/>}/>
         <Route exect path="/cartList" element={<CartList/>}/>
         <Route exect path="/order" element={<Order/>}/>
-        <Route path='/itemDetail/:itemCode' element={<ItemDetail/>}></Route>
+        <Route path='/shopItemDetail/:itemCode' element={<ShopItemDetail/>}></Route>
         <Route exect path="/expenseList" element={<ExpenseListByItems/>}/>
 
 
