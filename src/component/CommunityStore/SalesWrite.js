@@ -191,7 +191,6 @@ const SalesWrite = () => {
 };
 
 const Form = styled.form`
-  height: 669px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -212,7 +211,9 @@ const HeadingContainer1 = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align:center;
   margin-bottom: 10px;
+  width: 1000px;
 `;
 
 const HeadingDataAndSave = styled.div`
@@ -232,69 +233,23 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
-// const TableHeader = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   text-align: center;
-
-//   height: 50px;
-//   font-weight: bold;
-//   font-size: 14px;
-// `;
-
 const TableHeader = styled.div`
   display: flex;
+  //justify-content: left;
   align-items: center;
   text-align: center;
   height: 50px;
+  width: 1000px;
   font-weight: bold;
   font-size: 14px;
 `;
-
-// const TableHeaderItem1 = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   text-align: left;
-//   align-items: center;
-//   // width: 100px;
-//   margin-left: 30px;
-// `;
-
-// const TableHeaderItem2 = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   text-align: left;
-//   align-items: center;
-//   margin-left: 70px;
-//   // width: 450px;
-// `;
-
-// const TableHeaderItem3 = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   text-align: left;
-//   align-items: center;
-
-//   // margin-right: 20px;
-// `;
-
-// const TableHeaderItem4 = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   text-align: left;
-//   align-items: center;
-
-//   margin-right: 20px;
-//   // width: 140px;
-// `;
 
 const TableHeaderItem1 = styled.div`
   display: flex;
   justify-content: center;
   text-align: left;
   align-items: center;
-  margin-left: 30px; /* 순번의 좌측 여백 */
+  margin-left: 50px; /* 순번의 좌측 여백 */
 `;
 
 const TableHeaderItem2 = styled.div`
@@ -318,8 +273,8 @@ const TableHeaderItem4 = styled.div`
   justify-content: center;
   text-align: left;
   align-items: center;
-  margin-right: 40px; /* 테이블 우측 여백 */
-  margin-left: 90px;
+  margin-right: 70px; /* 테이블 우측 여백 */
+  margin-left: 70px;
 `;
 
 const TableRow = styled.div`

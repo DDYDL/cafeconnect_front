@@ -58,11 +58,11 @@ const JoinStore = () => {
       </HeadingContainer>
 
       <Form onSubmit={handleSubmit}>
-        <s.TrStyle style={{ display: "flex", flexDirection: "row", marginLeft: "200px" }}>
+        <s.TrStyle style={{ display: "flex", flexDirection: "row", marginLeft: "200px", borderBottom: "none"}}>
           <s.TableTextTd>아이디 *</s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
-              style={{ width: "300px", marginLeft: "20px" }}
+              style={{ width: "300px", marginLeft: "20px"}}
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
@@ -80,7 +80,7 @@ const JoinStore = () => {
         </s.TrStyle>
 
         <s.TrStyle
-          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px" }}
+          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px",borderBottom: "none" }}
         >
           <s.TableTextTd>비밀번호 *</s.TableTextTd>
           <s.TableTextTd>
@@ -94,7 +94,7 @@ const JoinStore = () => {
         </s.TrStyle>
 
         <s.TrStyle
-          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px" }}
+          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px",borderBottom: "none" }}
         >
           <s.TableTextTd>가맹점 코드 *</s.TableTextTd>
           <s.TableTextTd>
@@ -116,7 +116,7 @@ const JoinStore = () => {
         </s.TrStyle>
 
         <s.TrStyle
-          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px" }}
+          style={{ display: "flex", flexDirection: "row", marginLeft: "200px", paddingTop: "10px",borderBottom: "none" }}
         >
           <s.TableTextTd>가맹점명 *</s.TableTextTd>
           <s.TableTextTd>
@@ -169,6 +169,8 @@ const Form = styled.form`
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin-left: 50px;
+  padding-top: 30px;
 `;
 
 const Select = styled.select`
