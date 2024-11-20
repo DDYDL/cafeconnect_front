@@ -6,12 +6,27 @@ import {useState} from "react";
 import {
     Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
 
+import { useNavigate } from 'react-router';
+import { useAtom } from 'jotai/react';
+import { initMember, memberAtom, tokenAtom } from '../../atoms.js';
+import { useSetAtom } from 'jotai/react';
+
 const StoreHeader = ()=>{
     const [openMenu, setOpenMenu] = useState(false);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () =>{
         setOpen(!open);
+    }
+
+    const navigate = useNavigate();
+    const [member, setMember] = useAtom(memberAtom);
+    const setToken = useSetAtom(tokenAtom);
+
+    const logout = ()=>{
+        setMember({...initMember});
+        setToken('');
+        navigate("/loginStore");
     }
 
     return(
@@ -24,7 +39,7 @@ const StoreHeader = ()=>{
                 <h.DivSide>
                     <h.NavLinkSide to="/changeStore">독산역점</h.NavLinkSide>
                     <h.VerticalLine/>
-                    <h.NavLinkSide to="/logout">로그아웃</h.NavLinkSide>
+                    <h.NavLinkSide to="/logout" onClick={logout}>로그아웃</h.NavLinkSide>
                 </h.DivSide>
 
                 <h.DivMenu>

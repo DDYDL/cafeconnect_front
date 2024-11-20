@@ -1,8 +1,75 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/StyledHeader.tsx';
+import axios from 'axios';
+import { useState } from 'react';
+import { url, axiosInToken } from '../../config.js';
+import { useSetAtom } from 'jotai/react';
+import { memberAtom, tokenAtom } from '../../atoms.js';
 
 const LoginStore = () => {
+    const [member, setMember] = useState({username:'',password:'',deptName:'',roles:''})
+    
+    // 세션 스토리지 token 설정
+    const setToken = useSetAtom(tokenAtom);
+    // 세션 스토리지 member 설정
+    const setSessionMember = useSetAtom(memberAtom);
+    const navigate = useNavigate();
+
+
+    const kakaoRedirectUri = "http://localhost:8080/oauth2/callback/kakao";
+    const kakaoRestAuthKey = "";
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoRestAuthKey}&redirect_uri=${kakaoRedirectUri}`;
+
+    const naverRedirectUri = "http://localhost:8080/oauth2/callback/naver";
+    const naverRestAuthKey = "";
+    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${naverRestAuthKey}&redirect_uri=${naverRedirectUri}`;
+
+    // state 변수인 member 바뀔 때마다 설정
+    const edit = (e)=>{
+        setMember({...member, [e.target.name]:e.target.value});
+    }
+
+    const submit = (e)=>{
+        const formData = new FormData();
+        console.log(member);
+        formData.append("username", member.username);
+        formData.append("password", member.password);
+        e.preventDefault();
+
+        axios.post(`${url}/login`, formData)
+        .then(res=>{
+            // 로그인 성공 시 헤더에 토큰 받아옴
+            const token = res.headers.authorization;
+            // 세션 스토리지에 토큰 설정
+            setToken(token);
+            
+            // token을 가지고 다시 사용자 정보 요청
+            axiosInToken(token).get("store")
+            .then(res=>{
+                // 성공 시 세션 스토리지에 사용자 정보 저장
+                setSessionMember(res.data);
+
+                console.log(res.data);
+                // 가맹점일 시 쇼핑몰로 이동(가맹점 페이지)
+                if(res.data.roles === 'ROLE_STORE') {
+                    navigate('/shopMain');
+                } else if(res.data.roles === 'ROLE_MAINSTORE') {
+                    // 본사면 가맹점 리스트로 이동(본사 페이지)
+                    navigate('/storeListMain');
+                }
+            })
+            .catch(err=>{
+                console.log(err);
+                alert('로그인 실패');
+            })
+        })
+        .catch(err=>{
+            console.log(err);
+            alert('로그인 실패');
+        })
+    }
+
     return (
         <>
             <s.ContentListDiv width='400px' marginLeft='780px'>
@@ -20,8 +87,8 @@ const LoginStore = () => {
                 <s.LoginAlign>
                 <table>
                     <tbody>
-                        <tr><td><s.InputStyle width='400px' marginTop='20px' type="text" placeholder='   Username'/></td></tr>
-                        <tr><td><s.InputStyle width='400px' marginTop='10px' type="password" placeholder='   Password' /></td></tr>
+                        <tr><td><s.InputStyle name='username' width='400px' marginTop='20px' type="text" placeholder='   Username' onChange={edit}/></td></tr>
+                        <tr><td><s.InputStyle name='password' width='400px' marginTop='10px' type="password" placeholder='   Password' onChange={edit}/></td></tr>
                     </tbody>
                 </table>
                 </s.LoginAlign>
@@ -32,14 +99,14 @@ const LoginStore = () => {
                     <span>비밀번호 찾기</span>
                 </s.LoginAlignLeft>
                 <s.ButtonDiv textAlign='right'>
-                    <s.ButtonStyle style={{marginRight:'400px'}}><Link to='shopMain'>로그인</Link></s.ButtonStyle>
+                    <s.ButtonStyle style={{marginRight:'400px'}} onClick={submit}><Link>로그인</Link></s.ButtonStyle>
                 </s.ButtonDiv>
 
                 <s.LoginAlignLeft marginTop='13px' fontSize='12px'><s.HrStyle/><span style={{ float: 'left' }}>&nbsp;&nbsp;또는&nbsp;&nbsp;</span><s.HrStyle/></s.LoginAlignLeft>
                 
                 <s.LoginAlign>
-                    <span><img src='./kakaologin.png'/></span>&nbsp;&nbsp;&nbsp;
-                    <span><img src='./naverLogin.png'/></span>
+                    <span><a href={kakaoAuthUrl}><img src='./kakaologin.png'/></a></span>&nbsp;&nbsp;&nbsp;
+                    <span><a href={naverAuthUrl}><img src='./naverLogin.png'/></a></span>
                 </s.LoginAlign>
 
             </s.ContentListDiv>

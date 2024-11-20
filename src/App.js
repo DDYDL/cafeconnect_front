@@ -79,10 +79,13 @@ import ComplainDetailMain from './component/CommunityMainStore/ComplainDetailMai
 
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
+import { memberAtom } from './atoms.js';
+import { useAtom } from 'jotai/react';
 
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
+  const [member, setMember] = useAtom(memberAtom);
 
   useEffect(()=>{
     // 로그인 페이지는 헤더 안 보이게 하기
@@ -92,10 +95,9 @@ function App() {
 
   return (
     <div>
-      {path===true? <Header/>:null}
-      {/* <StoreHeader/> */}
-      {/* <MainStoreHeader/> */}
-      {/* <Footer/> */}
+      {member.roles === '' && (path===true? <Header/>:null)}
+      {member.roles === 'ROLE_STORE' && <StoreHeader/>}
+      {member.roles === 'ROLE_MAINSTORE' && <MainStoreHeader/>}
 
       <Routes>
         {/* 메인 페이지 링크 */}
