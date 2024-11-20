@@ -80,8 +80,6 @@ import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
 import JoinStore from "./component/CommunityStore/JoinStore.js";
 import NoticeDetail from "./component/CommunityStore/NoticeDetail.js";
 import NoticeModal from "./component/CommunityStore/NoticeModal.js";
-import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
-import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 
 function App() {
   const [path, setPath] = useState(false);
@@ -92,7 +90,7 @@ function App() {
     if(location.pathname === 'loginStore' && path) setPath(false);
     else if(location.pathname !== 'loginStore' && !path) setPath(true);
   })
-  
+
   return (
     <div>
       {/* {path===true? <Header/>:null} */}
@@ -149,7 +147,7 @@ function App() {
 
 
         <Route exact path="/noticeList" element={<NoticeList/>} />
-        {/* <Route exact path="/noticeDetail" element={<NoticeDetail/>} /> */}
+         <Route exact path="/noticeDetail" element={<NoticeDetail/>} />
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
         <Route exact path="/complainList" element={<ComplainList />} />
@@ -167,18 +165,18 @@ function App() {
 
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
-        
+
         <Route path='/category' element={<Category />}/>
         <Route path='/insertMainStore' element={<InsertMainStore />}/>
         <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
         <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
         <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
         <Route path='/repairList' element={<RepairList />}/>
-        
+
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
-        
+
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
-        
+
         <Route path='/itemInsert' element={<ItemInsert />}/>
         <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
@@ -188,20 +186,19 @@ function App() {
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
 
-        {/* <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
+        <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
         <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
 
-        <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />*/}
-        
+        <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         <Route exact path="/askListMain" element={<AskListMain/>} />
         <Route exact path="/noticeModal" element={<NoticeModal />} />
 
-        {/* <Route exact path="/askListMain" element={<AskListMain />} /> */}
+         <Route exact path="/askListMain" element={<AskListMain />} />
 
-        {/*
         <Route exact path="/askDetailMain" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
         <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
+
       </Routes>
     </div>
   );
