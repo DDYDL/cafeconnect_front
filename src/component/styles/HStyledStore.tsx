@@ -135,6 +135,12 @@ export const ButtonInnerDiv = styled.div<Container>`
     margin-right:140px;
 `;
 
+export const ListCntDiv = styled.div<Container>`
+    margin-top:40px;
+    margin-bottom:7px;
+    display:flex;
+`;
+
 export const SelectStyle = styled(Select)`
     display:inline-block;
 `;
