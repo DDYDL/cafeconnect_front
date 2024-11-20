@@ -1,9 +1,13 @@
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Input } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import * as s from "../styles/StyledStore.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
-const ComplainListSample = () => {
+const ComplainList = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
@@ -90,7 +94,7 @@ const ComplainListSample = () => {
   // };
 
   return (
-    <Wrapper>
+    <ContentListDiv>
       <HeadingContainer>
         <Heading>컴플레인 공지</Heading>
         <Navigation>
@@ -112,9 +116,11 @@ const ComplainListSample = () => {
         ))}
 
         <SearchContainer>
-          <SearchTitle>제목</SearchTitle>
-          <SearchInput placeholder="검색어를 입력하세요" />
-          <SearchButton>찾기</SearchButton>
+          <s.ButtonDiv width="200px" float="right">
+            <s.SearchDiv width="200px">
+              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="제목 검색" />
+            </s.SearchDiv>
+          </s.ButtonDiv>
         </SearchContainer>
       </HeadingContainer1>
 
@@ -150,40 +156,24 @@ const ComplainListSample = () => {
           <CustomHorizontal width="basic" bg="grey" />
         </div>
       ))}
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-
-  margin-top: 120px;
-  box-sizing: border-box;
-
-  position: relative;
-`;
-
 const HeadingContainer = styled.div`
-  width: 800px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  // margin-bottom: 38px;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 `;
 
 const HeadingContainer1 = styled.div`
-  width: 800px;
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
+  text-align: center;
 `;
 
 const Heading = styled.h2`
@@ -201,23 +191,19 @@ const Navigation = styled.div`
 
 const PeriodButton = styled.button`
   display: flex;
-  // flex-direction: row;
   justify-content: center;
   text-align: center;
   align-items: center;
 
   width: 120px;
   height: 40px;
-  padding: 8px 16px;
-  background-color: ${props => (props.isSelected ? "lightblue" : "white")};
+  margin-top: 30px;
+
+  background-color: ${props => (props.isSelected ? "lightgreen" : "white")};
   font-size: 16px;
   border: ${props => (props.isSelected ? "2px solid grey" : "1px solid #ddd")};
   border-radius: 5px;
   cursor: pointer;
-
-  &:hover {
-    background-color: ${props => (props.isSelected ? "lightblue" : "#f0f0f0")};
-  }
 `;
 
 const SearchContainer = styled.div`
@@ -262,9 +248,10 @@ const TableHeader = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 800px;
   height: 50px;
-  font-weight: bold;
+  // font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
 
   & > div:first-child {
     margin-left: 30px;
@@ -280,7 +267,6 @@ const TableInfoList = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 800px;
   height: 50px;
 
   margin-top: 5px;
@@ -346,4 +332,4 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-export default ComplainListSample;
+export default ComplainList;

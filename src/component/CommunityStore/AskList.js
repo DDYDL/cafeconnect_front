@@ -1,8 +1,12 @@
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Input } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CustomButton } from "../styledcomponent/Button.style.js";
+import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import * as s from "../styles/StyledStore.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const AskList = () => {
   const [title, setTitle] = useState("");
@@ -81,7 +85,8 @@ const AskList = () => {
   };
 
   return (
-    <Wrapper>
+    // <Wrapper>
+    <ContentListDiv>
       <HeadingContainer>
         <Heading>1:1 문의</Heading>
         <Navigation>
@@ -92,15 +97,15 @@ const AskList = () => {
       </HeadingContainer>
 
       <HeadingContainer1>
-        <CustomButton background onClick={askWrite}>
+        <StyledButton size="md" theme="brown" onClick={askWrite} style={{ marginTop: "30px" }}>
           글 작성
-        </CustomButton>
+        </StyledButton>
 
-        <SearchContainer>
-          <SearchTitle>제목</SearchTitle>
-          <SearchInput placeholder="검색어를 입력하세요" />
-          <SearchButton>찾기</SearchButton>
-        </SearchContainer>
+        <s.ButtonDiv width="200px" float="right">
+          <s.SearchDiv width="200px">
+            <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="제목 검색" />
+          </s.SearchDiv>
+        </s.ButtonDiv>
       </HeadingContainer1>
 
       <CustomHorizontal width="basic" bg="black" />
@@ -147,39 +152,37 @@ const AskList = () => {
           )}
         </div>
       ))}
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
+// const Wrapper = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   text-align: center;
+//   width: 100%;
 
-  margin-top: 120px;
-  box-sizing: border-box;
+//   margin-top: 120px;
+//   box-sizing: border-box;
 
-  position: relative;
-`;
+//   position: relative;
+// `;
 
 const HeadingContainer = styled.div`
-  width: 800px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  margin-bottom: 38px;
+  // margin-bottom: 38px;
 `;
 
 const HeadingContainer1 = styled.div`
-  width: 800px;
   display: flex;
   justify-content: space-between;
+  text-align: center;
   align-items: center;
-  margin-bottom: 15px;
 `;
 
 const Heading = styled.h2`
@@ -237,9 +240,10 @@ const TableHeader = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 800px;
-  height: 50px;
+  height: 40px;
   font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
 
   & > div:first-child {
     margin-left: 30px;
@@ -255,7 +259,7 @@ const TableInfoList = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 800px;
+  // width: 800px;
   height: 50px;
 
   margin-top: 5px;
