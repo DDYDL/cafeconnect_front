@@ -12,6 +12,7 @@ import ComplainWrite from './component/Main/ComplainWrite.js';
 import LoginMainStore from './component/Main/LoginMainStore.js';
 import IntroMain from './component/Main/IntroMain';
 
+
 import StoreHeader from './component/Header/StoreHeader';
 import ShopMain from './component/Shop/ShopMain.js';
 import ShopItemDetail from './component/Shop/ShopItemDetail.js';
@@ -25,8 +26,9 @@ import StockOrderStoreItem from './component/Stock/StockOtherStoreItem.js';
 
 import WishItem from './component/Shop/WishItem.js';
 import CartList from './component/Shop/CartList.js';
-import MainStoreHeader from './component/Header/MainStoreHeader';
 
+
+import MainStoreHeader from './component/Header/MainStoreHeader';
 import Order from './component/Shop/OrderForm.js';
 import OrderListForStore from './component/Shop/OrderListForStore.js';
 import OrderDetailForStore from './component/Shop/OrderDetailForStore.js';
@@ -59,27 +61,25 @@ import StoreItemRevenue from './component/MainStore/StoreItemRevenue.js';
 import ExpenseListByItems from './component/Shop/ExpenseListByItems.js';
 import ShopLayout from './component/Shop/ShopLayout.js';
 
+import JoinStore from "./component/CommunityStore/JoinStore.js";
 import NoticeList from './component/CommunityStore/NoticeList.js';
-import AskWrite from './component/CommunityStore/AskWrite.js';
+import NoticeDetail from "./component/CommunityStore/NoticeDetail.js";
+import NoticeModal from "./component/CommunityStore/NoticeModal.js";
 import AskList from './component/CommunityStore/AskList.js';
+import AskWrite from './component/CommunityStore/AskWrite.js';
 import ComplainList from './component/CommunityStore/ComplainList.js';
 import ComplainDetail from './component/CommunityStore/ComplainDetail.js';
 
+import NoticeListMain from "./component/CommunityMainStore/NoticeListMain.js";
+import NoticeWriteMain from './component/CommunityMainStore/NoticeWriteMain.js';
+import NoticeDetailMain from "./component/CommunityMainStore/NoticeDetailMain.js";
 import AskListMain from './component/CommunityMainStore/AskListMain.js';
 import AskDetailMain from './component/CommunityMainStore/AskDetailMain.js';
 import ComplainListMain from './component/CommunityMainStore/ComplainListMain.js';
 import ComplainDetailMain from './component/CommunityMainStore/ComplainDetailMain.js';
 
-import SalesWrite from './component/CommunityStore/SalesWrite.js';
-import SalesAnalysis from './component/CommunityStore/SalesAnalysis.js';
-
-
-import NoticeDetailMain from "./component/CommunityMainStore/NoticeDetailMain.js";
-import NoticeListMain from "./component/CommunityMainStore/NoticeListMain.js";
-import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
-import JoinStore from "./component/CommunityStore/JoinStore.js";
-import NoticeDetail from "./component/CommunityStore/NoticeDetail.js";
-import NoticeModal from "./component/CommunityStore/NoticeModal.js";
+import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
+import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 
 function App() {
   const [path, setPath] = useState(false);
@@ -111,7 +111,7 @@ function App() {
         <Route path='/loginMainStore' element={<LoginMainStore />}/>
 
         <Route exect path="/logout" element={<IntroMain/>}/>
-        {/* <Route exect path="/joinStore" element={<JoinStore/>}/> */}
+        <Route exect path="/joinStore" element={<JoinStore/>}/>
 
 
         {/* 가맹점 페이지 링크 */}
@@ -124,7 +124,7 @@ function App() {
         </Route>
 
         <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
-        <Route exect path="/orderList" element={<OrderListForStore/>} />
+        <Route exect path="/orderList" element={<OrderListForStore/>}/>
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
 
         <Route exect path="/repairRequestList" element={<RepairRequestList/>}/>
@@ -132,7 +132,7 @@ function App() {
         <Route exect path="/wishList" element={<WishItem/>}/>
         <Route exect path="/cartList" element={<CartList/>}/>
         <Route exect path="/order" element={<Order/>}/>
-        <Route path='/shopItemDetail/:itemCode' element={<ShopItemDetail/>}></Route>
+        <Route path='/shopItemDetail/:itemCode' element={<ShopItemDetail/>}/>
         <Route exect path="/expenseList" element={<ExpenseListByItems/>}/>
 
 
@@ -147,10 +147,10 @@ function App() {
 
 
         <Route exact path="/noticeList" element={<NoticeList/>} />
-         <Route exact path="/noticeDetail" element={<NoticeDetail/>} />
+        <Route exact path="/noticeDetail" element={<NoticeDetail/>}/>
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
-        <Route exact path="/complainList" element={<ComplainList />} />
+        <Route exact path="/complainList" element={<ComplainList/>} />
         <Route exact path="/complainDetail" element={<ComplainDetail />} />
 
         <Route exact path="/salesAnalysis" element={<SalesAnalysis/>}/>
@@ -176,25 +176,20 @@ function App() {
         <Route path='/mainItemList' element={<MainStore_ItemList />}/>
 
         <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
-
         <Route path='/itemInsert' element={<ItemInsert />}/>
-        <Route path='/itemUpdate/:itemCode' element={<ItemUpdate />}/>
+        <Route path='/itemUpdate/:itemCode' element={<ItemUpdate/>}/>
         <Route path='/menuInsert' element={<MenuInsert />}/>
-        <Route path='/menuUpdate/:menuCode' element={<MenuUpdate />}/>
+        <Route path='/menuUpdate/:menuCode' element={<MenuUpdate/>}/>
 
-        <Route exect path="/addStoreMain" element={<AddStoreMain/>}/>
+        <Route exect path='/addStoreMain' element={<AddStoreMain/>}/>
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
 
         <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
         <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
-
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
-        <Route exact path="/askListMain" element={<AskListMain/>} />
-        <Route exact path="/noticeModal" element={<NoticeModal />} />
-
-         <Route exact path="/askListMain" element={<AskListMain />} />
-
+        <Route exact path="/noticeModal" element={<NoticeModal/>}/>
+        <Route exact path="/askListMain" element={<AskListMain/>}/>
         <Route exact path="/askDetailMain" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
         <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
