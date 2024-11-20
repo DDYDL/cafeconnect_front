@@ -1,6 +1,6 @@
+import { Button, ButtonGroup, IconButton, Input, Select } from "@material-tailwind/react";
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button, ButtonGroup, IconButton, Input, Select } from "@material-tailwind/react";
 
 interface Container {
     borderLeft:string;

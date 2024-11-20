@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
-import { ButtonContainer, CustomButton } from "../styledcomponent/Button.style.js";
-import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import { InputMedium, InputSmall, Textarea } from "../styledcomponent/Input.style.js";
+import { ButtonContainer } from "../styledcomponent/Button.style.js";
+// import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import { Link } from "react-router-dom";
+import { Textarea } from "../styledcomponent/Input.style.js";
+import * as s from "../styles/StyledStore.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const NoticeWriteMain = () => {
   const [title, setTitle] = useState("");
@@ -51,74 +54,99 @@ const NoticeWriteMain = () => {
   };
 
   return (
-    <Wrapper>
+    <ContentListDiv>
       <HeadingContainer>
         <Heading>공지사항 작성</Heading>
-        <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>공지사항 작성</BoldText>
-        </Navigation>
       </HeadingContainer>
 
-      <CustomHorizontal width="basic" bg="black" />
-
       <Form onSubmit={handleSubmit}>
-        <FormContainer1>
+        <s.TrStyle>
+          <s.TableTextTd>공지유형 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "300px", paddingLeft: "90px" }}
+              placeholder="주요 공지사항"
+              disabled
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
+
+        {/* <FormContainer1>
           <Form1div>공지유형 *</Form1div>
           <InputSmall type="text" value="주요 공지사항" disabled />
-        </FormContainer1>
+        </FormContainer1> */}
 
-        <CustomHorizontal width="basic" bg="grey" />
+        {/* <CustomHorizontal width="basic" bg="grey" /> */}
 
-        <FormContainer2>
-          <Form2div>제목 *</Form2div>
-          <InputMedium
-            // style={{ marginRight: "100x" }}
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
-        </FormContainer2>
+        <s.TrStyle>
+          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "680px" }}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
 
-        <CustomHorizontal width="basic" bc="grey" />
+        {/* <CustomHorizontal width="basic" bc="grey" /> */}
 
-        <FormContainer3>
+        {/* <FormContainer3>
           <Form3div>내용 *</Form3div>
           <Textarea value={content} onChange={e => setContent(e.target.value)} />
-        </FormContainer3>
+        </FormContainer3> */}
 
-        <div>
-          <CustomHorizontal width="basic" bc="grey" />
-        </div>
+        <s.TrStyle style={{ height: "200px", margin: "30px" }}>
+          <s.TableTextTd>내용 *</s.TableTextTd>
+          <s.TableTextTd>
+            <Textarea
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              style={{ width: "680px" }}
+            />
+            {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
+          </s.TableTextTd>
+        </s.TrStyle>
+
+        {/* <div> */}
+        {/* <CustomHorizontal width="basic" bc="grey" /> */}
+        {/* </div> */}
 
         {/* <Button variant="outline"></Button> */}
 
         <ButtonContainer>
-          <CustomButton variant="cancel" onClick={handleCancel}>
-            취소
-          </CustomButton>
-          <CustomButton variant="register" type="submit" onClick={handleRegister}>
-            등록하기
-          </CustomButton>
+          <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
+            <Link to="/complain">취소</Link>
+          </s.ButtonStyle>
+          &nbsp;&nbsp;
+          <s.ButtonStyle onClick={handleRegister}>
+            <Link to="/complain">등록하기</Link>
+          </s.ButtonStyle>
         </ButtonContainer>
       </Form>
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
+const HeadingContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center; /* 좌우로 배치 */
   align-items: center;
-  justify-content: center;
   text-align: center;
-  width: 100%;
+  margin-bottom: 38px;
+`;
 
-  margin-top: 120px;
-  box-sizing: border-box;
+const Heading = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  position: absolute;
+`;
 
-  position: relative;
+const Navigation = styled.div`
+  font-size: 10px;
+  margin-left: 850px;
 `;
 
 const Form = styled.form`
@@ -127,29 +155,6 @@ const Form = styled.form`
   align-items: center;
   text-align: center;
   flex-direction: column;
-`;
-
-const HeadingContainer = styled.div`
-  width: 800px;
-  display: flex;
-  justify-content: space-between; /* 좌우로 배치 */
-  align-items: center;
-  margin-bottom: 38px;
-`;
-
-const Heading = styled.h2`
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 0;
-  text-align: center;
-  flex-grow: 1; /* 중앙에 위치하도록 성장 */
-`;
-
-const Navigation = styled.div`
-  font-size: 10px;
-  position: absolute; /* 절대 위치 */
-  margin-right: 470px;
-  right: 0; /* 오른쪽에 배치 */
 `;
 
 const FormContainer1 = styled.div`

@@ -3,6 +3,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
 import { CustomButton, TempSaveButton } from "../styledcomponent/Button.style";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const SalesWrite = () => {
   const [title, setTitle] = useState("");
@@ -105,7 +106,7 @@ const SalesWrite = () => {
   };
 
   return (
-    <Wrapper>
+    <ContentListDiv>
       <Form onSubmit={handleSubmit}>
         <HeadingContainer>
           <Heading>매출 입력</Heading>
@@ -124,8 +125,10 @@ const SalesWrite = () => {
               />
             </SelectData>
 
-            <TempSaveButton>임시저장</TempSaveButton>
-            <CustomButton>등록</CustomButton>
+            <TempSaveButton style={{ borderRadius: "4px", marginTop: "3px" }}>
+              임시저장
+            </TempSaveButton>
+            <CustomButton style={{ borderRadius: "4px", marginTop: "3px" }}>등록</CustomButton>
           </HeadingDataAndSave>
 
           <HeadingSummary>
@@ -183,33 +186,20 @@ const SalesWrite = () => {
           </TableRow>
         ))}
       </Form>
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-
-  margin-top: 120px;
-  box-sizing: border-box;
-
-  position: relative;
-`;
-
 const Form = styled.form`
-  width: 800px;
   height: 669px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const HeadingContainer = styled.div`
-  width: 800px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -219,7 +209,6 @@ const HeadingContainer = styled.div`
 `;
 
 const HeadingContainer1 = styled.div`
-  width: 800px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -243,23 +232,69 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
+// const TableHeader = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   text-align: center;
+
+//   height: 50px;
+//   font-weight: bold;
+//   font-size: 14px;
+// `;
+
 const TableHeader = styled.div`
   display: flex;
-  justify-content: flex-start;
   align-items: center;
-
-  width: 800px;
+  text-align: center;
   height: 50px;
   font-weight: bold;
   font-size: 14px;
 `;
+
+// const TableHeaderItem1 = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   text-align: left;
+//   align-items: center;
+//   // width: 100px;
+//   margin-left: 30px;
+// `;
+
+// const TableHeaderItem2 = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   text-align: left;
+//   align-items: center;
+//   margin-left: 70px;
+//   // width: 450px;
+// `;
+
+// const TableHeaderItem3 = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   text-align: left;
+//   align-items: center;
+
+//   // margin-right: 20px;
+// `;
+
+// const TableHeaderItem4 = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   text-align: left;
+//   align-items: center;
+
+//   margin-right: 20px;
+//   // width: 140px;
+// `;
 
 const TableHeaderItem1 = styled.div`
   display: flex;
   justify-content: center;
   text-align: left;
   align-items: center;
-  width: 100px;
+  margin-left: 30px; /* 순번의 좌측 여백 */
 `;
 
 const TableHeaderItem2 = styled.div`
@@ -267,7 +302,7 @@ const TableHeaderItem2 = styled.div`
   justify-content: center;
   text-align: left;
   align-items: center;
-  width: 450px;
+  flex-grow: 1; /* 상품명 부분의 공간 확장 */
 `;
 
 const TableHeaderItem3 = styled.div`
@@ -275,8 +310,7 @@ const TableHeaderItem3 = styled.div`
   justify-content: center;
   text-align: left;
   align-items: center;
-  width: 100px;
-  // margin-right: 20px;
+  margin-right: 10px; /* 매출 합계와 간격 추가 */
 `;
 
 const TableHeaderItem4 = styled.div`
@@ -284,14 +318,12 @@ const TableHeaderItem4 = styled.div`
   justify-content: center;
   text-align: left;
   align-items: center;
-
-  margin-right: 20px;
-  width: 140px;
+  margin-right: 40px; /* 테이블 우측 여백 */
+  margin-left: 90px;
 `;
 
 const TableRow = styled.div`
   display: flex;
-  width: 800px;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;

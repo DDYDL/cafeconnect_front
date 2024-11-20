@@ -1,299 +1,209 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
+import { ButtonContainer } from "../styledcomponent/Button.style.js";
+// import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import { Link } from "react-router-dom";
+import { Textarea } from "../styledcomponent/Input.style.js";
+import * as s from "../styles/StyledStore.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const ComplainDetail = () => {
-  const { id } = useParams(); // URL에서 ID를 가져옴
-  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
 
-  const [complainDetail, setComplainDetail] = useState(true); // 컴플레인 상세 데이터 상태
+  const handleRegister = () => {
+    navigate("/complainList");
+  };
 
-  // 페이지 로드 시 해당 ID의 컴플레인 데이터 불러오기
-  useEffect(() => {
-    fetch(`http://localhost:8080/complainDetail/${id}`)
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    // 작성한 글을 서버로 전송
+    const newNotice = {
+      type: "주요 공지사항", // 항상 공지사항
+      title,
+      content,
+      date: new Date().toISOString(),
+    };
+
+    fetch("https://www.localhost:8080/notice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newNotice),
+    })
       .then(response => response.json())
       .then(data => {
-        setComplainDetail(data);
-      })
-      .catch(error => console.error("컴플레인 상세 조회 오류:", error));
-  }, [id]);
+        console.log("Notice added:", data);
+        // 글 작성 후 입력 필드 초기화
+        setTitle("");
+        setContent("");
 
-  // 목록으로 버튼 클릭 시 컴플레인 목록 페이지로 이동
-  const handleBackToList = () => {
-    navigate("/ComplainList");
+        // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
+        navigate("/community/noticeList");
+      })
+      .catch(error => console.error("Error posting notice:", error));
   };
 
   return (
-    <Wrapper>
-      {complainDetail ? (
-        <>
-          <HeadingContainer>
-            <Heading>컴플레인 상세</Heading>
-            <Navigation>
-              <span>홈 / 커뮤니티</span>
-              <span> / </span>
-              <BoldText>컴플레인 공지 상세</BoldText>
-            </Navigation>
-          </HeadingContainer>
+    <ContentListDiv>
+      <HeadingContainer>
+        <Heading>공지사항 상세</Heading>
+      </HeadingContainer>
 
-          <DetailContainer>
-            <FirstInfo>
-              <FirstLabel1>제목</FirstLabel1>
-              <FirstDetail1>{complainDetail.title}</FirstDetail1>
-              <FirstLabel2>작성일</FirstLabel2>
-              <FirstDetail2>{complainDetail.date}</FirstDetail2>
-            </FirstInfo>
+      <Form onSubmit={handleSubmit}>
+        <s.TrStyle>
+          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "290px", paddingLeft: "90px" }}
+              placeholder="직원이 불친절함"
+              disabled
+            />
+          </s.TableTextTd>
 
-            <SecondInfo>
-              <SecondLabel>내용</SecondLabel>
-              <SecondDetail>{complainDetail.content}</SecondDetail>
-            </SecondInfo>
+          <s.TableTextTd>작성일 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "290px", paddingLeft: "90px" }}
+              placeholder="2024-12-20"
+              disabled
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
 
-            <ThirdInfo>
-              <ThirdLabel>코멘트</ThirdLabel>
-              <ThirdDetail>
-                {complainDetail.comments || "혹시 직원교육 신청 또는 직접 교육 참여하시려면..."}
-              </ThirdDetail>
-            </ThirdInfo>
+        <s.TrStyle>
+          <s.TableTextTd>글 내용 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "680px", paddingLeft: "20px" }}
+              placeholder="자주가던 매장인데...."
+              disabled
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
 
-            <ButtonContainer>
-              <BackButton onClick={handleBackToList}>목록으로</BackButton>
-            </ButtonContainer>
-          </DetailContainer>
-        </>
-      ) : (
-        <Loading>로딩 중...</Loading>
-      )}
-    </Wrapper>
+        <s.TrStyle style={{ height: "200px", margin: "30px" }}>
+          <s.TableTextTd>코멘트 *</s.TableTextTd>
+          <s.TableTextTd>
+            <Textarea
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              style={{ width: "680px" }}
+            />
+            {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
+          </s.TableTextTd>
+        </s.TrStyle>
+
+        {/* <div> */}
+        {/* <CustomHorizontal width="basic" bc="grey" /> */}
+        {/* </div> */}
+
+        {/* <Button variant="outline"></Button> */}
+
+        <ButtonContainer>
+          <s.ButtonStyle onClick={handleRegister}>
+            <Link to="/complainList">목록으로</Link>
+          </s.ButtonStyle>
+        </ButtonContainer>
+      </Form>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  margin-top: 120px;
-  box-sizing: border-box;
-  position: relative;
-`;
-
 const HeadingContainer = styled.div`
-  width: 800px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* 좌우로 배치 */
   align-items: center;
+  text-align: center;
   margin-bottom: 38px;
 `;
 
 const Heading = styled.h2`
   font-size: 24px;
   font-weight: bold;
-  margin-top: 0;
-  text-align: center;
-  flex-grow: 1;
+  position: absolute;
 `;
 
 const Navigation = styled.div`
   font-size: 10px;
-  position: absolute;
-  margin-right: 560px;
-  right: 0;
+  margin-left: 850px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  padding-top: 10px;
+`;
+
+const FormContainer1 = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  width: 600px;
+
+  margin-top: 30px;
+  margin-bottom: 30px;
+`;
+
+const Form1div = styled.div`
+  /* 직속 자식 div에만 적용 */
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 50px;
+`;
+
+const FormContainer2 = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  align-items: center;
+  width: 800px;
+
+  margin-top: 30px;
+  margin-bottom: 30px;
+
+  margin-left: 200px;
+`;
+
+const Form2div = styled.div`
+  /* 직속 자식 div에만 적용 */
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 82px;
+`;
+
+const FormContainer3 = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  align-items: center;
+  width: 800px;
+
+  margin-top: 30px;
+  margin-bottom: 30px;
+
+  margin-left: 200px;
+`;
+
+const Form3div = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 82px;
 `;
 
 const BoldText = styled.span`
   font-weight: bold;
-`;
-
-const DetailContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  justify-content: space-between;
-
-  background-color: #d5d5d5;
-
-  width: 800px;
-  height: 600px;
-
-  // margin-bottom: 20px;
-`;
-
-const FirstInfo = styled.div`
-  // height: 50px;
-
-  display: flex;
-  flex-direction: row;
-
-  justify-content: flex-start;
-  algin-items: center;
-  text-align: center;
-
-  padding-top: 30px;
-  padding-left: 30px;
-`;
-
-const SecondInfo = styled.div`
-  // height: 50px;
-
-  display: flex;
-
-  justify-content: flex-start;
-  algin-items: center;
-  text-align: center;
-
-  padding-top: 30px;
-  padding-left: 30px;
-`;
-
-const ThirdInfo = styled.div`
-  // height: 50px;
-
-  display: flex;
-
-   justify-content: flex-start
-  algin-items: center;
-  text-align: center;
-
-  padding-top: 30px;
-  padding-left: 30px;  
-
-`;
-
-const FirstLabel1 = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-
-  margin-right: 65px;
-
-  // margin-bottom: 10px;
-
-  // text-align: left;
-  margin-top: 10px;
-`;
-
-const FirstLabel2 = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-
-  margin-right: 65px;
-  margin-left: 90px;
-
-  // margin-bottom: 10px;
-
-  // text-align: left;
-  margin-top: 10px;
-`;
-
-const SecondLabel = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 10px;
-  margin-right: 65px;
-  text-align: left;
-`;
-
-const ThirdLabel = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 10px;
-  margin-right: 50px;
-  text-align: left;
-`;
-
-const FirstDetail1 = styled.div`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-
-  width: 200px;
-  height: 50px;
-
-  white-space: pre-line; /* 텍스트가 줄바꿈되도록 처리 */
-  word-wrap: break-word; /* 긴 텍스트가 자동으로 줄바꿈 */
-`;
-
-const FirstDetail2 = styled.div`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-
-  width: 200px;
-  height: 50px;
-
-  white-space: pre-line; /* 텍스트가 줄바꿈되도록 처리 */
-  word-wrap: break-word; /* 긴 텍스트가 자동으로 줄바꿈 */
-`;
-
-const SecondDetail = styled.div`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-
-  width: 600px;
-  height: 200px;
-
-  white-space: pre-line; /* 텍스트가 줄바꿈되도록 처리 */
-  word-wrap: break-word; /* 긴 텍스트가 자동으로 줄바꿈 */
-`;
-
-const ThirdDetail = styled.div`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-
-  width: 600px;
-  height: 200px;
-
-  white-space: pre-line; /* 텍스트가 줄바꿈되도록 처리 */
-  word-wrap: break-word; /* 긴 텍스트가 자동으로 줄바꿈 */
-`;
-
-const Detail = styled.div`
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
-  min-height: 50px;
-  white-space: pre-line; /* 텍스트가 줄바꿈되도록 처리 */
-  word-wrap: break-word; /* 긴 텍스트가 자동으로 줄바꿈 */
-`;
-
-const ButtonContainer = styled.div`
-  margin-top: 20px;
-  margin-bottom: 50px;
-`;
-
-const BackButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #ccc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
-const Loading = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #555;
 `;
 
 export default ComplainDetail;

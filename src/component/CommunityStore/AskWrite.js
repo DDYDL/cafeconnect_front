@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
+import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
-import { ButtonContainer, CustomButton } from "../styledcomponent/Button.style.js";
-import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import { InputMedium, Textarea } from "../styledcomponent/Input.style.js";
+import { ButtonContainer } from "../styledcomponent/Button.style.js";
+import { Textarea } from "../styledcomponent/Input.style.js";
+import * as s from "../styles/StyledStore.tsx";
+import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const AskWrite = () => {
   const [title, setTitle] = useState("");
@@ -52,122 +53,115 @@ const AskWrite = () => {
   };
 
   return (
-    <Wrapper>
+    <ContentListDiv>
       <HeadingContainer>
         <Heading>1:1문의 작성</Heading>
-        <Navigation>
+        {/* <Navigation>
           <span>홈 / 커뮤니티</span>
           <span> / </span>
           <BoldText>1:1 문의 작성</BoldText>
-        </Navigation>
+        </Navigation> */}
       </HeadingContainer>
 
-      <CustomHorizontal width="basic" bg="black" />
-
       <Form onSubmit={handleSubmit}>
-        <FormContainer1>
-          {/* <Label> */}
-          <Form1div>요구사항 유형 *</Form1div>
+        <s.TrStyle>
+          <s.TableTextTd>요구사항 유형 *</s.TableTextTd>
+          <s.TableTextTd>
+            {/* <s.InputStyle type="text" style={{ width: "680px" }} disabled /> */}
 
-          <Select
-            id="inquiryType"
-            value={selectedInquiryType}
-            onChange={e => setSelectedInquiryType(e.target.value)}
-          >
-            <Option value="default">선택</Option>
-            <Option value="상품 문의">상품 문의</Option>
-            <Option value="배송 문의">배송 문의</Option>
-            <Option value="수리 문의">수리 문의</Option>
-            <Option value="이벤트 문의">이벤트 문의</Option>
-            <Option value="기타 문의">기타 문의</Option>
-          </Select>
-        </FormContainer1>
+            <Select
+              style={{ marginLeft: "20px" }}
+              id="inquiryType"
+              value={selectedInquiryType}
+              onChange={e => setSelectedInquiryType(e.target.value)}
+            >
+              <Option value="default">선택</Option>
+              <Option value="상품 문의">상품 문의</Option>
+              <Option value="배송 문의">배송 문의</Option>
+              <Option value="수리 문의">수리 문의</Option>
+              <Option value="이벤트 문의">이벤트 문의</Option>
+              <Option value="기타 문의">기타 문의</Option>
+            </Select>
+          </s.TableTextTd>
+        </s.TrStyle>
 
-        <CustomHorizontal width="basic" bc="grey" />
+        <s.TrStyle>
+          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              style={{ width: "680px", marginLeft: "20px" }}
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
 
-        <FormContainer2>
-          {/* <Label> */}
-          <Form2div>제목 *</Form2div>
-          <InputMedium type="text" value={title} onChange={e => setTitle(e.target.value)} />
-          {/* </Label> */}
-        </FormContainer2>
-
-        <CustomHorizontal width="basic" bg="grey" />
-
-        <FormContainer3>
-          <Form3div>내용 *</Form3div>
-          <Textarea value={content} onChange={e => setContent(e.target.value)} />
-        </FormContainer3>
-
-        <CustomHorizontal width="basic" bg="black" />
+        <s.TrStyle style={{ height: "200px", paddingTop: "20px" }}>
+          <s.TableTextTd>내용 *</s.TableTextTd>
+          <s.TableTextTd>
+            <Textarea
+              style={{ width: "680px", marginLeft: "20px" }}
+              value={content}
+              onChange={e => setContent(e.target.value)}
+            />
+            {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
+          </s.TableTextTd>
+        </s.TrStyle>
 
         <ButtonContainer>
-          <CustomButton variant="cancel" onClick={handleCancel}>
-            취소
-          </CustomButton>
-          <CustomButton variant="register" type="submit" onClick={handleRegister}>
-            등록하기
-          </CustomButton>
+          <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
+            <Link to="/complain">취소</Link>
+          </s.ButtonStyle>
+          &nbsp;&nbsp;
+          <s.ButtonStyle onClick={handleRegister}>
+            <Link to="/complain">등록하기</Link>
+          </s.ButtonStyle>
         </ButtonContainer>
       </Form>
-    </Wrapper>
+    </ContentListDiv>
   );
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  width: 100%;
-
-  margin-top: 120px;
-  box-sizing: border-box;
-
-  position: relative;
-`;
-
-const Form = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-`;
-
 const HeadingContainer = styled.div`
-  width: 800px;
   display: flex;
   justify-content: center; /* 좌우로 배치 */
   align-items: center;
+  text-align: center;
   margin-bottom: 38px;
 `;
 
 const Heading = styled.h2`
   font-size: 24px;
   font-weight: bold;
-  margin-top: 0;
-  text-align: center;
-  flex-grow: 1; /* 중앙에 위치하도록 성장 */
+  position: absolute;
 `;
 
 const Navigation = styled.div`
   font-size: 10px;
-  position: absolute; /* 절대 위치 */
-  margin-right: 470px;
-  right: 0; /* 오른쪽에 배치 */
+  margin-left: 850px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const Select = styled.select`
-  width: 150px;
-  height: 45px;
-  padding-left: 30px;
-  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  algin-items: center;
+
+  height: 38px;
+  font-size: 12px;
   border-radius: 5px;
   border: 1px solid #ccc;
 
-  background-color: yellow;
   cursor: pointer;
 
   &:hover {
@@ -181,66 +175,64 @@ const Select = styled.select`
 `;
 
 const Option = styled.option`
-  padding: 10px;
-  font-size: 16px;
+  // padding: 10px;
+  // font-size: 16px;
 `;
 
 const FormContainer1 = styled.div`
   display: flex;
-  justify-content: flex-start;
+  // justify-content: flex-start;
   align-items: center;
   text-align: center;
-  width: 600px;
 
   margin-top: 30px;
   margin-bottom: 30px;
+
+  margin-left: 200px;
 `;
 
 const Form1div = styled.div`
   font-size: 20px;
   font-weight: bold;
-  margin-right: 50px;
 `;
 
 const FormContainer2 = styled.div`
   display: flex;
-  justify-content: flex-start;
+  // justify-content: flex-start;
   text-align: center;
   align-items: center;
-  width: 800px;
 
   margin-top: 30px;
   margin-bottom: 30px;
 
-  margin-left: 280px;
+  margin-left: 200px;
 `;
 
 const Form2div = styled.div`
   /* 직속 자식 div에만 적용 */
   font-size: 20px;
   font-weight: bold;
-  margin-right: 82px;
+  // margin-right: 82px;
   // margin-right: 120px;
 `;
 
 const FormContainer3 = styled.div`
   display: flex;
-  justify-content: flex-start;
+  // justify-content: flex-start;
   text-align: center;
   align-items: center;
-  width: 800px;
 
   margin-top: 30px;
   margin-bottom: 30px;
 
-  margin-left: 280px;
+    margin-left: 200px;
   }
 `;
 
 const Form3div = styled.div`
   font-size: 20px;
   font-weight: bold;
-  margin-right: 82px;
+  margin-right: 120px;
 `;
 
 const BoldText = styled.span`

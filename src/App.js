@@ -74,6 +74,14 @@ import SalesWrite from './component/CommunityStore/SalesWrite.js';
 import SalesAnalysis from './component/CommunityStore/SalesAnalysis.js';
 
 
+import NoticeDetailMain from "./component/CommunityMainStore/NoticeDetailMain.js";
+import NoticeListMain from "./component/CommunityMainStore/NoticeListMain.js";
+import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
+import JoinStore from "./component/CommunityStore/JoinStore.js";
+import NoticeDetail from "./component/CommunityStore/NoticeDetail.js";
+import NoticeModal from "./component/CommunityStore/NoticeModal.js";
+import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
+import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 
 function App() {
   const [path, setPath] = useState(false);
@@ -186,9 +194,14 @@ function App() {
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />*/}
         
         <Route exact path="/askListMain" element={<AskListMain/>} />
+        <Route exact path="/noticeModal" element={<NoticeModal />} />
+
+        {/* <Route exact path="/askListMain" element={<AskListMain />} /> */}
+
+        {/*
         <Route exact path="/askDetailMain" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
-        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} /> 
+        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
       </Routes>
     </div>
   );
