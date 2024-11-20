@@ -65,6 +65,11 @@ import AskList from './component/CommunityStore/AskList.js';
 import ComplainList from './component/CommunityStore/ComplainList.js';
 import ComplainDetail from './component/CommunityStore/ComplainDetail.js';
 
+import AskListMain from './component/CommunityMainStore/AskListMain.js';
+import AskDetailMain from './component/CommunityMainStore/AskDetailMain.js';
+import ComplainListMain from './component/CommunityMainStore/ComplainListMain.js';
+import ComplainDetailMain from './component/CommunityMainStore/ComplainDetailMain.js';
+
 import SalesWrite from './component/CommunityStore/SalesWrite.js';
 import SalesAnalysis from './component/CommunityStore/SalesAnalysis.js';
 
@@ -178,12 +183,12 @@ function App() {
         {/* <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
         <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
 
-        <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
+        <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />*/}
         
         <Route exact path="/askListMain" element={<AskListMain/>} />
         <Route exact path="/askDetailMain" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
-        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} /> */}
+        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} /> 
       </Routes>
     </div>
   );
