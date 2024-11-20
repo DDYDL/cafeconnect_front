@@ -30,8 +30,8 @@ const MainStoreHeader = ()=>{
                                 <h.NavLinkMenu to="/storeListMain">가맹점 관리</h.NavLinkMenu>
                                 <h.NavLinkMenu to="/mainItemList">판매상품 관리</h.NavLinkMenu>
                                 <h.NavLinkMenu to="/mainMenuList">메뉴 관리</h.NavLinkMenu>
-                                <h.NavLinkMenu to="/itemRevenue">매출 관리</h.NavLinkMenu>
-                                <h.NavLinkMenu to="/noticeList">커뮤니티</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/storeItemRevenue">매출 관리</h.NavLinkMenu>
+                                <h.NavLinkMenu to="/noticeListMain">커뮤니티</h.NavLinkMenu>
                             </h.DivMenuInside>
                         </h.DivMenuItem>
                     </MenuHandler>

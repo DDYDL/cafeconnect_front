@@ -51,7 +51,7 @@ const ComplainDetail = () => {
   return (
     <ContentListDiv>
       <HeadingContainer>
-        <Heading>공지사항 상세</Heading>
+        <Heading>컴플레인 상세</Heading>
       </HeadingContainer>
 
       <Form onSubmit={handleSubmit}>

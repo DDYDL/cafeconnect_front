@@ -22,7 +22,7 @@ const NoticeListMain = () => {
 
   const handleItemClick = id => {
     setSelectedItem(selectedItem === id ? null : id); // Toggle answer form visibility
-    navigate(`/noticeListMain/${id}`);
+    navigate(`/noticeDetailMain/${id}`);
   };
 
   const handleButtonClick = buttonId => {
