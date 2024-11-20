@@ -9,7 +9,6 @@ import MenuList from './component/Main/MenuList.js';
 import Complain from './component/Main/Complain.js';
 import LoginStore from './component/Main/LoginStore.js';
 import ComplainWrite from './component/Main/ComplainWrite.js';
-import LoginMainStore from './component/Main/LoginMainStore.js';
 import IntroMain from './component/Main/IntroMain';
 
 
@@ -80,10 +79,13 @@ import ComplainDetailMain from './component/CommunityMainStore/ComplainDetailMai
 
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
+import { memberAtom } from './atoms.js';
+import { useAtom } from 'jotai/react';
 
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
+  const [member, setMember] = useAtom(memberAtom);
 
   useEffect(()=>{
     // 로그인 페이지는 헤더 안 보이게 하기
@@ -93,10 +95,9 @@ function App() {
 
   return (
     <div>
-      {/* {path===true? <Header/>:null} */}
-      <StoreHeader/>
-      {/* <MainStoreHeader/> */}
-      {/* <Footer/> */}
+      {member.roles === '' && (path===true? <Header/>:null)}
+      {member.roles === 'ROLE_STORE' && <StoreHeader/>}
+      {member.roles === 'ROLE_MAINSTORE' && <MainStoreHeader/>}
 
       <Routes>
         {/* 메인 페이지 링크 */}
@@ -108,7 +109,6 @@ function App() {
         <Route exect path="/complain" element={<Complain/>}/>
 
         <Route path='/complainWrite' element={<ComplainWrite/>}/>
-        <Route path='/loginMainStore' element={<LoginMainStore />}/>
 
         <Route exect path="/logout" element={<IntroMain/>}/>
         <Route exect path="/joinStore" element={<JoinStore/>}/>
