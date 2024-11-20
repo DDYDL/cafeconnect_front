@@ -9,7 +9,6 @@ import MenuList from './component/Main/MenuList.js';
 import Complain from './component/Main/Complain.js';
 import LoginStore from './component/Main/LoginStore.js';
 import ComplainWrite from './component/Main/ComplainWrite.js';
-import LoginMainStore from './component/Main/LoginMainStore.js';
 import IntroMain from './component/Main/IntroMain';
 
 
@@ -93,8 +92,8 @@ function App() {
 
   return (
     <div>
-      {/* {path===true? <Header/>:null} */}
-      <StoreHeader/>
+      {path===true? <Header/>:null}
+      {/* <StoreHeader/> */}
       {/* <MainStoreHeader/> */}
       {/* <Footer/> */}
 
@@ -108,7 +107,6 @@ function App() {
         <Route exect path="/complain" element={<Complain/>}/>
 
         <Route path='/complainWrite' element={<ComplainWrite/>}/>
-        <Route path='/loginMainStore' element={<LoginMainStore />}/>
 
         <Route exect path="/logout" element={<IntroMain/>}/>
         <Route exect path="/joinStore" element={<JoinStore/>}/>

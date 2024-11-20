@@ -11,8 +11,8 @@ const LoginStore = () => {
                 </s.LoginAlign>
 
                 <s.LoginAlignLeft>
-                    <s.SwitchText to='/loginStore'>가맹점</s.SwitchText>
-                    <s.SwitchText to='/loginMainStore'>본사</s.SwitchText>
+                    <s.SwitchText>가맹점</s.SwitchText>
+                    <s.SwitchText>본사</s.SwitchText>
                 </s.LoginAlignLeft>
 
                 <s.SwitchButtoninput type="checkbox" id="switch" /><s.SwitchButton for="switch"></s.SwitchButton>
@@ -32,7 +32,7 @@ const LoginStore = () => {
                     <span>비밀번호 찾기</span>
                 </s.LoginAlignLeft>
                 <s.ButtonDiv textAlign='right'>
-                    <s.ButtonStyle><Link to='shopMain'>로그인</Link></s.ButtonStyle>
+                    <s.ButtonStyle style={{marginRight:'400px'}}><Link to='shopMain'>로그인</Link></s.ButtonStyle>
                 </s.ButtonDiv>
 
                 <s.LoginAlignLeft marginTop='13px' fontSize='12px'><s.HrStyle/><span style={{ float: 'left' }}>&nbsp;&nbsp;또는&nbsp;&nbsp;</span><s.HrStyle/></s.LoginAlignLeft>
