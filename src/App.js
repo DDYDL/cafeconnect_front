@@ -94,8 +94,8 @@ function App() {
   return (
     <div>
       {/* {path===true? <Header/>:null} */}
-      {/* <StoreHeader/> */}
-      <MainStoreHeader/>
+      <StoreHeader/>
+      {/* <MainStoreHeader/> */}
       {/* <Footer/> */}
 
       <Routes>
@@ -186,6 +186,7 @@ function App() {
         <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
 
         <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
+        <Route exact path="/noticeWriteMain" element={<NoticeWriteMain/>} />
         <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         <Route exact path="/noticeModal" element={<NoticeModal/>}/>
