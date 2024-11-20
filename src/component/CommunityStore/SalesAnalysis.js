@@ -360,9 +360,9 @@ const SalesAnalysis = () => {
                     dateFormat="yyyy-MM-dd"
                   />
                 </ol.DatePickerInputWrap>
-                <StyledButton size="sm" theme="brown">
-                  조회
-                </StyledButton>
+                {/*<StyledButton size="sm" theme="brown">*/}
+                {/*  조회*/}
+                {/*</StyledButton>*/}
               </ol.DatePickerWrap>
 
               {/*         
