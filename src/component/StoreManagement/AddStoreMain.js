@@ -17,8 +17,7 @@ const AddStoreMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='240px' type='text'/>&nbsp;&nbsp;
-                        <s.ButtonStyle variant="outlined" bgColor="white" width='50px' style={{marginBottom:'6px'}}><Link>조회</Link></s.ButtonStyle></m.TableInfoTd>
+                        <m.TableInfoTd>-</m.TableInfoTd>&nbsp;&nbsp; {/* 저장 시 자동생성 */}
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점명</m.TableTitleSpan></m.TableInfoTd>
