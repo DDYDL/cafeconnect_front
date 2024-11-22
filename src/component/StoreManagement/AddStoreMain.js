@@ -42,7 +42,7 @@ const AddStoreMain = ()=>{
                         <m.TableInfoTd><s.InputStyle width='300px' type='text'/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>계약채결일</m.TableTitleSpan></m.TableInfoTd>
+                        <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd><s.InputStyle width='300px' type='text'/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>

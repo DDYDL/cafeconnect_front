@@ -70,6 +70,7 @@ const StoreDetailMain = ()=>{
                         <m.TableInfoTd colSpan={2}>
                        <s.SearchButtonDiv textAlign='right'>
                             <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}}><Link to="/modifyStoreMain">수정</Link></s.ButtonStyle>
+                            {/* <Button onClick={()=>deleteStore(store.storeCode)}>삭제</Button> */}
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
