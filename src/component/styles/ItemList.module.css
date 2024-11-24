@@ -1,3 +1,7 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,700,400,500|Inter:500,400|Montserrat:300,700|Aboreto:400|Noto+Serif+Malayalam:700");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
 
 
 
@@ -324,19 +328,20 @@
     font-style: normal;
     font-weight: 300;
   }
-/* screen - ItemListCopy */
+/* screen - ItemList */
 
-.ItemListCopy {
+.ItemList {
     align-items: center;
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
     min-height: 100%;
     overflow-x: hidden;
+    padding: 4px 0;
     width: 100%;
   }
   
-  .ItemListCopy .header {
+  .ItemList .header {
     align-items: flex-start;
     background-color: transparent;
     display: flex;
@@ -344,18 +349,18 @@
     flex-shrink: 1;
     justify-content: flex-start;
     margin-left: 2.0px;
-    margin-top: 18px;
+    margin-top: 14px;
     min-width: 1922px;
     width: auto;
   }
   
-  .ItemListCopy .overlap-group4 {
+  .ItemList .overlap-group3 {
     height: 126px;
     position: relative;
     width: 1920px;
   }
   
-  .ItemListCopy .overlap-group3 {
+  .ItemList .overlap-group2 {
     height: 126px;
     left: 0;
     position: absolute;
@@ -363,7 +368,7 @@
     width: 1920px;
   }
   
-  .ItemListCopy .container {
+  .ItemList .container {
     align-items: center;
     background-color: #ffffff80;
     display: flex;
@@ -375,7 +380,7 @@
     width: 1920px;
   }
   
-  .ItemListCopy .sidebar {
+  .ItemList .sidebar {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -385,7 +390,7 @@
     width: 25px;
   }
   
-  .ItemListCopy .border {
+  .ItemList .border {
     border-bottom-style: solid;
     border-bottom-width: 3px;
     border-color: var(--shark);
@@ -395,7 +400,7 @@
     width: 25px;
   }
   
-  .ItemListCopy .horizontal-border {
+  .ItemList .horizontal-border {
     border-color: var(--shark);
     border-top-style: solid;
     border-top-width: 3px;
@@ -403,7 +408,7 @@
     width: 25px;
   }
   
-  .ItemListCopy .navbar {
+  .ItemList .navbar {
     align-items: flex-start;
     align-self: flex-end;
     display: flex;
@@ -414,19 +419,19 @@
     min-width: 722px;
   }
   
-  .ItemListCopy .navbar-link-text-57 {
+  .ItemList .navbar-link-text-57 {
     width: 86px;
   }
   
-  .ItemListCopy .navbar-link-text-54 {
+  .ItemList .navbar-link-text-54 {
     width: 100px;
   }
   
-  .ItemListCopy .navbar-link-text-58 {
+  .ItemList .navbar-link-text-58 {
     width: 74px;
   }
   
-  .ItemListCopy .navbar-link-text-55 {
+  .ItemList .navbar-link-text-55 {
     align-self: flex-end;
     color: var(--shark);
     font-family: var(--font-family-aboreto);
@@ -435,11 +440,11 @@
     width: 70px;
   }
   
-  .ItemListCopy .navbar-link-text-56 {
+  .ItemList .navbar-link-text-56 {
     width: 70px;
   }
   
-  .ItemListCopy .image-1 {
+  .ItemList .image-1 {
     align-self: flex-start;
     height: 31px;
     margin-left: 443px;
@@ -447,14 +452,14 @@
     width: 31px;
   }
   
-  .ItemListCopy .group {
+  .ItemList .group {
     height: 24px;
     margin-bottom: 0.5px;
     margin-left: 34px;
     width: 26px;
   }
   
-  .ItemListCopy .cc {
+  .ItemList .cc {
     color: transparent;
     font-family: var(--font-family-noto_serif_malayalam);
     font-size: var(--font-size-xxl);
@@ -468,17 +473,17 @@
     width: 89px;
   }
   
-  .ItemListCopy .span {
+  .ItemList .span {
     color: var(--shark);
     letter-spacing: -1.92px;
   }
   
-  .ItemListCopy .span1 {
+  .ItemList .span1 {
     color: #cbd2a4;
     letter-spacing: -1.92px;
   }
   
-  .ItemListCopy .sidemenu {
+  .ItemList .sidemenu {
     align-items: flex-end;
     display: flex;
     gap: 17px;
@@ -489,7 +494,7 @@
     top: 32px;
   }
   
-  .ItemListCopy .text-60 {
+  .ItemList .text-60 {
     color: var(--shark);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-s);
@@ -500,14 +505,14 @@
     width: 40px;
   }
   
-  .ItemListCopy .vertical-divider {
+  .ItemList .vertical-divider {
     background-color: #bbbbbb;
     height: 12px;
     margin-bottom: 1px;
     width: 1px;
   }
   
-  .ItemListCopy .text-59 {
+  .ItemList .text-59 {
     color: var(--shark);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-s);
@@ -518,39 +523,27 @@
     width: 66px;
   }
   
-  .ItemListCopy .background {
+  .ItemList .background {
     align-items: center;
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
     height: 1505px;
-    margin-top: 60px;
-    width: 1200px;
-  }
-  
-  .ItemListCopy .heading-2 {
-    color: #202020;
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: 24px;
-    font-weight: 700;
-    height: 39px;
-    letter-spacing: -1.00px;
-    line-height: 38.5px;
-    margin-top: -1px;
-    min-width: 90px;
-    text-align: center;
-    white-space: nowrap;
-  }
-  
-  .ItemListCopy .flex-row {
-    align-items: center;
-    display: flex;
-    margin-right: 11.0px;
     margin-top: 10px;
-    min-width: 1133px;
+    width: 1000px;
+    margin-bottom:30px;
   }
   
-  .ItemListCopy .frame-104 {
+  .ItemList .flex-row {
+    align-items: flex-end;
+    display: flex;
+    height: 50px;
+    margin-right: 11.0px;
+    margin-top: -1px;
+    min-width: 913px;
+  }
+  
+  .ItemList .frame-104 {
     align-items: flex-start;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -558,13 +551,13 @@
     border-radius: 8px;
     display: flex;
     gap: 5px;
-    margin-bottom: 1.0px;
+    margin-bottom: 3px;
     padding: 6px 10px;
     position: relative;
     width: 109px;
   }
   
-  .ItemListCopy .frame-105 {
+  .ItemList .frame-105 {
     align-items: flex-start;
     display: inline-flex;
     flex: 0 0 auto;
@@ -572,7 +565,7 @@
     position: relative;
   }
   
-  .ItemListCopy .text {
+  .ItemList .text {
     letter-spacing: 0;
     line-height: 20px;
     margin-top: -1.00px;
@@ -582,13 +575,13 @@
     width: fit-content;
   }
   
-  .ItemListCopy .sort-down {
+  .ItemList .sort-down {
     height: 20px;
     position: relative;
     width: 20px;
   }
   
-  .ItemListCopy .frame-10 {
+  .ItemList .frame-10 {
     align-items: flex-start;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -596,29 +589,52 @@
     border-radius: 8px;
     display: flex;
     gap: 5px;
-    margin-bottom: 1.0px;
+    margin-bottom: 3px;
     margin-left: 3px;
     padding: 6px 10px;
     position: relative;
     width: 109px;
   }
   
-  .ItemListCopy .frame-107 {
-    align-items: flex-start;
+  .ItemList .flex-col {
+    align-items: center;
     align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 42px;
+    margin-left: 13px;
+    min-height: 119px;
+    width: 227px;
+  }
+  
+  .ItemList .heading-2 {
+    color: #202020;
+    font-family: var(--font-family-noto_sans_kr);
+    font-size: 24px;
+    font-weight: 700;
+    height: 39px;
+    letter-spacing: -1.00px;
+    line-height: 38.5px;
+    margin-left: 5.0px;
+    min-width: 90px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .ItemList .frame-107 {
+    align-items: flex-start;
     background-color: #f5f5f5;
     border: 1px solid;
     border-color: var(--bon-jour);
     border-radius: 8px;
     display: flex;
     gap: 149px;
-    margin-left: 13px;
     padding: 6px 10px;
     position: relative;
     width: 227px;
   }
   
-  .ItemListCopy .text-51 {
+  .ItemList .text-5-1 {
     letter-spacing: 0;
     line-height: 20px;
     margin-top: -0.50px;
@@ -628,14 +644,14 @@
     width: fit-content;
   }
   
-  .ItemListCopy .img {
+  .ItemList .img {
     height: 24px;
     margin-right: -3.00px;
     position: relative;
     width: 24px;
   }
   
-  .ItemListCopy .text-47 {
+  .ItemList .text-1-1 {
     color: var(--attrangscokralabaster);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-m);
@@ -643,40 +659,22 @@
     height: 39px;
     letter-spacing: 0;
     line-height: 24px;
-    
+    margin-left: 918px;
     text-align: end;
-    width: 1200px;
+    width: 82px;
+    margin-top:15px;
   }
   
-  .ItemListCopy .overlap-group2 {
-    height: 1160px;
-    margin-top: 8px;
-    position: relative;
-    width: 1200px;
-  }
-  
-  .ItemListCopy .horizontal-border-1 {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: #deebff;
-    height: 48px;
-    left: 30px;
-    position: absolute;
-    top: 13px;
-    width: 1140px;
-  }
-  
-  .ItemListCopy .frame-92 {
+  .ItemList .frame-92 {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 1200px;
+    margin-top: 34px;
+    position: relative;
+    width: 1000px;
   }
   
-  .ItemListCopy .frame-87 {
+  .ItemList .frame-87 {
     align-items: center;
     align-self: stretch;
     border-bottom-style: solid;
@@ -689,15 +687,15 @@
     width: 100%;
   }
   
-  .ItemListCopy .cell {
+  .ItemList .cell {
     height: 60px;
     position: relative;
-    width: 196px;
+    width: 180px;
   }
   
-  .ItemListCopy .text-1-1 {
+  .ItemList .text-8 {
     height: 21px;
-    left: 68px;
+    left: 60px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -706,13 +704,13 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .cell-1 {
-    width: 131px;
+  .ItemList .cell-1 {
+    width: 91px;
   }
   
-  .ItemListCopy .text-2-1 {
+  .ItemList .text-9 {
     height: 21px;
-    left: 34px;
+    left: 14px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -721,13 +719,13 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .cell-2 {
-    width: 442px;
+  .ItemList .cell-2 {
+    width: 368px;
   }
   
-  .ItemListCopy .text-3-1 {
+  .ItemList .text-10 {
     height: 21px;
-    left: 191px;
+    left: 154px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -736,11 +734,11 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .cell-3 {
+  .ItemList .cell-3 {
     width: 57px;
   }
   
-  .ItemListCopy .text-4-1 {
+  .ItemList .text-11 {
     height: 21px;
     left: -1px;
     letter-spacing: 0;
@@ -751,13 +749,13 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .cell-4 {
-    width: 172px;
+  .ItemList .cell-4 {
+    width: 132px;
   }
   
-  .ItemListCopy .text-5-1 {
+  .ItemList .text-12 {
     height: 21px;
-    left: 63px;
+    left: 43px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -766,13 +764,13 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .cell-5 {
-    width: 138px;
+  .ItemList .cell-5 {
+    width: 112px;
   }
   
-  .ItemListCopy .text-6 {
+  .ItemList .text-13 {
     height: 21px;
-    left: 39px;
+    left: 26px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -781,7 +779,7 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .frame {
+  .ItemList .frame {
     align-items: center;
     align-self: stretch;
     border-bottom-style: solid;
@@ -794,15 +792,15 @@
     width: 100%;
   }
   
-  .ItemListCopy .data {
+  .ItemList .data {
     height: 110px;
     position: relative;
-    width: 196px;
+    width: 180px;
   }
   
-  .ItemListCopy .text-1 {
+  .ItemList .text-1 {
     height: 21px;
-    left: 11px;
+    left: 3px;
     letter-spacing: -1.00px;
     line-height: 21px;
     position: absolute;
@@ -811,39 +809,38 @@
     width: 173px;
   }
   
-  .ItemListCopy .frame-88 {
+  .ItemList .frame-88 {
     height: 110px;
     position: relative;
-    width: 131px;
+    width: 91px;
   }
   
-  .ItemListCopy .a12345 {
+  .ItemList .a12345 {
     height: 21px;
-    left: 20px;
+    left: 0;
     letter-spacing: -1.00px;
     line-height: 21px;
     position: absolute;
     text-align: center;
     text-decoration: underline;
-    top: 43px;
+    top: 44px;
     width: 90px;
   }
   
-  .ItemListCopy .data-1 {
-    width: 442px;
+  .ItemList .data-1 {
+    width: 368px;
   }
   
-  .ItemListCopy .frame-90 {
+  .ItemList .frame-90 {
     align-items: center;
     display: flex;
     gap: 40px;
-    left: 20px;
     position: relative;
     top: 14px;
-    width: 401px;
+    width: 368px;
   }
   
-  .ItemListCopy .x39607d95d144c4751fedd9d44017d8b7jpg {
+  .ItemList .x39607d95d144c4751fedd9d44017d8b7jpg {
     background-image: url(../assets/img/39607d95d144c4751fedd9d44017d8b7-jpg@2x.png);
     background-position: 50% 50%;
     background-size: cover;
@@ -852,7 +849,7 @@
     width: 82px;
   }
   
-  .ItemListCopy .frame-89 {
+  .ItemList .frame-89 {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -861,7 +858,7 @@
     width: 159px;
   }
   
-  .ItemListCopy .text-2 {
+  .ItemList .text-2 {
     align-self: stretch;
     letter-spacing: 0;
     line-height: 21px;
@@ -869,28 +866,28 @@
     position: relative;
   }
   
-  .ItemListCopy .data-2 {
+  .ItemList .data-2 {
     width: 57px;
   }
   
-  .ItemListCopy .number {
+  .ItemList .number {
     height: 21px;
     left: 3px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
     text-align: center;
-    top: 43px;
+    top: 44px;
     width: 50px;
   }
   
-  .ItemListCopy .data-3 {
-    width: 172px;
+  .ItemList .data-3 {
+    width: 132px;
   }
   
-  .ItemListCopy .text-3 {
+  .ItemList .text-3 {
     height: 20px;
-    left: 21px;
+    left: 1px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -900,13 +897,13 @@
     width: 130px;
   }
   
-  .ItemListCopy .data-4 {
-    width: 138px;
+  .ItemList .data-4 {
+    width: 112px;
   }
   
-  .ItemListCopy .text-4 {
+  .ItemList .text-4 {
     height: 20px;
-    left: 4px;
+    left: -9px;
     letter-spacing: 0;
     line-height: 21px;
     position: absolute;
@@ -916,18 +913,18 @@
     width: 130px;
   }
   
-  .ItemListCopy .flex-row-1 {
-    margin-top: 57px;
+  .ItemList .flex-row-1 {
+    margin-top: 31px;
     min-width: 186px;
   }
   
-  .ItemListCopy .component-2 {
+  .ItemList .component-2 {
     padding: 0px 11.77px 0px 11.75px;
     position: relative;
     width: 30px;
   }
   
-  .ItemListCopy .text-7 {
+  .ItemList .text-6 {
     color: #0e347e;
     font-family: var(--font-family-montserrat);
     font-size: var(--font-size-m);
@@ -943,13 +940,13 @@
     width: fit-content;
   }
   
-  .ItemListCopy .component-3 {
+  .ItemList .component-3 {
     padding: 0px 10.5px 0px 10.48px;
     position: relative;
     width: 30px;
   }
   
-  .ItemListCopy .text-8 {
+  .ItemList .text-7 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.49px;
@@ -961,13 +958,13 @@
     width: fit-content;
   }
   
-  .ItemListCopy .component-4 {
+  .ItemList .component-4 {
     padding: 0px 10.53px;
     position: relative;
     width: 30px;
   }
   
-  .ItemListCopy .text-5 {
+  .ItemList .text-5 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.03px;
@@ -979,13 +976,13 @@
     width: fit-content;
   }
   
-  .ItemListCopy .component-5 {
+  .ItemList .component-5 {
     padding: 0px 9.76px 0px 9.77px;
     position: relative;
     width: 30px;
   }
   
-  .ItemListCopy .text-9 {
+  .ItemList .text-14 {
     letter-spacing: 0;
     line-height: 30px;
     margin-left: -0.27px;
@@ -997,13 +994,13 @@
     width: fit-content;
   }
   
-  .ItemListCopy .overlap-group1 {
+  .ItemList .overlap-group1 {
     height: 30px;
     position: relative;
     width: 66px;
   }
   
-  .ItemListCopy .component-1 {
+  .ItemList .component-1 {
     left: 0;
     padding: 0px 35.53px 0px 10.53px;
     position: absolute;
@@ -1011,7 +1008,7 @@
     width: 55px;
   }
   
-  .ItemListCopy .border-1 {
+  .ItemList .border-1 {
     align-items: center;
     border: 1px solid;
     border-color: #eeeeee;
@@ -1024,32 +1021,22 @@
     top: 0;
   }
   
-  .ItemListCopy .image {
+  .ItemList .image {
     height: 6px;
     width: 5px;
   }
   
-  .ItemListCopy .button {
-    align-items: flex-start;
+  .ItemList .overlap-group {
     align-self: flex-end;
-    background: linear-gradient(180deg, rgb(79, 70, 229) 4.27%, rgb(99, 102, 241) 100%);
-    border-radius: 4px;
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 44.7px;
-    margin-top: 21px;
-    min-width: 172px;
-    padding: 0 1.3px;
-  }
-  
-  .ItemListCopy .overlap-group {
     border-radius: 2px;
     height: 53px;
+    margin-right: 27px;
+    margin-top: 21px;
     position: relative;
     width: 169px;
   }
   
-  .ItemListCopy .text-52 {
+  .ItemList .text-6-1 {
     color: var(--helpwhalenavercomwhite);
     font-family: var(--font-family-inter);
     font-size: var(--font-size-m);
@@ -1065,7 +1052,7 @@
     width: 127px;
   }
   
-  .ItemListCopy .small-btn_brown {
+  .ItemList .small-btn_brown {
     align-items: flex-start;
     background-color: #54473f;
     border-radius: 2px;
@@ -1078,7 +1065,7 @@
     top: 0;
   }
   
-  .ItemListCopy .text-53 {
+  .ItemList .text-7-1 {
     color: var(--helpwhalenavercomwhite);
     font-weight: 400;
     height: 12px;
@@ -1088,7 +1075,7 @@
     width: 72px;
   }
   
-  .ItemListCopy .footer {
+  .ItemList .footer {
     align-items: flex-end;
     background-color: #9a7e6f;
     display: flex;
@@ -1096,13 +1083,12 @@
     flex-shrink: 1;
     height: 200px;
     justify-content: flex-start;
-    margin-top: 6px;
     min-width: 1920px;
     padding: 13px 0;
     width: auto;
   }
   
-  .ItemListCopy .footer-contents {
+  .ItemList .footer-contents {
     align-items: flex-end;
     display: flex;
     gap: 19px;
@@ -1111,28 +1097,25 @@
     width: 1920px;
   }
   
-  .ItemListCopy .flex-row-2 {
+  .ItemList .flex-row-2 {
     gap: 30px;
     min-width: 893px;
   }
   
-  .ItemListCopy .flex-col {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
+  .ItemList .flex-col-1 {
     gap: 3px;
     margin-top: 0.12px;
     min-height: 59px;
     width: 862px;
   }
   
-  .ItemListCopy .overlap-group-1 {
+  .ItemList .overlap-group-1 {
     height: 39px;
     position: relative;
     width: 862px;
   }
   
-  .ItemListCopy .x {
+  .ItemList .x {
     height: 37px;
     left: 0;
     letter-spacing: 0;
@@ -1142,7 +1125,7 @@
     width: 606px;
   }
   
-  .ItemListCopy .text-61 {
+  .ItemList .text-61 {
     color: var(--helpwhalenavercomwhite);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xs);
@@ -1158,7 +1141,7 @@
     width: 77px;
   }
   
-  .ItemListCopy .text-62 {
+  .ItemList .text-62 {
     height: 17px;
     left: 508px;
     letter-spacing: 0;
@@ -1169,7 +1152,7 @@
     width: 354px;
   }
   
-  .ItemListCopy .copyright {
+  .ItemList .copyright {
     height: 17px;
     letter-spacing: 0;
     line-height: 20px;
@@ -1177,23 +1160,20 @@
     white-space: nowrap;
   }
   
-  .ItemListCopy .vertical-divider-1 {
+  .ItemList .vertical-divider-1 {
     background-color: #e5e5e5;
     height: 87px;
     width: 1px;
   }
   
-  .ItemListCopy .flex-col-1 {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
+  .ItemList .flex-col-2 {
     gap: 15px;
     margin-bottom: 2.21px;
     min-height: 86px;
     width: 319px;
   }
   
-  .ItemListCopy .heading-3 {
+  .ItemList .heading-3 {
     color: var(--coconut);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xs);
@@ -1204,24 +1184,24 @@
     width: 294px;
   }
   
-  .ItemListCopy .span0 {
+  .ItemList .span0 {
     font-weight: 500;
     letter-spacing: -0.06px;
   }
   
-  .ItemListCopy .span1-1 {
+  .ItemList .span1-1 {
     font-weight: 300;
     letter-spacing: -0.06px;
   }
   
-  .ItemListCopy .text-container {
+  .ItemList .text-container {
     align-items: center;
     display: flex;
     gap: 17px;
     min-width: 319px;
   }
   
-  .ItemListCopy .text-63 {
+  .ItemList .text-63 {
     height: 18px;
     letter-spacing: -0.50px;
     line-height: 18px;
@@ -1229,7 +1209,7 @@
     width: 211px;
   }
   
-  .ItemListCopy .text-64 {
+  .ItemList .text-64 {
     color: var(--helpwhalenavercomwhite);
     font-family: var(--font-family-noto_sans_kr);
     font-size: var(--font-size-xxs);
@@ -1243,28 +1223,34 @@
     width: 91px;
   }
   
-  .ItemListCopy .cell-6 {
+  .ItemList .cell-6 {
     height: 60px;
     position: relative;
   }
   
-  .ItemListCopy .component {
+  .ItemList .component {
     align-items: flex-start;
     display: flex;
     justify-content: center;
   }
   
-  .ItemListCopy .data-5 {
+  .ItemList .data-5 {
     height: 110px;
     position: relative;
   }
   
-  .ItemListCopy .flex-row-3 {
+  .ItemList .flex-col-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ItemList .flex-row-3 {
     align-items: flex-start;
     display: flex;
   }
   
-  .ItemListCopy .navbar-link-text {
+  .ItemList .navbar-link-text {
     height: 20px;
     letter-spacing: 0;
     line-height: normal;
