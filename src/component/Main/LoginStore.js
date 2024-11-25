@@ -16,15 +16,8 @@ const LoginStore = () => {
     const setSessionMember = useSetAtom(memberAtom);
     const navigate = useNavigate();
 
-
-    const kakaoRedirectUri = "http://localhost:8080/oauth2/callback/kakao";
-    const kakaoRestAuthKey = "";
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoRestAuthKey}&redirect_uri=${kakaoRedirectUri}`;
-
-    const naverRedirectUri = "http://localhost:8080/oauth2/callback/naver";
-    const naverRestAuthKey = "";
-    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${naverRestAuthKey}&redirect_uri=${naverRedirectUri}`;
-
+    const kakaoAuthUrl = `${url}/oauth2/authorization/kakao`;
+    const naverAuthUrl = `${url}/oauth2/authorization/naver`;
     // state 변수인 member 바뀔 때마다 설정
     const edit = (e)=>{
         setMember({...member, [e.target.name]:e.target.value});
