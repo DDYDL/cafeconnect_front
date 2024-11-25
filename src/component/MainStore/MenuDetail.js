@@ -1,12 +1,70 @@
 import * as m from '../styles/StyledMain.tsx';
 import React from 'react'
 import styles from '../styles/MenuDetail.module.css'
-import { useNavigate } from 'react-router';
-
+import { useNavigate,useParams } from 'react-router';
+import { useState,useEffect } from 'react';
+import axios from 'axios';
 function MenuDetail() {
 
 
+    const [menu,setMenu] = useState({
+        'menuCode' : '',
+        'menuName' : '',
+        'menuPrice' : null,
+        'menuCapacity' : '',
+        'caffeine' : '',
+        'calories' : '',
+        'carbohydrate' : '',
+        'sugar' : '',
+        'natrium' : '',
+        'fat' : '',
+        'protein' : '',
+        'menuStatus' : '',
+        'menuCategoryName' : '',
+        'imageUrl' : '',
+    })
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const {menuCode} = useParams();
+    const navigate = useNavigate();
+    const fetchData = async () => {
+        try {
+          setLoading(true); 
+          const response = await axios.get(`http://localhost:8080/selectMenuByMenuCode/${menuCode}`); 
+          setMenu(response.data); 
+          console.log(response.data);
+        } catch (error) {
+          setError(error); 
+        } finally {
+          setLoading(false); 
+        }
+      };
+    const deleteData = async () => {
+        try {
+          
+          const response = await axios.get(`http://localhost:8080/deleteMenu/${menuCode}`); 
+          navigate('/mainMenuList')
+          
+        } catch (error) {
+          setError(error); 
+        } finally {
+          
+          alert('메뉴 삭제에 실패하였습니다'); 
+        }
+    };
+    
 
+    const handleUpdateItem = () =>{
+        navigate(`/menuUpdate/${menuCode}`)
+    }
+
+    const handleDeleteItem = () =>{
+        deleteData();
+    }
+
+    useEffect(()=>{
+        fetchData();
+    },[])
 
 
 
@@ -17,7 +75,7 @@ function MenuDetail() {
                 <div className={styles['container-center-horizontal']}>
                     <div className={`${styles['MenuDetail']} ${styles['screen']}`}>
                         <div className={`${styles['heading-4-product-details']} ${styles['valign-text-middle']}`}>
-                            아메리카노(메뉴 상세 예시)
+                            메뉴 상세
                         </div>
                         <div className={styles['background']}>
                             <div className={styles['flex-row']}>
@@ -25,7 +83,7 @@ function MenuDetail() {
                                 <div className={styles['link']}>
                                     <div className={`${styles['overlap-group']} ${styles['themewagongithubiosemanticheading-6']}`}>
                                         <div className={`${styles['text']} ${styles['valign-text-middle']}`}>수정</div>
-                                        <div className={styles['small-btn_brown']}>
+                                        <div className={styles['small-btn_brown']} onClick={handleUpdateItem}>
                                             <div className={`${styles['text-1']} ${styles['valign-text-middle']}`}>수정</div>
                                         </div>
                                     </div>
@@ -36,7 +94,7 @@ function MenuDetail() {
                                         <div className={`${styles['link-2']} ${styles['link-3']}`}>
                                             <div className={styles['overlap-group']}>
                                                 <div className={`${styles['text']} ${styles['valign-text-middle']}`}>수정</div>
-                                                <div className={styles['small-btn_brown']}>
+                                                <div className={styles['small-btn_brown']} onClick={handleDeleteItem}>
                                                     <div className={`${styles['text-1']} ${styles['valign-text-middle']}`}>삭제</div>
                                                 </div>
                                             </div>
@@ -48,73 +106,73 @@ function MenuDetail() {
                                 <div className={styles['x384x530cropjpg']}></div>
                                 <div className={styles['overlap-group3']}>
                                     <div className={`${styles['heading-3']} ${styles['valign-text-middle']}`}>
-                                        컴포즈 아메리카노
+                                        {menu.menuName}
                                     </div>
                                     <div className={`${styles['table-body']} ${styles['notosanskr-medium-black-16px']}`}>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>메뉴명</div>
-                                            <div className={styles['data-4']}>
-                                                <div className={`${styles['text-18']} ${styles['valign-text-middle']}`}>컴포즈 아메리카노</div>
+                                            <div className={styles['data-4']} style={{"width":"250px"}}>
+                                                <div className={`${styles['text-18']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.menuName}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>카테고리</div>
-                                            <div className={styles['data-1']}>
-                                                <div className={`${styles['text-2']} ${styles['valign-text-middle']}`}>커피</div>
+                                            <div className={styles['data-1']} style={{"width":"250px"}}>
+                                                <div className={`${styles['text-2']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.menuCategoryName}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>가격</div>
-                                            <div className={styles['data-1']}>
-                                                <div className={`${styles['text-2']} ${styles['valign-text-middle']}`}>5,900원</div>
+                                            <div className={styles['data-1']} style={{"width":"250px"}}>
+                                                <div className={`${styles['text-2']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{`${menu.menuPrice}원`}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>용량</div>
-                                            <div className={styles['data-1']}>
-                                                <div className={`${styles['x500ml']} ${styles['valign-text-middle']}`}>500ml</div>
+                                            <div className={styles['data-1']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x500ml']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.menuCapacity}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>열량</div>
-                                            <div className={styles['data-1']}>
-                                                <div className={`${styles['x300kcal']} ${styles['valign-text-middle']}`}>300kcal</div>
+                                            <div className={styles['data-1']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x300kcal']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.calories}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>카페인 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.caffeine}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data-5']} ${styles['valign-text-middle']}`}>탄수화물 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.carbohydrate}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>지방 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.fat}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>나트륨 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.natrium}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>당류 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.sugar}</div>
                                             </div>
                                         </div>
                                         <div className={`${styles['table-body-item']} ${styles['notosanskr-medium-black-16px']}`}>
                                             <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>단백질 함유량</div>
-                                            <div className={styles['data-3']}>
-                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`}>20mg</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.protein}</div>
                                             </div>
                                         </div>
                                         <div className={styles['table-body-item']}>
@@ -139,7 +197,7 @@ function MenuDetail() {
                                         </div>
                                     </div>
                                     <div className={styles['frame-98']}>
-                                        <div className={`${styles['text-15']} ${styles['valign-text-middle']}`}>커피/-</div>
+                                        <div className={`${styles['text-15']} ${styles['valign-text-middle']}`}>{`${menu.menuCategoryName}/`}</div>
                                     </div>
                                 </div>
                                 <div className={styles['frame-100']}>
