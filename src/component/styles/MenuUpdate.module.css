@@ -1,5 +1,5 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
-@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,700,400,500|Inter:400,700,600|Aboreto:400|Noto+Serif+Malayalam:700");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:500,400,700,300|Aboreto:400|Noto+Serif+Malayalam:700|Inter:400,700,600");
 /* The following line is used to measure usage of this code. You can remove it if you want. */
 @import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
 
@@ -257,103 +257,103 @@
     --wwwdaisomallcokrwhite-02: #000000;
     --wwwediyacomwhite-white: #000000;
    
-    --ItemInsert--font-size-l: 14px;
-    --ItemInsert--font-size-m: 12px;
-    --ItemInsert--font-size-s: 11px;
-    --ItemInsert--font-size-xl: 15px;
-    --ItemInsert--font-size-xxl: 16px;
-    --ItemInsert--font-size-xxxl: 18px;
-    --ItemInsert--font-size-xxxxl: 48px;
+    --MenuUpdate--font-size-l: 14px;
+    --MenuUpdate--font-size-m: 12px;
+    --MenuUpdate--font-size-s: 11px;
+    --MenuUpdate--font-size-xl: 15px;
+    --MenuUpdate--font-size-xxl: 16px;
+    --MenuUpdate--font-size-xxxl: 18px;
+    --MenuUpdate--font-size-xxxxl: 48px;
    
-    --ItemInsert--font-family-aboreto: "Aboreto", Helvetica;
-    --ItemInsert--font-family-inter: "Inter", Helvetica;
-    --ItemInsert--font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
-    --ItemInsert--font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
+    --MenuUpdate--font-family-aboreto: "Aboreto", Helvetica;
+    --MenuUpdate--font-family-inter: "Inter", Helvetica;
+    --MenuUpdate--font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
+    --MenuUpdate--font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
   }
   .themewagongithubiosemanticheading-6 {
-    font-family: var(--ItemInsert--font-family-inter);
-    font-size: var(--ItemInsert--font-size-xxl);
+    font-family: var(--MenuUpdate--font-family-inter);
+    font-size: var(--MenuUpdate--font-size-xxl);
     font-style: normal;
     font-weight: 400;
     letter-spacing: 0;
   }
   
   .themewagongithubiosemanticitem {
-    font-family: var(--ItemInsert--font-family-inter);
-    font-size: var(--ItemInsert--font-size-l);
+    font-family: var(--MenuUpdate--font-family-inter);
+    font-size: var(--MenuUpdate--font-size-l);
     font-style: normal;
     font-weight: 400;
     letter-spacing: 0;
-  }
-  
-  .themewagongithubiosemanticlabel {
-    font-family: var(--ItemInsert--font-family-inter);
-    font-size: var(--ItemInsert--font-size-m);
-    font-style: normal;
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-  
-  .notosanskr-light-pink-swan-15px {
-    color: var(--pink-swan);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-xl);
-    font-style: normal;
-    font-weight: 300;
   }
   
   .notosanskr-bold-black-16px {
     color: var(--attrangscokralabaster);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-xxl);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-xxl);
     font-style: normal;
     font-weight: 700;
   }
   
+  .notosanskr-light-pink-swan-15px {
+    color: var(--pink-swan);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-xl);
+    font-style: normal;
+    font-weight: 300;
+  }
+  
   .notosanskr-normal-shark-18px {
     color: var(--shark);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-xxxl);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-xxxl);
     font-style: normal;
     font-weight: 400;
   }
   
   .notosanskr-light-coconut-12px {
     color: var(--coconut);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-m);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-m);
     font-style: normal;
     font-weight: 300;
   }
-/* screen - ItemInsert */
+/* screen - MenuUpdate */
 
-.ItemInsert {
+.MenuUpdate {
     align-items: center;
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
     min-height: 100%;
     overflow-x: hidden;
+    padding: 4px 0;
     width: 100%;
   }
   
-  .ItemInsert .overlap-group2 {
-    height: 126px;
+  .MenuUpdate .header {
+    align-items: flex-start;
+    background-color: transparent;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 1;
+    justify-content: flex-start;
     margin-left: 2.0px;
-    margin-top: 18px;
-    position: relative;
-    width: 1922px;
+    margin-top: 14px;
+    min-width: 1922px;
+    width: auto;
   }
   
-  .ItemInsert .overlap-group {
-    height: 126px;
+  .MenuUpdate .overlap-group1 {
+    position: relative;
+  }
+  
+  .MenuUpdate .overlap-group {
     left: 0;
     position: absolute;
     top: 0;
-    width: 1920px;
   }
   
-  .ItemInsert .container-5 {
+  .MenuUpdate .container-2 {
     align-items: center;
     background-color: #ffffff80;
     display: flex;
@@ -365,7 +365,7 @@
     width: 1920px;
   }
   
-  .ItemInsert .sidebar {
+  .MenuUpdate .sidebar {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -375,7 +375,7 @@
     width: 25px;
   }
   
-  .ItemInsert .border {
+  .MenuUpdate .border {
     border-bottom-style: solid;
     border-bottom-width: 3px;
     border-color: var(--shark);
@@ -385,7 +385,7 @@
     width: 25px;
   }
   
-  .ItemInsert .horizontal-border {
+  .MenuUpdate .horizontal-border {
     border-color: var(--shark);
     border-top-style: solid;
     border-top-width: 3px;
@@ -393,7 +393,7 @@
     width: 25px;
   }
   
-  .ItemInsert .navbar {
+  .MenuUpdate .navbar {
     align-items: flex-start;
     align-self: flex-end;
     display: flex;
@@ -404,32 +404,32 @@
     min-width: 722px;
   }
   
-  .ItemInsert .navbar-link-text-16 {
+  .MenuUpdate .navbar-link-text-4 {
     width: 86px;
   }
   
-  .ItemInsert .navbar-link-text-13 {
+  .MenuUpdate .navbar-link-text-1 {
     width: 100px;
   }
   
-  .ItemInsert .navbar-link-text-17 {
+  .MenuUpdate .navbar-link-text-5 {
     width: 74px;
   }
   
-  .ItemInsert .navbar-link-text-14 {
+  .MenuUpdate .navbar-link-text-2 {
     align-self: flex-end;
     color: var(--shark);
-    font-family: var(--ItemInsert--font-family-aboreto);
-    font-size: var(--ItemInsert--font-size-xxxl);
+    font-family: var(--MenuUpdate--font-family-aboreto);
+    font-size: var(--MenuUpdate--font-size-xxxl);
     font-weight: 400;
     width: 70px;
   }
   
-  .ItemInsert .navbar-link-text-15 {
+  .MenuUpdate .navbar-link-text-3 {
     width: 70px;
   }
   
-  .ItemInsert .image-1 {
+  .MenuUpdate .image-1 {
     align-self: flex-start;
     height: 31px;
     margin-left: 443px;
@@ -437,17 +437,17 @@
     width: 31px;
   }
   
-  .ItemInsert .group {
+  .MenuUpdate .group {
     height: 24px;
     margin-bottom: 0.5px;
     margin-left: 34px;
     width: 26px;
   }
   
-  .ItemInsert .cc {
+  .MenuUpdate .cc {
     color: transparent;
-    font-family: var(--ItemInsert--font-family-noto_serif_malayalam);
-    font-size: var(--ItemInsert--font-size-xxxxl);
+    font-family: var(--MenuUpdate--font-family-noto_serif_malayalam);
+    font-size: var(--MenuUpdate--font-size-xxxxl);
     font-weight: 700;
     height: 71px;
     left: 916px;
@@ -458,17 +458,17 @@
     width: 89px;
   }
   
-  .ItemInsert .span {
+  .MenuUpdate .span {
     color: var(--shark);
     letter-spacing: -1.92px;
   }
   
-  .ItemInsert .span1 {
+  .MenuUpdate .span1 {
     color: #cbd2a4;
     letter-spacing: -1.92px;
   }
   
-  .ItemInsert .sidemenu {
+  .MenuUpdate .sidemenu {
     align-items: flex-end;
     display: flex;
     gap: 17px;
@@ -479,10 +479,10 @@
     top: 32px;
   }
   
-  .ItemInsert .text-19 {
+  .MenuUpdate .text-7 {
     color: var(--shark);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-l);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-l);
     font-weight: 500;
     height: 17px;
     letter-spacing: 0;
@@ -490,17 +490,17 @@
     width: 40px;
   }
   
-  .ItemInsert .vertical-divider {
+  .MenuUpdate .vertical-divider {
     background-color: #bbbbbb;
     height: 12px;
     margin-bottom: 1px;
     width: 1px;
   }
   
-  .ItemInsert .text-18 {
+  .MenuUpdate .text-6 {
     color: var(--shark);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-l);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-l);
     font-weight: 500;
     height: 17px;
     letter-spacing: 0;
@@ -508,29 +508,20 @@
     width: 66px;
   }
   
-  .ItemInsert .text-20 {
-    color: var(--attrangscokralabaster);
-    font-weight: 400;
-    left: 89px;
-    line-height: normal;
-    position: absolute;
-    top: 0;
-  }
-  
-  .ItemInsert .background {
-    align-items: center;
+  .MenuUpdate .background {
+    align-items: flex-end;
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
-    gap: 74px;
-    height: 1184px;
+    height: 1421px;
     margin-top: 20px;
     width: 1000px;
   }
   
-  .ItemInsert .heading-4-create-products {
+  .MenuUpdate .heading-4-create-products {
+    align-self: center;
     color: #212326;
-    font-family: var(--ItemInsert--font-family-inter);
+    font-family: var(--MenuUpdate--font-family-inter);
     font-size: 24px;
     font-weight: 700;
     height: 29px;
@@ -541,25 +532,24 @@
     width: 96px;
   }
   
-  .ItemInsert .form {
+  .MenuUpdate .form {
     align-items: flex-start;
     display: flex;
     gap: 60px;
-    height: 1082px;
+    height: 1178px;
+    margin-top: 74px;
     min-width: 1000px;
     padding: 0 30px;
   }
   
-  .ItemInsert .container-container {
-    align-items: flex-start;
-    display: flex;
+  .MenuUpdate .flex-col {
     flex-direction: column;
     gap: 50px;
-    min-height: 600px;
+    min-height: 1152px;
     width: 440px;
   }
   
-  .ItemInsert .container {
+  .MenuUpdate .container {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -568,7 +558,7 @@
     width: 440px;
   }
   
-  .ItemInsert .label {
+  .MenuUpdate .label {
     height: 24px;
     letter-spacing: -0.80px;
     line-height: 24px;
@@ -576,7 +566,7 @@
     white-space: nowrap;
   }
   
-  .ItemInsert .input {
+  .MenuUpdate .input {
     align-items: center;
     background-color: var(--alabaster);
     border: 1px solid;
@@ -589,12 +579,12 @@
     width: 440px;
   }
   
-  .ItemInsert .container-1::-webkit-scrollbar {
+  .MenuUpdate .container-1::-webkit-scrollbar {
     display: none;
     width: 0;
   }
   
-  .ItemInsert .container-1 {
+  .MenuUpdate .container-1 {
     align-items: flex-start;
     display: flex;
     height: 48px;
@@ -603,7 +593,7 @@
     width: 359px;
   }
   
-  .ItemInsert .text {
+  .MenuUpdate .text {
     height: 20px;
     letter-spacing: 0;
     line-height: 48px;
@@ -611,133 +601,22 @@
     width: 332px;
   }
   
-  .ItemInsert .input-1 {
-    align-items: center;
-    gap: 36px;
-    height: 50px;
-    padding: 0 10px;
-    width: 440px;
-  }
-  
-  .ItemInsert .container-2::-webkit-scrollbar {
-    display: none;
-    width: 0;
-  }
-  
-  .ItemInsert .container-2 {
-    align-items: flex-start;
-    display: flex;
-    height: 48px;
-    margin-left: 5px;
-    overflow: scroll;
-    padding: 13px 0;
-    width: 359px;
-  }
-  
-  .ItemInsert .sort-down {
-    height: 20px;
-    width: 20px;
-  }
-  
-  .ItemInsert .container-3 {
-    align-items: flex-end;
-    display: flex;
-    gap: 40px;
-    height: 80px;
-    min-width: 440px;
-  }
-  
-  .ItemInsert .flex-col {
-    align-self: flex-start;
-    flex-direction: column;
-    gap: 7px;
-    margin-top: -1px;
-    min-height: 81px;
-    width: 120px;
-  }
-  
-  .ItemInsert .input-2 {
-    align-items: flex-start;
-    height: 50px;
-    padding: 14px 10px;
-    transform: rotate(180deg);
-    width: 120px;
-  }
-  
-  .ItemInsert .cm {
-    height: 20px;
-    letter-spacing: 0;
-    line-height: 48px;
-    margin-left: 25px;
-    transform: rotate(180deg);
-    white-space: nowrap;
-  }
-  
-  .ItemInsert .input-3 {
-    align-items: flex-start;
-    gap: 5px;
-    height: 50px;
-    padding: 14px 10px;
-    transform: rotate(180deg);
-    width: 120px;
-  }
-  
-  .ItemInsert .sort-down-1 {
-    align-self: center;
-    height: 20px;
-    transform: rotate(-180deg);
-    width: 20px;
-  }
-  
-  .ItemInsert .text-1 {
-    height: 20px;
-    letter-spacing: 0;
-    line-height: 48px;
-    transform: rotate(180deg);
-    white-space: nowrap;
-  }
-  
-  .ItemInsert .flex-col-1 {
-    align-items: flex-end;
-    min-height: 1025px;
-    width: 440px;
-  }
-  
-  .ItemInsert .container-6 {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    margin-right: 4px;
-    margin-top: 50px;
-    min-height: 80px;
-    width: 436px;
-  }
-  
-  .ItemInsert .container-4 {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    margin-top: 50px;
-    min-height: 80px;
-    width: 440px;
-  }
-  
-  .ItemInsert .input-4 {
+  .MenuUpdate .input-1 {
     align-items: flex-start;
     flex-direction: column;
     height: 372px;
-    margin-top: 50px;
     padding: 15px 0;
-    width: 440px;
   }
   
-  .ItemInsert .label-2 {
+  .MenuUpdate .label-1 {
+    height: 24px;
+    letter-spacing: -0.80px;
+    line-height: 24px;
     margin-left: 8px;
+    white-space: nowrap;
   }
   
-  .ItemInsert .border-1 {
+  .MenuUpdate .border-1 {
     align-items: center;
     align-self: center;
     border: 1px dashed;
@@ -751,13 +630,13 @@
     width: 424px;
   }
   
-  .ItemInsert .upload-files4ee86225svg {
+  .MenuUpdate .upload-files4ee86225svg {
     height: 56px;
     margin-top: 29px;
     width: 56px;
   }
   
-  .ItemInsert .text-11 {
+  .MenuUpdate .text-20 {
     color: transparent;
     font-weight: 400;
     height: 49px;
@@ -766,19 +645,19 @@
     width: 240px;
   }
   
-  .ItemInsert .span0 {
+  .MenuUpdate .span0 {
     color: #8d929a;
   }
   
-  .ItemInsert .span1-1 {
+  .MenuUpdate .span1-1 {
     color: #6366f1;
-    font-family: var(--ItemInsert--font-family-inter);
-    font-size: var(--ItemInsert--font-size-l);
+    font-family: var(--MenuUpdate--font-family-inter);
+    font-size: var(--MenuUpdate--font-size-l);
     font-weight: 600;
     letter-spacing: 0;
   }
   
-  .ItemInsert .product-thumb-1bfdce747webp {
+  .MenuUpdate .product-thumb-1bfdce747webp {
     align-self: flex-end;
     background-image: url(../assets/img/product-thumb-1-bfdce747-webp@2x.png);
     background-position: 50% 50%;
@@ -790,28 +669,88 @@
     width: 60px;
   }
   
-  .ItemInsert .small-btn_brown {
+  .MenuUpdate .container-container {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    min-height: 730px;
+    width: 440px;
+  }
+  
+  .MenuUpdate .input-2 {
+    align-items: flex-start;
+    height: 50px;
+    padding: 14px 10px;
+  }
+  
+  .MenuUpdate .text-14 {
+    height: 20px;
+    letter-spacing: 0;
+    line-height: 48px;
+    white-space: nowrap;
+  }
+  
+  .MenuUpdate .container-3 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-height: 80px;
+    width: 436px;
+  }
+  
+  .MenuUpdate .input-3 {
+    align-items: center;
+    gap: 36px;
+    height: 50px;
+    padding: 0 10px;
+  }
+  
+  .MenuUpdate .container-4::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+  
+  .MenuUpdate .container-4 {
+    align-items: flex-start;
+    display: flex;
+    height: 48px;
+    margin-left: 5px;
+    overflow: scroll;
+    padding: 13px 0;
+    width: 359px;
+  }
+  
+  .MenuUpdate .sort-down {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .MenuUpdate .small-btn_brown {
     align-items: flex-start;
     background-color: #54473f;
     border-radius: 2px;
     display: flex;
     height: 53px;
-    margin-top: 80px;
-    min-width: 169px;
-    padding: 20px 48px;
+    justify-content: flex-end;
+    margin-right: 30px;
+    margin-top: 59px;
+    min-width: 174px;
+    padding: 20px 39px;
   }
   
-  .ItemInsert .text-12 {
+  .MenuUpdate .text-21 {
     color: var(--helpwhalenavercomwhite);
     font-weight: 400;
     height: 12px;
     line-height: 18px;
     text-align: center;
     white-space: nowrap;
-    width: 72px;
+    width: 90px;
   }
   
-  .ItemInsert .footer {
+  .MenuUpdate .footer {
     align-items: center;
     background-color: #9a7e6f;
     display: flex;
@@ -819,12 +758,11 @@
     flex-shrink: 1;
     height: 200px;
     justify-content: flex-start;
-    margin-top: 32px;
     min-width: 1920px;
     width: auto;
   }
   
-  .ItemInsert .footer-contents {
+  .MenuUpdate .footer-contents {
     align-items: flex-end;
     display: flex;
     gap: 19px;
@@ -833,26 +771,25 @@
     width: 1920px;
   }
   
-  .ItemInsert .flex-row {
+  .MenuUpdate .flex-row {
     gap: 30px;
     min-width: 893px;
   }
   
-  .ItemInsert .flex-col-2 {
-    align-items: flex-start;
+  .MenuUpdate .flex-col-1 {
     gap: 3px;
     margin-top: 0.12px;
     min-height: 59px;
     width: 862px;
   }
   
-  .ItemInsert .overlap-group-1 {
+  .MenuUpdate .overlap-group-1 {
     height: 39px;
     position: relative;
     width: 862px;
   }
   
-  .ItemInsert .x {
+  .MenuUpdate .x {
     height: 37px;
     left: 0;
     letter-spacing: 0;
@@ -862,10 +799,10 @@
     width: 606px;
   }
   
-  .ItemInsert .text-21 {
+  .MenuUpdate .text-22 {
     color: var(--helpwhalenavercomwhite);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-m);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-m);
     font-weight: 300;
     height: 17px;
     left: 421px;
@@ -878,7 +815,7 @@
     width: 77px;
   }
   
-  .ItemInsert .text-22 {
+  .MenuUpdate .text-23 {
     height: 17px;
     left: 508px;
     letter-spacing: 0;
@@ -889,7 +826,7 @@
     width: 354px;
   }
   
-  .ItemInsert .copyright {
+  .MenuUpdate .copyright {
     height: 17px;
     letter-spacing: 0;
     line-height: 20px;
@@ -897,24 +834,23 @@
     white-space: nowrap;
   }
   
-  .ItemInsert .vertical-divider-1 {
+  .MenuUpdate .vertical-divider-1 {
     background-color: #e5e5e5;
     height: 87px;
     width: 1px;
   }
   
-  .ItemInsert .flex-col-3 {
-    align-items: flex-start;
+  .MenuUpdate .flex-col-2 {
     gap: 15px;
     margin-bottom: 2.21px;
     min-height: 86px;
     width: 319px;
   }
   
-  .ItemInsert .heading-3 {
+  .MenuUpdate .heading-3 {
     color: var(--coconut);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-m);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-m);
     font-weight: 400;
     height: 53px;
     letter-spacing: -0.50px;
@@ -922,24 +858,24 @@
     width: 294px;
   }
   
-  .ItemInsert .span0-1 {
+  .MenuUpdate .span0-1 {
     font-weight: 500;
     letter-spacing: -0.06px;
   }
   
-  .ItemInsert .span1-2 {
+  .MenuUpdate .span1-2 {
     font-weight: 300;
     letter-spacing: -0.06px;
   }
   
-  .ItemInsert .text-container {
+  .MenuUpdate .text-container {
     align-items: center;
     display: flex;
     gap: 17px;
     min-width: 319px;
   }
   
-  .ItemInsert .text-23 {
+  .MenuUpdate .text-24 {
     height: 18px;
     letter-spacing: -0.50px;
     line-height: 18px;
@@ -947,10 +883,10 @@
     width: 211px;
   }
   
-  .ItemInsert .text-24 {
+  .MenuUpdate .text-25 {
     color: var(--helpwhalenavercomwhite);
-    font-family: var(--ItemInsert--font-family-noto_sans_kr);
-    font-size: var(--ItemInsert--font-size-s);
+    font-family: var(--MenuUpdate--font-family-noto_sans_kr);
+    font-size: var(--MenuUpdate--font-size-s);
     font-weight: 300;
     height: 16px;
     letter-spacing: -0.50px;
@@ -961,46 +897,37 @@
     width: 91px;
   }
   
-  .ItemInsert .cm-3 {
-    height: 20px;
-    letter-spacing: 0;
-    line-height: 48px;
-    margin-left: 25px;
-    transform: rotate(180deg);
-    white-space: nowrap;
-  }
-  
-  .ItemInsert .flex {
+  .MenuUpdate .flex {
     align-items: flex-start;
     display: flex;
   }
   
-  .ItemInsert .flex-col-4 {
+  .MenuUpdate .flex-col-3 {
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
   }
   
-  .ItemInsert .input-5 {
+  .MenuUpdate .input-4 {
     background-color: var(--alabaster);
     border: 1px solid;
     border-color: var(--bon-jour);
     border-radius: 8px;
     display: flex;
     overflow: hidden;
+    width: 440px;
   }
   
-  .ItemInsert .label-3 {
-    height: 24px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    white-space: nowrap;
-  }
-  
-  .ItemInsert .navbar-link-text {
+  .MenuUpdate .navbar-link-text {
     height: 20px;
     letter-spacing: 0;
     line-height: normal;
     text-align: center;
     white-space: nowrap;
+  }
+  
+  .MenuUpdate .overlap {
+    height: 126px;
+    width: 1920px;
   }
     

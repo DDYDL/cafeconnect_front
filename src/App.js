@@ -35,7 +35,7 @@ import OrderListForMainStore from './component/MainStore/OrderListForMainStore.j
 import OrderDetailForMainStore from './component/MainStore/OrderDetailForMainStore.js'
 import RepairList from './component/MainStore/RepairList.js';
 import RepairDetail from './component/MainStore/RepairDetail.js';
-import Category from './component/MainStore/Category.js';
+import ItemCategory from './component/MainStore/ItemCategory.js';
 import ItemInsert from './component/MainStore/ItemInsert.js'
 import ItemUpdate from './component/MainStore/ItemUpdate.js'
 import MenuInsert from './component/MainStore/MenuInsert.js'
@@ -166,7 +166,7 @@ function App() {
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
-        <Route path='/category' element={<Category />}/>
+        <Route path='/category' element={<ItemCategory />}/>
         <Route path='/insertMainStore' element={<InsertMainStore />}/>
         <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
         <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
