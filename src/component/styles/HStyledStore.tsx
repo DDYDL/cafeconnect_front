@@ -83,6 +83,7 @@ export const MainTitleText = styled.p`
     font-size:24px;
     font-weight:bold;
     margin-top:13px;
+    padding-bottom:13px;
     text-align:center;
 `;
 
@@ -177,7 +178,7 @@ export const TableTextTh = styled.th<Container>`
     font-size:16px;
     font-weight:bold;
     padding-left:20px;
-    padding-right:0px;
+    padding-right:20px;
     vertical-align:middle;
 `;
 
@@ -185,9 +186,10 @@ export const TableTextTd = styled.td`
     width:100px;
     height:60px;
     font-size:14px;
+    padding-left:20px;
     padding-right:20px;
-    padding-right:0px;
     vertical-align:middle;
+    text-align:center;
 `;
 
 export const TableTextTr = styled.tr<Container>`

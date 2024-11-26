@@ -183,7 +183,7 @@ function App() {
 
         <Route exect path='/addStoreMain' element={<AddStoreMain/>}/>
         <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
-        <Route exect path="/storeDetailMain" element={<StoreDetailMain/>}/>
+        <Route exect path="/storeDetailMain/:storeCode" element={<StoreDetailMain/>}/>
 
         <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
         <Route exact path="/noticeWriteMain" element={<NoticeWriteMain/>} />
