@@ -1,3 +1,8 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+KR:500,700,300,400|Inter:500,400|Aboreto:400|Noto+Serif+Malayalam:700");
+/* The following line is used to measure usage of this code. You can remove it if you want. */
+@import url("https://px.animaapp.com/6729b948983199123a03b5b6.6729b949983199123a03b5b9.E0mY5lw.hcp.png");
+
 
 
 .screen a {
@@ -28,704 +33,926 @@
   box-sizing: border-box;
 }
 :root { 
-    --black: #000000;
-    --coconut: #fdfdfd;
-    --gray-nurse: #eaeaea;
-    --gray-nurse-2: #e8e8e8;
-    --shark: #262626;
-    --white: #ffffff;
-   
-    --font-size-l: 14px;
-    --font-size-m: 12px;
-    --font-size-s: 11px;
-    --font-size-xl: 16px;
-    --font-size-xxl: 18px;
-    --font-size-xxxl: 24px;
-    --font-size-xxxxl: 48px;
-   
-    --font-family-aboreto: "Aboreto", Helvetica;
-    --font-family-inter: "Inter", Helvetica;
-    --font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
-    --font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
-  }
-  .notosanskr-medium-black-16px {
-    color: var(--black);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-xl);
-    font-style: normal;
-    font-weight: 500;
-  }
-  
-  .notosanskr-light-black-16px {
-    color: var(--black);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-xl);
-    font-style: normal;
-    font-weight: 300;
-  }
-  
-  .notosanskr-normal-shark-18px {
-    color: var(--shark);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-xxl);
-    font-style: normal;
-    font-weight: 400;
-  }
-  
-  .notosanskr-light-coconut-12px {
-    color: var(--coconut);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-m);
-    font-style: normal;
-    font-weight: 300;
-  }
-/* screen - repairdetail */
+  --attrangscokralabaster: #000000;
+  --attrangscokralmond: #000000;
+  --attrangscokralto: #000000;
+  --attrangscokramericano: #000000;
+  --attrangscokramour: #000000;
+  --attrangscokrantique-brass: #000000;
+  --attrangscokrapricot: #000000;
+  --attrangscokrarapawa: #000000;
+  --attrangscokrarrowtown: #000000;
+  --attrangscokrash: #000000;
+  --attrangscokrbison-hide: #000000;
+  --attrangscokrblack: #000000;
+  --attrangscokrblizzard-blue: #000000;
+  --attrangscokrblue-romance: #000000;
+  --attrangscokrbone: #000000;
+  --attrangscokrbronco: #000000;
+  --attrangscokrbutterfly-bush: #000000;
+  --attrangscokrcan-can: #000000;
+  --attrangscokrcape-palliser: #000000;
+  --attrangscokrcaper: #000000;
+  --attrangscokrcardinal: #000000;
+  --attrangscokrcarnation: #000000;
+  --attrangscokrcarnation-pink: #000000;
+  --attrangscokrcashmere: #000000;
+  --attrangscokrchambray: #000000;
+  --attrangscokrchamois: #000000;
+  --attrangscokrchelsea-cucumber: #000000;
+  --attrangscokrchicago: #000000;
+  --attrangscokrchino: #000000;
+  --attrangscokrcioccolato: #000000;
+  --attrangscokrconcrete: #000000;
+  --attrangscokrcupid: #000000;
+  --attrangscokrdi-serria: #000000;
+  --attrangscokrdolly: #000000;
+  --attrangscokrdusty-gray: #000000;
+  --attrangscokreast-bay: #000000;
+  --attrangscokreast-side: #000000;
+  --attrangscokreastern-blue: #000000;
+  --attrangscokrecru-white: #000000;
+  --attrangscokremperor: #000000;
+  --attrangscokrenvy: #000000;
+  --attrangscokrfall-green: #000000;
+  --attrangscokrfantasy: #000000;
+  --attrangscokrfrench-rose: #000000;
+  --attrangscokrfuscous-gray: #000000;
+  --attrangscokrfuzzy-wuzzy-brown: #000000;
+  --attrangscokrgallery: #000000;
+  --attrangscokrgeraldine: #000000;
+  --attrangscokrgeraldine-14: #000000;
+  --attrangscokrgranny-smith: #000000;
+  --attrangscokrgray: #000000;
+  --attrangscokrgun-powder: #000000;
+  --attrangscokrhampton: #000000;
+  --attrangscokrindian-khaki: #000000;
+  --attrangscokrjewel: #000000;
+  --attrangscokrjust-right: #000000;
+  --attrangscokrkabul: #000000;
+  --attrangscokrkobi: #000000;
+  --attrangscokrmandys-pink: #000000;
+  --attrangscokrmarigold-yellow: #000000;
+  --attrangscokrmercury: #000000;
+  --attrangscokrmine-shaft: #000000;
+  --attrangscokrmuddy-waters: #000000;
+  --attrangscokrnobel: #000000;
+  --attrangscokrolivine: #000000;
+  --attrangscokronahau: #000000;
+  --attrangscokrorchid: #000000;
+  --attrangscokroxley: #000000;
+  --attrangscokrpablo: #000000;
+  --attrangscokrpadua: #000000;
+  --attrangscokrpapaya-whip: #000000;
+  --attrangscokrparsley: #000000;
+  --attrangscokrpicasso: #000000;
+  --attrangscokrpine-glade: #000000;
+  --attrangscokrpink: #000000;
+  --attrangscokrpolo-blue: #000000;
+  --attrangscokrport-gore: #000000;
+  --attrangscokrprelude: #000000;
+  --attrangscokrpurple: #000000;
+  --attrangscokrquicksand: #000000;
+  --attrangscokrroman-coffee: #000000;
+  --attrangscokrromantic: #000000;
+  --attrangscokrroyal-blue: #000000;
+  --attrangscokrsandstone: #000000;
+  --attrangscokrsandy-brown: #000000;
+  --attrangscokrscorpion: #000000;
+  --attrangscokrscotch-mist: #000000;
+  --attrangscokrseagull: #000000;
+  --attrangscokrsilk: #000000;
+  --attrangscokrsilver: #000000;
+  --attrangscokrsilver-chalice: #000000;
+  --attrangscokrsoft-amber: #000000;
+  --attrangscokrspindle: #000000;
+  --attrangscokrsprout: #000000;
+  --attrangscokrstark-white: #000000;
+  --attrangscokrswirl: #000000;
+  --attrangscokrtapestry: #000000;
+  --attrangscokrthunderbird: #000000;
+  --attrangscokrtundora: #000000;
+  --attrangscokrvalencia: #000000;
+  --attrangscokrvalhalla: #000000;
+  --attrangscokrvanilla: #000000;
+  --attrangscokrvarden: #000000;
+  --attrangscokrvermilion: #000000;
+  --attrangscokrvin-rouge: #000000;
+  --attrangscokrwe-peep: #000000;
+  --attrangscokrwheat: #000000;
+  --attrangscokrwheatfield: #000000;
+  --attrangscokrwhite: #000000;
+  --attrangscokrwhite-95: #000000;
+  --attrangscokrwhite-rock: #000000;
+  --attrangscokrwild-sand: #000000;
+  --attrangscokrzorba: #000000;
+  --coconut: #fdfdfd;
+  --coffeehomecokrblack: #000000;
+  --coffeehomecokrboulder: #000000;
+  --coffeehomecokrcloud-burst: #000000;
+  --coffeehomecokrcrimson: #000000;
+  --coffeehomecokrdove-gray: #000000;
+  --coffeehomecokremperor: #000000;
+  --coffeehomecokrfair-pink: #000000;
+  --coffeehomecokrmercury: #e8e8e8;
+  --coffeehomecokrmine-shaft: #000000;
+  --coffeehomecokrpomegranate: #000000;
+  --coffeehomecokrsilver-chalice: #000000;
+  --coffeehomecokrwax-flower: #000000;
+  --coffeehomecokrwhite: #000000;
+  --coffeehomecokrwild-sand: #000000;
+  --gray-nurse: #eaeaea;
+  --helpwhalenavercomalto: #000000;
+  --helpwhalenavercomblack: #000000;
+  --helpwhalenavercomblack-10: #000000;
+  --helpwhalenavercomblack-12: #000000;
+  --helpwhalenavercomboulder: #000000;
+  --helpwhalenavercomdiesel-15: #000000;
+  --helpwhalenavercomroyal-blue: #000000;
+  --helpwhalenavercomscience-blue: #000000;
+  --helpwhalenavercomwhite: #ffffff;
+  --helpwhalenavercomzircon: #000000;
+  --krpinterestcomalabaster: #000000;
+  --krpinterestcombastille: #000000;
+  --krpinterestcomblack-4: #000000;
+  --krpinterestcomblack-6: #000000;
+  --krpinterestcombright-red: #000000;
+  --krpinterestcomcape-cod: #000000;
+  --krpinterestcomcod-gray: #000000;
+  --krpinterestcomgallery: #000000;
+  --krpinterestcomguardsman-red: #000000;
+  --krpinterestcomiron: #000000;
+  --krpinterestcommercury: #000000;
+  --krpinterestcomseashell: #000000;
+  --krpinterestcomwhite: #000000;
+  --krpinterestcomwhite-02: #000000;
+  --krpinterestcomwhite-90: #000000;
+  --krpinterestcomwhite-95: #000000;
+  --membershinsegaepointcomalabaster: #000000;
+  --membershinsegaepointcomalizarin-crimson: #000000;
+  --membershinsegaepointcomblack: #000000;
+  --membershinsegaepointcomboulder: #000000;
+  --membershinsegaepointcomemperor: #000000;
+  --membershinsegaepointcomgallery: #000000;
+  --membershinsegaepointcommercury: #000000;
+  --membershinsegaepointcomsilver: #000000;
+  --membershinsegaepointcomwhite: #000000;
+  --membershinsegaepointcomwild-sand: #000000;
+  --priumgithubioaqua-haze: #000000;
+  --priumgithubioathens-gray: #000000;
+  --priumgithubiobali-hai-80: #000000;
+  --priumgithubioblue-ribbon: #000000;
+  --priumgithubiochardonnay-24: #000000;
+  --priumgithubiochristine-20: #000000;
+  --priumgithubiocomet-80: #000000;
+  --priumgithubiocomet-85: #000000;
+  --priumgithubiododger-blue-20: #000000;
+  --priumgithubiolimeade-20: #000000;
+  --priumgithubiolochmara: #000000;
+  --priumgithubiomelrose: #000000;
+  --priumgithubiomirage: #000000;
+  --priumgithubiomischka: #000000;
+  --priumgithubiomischka-54: #000000;
+  --priumgithubiowhite: #000000;
+  --priumgithubiowhite-catskill-white: #000000;
+  --priumgithubiozumthor: #000000;
+  --shark: #262626;
+  --themewagongithubioalto: #000000;
+  --themewagongithubioblack: #000000;
+  --themewagongithubioblack-6: #000000;
+  --themewagongithubioblack-9: #000000;
+  --themewagongithubioblue-ribbon-4: #000000;
+  --themewagongithubiobright-turquoise: #000000;
+  --themewagongithubiocinderella: #000000;
+  --themewagongithubiogreen-haze: #000000;
+  --themewagongithubiohumming-bird: #000000;
+  --themewagongithubiomartinique: #000000;
+  --themewagongithubiomedium-purple: #000000;
+  --themewagongithubiomirage: #000000;
+  --themewagongithubiopattens-blue: #000000;
+  --themewagongithubioscarlet: #000000;
+  --themewagongithubiowhisper: #000000;
+  --themewagongithubiowhite: #ffffff;
+  --themewagongithubiowhite-whisper: #000000;
+  --themewagongithubiozircon: #000000;
+  --wwwdaisomallcokrathens-gray: #000000;
+  --wwwdaisomallcokrblack: #000000;
+  --wwwdaisomallcokrblack-40: #000000;
+  --wwwdaisomallcokrdodger-blue: #000000;
+  --wwwdaisomallcokrebony-clay: #000000;
+  --wwwdaisomallcokrghost: #000000;
+  --wwwdaisomallcokrgray: #000000;
+  --wwwdaisomallcokrgray-25: #000000;
+  --wwwdaisomallcokrmercury: #000000;
+  --wwwdaisomallcokrmine-shaft: #000000;
+  --wwwdaisomallcokrmirage: #000000;
+  --wwwdaisomallcokrmonza: #000000;
+  --wwwdaisomallcokrnevada: #000000;
+  --wwwdaisomallcokroxford-blue: #000000;
+  --wwwdaisomallcokrportage: #000000;
+  --wwwdaisomallcokrselago: #000000;
+  --wwwdaisomallcokrsilver: #000000;
+  --wwwdaisomallcokrwhite: #000000;
+  --wwwdaisomallcokrwhite-02: #000000;
+  --wwwediyacomwhite-white: #000000;
+ 
+  --RepairDetail--font-size-l: 14px;
+  --RepairDetail--font-size-m: 12px;
+  --RepairDetail--font-size-s: 11px;
+  --RepairDetail--font-size-xl: 16px;
+  --RepairDetail--font-size-xxl: 18px;
+  --RepairDetail--font-size-xxxl: 24px;
+  --RepairDetail--font-size-xxxxl: 48px;
+ 
+  --RepairDetail--font-family-aboreto: "Aboreto", Helvetica;
+  --RepairDetail--font-family-inter: "Inter", Helvetica;
+  --RepairDetail--font-family-noto_sans_kr: "Noto Sans KR", Helvetica;
+  --RepairDetail--font-family-noto_serif_malayalam: "Noto Serif Malayalam", Helvetica;
+}
+.themewagongithubiosemanticheading-6 {
+  font-family: var(--RepairDetail--font-family-inter);
+  font-size: var(--RepairDetail--font-size-xl);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+}
 
-.repairdetail {
-    align-items: center;
-    background-color: #f8f8f8;
-    display: flex;
-    flex-direction: column;
-    height : 100%;
-    overflow-x: hidden;
-    width: 100%;
-  }
-  
-  .repairdetail .header {
-    align-items: flex-start;
-    background-color: transparent;
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 1;
-    justify-content: flex-start;
-    margin-left: 2.0px;
-    margin-top: 17px;
-    min-width: 1922px;
-    width: auto;
-  }
-  
-  .repairdetail .overlap-group2 {
-    height: 126px;
-    position: relative;
-    width: 1920px;
-  }
-  
-  .repairdetail .overlap-group1 {
-    height: 126px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 1920px;
-  }
-  
-  .repairdetail .container {
-    align-items: center;
-    background-color: #ffffff80;
-    display: flex;
-    height: 65px;
-    left: 0;
-    padding: 16px 29px;
-    position: absolute;
-    top: 61px;
-    width: 1920px;
-  }
-  
-  .repairdetail .sidebar {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 1.0px;
-    min-height: 24px;
-    width: 25px;
-  }
-  
-  .repairdetail .border {
-    border-bottom-style: solid;
-    border-bottom-width: 3px;
-    border-color: var(--shark);
-    border-top-style: solid;
-    border-top-width: 3px;
-    height: 3px;
-    width: 25px;
-  }
-  
-  .repairdetail .horizontal-border {
-    border-color: var(--shark);
-    border-top-style: solid;
-    border-top-width: 3px;
-    height: 6px;
-    width: 25px;
-  }
-  
-  .repairdetail .navbar {
-    align-items: flex-start;
-    align-self: flex-end;
-    display: flex;
-    gap: 78px;
-    height: 22px;
-    margin-bottom: 2px;
-    margin-left: 557px;
-    min-width: 722px;
-  }
-  
-  .repairdetail .navbar-link-text-8 {
-    width: 86px;
-  }
-  
-  .repairdetail .navbar-link-text-5 {
-    width: 100px;
-  }
-  
-  .repairdetail .navbar-link-text-9 {
-    width: 74px;
-  }
-  
-  .repairdetail .navbar-link-text-6 {
-    align-self: flex-end;
-    color: var(--shark);
-    font-family: var(--font-family-aboreto);
-    font-size: var(--font-size-xxl);
-    font-weight: 400;
-    width: 70px;
-  }
-  
-  .repairdetail .navbar-link-text-7 {
-    width: 70px;
-  }
-  
-  .repairdetail .image-1 {
-    align-self: flex-start;
-    height: 31px;
-    margin-left: 443px;
-    object-fit: cover;
-    width: 31px;
-  }
-  
-  .repairdetail .group {
-    height: 24px;
-    margin-bottom: 0.5px;
-    margin-left: 34px;
-    width: 26px;
-  }
-  
-  .repairdetail .cc {
-    color: transparent;
-    font-family: var(--font-family-noto_serif_malayalam);
-    font-size: var(--font-size-xxxxl);
-    font-weight: 700;
-    height: 71px;
-    left: 916px;
-    letter-spacing: -4.00px;
-    line-height: 20px;
-    position: absolute;
-    top: 0;
-    width: 89px;
-  }
-  
-  .repairdetail .span {
-    color: var(--shark);
-    letter-spacing: -1.92px;
-  }
-  
-  .repairdetail .span1 {
-    color: #cbd2a4;
-    letter-spacing: -1.92px;
-  }
-  
-  .repairdetail .sidemenu {
-    align-items: flex-end;
-    display: flex;
-    gap: 17px;
-    height: 17px;
-    left: 1738px;
-    min-width: 145px;
-    position: absolute;
-    top: 32px;
-  }
-  
-  .repairdetail .text-11 {
-    color: var(--shark);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-l);
-    font-weight: 500;
-    height: 17px;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 40px;
-  }
-  
-  .repairdetail .vertical-divider {
-    background-color: #bbbbbb;
-    height: 12px;
-    margin-bottom: 1px;
-    width: 1px;
-  }
-  
-  .repairdetail .text-10 {
-    color: var(--shark);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-l);
-    font-weight: 500;
-    height: 17px;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 66px;
-  }
-  
-  .repairdetail .heading-2 {
-    color: #202020;
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-xxxl);
-    font-weight: 700;
-    height: 39px;
-    letter-spacing: -1.00px;
-    line-height: 38.5px;
-    margin-top: 61px;
-    min-width: 90px;
-    text-align: center;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .frame-container {
-    height: 131px;
-    margin-top: 21px;
-    position: relative;
-    width: 1200px;
-  }
-  
-  .repairdetail .frame-119 {
-    align-items: center;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: var(--gray-nurse);
-    display: flex;
-    height: 60px;
-    left: 0;
-    padding: 0px 80px;
-    position: absolute;
-    top: 0;
-    width: 1200px;
-  }
-  
-  .repairdetail .frame-117 {
-    height: 24px;
-    position: relative;
-    width: 265px;
-  }
-  
-  .repairdetail .text {
-    height: 24px;
-    left: 0;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    position: absolute;
-    top: -1px;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .frame-118 {
-    height: 56px;
-    margin-right: -51.00px;
-    position: relative;
-    width: 826px;
-  }
-  
-  .repairdetail .text-13 {
-    height: 24px;
-    left: 9px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    position: absolute;
-    top: 15px;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .frame-120 {
-    align-items: center;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: var(--gray-nurse);
-    display: flex;
-    height: 72px;
-    left: 0;
-    padding: 3px 80px;
-    position: absolute;
-    top: 59px;
-    width: 1200px;
-  }
-  
-  .repairdetail .input {
-    align-items: flex-start;
-    background-color: var(--white);
-    border: 1px solid;
-    border-color: var(--gray-nurse-2);
-    border-radius: 8px;
-    display: flex;
-    height: 56px;
-    overflow: hidden;
-    padding: 15px 13px;
-    width: 437px;
-  }
-  
-  .repairdetail .text-15 {
-    height: 24px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .frame-12 {
-    align-items: center;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: var(--gray-nurse);
-    display: flex;
-    height: 72px;
-    padding: 3px 80px;
-    position: relative;
-    width: 1200px;
-  }
-  
-  .repairdetail .frame-1 {
-    height: 56px;
-    position: relative;
-    width: 775px;
-  }
-  
-  .repairdetail .frame-134 {
-    align-items: center;
-    display: flex;
-    gap: 9px;
-    position: relative;
-    width: 437px;
-  }
-  
-  .repairdetail .input-1 {
-    height: 56px;
-    position: relative;
-    width: 333px;
-  }
-  
-  .repairdetail .a12345 {
-    height: 24px;
-    left: 13px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    position: absolute;
-    top: 16px;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .input-2 {
-    align-items: flex-start;
-    display: flex;
-    height: 56px;
-    padding: 15px 13px;
-    width: 775px;
-  }
-  
-  .repairdetail .date {
-    height: 24px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    width: 159px;
-  }
-  
-  .repairdetail .frame-124 {
-    align-items: center;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: var(--gray-nurse);
-    display: flex;
-    height: 72px;
-    margin-top: 5px;
-    padding: 3px 80px;
-    position: relative;
-    width: 1200px;
-  }
-  
-  .repairdetail .input-3 {
-    align-items: flex-end;
-    display: flex;
-    height: 56px;
-    padding: 15px 13px;
-    width: 775px;
-  }
-  
-  .repairdetail .text-19 {
-    height: 24px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    width: 159px;
-  }
-  
-  .repairdetail .frame-123 {
-    align-items: center;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-color: var(--gray-nurse);
-    display: flex;
-    height: 240px;
-    margin-top: 5px;
-    padding: 3px 80px;
-    position: relative;
-    width: 1200px;
-  }
-  
-  .repairdetail .frame-118-1 {
-    height: 222px;
-    position: relative;
-    width: 775px;
-  }
-  
-  .repairdetail .input-4 {
-    align-items: flex-start;
-    display: flex;
-    height: 222px;
-    padding: 17px 13px;
-    width: 775px;
-  }
-  
-  .repairdetail .text-21 {
-    height: 24px;
-    letter-spacing: -0.80px;
-    line-height: 24px;
-    width: 159px;
-  }
-  
-  .repairdetail .button {
-    align-items: flex-start;
-    background: linear-gradient(180deg, rgb(79, 70, 229) 4.27%, rgb(99, 102, 241) 100%);
-    border-radius: 4px;
-    display: flex;
-    justify-content: flex-end;
-    margin-left: 868.3px;
-    margin-top: 79px;
-    min-width: 172px;
-    padding: 0 1.3px;
-  }
-  
-  .repairdetail .overlap-group3 {
-    border-radius: 2px;
-    height: 53px;
-    position: relative;
-    width: 169px;
-  }
-  
-  .repairdetail .text-22 {
-    color: var(--white);
-    font-family: var(--font-family-inter);
-    font-size: var(--font-size-xl);
-    font-weight: 500;
-    height: 20px;
-    left: 21px;
-    letter-spacing: 0;
-    line-height: 24px;
-    position: absolute;
-    text-align: center;
-    top: 16px;
-    white-space: nowrap;
-    width: 127px;
-  }
-  
-  .repairdetail .small-btn_brown {
-    align-items: flex-start;
-    background-color: #54473f;
-    border-radius: 2px;
-    display: flex;
-    height: 53px;
-    left: 0;
-    min-width: 169px;
-    padding: 20px 36px;
-    position: absolute;
-    top: 0;
-  }
-  
-  .repairdetail .text-23 {
-    color: var(--white);
-    font-family: var(--font-family-inter);
-    font-size: var(--font-size-xl);
-    font-weight: 400;
-    height: 12px;
-    letter-spacing: 0;
-    line-height: 18px;
-    text-align: center;
-    white-space: nowrap;
-    width: 97px;
-  }
-  
-  .repairdetail .footer {
-    align-items: flex-end;
-    background-color: #9a7e6f;
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 1;
-    height: 200px;
-    justify-content: flex-start;
-    margin-top: 78px;
-    min-width: 1920px;
-    padding: 14px 0;
-    width: auto;
-  }
-  
-  .repairdetail .footer-contents {
-    align-items: flex-end;
-    display: flex;
-    gap: 19px;
-    height: 150px;
-    padding: 22.1px 340px;
-    width: 1920px;
-  }
-  
-  .repairdetail .flex-row {
-    gap: 30px;
-    min-width: 893px;
-  }
-  
-  .repairdetail .flex-col {
-    flex-direction: column;
-    gap: 3px;
-    margin-top: 0.12px;
-    min-height: 59px;
-    width: 862px;
-  }
-  
-  .repairdetail .overlap-group {
-    height: 39px;
-    position: relative;
-    width: 862px;
-  }
-  
-  .repairdetail .x {
-    height: 37px;
-    left: 0;
-    letter-spacing: 0;
-    line-height: 20px;
-    position: absolute;
-    top: 0;
-    width: 606px;
-  }
-  
-  .repairdetail .text-1 {
-    color: var(--white);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-m);
-    font-weight: 300;
-    height: 17px;
-    left: 421px;
-    letter-spacing: 0;
-    line-height: 18px;
-    position: absolute;
-    text-align: center;
-    top: 21px;
-    white-space: nowrap;
-    width: 77px;
-  }
-  
-  .repairdetail .text-2 {
-    height: 17px;
-    left: 508px;
-    letter-spacing: 0;
-    line-height: 20px;
-    position: absolute;
-    top: 20px;
-    white-space: nowrap;
-    width: 354px;
-  }
-  
-  .repairdetail .copyright {
-    height: 17px;
-    letter-spacing: 0;
-    line-height: 20px;
-    margin-bottom: -3px;
-    white-space: nowrap;
-  }
-  
-  .repairdetail .vertical-divider-1 {
-    background-color: #e5e5e5;
-    height: 87px;
-    width: 1px;
-  }
-  
-  .repairdetail .flex-col-1 {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 2.21px;
-    min-height: 86px;
-    width: 319px;
-  }
-  
-  .repairdetail .heading-3 {
-    color: var(--coconut);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-m);
-    font-weight: 400;
-    height: 53px;
-    letter-spacing: -0.50px;
-    line-height: 18px;
-    width: 294px;
-  }
-  
-  .repairdetail .span0 {
-    font-weight: 500;
-    letter-spacing: -0.06px;
-  }
-  
-  .repairdetail .span1-1 {
-    font-weight: 300;
-    letter-spacing: -0.06px;
-  }
-  
-  .repairdetail .text-container {
-    align-items: center;
-    display: flex;
-    gap: 17px;
-    min-width: 319px;
-  }
-  
-  .repairdetail .text-3 {
-    height: 18px;
-    letter-spacing: -0.50px;
-    line-height: 18px;
-    white-space: nowrap;
-    width: 211px;
-  }
-  
-  .repairdetail .text-4 {
-    color: var(--white);
-    font-family: var(--font-family-noto_sans_kr);
-    font-size: var(--font-size-s);
-    font-weight: 300;
-    height: 16px;
-    letter-spacing: -0.50px;
-    line-height: 18px;
-    margin-bottom: 0.46px;
-    text-align: center;
-    white-space: nowrap;
-    width: 91px;
-  }
-  
-  .repairdetail .flex {
-    align-items: flex-start;
-    display: flex;
-  }
-  
-  .repairdetail .input-5 {
-    background-color: var(--white);
-    border: 1px solid;
-    border-color: var(--gray-nurse-2);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .repairdetail .navbar-link-text {
-    height: 20px;
-    letter-spacing: 0;
-    line-height: normal;
-    text-align: center;
-    white-space: nowrap;
-  }
-    
+.notosanskr-medium-black-16px {
+  color: var(--attrangscokralabaster);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-xl);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.notosanskr-light-black-16px {
+  color: var(--attrangscokralabaster);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-xl);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.notosanskr-normal-shark-18px {
+  color: var(--shark);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-xxl);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.notosanskr-light-coconut-12px {
+  color: var(--coconut);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-m);
+  font-style: normal;
+  font-weight: 300;
+}
+/* screen - RepairDetail */
+
+.RepairDetail {
+  align-items: center;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.RepairDetail .header {
+  align-items: flex-start;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  margin-left: 2.0px;
+  margin-top: 19px;
+  min-width: 1922px;
+  width: auto;
+}
+
+.RepairDetail .overlap-group3 {
+  height: 126px;
+  position: relative;
+  width: 1920px;
+}
+
+.RepairDetail .overlap-group2 {
+  height: 126px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 1920px;
+}
+
+.RepairDetail .container {
+  align-items: center;
+  background-color: #ffffff80;
+  display: flex;
+  height: 65px;
+  left: 0;
+  padding: 16px 29px;
+  position: absolute;
+  top: 61px;
+  width: 1920px;
+}
+
+.RepairDetail .sidebar {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 1.0px;
+  min-height: 24px;
+  width: 25px;
+}
+
+.RepairDetail .border {
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-color: var(--shark);
+  border-top-style: solid;
+  border-top-width: 3px;
+  height: 3px;
+  width: 25px;
+}
+
+.RepairDetail .horizontal-border {
+  border-color: var(--shark);
+  border-top-style: solid;
+  border-top-width: 3px;
+  height: 6px;
+  width: 25px;
+}
+
+.RepairDetail .navbar {
+  align-items: flex-start;
+  align-self: flex-end;
+  display: flex;
+  gap: 78px;
+  height: 22px;
+  margin-bottom: 2px;
+  margin-left: 557px;
+  min-width: 722px;
+}
+
+.RepairDetail .navbar-link-text-21 {
+  width: 86px;
+}
+
+.RepairDetail .navbar-link-text-18 {
+  width: 100px;
+}
+
+.RepairDetail .navbar-link-text-22 {
+  width: 74px;
+}
+
+.RepairDetail .navbar-link-text-19 {
+  align-self: flex-end;
+  color: var(--shark);
+  font-family: var(--RepairDetail--font-family-aboreto);
+  font-size: var(--RepairDetail--font-size-xxl);
+  font-weight: 400;
+  width: 70px;
+}
+
+.RepairDetail .navbar-link-text-20 {
+  width: 70px;
+}
+
+.RepairDetail .image-1 {
+  align-self: flex-start;
+  height: 31px;
+  margin-left: 443px;
+  object-fit: cover;
+  width: 31px;
+}
+
+.RepairDetail .group {
+  height: 24px;
+  margin-bottom: 0.5px;
+  margin-left: 34px;
+  width: 26px;
+}
+
+.RepairDetail .cc {
+  color: transparent;
+  font-family: var(--RepairDetail--font-family-noto_serif_malayalam);
+  font-size: var(--RepairDetail--font-size-xxxxl);
+  font-weight: 700;
+  height: 71px;
+  left: 916px;
+  letter-spacing: -4.00px;
+  line-height: 20px;
+  position: absolute;
+  top: 0;
+  width: 89px;
+}
+
+.RepairDetail .span {
+  color: var(--shark);
+  letter-spacing: -1.92px;
+}
+
+.RepairDetail .span1 {
+  color: #cbd2a4;
+  letter-spacing: -1.92px;
+}
+
+.RepairDetail .sidemenu {
+  align-items: flex-end;
+  display: flex;
+  gap: 17px;
+  height: 17px;
+  left: 1738px;
+  min-width: 145px;
+  position: absolute;
+  top: 32px;
+}
+
+.RepairDetail .text-24 {
+  color: var(--shark);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-l);
+  font-weight: 500;
+  height: 17px;
+  letter-spacing: 0;
+  line-height: normal;
+  width: 40px;
+}
+
+.RepairDetail .vertical-divider {
+  background-color: #bbbbbb;
+  height: 12px;
+  margin-bottom: 1px;
+  width: 1px;
+}
+
+.RepairDetail .text-23 {
+  color: var(--shark);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-l);
+  font-weight: 500;
+  height: 17px;
+  letter-spacing: 0;
+  line-height: normal;
+  width: 66px;
+}
+
+.RepairDetail .heading-2 {
+  color: #202020;
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-xxxl);
+  font-weight: 700;
+  height: 39px;
+  letter-spacing: -1.00px;
+  line-height: 38.5px;
+  margin-top: 20px;
+  min-width: 90px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.RepairDetail .frame-119 {
+  align-items: center;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: var(--gray-nurse);
+  display: flex;
+  height: 60px;
+  margin-top: 35px;
+  padding: 0px 80px;
+  position: relative;
+  width: 1000px;
+}
+
+.RepairDetail .frame-117 {
+  height: 24px;
+  position: relative;
+  width: 265px;
+}
+
+.RepairDetail .text {
+  height: 24px;
+  left: 0;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  position: absolute;
+  top: -1px;
+  white-space: nowrap;
+}
+
+.RepairDetail .frame-118 {
+  height: 56px;
+  margin-right: -80.00px;
+  position: relative;
+  width: 655px;
+}
+
+.RepairDetail .text-2 {
+  height: 24px;
+  left: 9px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  position: absolute;
+  top: 15px;
+  white-space: nowrap;
+}
+
+.RepairDetail .frame-12 {
+  align-items: center;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: var(--gray-nurse);
+  display: flex;
+  height: 72px;
+  padding: 3px 80px;
+  position: relative;
+  width: 1000px;
+}
+
+.RepairDetail .frame-1 {
+  height: 56px;
+  margin-right: -3.00px;
+  position: relative;
+  width: 578px;
+}
+
+.RepairDetail .input {
+  align-items: flex-start;
+  background-color: var(--helpwhalenavercomwhite);
+  border: 1px solid;
+  border-color: var(--coffeehomecokrmercury);
+  border-radius: 8px;
+  display: flex;
+  height: 56px;
+  overflow: hidden;
+  padding: 15px 13px;
+  width: 578px;
+}
+
+.RepairDetail .text-4 {
+  height: 24px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.RepairDetail .frame-134 {
+  align-items: center;
+  display: flex;
+  gap: 9px;
+  position: relative;
+  width: 578px;
+}
+
+.RepairDetail .input-1 {
+  height: 56px;
+  margin-right: -2.00px;
+  position: relative;
+  width: 580px;
+}
+
+.RepairDetail .a12345 {
+  height: 24px;
+  left: 13px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  position: absolute;
+  top: 16px;
+  white-space: nowrap;
+}
+
+.RepairDetail .date {
+  height: 24px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  width: 159px;
+}
+
+.RepairDetail .frame-124 {
+  align-items: center;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: var(--gray-nurse);
+  display: flex;
+  height: 72px;
+  margin-top: 5px;
+  padding: 3px 80px;
+  position: relative;
+  width: 1000px;
+}
+
+.RepairDetail .frame-118-1 {
+  height: 56px;
+  margin-right: -5.00px;
+  position: relative;
+  width: 580px;
+}
+
+.RepairDetail .input-2 {
+  align-items: flex-end;
+  display: flex;
+  height: 56px;
+  padding: 15px 13px;
+  width: 580px;
+}
+
+.RepairDetail .text-8 {
+  height: 24px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  width: 159px;
+}
+
+.RepairDetail .frame-123 {
+  align-items: center;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: var(--gray-nurse);
+  display: flex;
+  height: 240px;
+  padding: 3px 80px;
+  position: relative;
+  width: 1000px;
+}
+
+.RepairDetail .frame-118-2 {
+  height: 222px;
+  margin-right: -3.00px;
+  position: relative;
+  width: 578px;
+}
+
+.RepairDetail .input-3 {
+  align-items: flex-start;
+  display: flex;
+  height: 222px;
+  padding: 17px 13px;
+  width: 582px;
+}
+
+.RepairDetail .text-10 {
+  height: 24px;
+  letter-spacing: -0.80px;
+  line-height: 24px;
+  width: 159px;
+}
+
+.RepairDetail .button {
+  align-items: flex-start;
+  background: linear-gradient(180deg, rgb(79, 70, 229) 4.27%, rgb(99, 102, 241) 100%);
+  border-radius: 4px;
+  display: flex;
+  margin-left: 682.3px;
+  margin-top: 72px;
+  min-width: 172px;
+}
+
+.RepairDetail .overlap-group1 {
+  border-radius: 2px;
+  height: 53px;
+  position: relative;
+  width: 174px;
+}
+
+.RepairDetail .text-11 {
+  color: var(--helpwhalenavercomwhite);
+  font-family: var(--RepairDetail--font-family-inter);
+  font-size: var(--RepairDetail--font-size-xl);
+  font-weight: 500;
+  height: 20px;
+  left: 23px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 16px;
+  white-space: nowrap;
+  width: 127px;
+}
+
+.RepairDetail .overlap-group {
+  border-radius: 2px;
+  height: 53px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 174px;
+}
+
+.RepairDetail .text-12 {
+  color: var(--helpwhalenavercomwhite);
+  font-family: var(--RepairDetail--font-family-inter);
+  font-size: var(--RepairDetail--font-size-xl);
+  font-weight: 500;
+  height: 20px;
+  left: 23px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 16px;
+  white-space: nowrap;
+  width: 144px;
+}
+
+.RepairDetail .small-btn_brown {
+  align-items: flex-start;
+  background-color: #54473f;
+  border-radius: 2px;
+  display: flex;
+  height: 53px;
+  justify-content: flex-end;
+  left: 0;
+  min-width: 174px;
+  padding: 20px 39px;
+  position: absolute;
+  top: 0;
+}
+
+.RepairDetail .text-13 {
+  color: var(--helpwhalenavercomwhite);
+  font-weight: 400;
+  height: 12px;
+  line-height: 18px;
+  text-align: center;
+  white-space: nowrap;
+  width: 90px;
+}
+
+.RepairDetail .footer {
+  align-items: center;
+  background-color: #9a7e6f;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 1;
+  height: 200px;
+  justify-content: flex-start;
+  margin-top: 62px;
+  min-width: 1920px;
+  width: auto;
+}
+
+.RepairDetail .footer-contents {
+  align-items: flex-end;
+  display: flex;
+  gap: 19px;
+  height: 150px;
+  padding: 22.1px 340px;
+  width: 1920px;
+}
+
+.RepairDetail .flex-row {
+  gap: 30px;
+  min-width: 893px;
+}
+
+.RepairDetail .flex-col {
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 0.12px;
+  min-height: 59px;
+  width: 862px;
+}
+
+.RepairDetail .overlap-group-1 {
+  height: 39px;
+  position: relative;
+  width: 862px;
+}
+
+.RepairDetail .x {
+  height: 37px;
+  left: 0;
+  letter-spacing: 0;
+  line-height: 20px;
+  position: absolute;
+  top: 0;
+  width: 606px;
+}
+
+.RepairDetail .text-14 {
+  color: var(--helpwhalenavercomwhite);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-m);
+  font-weight: 300;
+  height: 17px;
+  left: 421px;
+  letter-spacing: 0;
+  line-height: 18px;
+  position: absolute;
+  text-align: center;
+  top: 21px;
+  white-space: nowrap;
+  width: 77px;
+}
+
+.RepairDetail .text-15 {
+  height: 17px;
+  left: 508px;
+  letter-spacing: 0;
+  line-height: 20px;
+  position: absolute;
+  top: 20px;
+  white-space: nowrap;
+  width: 354px;
+}
+
+.RepairDetail .copyright {
+  height: 17px;
+  letter-spacing: 0;
+  line-height: 20px;
+  margin-bottom: -3px;
+  white-space: nowrap;
+}
+
+.RepairDetail .vertical-divider-1 {
+  background-color: #e5e5e5;
+  height: 87px;
+  width: 1px;
+}
+
+.RepairDetail .flex-col-1 {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 2.21px;
+  min-height: 86px;
+  width: 319px;
+}
+
+.RepairDetail .heading-3 {
+  color: var(--coconut);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-m);
+  font-weight: 400;
+  height: 53px;
+  letter-spacing: -0.50px;
+  line-height: 18px;
+  width: 294px;
+}
+
+.RepairDetail .span0 {
+  font-weight: 500;
+  letter-spacing: -0.06px;
+}
+
+.RepairDetail .span1-1 {
+  font-weight: 300;
+  letter-spacing: -0.06px;
+}
+
+.RepairDetail .text-container {
+  align-items: center;
+  display: flex;
+  gap: 17px;
+  min-width: 319px;
+}
+
+.RepairDetail .text-16 {
+  height: 18px;
+  letter-spacing: -0.50px;
+  line-height: 18px;
+  white-space: nowrap;
+  width: 211px;
+}
+
+.RepairDetail .text-17 {
+  color: var(--helpwhalenavercomwhite);
+  font-family: var(--RepairDetail--font-family-noto_sans_kr);
+  font-size: var(--RepairDetail--font-size-s);
+  font-weight: 300;
+  height: 16px;
+  letter-spacing: -0.50px;
+  line-height: 18px;
+  margin-bottom: 0.46px;
+  text-align: center;
+  white-space: nowrap;
+  width: 91px;
+}
+
+.RepairDetail .flex {
+  align-items: flex-start;
+  display: flex;
+}
+
+.RepairDetail .input-4 {
+  background-color: var(--helpwhalenavercomwhite);
+  border: 1px solid;
+  border-color: var(--coffeehomecokrmercury);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.RepairDetail .navbar-link-text {
+  height: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}

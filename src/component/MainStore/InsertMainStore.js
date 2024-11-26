@@ -11,34 +11,34 @@ function InsertMainStore() {
                     type="hidden"
                     id="anPageName"
                     name="page"
-                    value="insertmainstore"
+                    value="InsertMainStore"
                 />
                 <div className={styles['container-center-horizontal']}>
-                    <div className={`${styles['insertmainstore']} ${styles['screen']}`}>
+                    <div className={`${styles['InsertMainStore']} ${styles['screen']}`}>
+
                         <div className={styles['background']}>
                             <div className={`${styles['heading-4-create-products']} ${styles['valign-text-middle']}`}>
                                 계정 등록
                             </div>
-                            <div className={styles['onta-container']}>
-                                <div className={styles['horizontal-border-1']}></div>
-                                <div className={styles['container-2']}>
+                            <div className={styles['container-container']}>
+                                <div className={styles['container']}>
                                     <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
                                         아이디
                                     </div>
                                     <div className={styles['input']}>
-                                        <div className={styles['container']}>
+                                        <div className={styles['container-1']}>
                                             <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
                                                 아이디를 입력하세요
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className={styles['container-3']}>
+                                <div className={styles['container']}>
                                     <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
                                         비밀번호
                                     </div>
                                     <div className={styles['input']}>
-                                        <div className={styles['container']}>
+                                        <div className={styles['container-1']}>
                                             <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
                                                 비밀번호를 입력하세요
                                             </div>
@@ -46,12 +46,12 @@ function InsertMainStore() {
                                     </div>
                                 </div>
                             </div>
-                            <div className={styles['container-4']}>
+                            <div className={styles['container-3']}>
                                 <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
                                     부서명
                                 </div>
                                 <div className={styles['input']}>
-                                    <div className={styles['container']}>
+                                    <div className={styles['container-1']}>
                                         <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
                                             부서명을 입력하세요
                                         </div>
@@ -59,9 +59,13 @@ function InsertMainStore() {
                                 </div>
                             </div>
                             <div className={styles['overlap-group']}>
-                                <div className={`${styles['text-4']} ${styles['valign-text-middle']}`}>계정 등록</div>
+                                <div className={`${styles['text-4']} ${styles['valign-text-middle']}`}>
+                                    계정 등록
+                                </div>
                                 <div className={styles['small-btn_brown']}>
-                                    <div className={`${styles['text-5']} ${styles['valign-text-middle']}`}>계정등록</div>
+                                    <div className={`${styles['text-5']} ${styles['valign-text-middle']} ${styles['themewagongithubiosemanticheading-6']}`}>
+                                        계정등록
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -71,8 +75,8 @@ function InsertMainStore() {
                                     <div className={`${styles['flex-col']} ${styles['flex']}`}>
                                         <div className={styles['overlap-group-1']}>
                                             <p className={`${styles['x']} ${styles['valign-text-middle']} ${styles['notosanskr-light-coconut-12px']}`}>
-                                                상호명 : ㈜더블유컨셉코리아 ㅣ 대표자 : 이주철 ㅣ 주소 :
-                                                서울특별시 강남구 테헤란로 231, EAST동 20층(역삼동, 센터필드)
+                                                상호명 : ㈜더블유컨셉코리아 ㅣ 대표자 : 이주철 ㅣ 주소 : 서울특별시 강남구
+                                                테헤란로 231, EAST동 20층(역삼동, 센터필드)
                                                 <br />
                                                 사업자등록번호 : 211-88-19183 ㅣ 통신판매업신고 : 제2009호-서울강남-00847호
                                             </p>
