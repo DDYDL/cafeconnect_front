@@ -3,29 +3,55 @@ import * as h from '../styles/StyledHeader.tsx';
 import * as m from '../styles/StyledMypage.tsx';
 
 import {useState} from "react";
-import {
-    Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
-
+import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';
-import { initMember, memberAtom, tokenAtom } from '../../atoms.js';
+import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
 import { useSetAtom } from 'jotai/react';
+import axios from 'axios';
+import { url } from '../../config.js';
 
-const StoreHeader = ()=>{
+const StoreHeader = ({alarms})=>{
+    // 메뉴 모달을 위한 state 변수
     const [openMenu, setOpenMenu] = useState(false);
-
+    // 알람 모달을 위한 state 변수
     const [open, setOpen] = useState(false);
     const handleOpen = () =>{
         setOpen(!open);
     }
 
     const navigate = useNavigate();
+    // Jotai에 있는 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
+    // Jotai에 있는 로그인 token 가져오기
     const setToken = useSetAtom(tokenAtom);
+    // Jotai에 있는 알람 가져오기
+    const setAlarms = useSetAtom(alarmsAtom);
 
+    // 알람 체크박스 클릭 시 alarmStatus 바꾸기
+    const alarmConfirm = (alarmNum)=>{
+        axios.get(`${url}/alarmConfirm/${alarmNum}`)
+        .then(res=>{
+            if(res.data===true) {
+                // 알람 확인 시 확인한 알람은 제외하기
+                setAlarms(alarms.filter(item=>item.alarmNum!==alarmNum));
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요");
+        })
+    }
+
+    // 로그아웃
     const logout = ()=>{
+        setOpenMenu(false);
+        setOpen(false);
+
         setMember({...initMember});
         setToken('');
+        setAlarms([]);
+
         navigate("/loginStore");
     }
 
@@ -89,7 +115,11 @@ const StoreHeader = ()=>{
                 </h.DivMenu>
                 
                 <h.DivIcon>
-                    <h.NavLinkIcon><h.Icon src="/alarm.png" onClick={handleOpen}/></h.NavLinkIcon>
+                    <h.NavLinkIcon>
+                        <h.Icon src="/alarm.png" onClick={handleOpen}/>
+                        {/* 알람 개수 표시 */}
+                        <span>{alarms.length!==0 && alarms.length}</span>
+                    </h.NavLinkIcon>
                     <h.NavLinkIcon to="/repairRequestList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
                     <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png"/></h.NavLinkIcon>
                     <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png"/></h.NavLinkIcon>
@@ -99,42 +129,21 @@ const StoreHeader = ()=>{
             {open && <m.ModalDialog>
                 <DialogHeader style={{ padding:'10px 0px'}}>알림</DialogHeader>
                 <DialogBody style={{padding:'0px'}}>
-                    <m.AlarmDiv width='100%' height='130px'>
-                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
-                        <m.AlarmInnerDiv>
-                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
-                            <h.VerticalLine marginRight='10px'/>
-                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
-                        </m.AlarmInnerDiv>
-                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
-                    </m.AlarmDiv>
-                    <m.AlarmDiv width='100%' height='130px'>
-                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
-                        <m.AlarmInnerDiv>
-                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
-                            <h.VerticalLine marginRight='10px' />
-                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
-                        </m.AlarmInnerDiv>
-                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
-                    </m.AlarmDiv>
-                    <m.AlarmDiv width='100%' height='130px'>
-                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
-                        <m.AlarmInnerDiv>
-                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
-                            <h.VerticalLine marginRight='10px' />
-                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
-                        </m.AlarmInnerDiv>
-                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
-                    </m.AlarmDiv>
-                    <m.AlarmDiv width='100%' height='130px'>
-                        <m.AlarmCheckboxDiv><m.AlarmCheckbox /></m.AlarmCheckboxDiv>
-                        <m.AlarmInnerDiv>
-                            <m.AlarmSpan>유통기한 알림</m.AlarmSpan>
-                            <h.VerticalLine marginRight='10px' />
-                            <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>10월 18일</m.AlarmSpan>
-                        </m.AlarmInnerDiv>
-                        <m.AlarmSpanContent>10월 12일에 들어온 [어메이징 오트(12Pk/Box)] 유통기한이 3일 남았습니다.</m.AlarmSpanContent>
-                    </m.AlarmDiv>
+
+                    {/* Jotai에 있는 알람 리스트 출력하기 */}
+                    {alarms.length===0 ? <m.AlarmDiv width='100%' height='130px'>알람이 없습니다.</m.AlarmDiv> :
+                        alarms.map((item)=>
+                            <m.AlarmDiv key={item.alarmNum} width='100%' height='130px'>
+                                <m.AlarmCheckboxDiv><m.AlarmCheckbox onChange={(e)=>alarmConfirm(item.alarmNum)}/></m.AlarmCheckboxDiv>
+                                    <m.AlarmInnerDiv>
+                                    <m.AlarmSpan>{item.alarmType}</m.AlarmSpan>
+                                    <h.VerticalLine marginRight='10px'/>
+                                    <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>{item.alarmDate}</m.AlarmSpan>
+                                    </m.AlarmInnerDiv>
+                                <m.AlarmSpanContent>{item.alarmContent}</m.AlarmSpanContent>
+                            </m.AlarmDiv>
+                        )
+                    }
                 </DialogBody>
             </m.ModalDialog>
             }
