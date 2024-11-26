@@ -507,7 +507,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 523px;
+  height: 583px;
   margin-top: 20px;
   width: 1000px;
 }
@@ -595,7 +595,7 @@
   margin-left: 30px;
   margin-top: 57px;
   min-height: 84px;
-  width: 440px;
+  width: 940px;
 }
 
 .InsertMainStore .overlap-group {
@@ -635,6 +635,7 @@
   padding: 20px 48px;
   position: absolute;
   top: 0;
+  cursor: pointer;
 }
 
 .InsertMainStore .text-5 {
@@ -810,4 +811,32 @@
   line-height: normal;
   text-align: center;
   white-space: nowrap;
+}
+
+
+.InsertMainStore .error-container {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  height: 30px;
+  margin-top: 10px;
+  min-width: 940px;
+}
+
+.InsertMainStore .input-button {
+  align-items: center;
+  background-color: var(--alabaster);
+  border: 1px solid;
+  border-color: var(--bon-jour);
+  border-radius: 8px;
+  display: flex;
+  height: 50px;
+  overflow: hidden;
+  padding: 0 15px;
+  width: 349px;
+}
+
+.InsertMainStore .input-box:focus {
+  outline: none; /* 포커스 시 외곽선 제거 */
+  border: none; /* 포커스 시 테두리 제거 */
 }

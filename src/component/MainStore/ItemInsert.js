@@ -8,21 +8,21 @@ function ItemInsert() {
 
 
     const [item, setItem] = useState({
-        'itemName': '상품명을 입력하세요',
-        'itemPrice': '공급가를 입력하세요',
-        'itemCapacity': '용량을 선택하세요',
-        'itemUnitQuantity': '단위수량을 입력하세요',
-        'itemUnit': '단위를 선택하세요',
+        'itemName': '',
+        'itemPrice': '',
+        'itemCapacity': '',
+        'itemUnitQuantity': '',
+        'itemUnit': '',
         'itemStandard': {
             'itemX': '가로(cm)',
             'itemY': '세로(cm)',
             'itemZ': '높이(cm)',
         },
-        'itemStorage': '보관상태를 선택하세요',
-        'itemCountryOrigin': '원산지를 입력하세요',
-        'itemMajorCategory': '대분류',
-        'itemMiddleCategory': '중분류',
-        'itemSubCategory': '소분류',
+        'itemStorage': '',
+        'itemCountryOrigin': '',
+        'itemMajorCategory': '',
+        'itemMiddleCategory': '',
+        'itemSubCategory': '',
         'file': '',
 
     })
@@ -154,12 +154,16 @@ function ItemInsert() {
                                                 <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
                                                     용량을 선택하세요
                                                 </div>
+                                                
                                             </div>
+                                            
+                                            
                                             <img
                                                 className={styles['sort-down']}
                                                 src={require("../assets/img/sort-down@2x.png")}
                                                 alt="Sort Down"
                                             />
+                                            
                                         </div>
                                     </div>
                                     <div className={styles['container-3']}>
