@@ -184,7 +184,7 @@ export const TableTextTd = styled.td`
     width:100px;
     height:60px;
     font-size:14px;
-    padding-right:20px;
+    padding-left:20px;
     padding-right:0px;
     vertical-align:middle;
 `;
