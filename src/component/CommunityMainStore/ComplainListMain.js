@@ -4,13 +4,13 @@ import * as h from '../styles/HStyledStore.tsx';
 import { Link } from 'react-router-dom';
 import { Input, Select, Option } from "@material-tailwind/react";
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import {useState} from "react";
+import { useNavigate } from 'react-router';
 
 const ComplainListMain = ()=>{
-    const [detail, setDetail] = useState(false);
+    const navigate = useNavigate();
 
     const complainDetail = ()=>{
-        setDetail(!detail);
+        navigate("/complainDetailMain");
     }
 
     return (
@@ -18,7 +18,7 @@ const ComplainListMain = ()=>{
             <s.ContentListDiv>
                 <s.MainTitleText>컴플레인</s.MainTitleText>
                 <s.CategoryButtonGroupDiv >
-                    <s.ButtonDiv>총 10건</s.ButtonDiv>
+                    <h.ListCntDiv>총 10건</h.ListCntDiv>
                 </s.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>

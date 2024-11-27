@@ -31,9 +31,7 @@ export const ContentListDiv = styled.div<Container>`
 `;
 
 export const SearchDiv = styled.div<Container>`
-    width:${(props) => props.width ? props.width : "400px"};
-    margin:${(props) => props.margin ? props.margin : "0 auto"};
-    margin-bottom:${(props) => props.marginBottom ? props.marginBottom : "20px"};
+    width:${(props) => props.width ? props.width : "200px"};
 `;
 
 export const ImgDiv = styled.div`
@@ -85,6 +83,7 @@ export const MainTitleText = styled.p`
     font-size:24px;
     font-weight:bold;
     margin-top:13px;
+    padding-bottom:13px;
     text-align:center;
 `;
 
@@ -126,13 +125,20 @@ export const ButtonDiv = styled.div<Container>`
     height:40px;
     margin-top:40px;
     margin-bottom:7px;
-    position:relative;
     text-align:${(props) => props.textAlign ? props.textAlign :"center"};
-    float:${(props) => props.float ? props.float : "left"};
 `;
 
 export const ButtonInnerDiv = styled.div<Container>`
     margin-right:140px;
+`;
+export const SelectInnerDiv = styled.div`
+    width:100px;
+`;
+
+export const ListCntDiv = styled.div<Container>`
+    margin-top:40px;
+    margin-bottom:7px;
+    display:flex;
 `;
 
 export const SelectStyle = styled(Select)`
@@ -175,7 +181,7 @@ export const TableTextTh = styled.th<Container>`
     font-size:16px;
     font-weight:bold;
     padding-left:20px;
-    padding-right:0px;
+    padding-right:20px;
     vertical-align:middle;
 `;
 
@@ -183,9 +189,16 @@ export const TableTextTd = styled.td`
     width:100px;
     height:60px;
     font-size:14px;
+    padding-left:20px;
     padding-right:20px;
-    padding-right:0px;
     vertical-align:middle;
+    text-align:center;
+    `;
+    
+    export const TableTdDiv = styled.div`
+    padding-left:50px;
+    padding-right:50px;
+    justify-content:center;
 `;
 
 export const TableTextTr = styled.tr<Container>`
@@ -197,6 +210,14 @@ export const TableTextTr = styled.tr<Container>`
 `;
 
 export const CategoryButtonGroupDiv = styled.div`
+    margin-top:40px;
+    display:flex;
+    flex-direction:row-reverse;
+    text-align:center;
+`;
+export const DateSelectDiv = styled.div`
+    display:flex;
+    flex-direction:row;
     text-align:center;
 `;
 

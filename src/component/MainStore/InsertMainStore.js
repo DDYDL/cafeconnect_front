@@ -1,8 +1,112 @@
 import * as m from '../styles/StyledMain.tsx';
 import styles from '../styles/InsertMainStore.module.css'
 import React from 'react'
+import { useRef, useState } from 'react';
+import axios from 'axios';
+import {  useNavigate } from 'react-router';
 
 function InsertMainStore() {
+
+    const pwdRef = useRef();
+    const pwdCheckRef = useRef();
+    const [existId, setExistId] = useState(false)
+    const [ableJoin, setAbleJoin] = useState(false);
+    const [samePwd, setSamePwd] = useState(false)
+    const [notSamePwd, setNotSamePwd] = useState(false);
+    const [form,setForm] = useState({
+        "username":"",
+        "password":"",
+        "deptName":"",
+    })
+    const [error,setError] = useState(null);
+    const navigate = useNavigate();
+
+    const changeId = (e) =>{
+        setForm({...form,
+            "username" : e.target.value
+        })
+        
+    }
+    const changePwd = (e) =>{
+        setForm({...form,
+            "password" : e.target.value
+        })
+    }
+    const changeDeptName = (e) =>{
+        setForm({...form,
+            "deptName" : e.target.value
+        })
+    }
+
+    const handleCheckId = () => {
+        
+        checkId();
+    }
+
+    const handleCheckPwd = () => {
+        if (pwdRef.current.value != pwdCheckRef.current.value) {
+            setSamePwd(false);
+            setNotSamePwd(true);
+        }else{
+            setSamePwd(true);
+            setNotSamePwd(false);
+        }
+
+    }
+
+    const handleFocus = () => {
+        if (pwdRef.current) {
+            pwdRef.current.style.border = "none";
+            pwdRef.current.style.outline = "none";
+            
+            
+        }
+        if (pwdCheckRef.current) {
+            pwdRef.current.style.border = "none";
+            pwdRef.current.style.outline = "none";
+        }
+      };
+    const checkId = async () => {
+        try {
+          
+          const response = await axios.post(`http://localhost:8080/main/checkId`,form); 
+          if(response.data.state == 'success'){
+            console.log(response.data);
+            console.log('success')
+            setExistId(true);
+            setAbleJoin(false);
+          }else if(response.data.state =='fail'){
+            console.log('fail')
+            setExistId(false);
+            setAbleJoin(true);
+          }
+          
+        } catch (error) {
+          console.log('error!')
+          setError(error);
+        } 
+      };
+    
+    const hasAllProperties = (obj, keys) => {
+        return keys.every( (key) => obj[key] != null && obj[key] != '');
+    };
+    const requiredKeys = ["username", "password", "deptName"];
+    const joinMember = async () => {
+        try {
+          if(!hasAllProperties(form, requiredKeys)){
+            alert("모든 값을 입력해주세요");
+            return;
+          }
+          const response = await axios.post(`http://localhost:8080/main/insert`,form); 
+          alert('회원가입 성공')
+          navigate('/loginStore');
+          
+        } catch (error) {
+          console.log('error!')
+          setError(error);
+        } 
+      };
+
     return (
         <>
             <m.CarouselDiv>
@@ -25,44 +129,104 @@ function InsertMainStore() {
                                     <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
                                         아이디
                                     </div>
-                                    <div className={styles['input']}>
-                                        <div className={styles['container-1']}>
-                                            <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                아이디를 입력하세요
+                                    <div style={{ "display": "flex" }}>
+                                        <div className={styles['input-button']}>
+                                            <div className={styles['container-1']}>
+                                                <input className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`} 
+                                                placeholder='아이디를 입력하세요' onChange={changeId} style={{"border":"none","outline":"none","backgroundColor":"#fbfbfb"}}>
+
+                                                </input>
                                             </div>
                                         </div>
+                                        <div style={{
+                                            "marginLeft": "20px", "width": "71px", "height": "50px", "display": "grid", "font": "Noto Sans KR",
+                                            "fontSize": "12px", "placeItems": "center", "borderRadius": "8px", "backgroundColor": "#54473f", "color": "white", "cursor": "pointer"
+                                        }}
+                                            onClick={handleCheckId}
+                                        >중복체크</div>
                                     </div>
                                 </div>
+
                                 <div className={styles['container']}>
                                     <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
                                         비밀번호
                                     </div>
                                     <div className={styles['input']}>
                                         <div className={styles['container-1']}>
-                                            <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                비밀번호를 입력하세요
-                                            </div>
+                                            <input className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}
+                                                placeholder='비밀번호를 입력하세요' ref={pwdRef} onChange={changePwd} type='password' style={{"border":"none","outline":"none","backgroundColor":"#fbfbfb"}} onFocus={handleFocus}>
+
+                                            </input>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className={styles['container-3']}>
-                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                    부서명
-                                </div>
-                                <div className={styles['input']}>
-                                    <div className={styles['container-1']}>
-                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                            부서명을 입력하세요
+                            <div className={styles['error-container']}>
+                                {existId ? (<div style={{ "padding": "0 15px", "color": "red", "fontSize": "13px" }}>
+                                    아이디가 존재합니다
+                                </div>) : null}
+                                {ableJoin ? (<div style={{ "padding": "0 15px", "color": "black", "fontSize": "13px" }}>
+                                    회원가입 가능합니다
+                                </div>) : null}
+
+                            </div>
+                            <div className={styles['container-container']}>
+                                <div className={styles['container']}>
+                                    <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
+                                        부서명
+                                    </div>
+                                    <div className={styles['input']}>
+                                        <div className={styles['container-1']}>
+                                            <input className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`} 
+                                            placeholder='부서명을 입력하세요' onChange={changeDeptName} style={{"border":"none","outline":"none","backgroundColor":"#fbfbfb"}} >
+
+                                            </input>
+
                                         </div>
+
                                     </div>
                                 </div>
+
+                                <div className={styles['container']} >
+                                    <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
+                                        비밀번호 확인
+                                    </div>
+                                    <div style={{ "display": "flex" }}>
+                                        <div className={styles['input-button']}>
+                                            <div className={styles['container-1']}>
+                                                <input className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}
+                                                    placeholder='비밀번호를 입력하세요' ref={pwdCheckRef} type='password' style={{"border":"none","outline":"none","backgroundColor":"#fbfbfb"}} onFocus={handleFocus}>
+
+                                                </input>
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            "marginLeft": "20px", "width": "71px", "height": "50px", "font": "Noto Sans KR", "fontSize": "12px",
+                                            "display": "grid", "placeItems": "center", "borderRadius": "8px", "backgroundColor": "#54473f", "color": "white", "cursor": "pointer"
+                                        }}
+                                            onClick={handleCheckPwd}
+                                        >확인</div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div className={styles['error-container']}>
+
+                                {notSamePwd ? (<div style={{ "padding": "0 15px", "color": "red", "fontSize": "13px", "marginLeft": "500px" }}>
+                                    비밀번호가 일치하지 않습니다
+                                </div>) : null}
+                                {samePwd ? (<div style={{ "padding": "0 15px", "color": "black", "fontSize": "13px", "marginLeft": "500px" }}>
+                                    비밀번호가 일치합니다
+                                </div>) : null}
+
+                                
                             </div>
                             <div className={styles['overlap-group']}>
                                 <div className={`${styles['text-4']} ${styles['valign-text-middle']}`}>
                                     계정 등록
                                 </div>
-                                <div className={styles['small-btn_brown']}>
+                                <div className={styles['small-btn_brown']} onClick={joinMember}>
                                     <div className={`${styles['text-5']} ${styles['valign-text-middle']} ${styles['themewagongithubiosemanticheading-6']}`}>
                                         계정등록
                                     </div>
