@@ -8,8 +8,208 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import * as s from "../styles/StyledStore.tsx";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import axios from "axios";
 function MenuList() {
-  const navigate = useNavigate();
+
+  const [pageList, setPageList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [startPage, setStartPage] = useState(0)
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPageNumber, setTotalPageNumber] = useState(0)
+  const [hasNext, setHasNext] = useState(null);
+  const [hasPrevious, setHasPrevious] = useState(null)
+  const [empty, setEmpty] = useState(null);
+  const [usingKeyword, setUsingKeyword] = useState(true)
+  const [usingCategory, setUsingCategory] = useState(false)
+
+
+  const [keyWord, setKeyWord] = useState('');
+
+  const [category, setCategory] = useState('')
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [emptyList, setEmptyList] = useState([])
+  const [pageNumList, setPageNumList] = useState([])
+  const navigate = useNavigate()
+  const handleNavigate = (index) => () => {
+    const page = pageList[index]
+    
+    navigate(`/${page.menuCode}`)
+  }
+
+  const handleChangeKeyword = (e) => {
+    const value = e.target.value;
+    setKeyWord(value);
+    setUsingKeyword(true)
+    setUsingCategory(false)
+    fetchKeywordData(value, 0)
+  }
+
+  const handleChangeCategory = (value) => {
+
+    console.log(value)
+    setCategory(value)
+
+    setUsingKeyword(false)
+    setUsingCategory(true)
+    fetchCategoryData(value, 0)
+
+  }
+
+  const fetchKeywordData = async (keyword, pageNum) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:8080/menuListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`);
+
+
+      setCurrentPage(response.data.pageable.pageNumber)
+
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5)
+
+      setTotalElements(response.data.totalElements)
+      setTotalPageNumber(response.data.totalPages)
+      //넘어가는 부분이 있음
+      if (Math.floor(response.data.pageable.pageNumber / 5) < Math.floor((response.data.totalPages - 1) / 5)) {
+
+        setHasNext(true);
+        setEmptyList([])
+      } else {
+        setHasNext(false);
+
+        //마지막 페이지 확인
+        if (response.data.last) {
+          
+          
+          const emptyListSize = 10 - response.data.numberOfElements
+
+          setEmptyList(new Array(emptyListSize).fill(1));
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(Array.from({ length: 1 },
+              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+          } else {
+
+            setPageNumList(Array.from({ length: (response.data.pageable.pageNumber % 5) + 1 },
+              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+          }
+
+
+
+
+        } else {
+          
+          setEmptyList([])
+
+          const pageNumListSize = response.data.totalPages - Math.floor(response.data.pageable.pageNumber / 5) * 5
+
+
+          setPageNumList(Array.from({ length: pageNumListSize },
+            (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+        }
+
+      }
+      if (currentPage > 4) {
+        setHasPrevious(true)
+      } else {
+        setHasPrevious(false);
+
+      }
+
+
+
+      setPageList(response.data.content);
+      setEmpty(response.data.empty)
+      console.log(response.data);
+
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const fetchCategoryData = async (category, pageNum) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:8080/menuListByCategory?categoryName=${category}&pageNum=${pageNum}&pageSize=10`);
+
+
+      setCurrentPage(response.data.pageable.pageNumber)
+
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5)
+
+
+      setTotalElements(response.data.totalElements)
+      setTotalPageNumber(response.data.totalPages)
+      //넘어가는 부분이 있음
+      if (Math.floor(response.data.pageable.pageNumber / 5) < Math.floor((response.data.totalPages - 1) / 5)) {
+
+        setHasNext(true);
+        setEmptyList([])
+      } else {
+        setHasNext(false);
+
+        //마지막 페이지 확인
+        if (response.data.last) {
+          
+          const emptyListSize = 10 - response.data.numberOfElements
+
+          setEmptyList(new Array(emptyListSize).fill(1));
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(Array.from({ length: 1 },
+              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+          } else {
+
+            setPageNumList(Array.from({ length: (response.data.pageable.pageNumber % 5) + 1 },
+              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+          }
+
+
+
+
+        } else {
+
+          setEmptyList([])
+
+          const pageNumListSize = response.data.totalPages - Math.floor(response.data.pageable.pageNumber / 5) * 5
+
+          console.log(Math.floor(response.data.pageable.pageNumber / 5) * 5)
+
+          setPageNumList(Array.from({ length: pageNumListSize },
+            (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+        }
+
+      }
+      if (currentPage > 4) {
+        setHasPrevious(true)
+      } else {
+        setHasPrevious(false);
+
+      }
+
+
+
+      setPageList(response.data.content);
+      setEmpty(response.data.empty)
+      
+
+
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchKeywordData('', 0);
+  }, [])
+
+
   return (
     <>
       <m.CarouselDiv>
@@ -25,22 +225,21 @@ function MenuList() {
               <div
                 className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
               >
-                총102건
+                {`총${totalElements}건`}
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="대분류">
-                    <Option>Material Tailwind HTML</Option>
-                    <Option>Material Tailwind React</Option>
-                    <Option>Material Tailwind Vue</Option>
-                    <Option>Material Tailwind Angular</Option>
-                    <Option>Material Tailwind Svelte</Option>
+                  <s.SelectStyle label="분류" onChange={handleChangeCategory}>
+                    <Option value="">분류</Option>
+                    <Option value="간식">간식</Option>
+                    <Option value="빵">빵</Option>
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
                 <div style={{ marginLeft: "508px" }}>
                   <Input
                     icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                     label="매장명 검색"
+                    onChange={handleChangeKeyword}
                   />
                 </div>
               </div>
@@ -98,666 +297,154 @@ function MenuList() {
                       </div>
                     </div>
                   </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+
+                  {!empty && pageList.map((page, index) => (
+                    <div className={styles["frame"]}>
+                      <div className={styles["data"]}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
+                          {page.menuCategoryName}
                         </div>
-                        <div className={styles["frame-89"]}>
+                      </div>
+                      <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
+                        <div className={styles["frame-91"]}>
                           <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            className={
+                              styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
+                            }
                           >
-                            과테말라 코반 스페셜티
+                            <img
+                              className={styles["x2024-10-28-103829-1"]}
+                              src={page.imageUrl}
+                              alt="2024-10-28 103829 1"
+                              onClick={handleNavigate(index)}
+                            />
+                          </div>
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                              onClick={handleNavigate(index)}
+                            >
+                              {page.menuName}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
+                          {`${page.menuPrice}원`}
                         </div>
-                        <div className={styles["frame-89"]}>
+                      </div>
+                      <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
+                        <div
+                          className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.menuCapacity ? page.menuCapacity : '-'}
+                        </div>
+                      </div>
+                      <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
+                        <div
+                          className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.carbohydrate ? page.carbohydrate : '-'}
+                        </div>
+                      </div>
+                      <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
+                        <div
+                          className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.sugar ? page.sugar : '-'}
+                        </div>
+                      </div>
+                      <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
+                        <div
+                          className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.natrium ? page.natrium : '-'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {!empty && emptyList.map((page, index) => (
+
+                    <div className={styles["frame"]}>
+                      <div className={styles["data"]}>
+                        <div
+                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+
+                        </div>
+                      </div>
+                      <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
+                        <div className={styles["frame-91"]}>
                           <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            className={
+                              styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
+                            }
                           >
-                            과테말라 코반 스페셜티
+                            <div
+                              className={styles["x2024-10-28-103829-1"]}
+                             
+
+                            ></div> 
+                          </div>
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                              
+                            >
+
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
+
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
+
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
+
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
+
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
+                      <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
+                          className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                         >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
+
                         </div>
                       </div>
                     </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
-                        <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
-                        >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
-                        <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
-                        >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        스무디
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-91"]}>
-                        <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          }
-                        >
-                          <img
-                            className={styles["x2024-10-28-103829-1"]}
-                            src={require("../assets/img/------2024-10-28-103829-1.png")}
-                            alt="2024-10-28 103829 1"
-                          />
-                        </div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          >
-                            과테말라 코반 스페셜티
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        5,000원
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        591ml
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        -
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        63g
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        102mg
-                      </div>
-                    </div>
-                  </div>
+                  ))}
+
+
+
+
+
+
                 </div>
               </div>
               <div
@@ -765,18 +452,54 @@ function MenuList() {
               >
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
+
+
                     <s.ButtonGroupStyle variant="outlined">
-                      <s.IconButtonStyle>
-                        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>
-                      <s.IconButtonStyle>1</s.IconButtonStyle>
-                      <s.IconButtonStyle>2</s.IconButtonStyle>
-                      <s.IconButtonStyle>3</s.IconButtonStyle>
-                      <s.IconButtonStyle>4</s.IconButtonStyle>
-                      <s.IconButtonStyle>5</s.IconButtonStyle>
-                      <s.IconButtonStyle>
-                        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>
+                      {!empty && hasPrevious &&
+                        <s.IconButtonStyle onClick={() => (fetchKeywordData(keyWord, startPage - 1))}>
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>}
+                      {usingKeyword && !empty && hasNext &&
+                        <>
+                          <s.IconButtonStyle style={currentPage == startPage ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage)}>{startPage + 1}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 1 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 1)}>{startPage + 2}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 2 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 2)}>{startPage + 3}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 3 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 3)}>{startPage + 4}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 4 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 4)}>{startPage + 5}</s.IconButtonStyle>
+                        </>}
+                      {usingCategory && !empty && hasNext &&
+                        <>
+                          <s.IconButtonStyle style={currentPage == startPage ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage)}>{startPage + 1}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 1 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 1)}>{startPage + 2}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 2 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 2)}>{startPage + 3}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 3 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 3)}>{startPage + 4}</s.IconButtonStyle>
+                          <s.IconButtonStyle style={currentPage == startPage + 4 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 4)}>{startPage + 5}</s.IconButtonStyle>
+                        </>}
+
+                      {usingKeyword && !empty && !hasNext &&
+                        pageNumList.map((value, index) => (
+
+                          <s.IconButtonStyle style={currentPage == value ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData('', value)}>{value + 1}</s.IconButtonStyle>
+
+                        ))
+                      }
+                      {usingCategory && !empty && !hasNext &&
+                        pageNumList.map((value, index) => (
+
+                          <s.IconButtonStyle style={currentPage == value ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, value)}>{value + 1}</s.IconButtonStyle>
+
+                        ))
+                      }
+
+                      {usingKeyword && empty &&
+                        <s.IconButtonStyle style={{ "backgroundColor": "skyblue" }} >1</s.IconButtonStyle>
+                      }
+
+                      {!empty && hasNext &&
+                        <s.IconButtonStyle onClick={fetchKeywordData(keyWord, 5 * (Math.floor(fetchKeywordData / 5) + 1))} >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>}
+
                     </s.ButtonGroupStyle>
                   </s.PageButtonGroupDiv>
                 </div>
