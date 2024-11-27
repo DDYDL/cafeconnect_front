@@ -156,7 +156,6 @@ function App() {
         <Route path='/shopItemDetail/:itemCode' element={<ShopItemDetail/>}/>
         <Route exect path="/expenseList" element={<ExpenseListByItems/>}/>
 
-
         <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
         <Route exect path="/stockManage" element={<StockManage/>}/>
         <Route exect path="/stockOtherStore" element={<StockOrderStore/>}/>
