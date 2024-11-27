@@ -18,11 +18,16 @@ const StoreListMain = ()=>{
     let region;
 
     useEffect(()=> {
-        submit(1);
-    }, [])
+        // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
+        if(token!=null && token!=='')  submit(1);
+    }, [token])
     
     const regionPart = (address)=>{
         region = address.split(' ')[0];
+        switch(region){
+            case '서울' : region='서울특별시'; break;
+            case '서울시' : region='서울특별시'; break;
+        }
         return region;
     }
     

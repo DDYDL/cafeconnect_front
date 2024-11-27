@@ -131,6 +131,9 @@ export const ButtonDiv = styled.div<Container>`
 export const ButtonInnerDiv = styled.div<Container>`
     margin-right:140px;
 `;
+export const SelectInnerDiv = styled.div`
+    width:100px;
+`;
 
 export const ListCntDiv = styled.div<Container>`
     margin-top:40px;
@@ -190,6 +193,12 @@ export const TableTextTd = styled.td`
     padding-right:20px;
     vertical-align:middle;
     text-align:center;
+    `;
+    
+    export const TableTdDiv = styled.div`
+    padding-left:50px;
+    padding-right:50px;
+    justify-content:center;
 `;
 
 export const TableTextTr = styled.tr<Container>`
@@ -204,6 +213,11 @@ export const CategoryButtonGroupDiv = styled.div`
     margin-top:40px;
     display:flex;
     flex-direction:row-reverse;
+    text-align:center;
+`;
+export const DateSelectDiv = styled.div`
+    display:flex;
+    flex-direction:row;
     text-align:center;
 `;
 

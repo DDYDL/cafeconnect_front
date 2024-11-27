@@ -31,7 +31,7 @@ const StoreHeader = ()=>{
 
     return(
         <div>
-            <h.Div class="navbar">
+            <h.Div className="navbar">
                 <h.DivLogo>
                     <NavLink to="/shopMain"><h.Logo src="/logo.svg" /></NavLink>
                 </h.DivLogo>
