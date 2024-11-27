@@ -24,9 +24,9 @@ const MainStoreHeader = ()=>{
 
     return(
         <div>
-            <h.Div class="navbar">
+            <h.Div className="navbar">
                 <h.DivLogo>
-                    <NavLink to="/storeList"><h.Logo src="/logo.svg"/></NavLink>
+                    <NavLink to="/storeListMain"><h.Logo src="/logo.svg"/></NavLink>
                 </h.DivLogo>
 
                 <h.DivSide>
@@ -49,24 +49,24 @@ const MainStoreHeader = ()=>{
                             </h.DivMenuInside>
                         </h.DivMenuItem>
                     </MenuHandler>
-                    <h.MenuListOut marginLeft='550px'>
+                    <h.MenuListOut style={{ marginLeft: '550px' }}>
                         <h.MenuListDiv height='140px'>
                             <MenuItem><NavLink to="/storeListMain">가맹점 조회</NavLink></MenuItem>
                             <MenuItem><NavLink to="/addStoreMain">가맹점 등록</NavLink></MenuItem>
                             <MenuItem><NavLink to="/restoreStoreMain">가맹점 복구</NavLink></MenuItem>
                             <MenuItem><NavLink to="/deleteReqStoreMain">가맹점 삭제</NavLink></MenuItem>
                         </h.MenuListDiv>
-                        <h.MenuListDiv marginLeft='20px'>
+                        <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/mainItemList">상품 조회</NavLink></MenuItem>
                         </h.MenuListDiv>
-                        <h.MenuListDiv marginLeft='20px'>
+                        <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/mainMenuList">메뉴 조회</NavLink></MenuItem>
                         </h.MenuListDiv>
-                        <h.MenuListDiv marginLeft='20px'>
+                        <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/storeItemRevenue">상품별 매출 조회</NavLink></MenuItem>
                             <MenuItem><NavLink to="/mainStoreOrderList">주문접수 관리</NavLink></MenuItem>
                         </h.MenuListDiv>
-                        <h.MenuListDiv marginLeft='20px'>
+                        <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/noticeListMain">공지사항</NavLink></MenuItem>
                             <MenuItem><NavLink to="/complainListMain">컴플레인 공지</NavLink></MenuItem>
                             <MenuItem><NavLink to="/askListMain">1:1 문의</NavLink></MenuItem>

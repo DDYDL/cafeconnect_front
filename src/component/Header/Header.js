@@ -6,7 +6,7 @@ const Header = ()=>{
     else if (window.location.pathname === '/loginMainStore') return;
     return(
         <div>
-            <h.Div class="navbar">
+            <h.Div className="navbar">
                 <h.DivLogo>
                     <NavLink to="/"><h.Logo src="/logo.svg"/></NavLink>
                 </h.DivLogo>

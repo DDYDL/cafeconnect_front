@@ -7,6 +7,7 @@ import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { Link } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const StoreDetailMain = ()=>{
     const [store, setStore] = useState({
@@ -32,11 +33,11 @@ const StoreDetailMain = ()=>{
     });
     const token = useAtomValue(tokenAtom);
     const {storeCode} = useParams();
+    const navigate = useNavigate();
 
     useEffect(()=> {
-        console.log('시작');
-        console.log(token)
-        if(token!=null && token!=='')  select(storeCode);
+        // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
+        if(token!=null && token!=='')  select();
     }, [token])
 
     const select = () => {
@@ -46,6 +47,16 @@ const StoreDetailMain = ()=>{
                 console.log(res.data)
                 let resStore = res.data.store;
                 setStore({...resStore});
+            })
+    }
+
+    const deleteStore = () => {
+        axiosInToken(token).get(`deleteStoreMain/${storeCode}`)
+            .then(res=> {
+                console.log(res.data)
+                let resStore = res.data.store;
+                setStore({...resStore});
+                navigate("/restoreStoreMain");
             })
     }
 
@@ -97,25 +108,25 @@ const StoreDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>김커피</m.TableInfoTd>
+                        <m.TableInfoTd>{store.ownerName}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>010-1234-5678</m.TableInfoTd>
+                        <m.TableInfoTd>{store.ownerPhone}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>강아침</m.TableInfoTd>
+                        <m.TableInfoTd>{store.managerName}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>010-4678-4256</m.TableInfoTd>
+                        <m.TableInfoTd>{store.managerPhone}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd colSpan={2}>
-                       <s.SearchButtonDiv textAlign='right'>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}}><Link to="/modifyStoreMain">수정</Link></s.ButtonStyle>
-                            {/* <Button onClick={()=>deleteStore(store.storeCode)}>삭제</Button> */}
+                       <s.SearchButtonDiv style={{textAlign:'right'}}>
+                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginLeft:'10px'}} onClick={deleteStore}>삭제</s.ButtonStyle>
+                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginLeft:'10px'}}><Link to={`/modifyStoreMain/${store.storeCode}`}>수정</Link></s.ButtonStyle>
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>

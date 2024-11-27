@@ -9,7 +9,7 @@ const Complain = () => {
         <>
             <s.ContentListDiv>
             <s.MainTitleText>고객의 소리</s.MainTitleText>
-            <s.ButtonDiv textAlign='right'>
+            <s.ButtonDiv style={{ textAlign: 'right' }}>
             <s.ButtonStyle><Link to="/complainWrite">글 작성</Link></s.ButtonStyle>
             </s.ButtonDiv>
 
