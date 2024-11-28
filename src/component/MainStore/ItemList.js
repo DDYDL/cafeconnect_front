@@ -8,7 +8,7 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import * as m from "../styles/StyledMain.tsx";
 import axios from "axios";
-import no_img from '../assets/img/no-image.svg'
+
 
 function ItmListCopy() {
 
