@@ -39,7 +39,20 @@ const MyAlarmList = ()=>{
             console.log(res.data);
             console.log(alarmNum);
             console.log(alarmList);
-            setAlarmList(alarmList.map(alarm=>(alarm.alarmNum === alarmNum ? {...alarm, alarmStatus:!alarm.alarmStatus} : alarm)));
+
+            // 체크한 알람 상태 변경하기(변경되면 리렌더링 된다)
+            setAlarmList(alarmList.map(alarm=>(alarm.alarmNum===alarmNum ? {...alarm, alarmStatus:!alarm.alarmStatus} : alarm)));
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+    
+    const selectAlarmType = (alarmType)=>{
+        axios.get(`${url}/selectAlarmType/${alarmType}`)
+        .then(res=>{
+            console.log(res.data);
+            setAlarmList([...res.data]);
         })
         .catch(err=>{
             console.log(err);
@@ -53,10 +66,10 @@ const MyAlarmList = ()=>{
 
                 <m.SelectDiv>
                     <m.SelectInnerDiv>
-                        <m.SelectBox label="종류">
-                            <Option>유통기한</Option>
-                            <Option>재고</Option>
-                            <Option>주요공지사항</Option>
+                        <m.SelectBox label="종류" onChange={(e)=>selectAlarmType(e)}>
+                            <Option value='유통기한'>유통기한</Option>
+                            <Option value='재고'>재고</Option>
+                            <Option value='주요공지사항'>주요공지사항</Option>
                         </m.SelectBox>
                     </m.SelectInnerDiv>
                 </m.SelectDiv>
