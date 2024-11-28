@@ -9,36 +9,32 @@ import { useEffect, useState } from "react";
 import { useAtom } from 'jotai/react';
 import { memberAtom } from '../../atoms.js';
 
-const StockManage = ()=>{
+const StockManage = ({major, middle, sub})=>{
     const [add, setAdd] = useState(false);
     const [info, setInfo] = useState(false);
     const [stockList, setStockList] = useState([]);
     const [majorCategory, setMajorCategory] = useState([]);
     const [middleCategory, setMiddleCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
+    const [itemName, setItemName] = useState("");
+
+    const [selectedCategory, setSelectedCategory] = useState({'major':'', 'middle':'', 'sub':''});
+    const [middleCategoryFilter, setMiddleCategoryFilter] = useState(middle);
 
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
 
     useEffect(()=>{
+        categorySetting();
         setStockList([]);
         setMember(member);
         getStockList();
     }, [])
 
-    const getCategory = ()=>{
-        // {"major":{}, "middle":{}, "sub":{}}
-        axios.get(`${url}/selectCategory`)
-        .then(res=>{
-            console.log(res.data);
-            
-            setMajorCategory(...res.data.major);
-            setMiddleCategory(...res.data.middle);
-            setSubCategory(...res.data.sub);
-        })
-        .catch(err=>{
-            console.log(err);
-        })
+    const categorySetting = ()=>{
+        setMajorCategory(major);
+        setMiddleCategory(middle);
+        setSubCategory(sub);
     }
 
     const getStockList = ()=>{
@@ -150,7 +146,7 @@ const StockManage = ()=>{
         })
     }
 
-    const selectCategory = (e)=>{
+    const searchCategory = (e)=>{
         const formData = new FormData();
 
         formData.append("storeCode", member.storeCode);
@@ -170,7 +166,7 @@ const StockManage = ()=>{
         })
     }
 
-    const selectKeyword = (keyword)=>{
+    const searchKeyword = (keyword)=>{
         axios.get(`${url}/selectStockByKeyword/${member.storeCode}/${keyword}`)
         .then(res=>{
             console.log(res.data);
@@ -180,6 +176,31 @@ const StockManage = ()=>{
             console.log(err);
             alert("잠시후 다시 시도해주세요.");
         })
+    }
+
+    const selectCategory = (category, value)=>{
+        if(category === 'major') {
+            selectedCategory.middle = '';
+            selectedCategory.sub = '';
+            selectedCategory.major = value;
+            console.log(selectedCategory.major);
+
+            // 다시 모든 middleCategory 가져오기
+            setMiddleCategoryFilter([middleCategory]);
+            console.log(middleCategoryFilter);
+            // majorCategoryNum이 동일한 것만 설정
+            setMiddleCategoryFilter(middleCategoryFilter.filter(item=>item.itemCategoryMajorNum===value));
+            console.log(middleCategoryFilter);
+        } else if(category === 'middle') {
+            selectedCategory.sub = '';
+            selectedCategory.middle = value;
+            console.log(selectedCategory.middle);
+
+            // 다시 모든 subCategory 가져오기
+            categorySetting();
+            // middleCategoryNum이 동일한 것만 설정
+            setSubCategory(subCategory.filter(item=>item.itemCategoryMiddleNum===value));
+        }
     }
 
     return (
@@ -192,30 +213,30 @@ const StockManage = ()=>{
                         <input type='checkbox' value='유통기한' onChange={selectDate}/>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className='w-16'>
-                    <s.SelectStyle label="대분류" onClick={selectCategory}>
+                    <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
                         {majorCategory.map(major=>(
-                                <Option>{major.itemCategoryName}</Option>
+                            <Option key={major.itemCategoryNum} value={major.itemCategoryNum}>{major.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className="w-16">
-                        <s.SelectStyle label="중분류" onClick={selectCategory}>
-                        {middleCategory.map(middle=>(
-                                <Option>{middle.itemCategoryName}</Option>
+                        <s.SelectStyle label="중분류" onChange={(e)=>selectCategory('middle', e)} disabled={!selectedCategory.major}>
+                        {middleCategoryFilter.map(middle=>(
+                            <Option key={middle.itemCategoryNum} value={middle.itemCategoryNum}>{middle.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className="w-16">
-                        <s.SelectStyle label="소분류" onClick={selectCategory}>
+                        <s.SelectStyle label="소분류" onChange={(e)=>selectCategory('sub', e)} disabled={!selectedCategory.middle}>
                         {subCategory.map(sub=>(
-                                <Option>{sub.itemCategoryName}</Option>
+                            <Option key={sub.itemCategoryNum} value={sub.itemCategoryNum} onClick={searchCategory}>{sub.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
                 </s.ButtonDiv>
                 <s.ButtonDiv width='200px' float='right'>
                     <s.SearchDiv width='200px'>
-                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={(e)=>selectKeyword(e.target.value)}/>} label="매장명 검색"/>
+                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>searchKeyword(itemName)}/>} label="상품명 검색"  onChange={(e)=>setItemName(e.target.value)}/>
                     </s.SearchDiv>
                 </s.ButtonDiv>
                 </s.CategoryButtonGroupDiv>
