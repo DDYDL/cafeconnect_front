@@ -168,7 +168,7 @@ function App() {
 
 
         <Route exact path="/noticeList" element={<NoticeList/>} />
-        <Route exact path="/noticeDetail" element={<NoticeDetail/>}/>
+        <Route exact path="/noticeList/:noticeNum" element={<NoticeDetail />} />
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
         <Route exact path="/complainList" element={<ComplainList/>} />

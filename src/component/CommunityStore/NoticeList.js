@@ -1,13 +1,18 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
+import {axiosInToken} from '../../config.js';
+import { tokenAtom } from '../../atoms';
+import {useAtomValue} from "jotai/react";
 
 const NoticeList = () => {
+  const [notice, setNotice] = useState([]);
+  const token = useAtomValue(tokenAtom);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
@@ -19,94 +24,32 @@ const NoticeList = () => {
 
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
 
-  const handleItemClick = id => {
-    setSelectedItem(selectedItem === id ? null : id); // Toggle answer form visibility
-    navigate(`/noticeDetail/${id}`);
+
+  const handleItemClick = noticeNum => {
+    setSelectedItem(selectedItem === noticeNum ? null : noticeNum); // Toggle answer form visibility
+    navigate(`/noticeList/${noticeNum}`);
   };
 
   const handleButtonClick = buttonId => {
     setSelectedButton(buttonId);
   };
 
-  const handleSubmit = (id, event) => {
-    event.preventDefault();
-
-    const newNotice = {
-      type: "주요 공지사항",
-      title,
-      content,
-      date: new Date().toISOString(),
-    };
-
-    // 만약 답변을 저장하는 로직이 있다면 해당 로직에 맞춰 데이터를 저장
-    // 예시: id에 해당하는 답변도 함께 저장
-    // 각 항목에 대한 답변을 저장하는 로직
-    console.log("Saving answer for item", id, "with content:", answers[id]);
-
-    fetch("https://www.localhost:8080/AskList", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Ask added:", data);
-        setTitle("");
-        setContent("");
-      })
-      .catch(error => console.error("Error posting notice:", error));
-  };
-
-  const askWrite = () => {
-    navigate("/community/askWrite");
-  };
-
-  const handleChange = (id, value) => {
-    setAnswers(prevAnswers => ({
-      ...prevAnswers,
-      [id]: value, // 해당 id에 대한 답변 업데이트
-    }));
-  };
-
-  // 검색어 입력 시 상태 업데이트
-  const handleSearchChange = e => {
-    setSearchQuery(e.target.value);
-  };
-
-  // 검색 버튼 클릭 시 백엔드로 검색 요청
-  const handleSearch = () => {
-    fetch(`http://localhost:8080/AskList/search?query=${searchQuery}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("검색 결과:", data);
-        // 결과 처리
-      })
-      .catch(error => console.error("검색 오류:", error));
-  };
-
   // const handleSubmit = (id, event) => {
   //   event.preventDefault();
-
+  //
   //   const newNotice = {
   //     type: "주요 공지사항",
   //     title,
   //     content,
   //     date: new Date().toISOString(),
   //   };
-
+  //
   //   // 만약 답변을 저장하는 로직이 있다면 해당 로직에 맞춰 데이터를 저장
   //   // 예시: id에 해당하는 답변도 함께 저장
   //   // 각 항목에 대한 답변을 저장하는 로직
   //   console.log("Saving answer for item", id, "with content:", answers[id]);
-
-  //   fetch(`https://www.localhost:8080/complainDetail/${id}`, {
+  //
+  //   fetch("https://www.localhost:8080/AskList", {
   //     method: "POST",
   //     headers: {
   //       "Content-Type": "application/json",
@@ -121,6 +64,24 @@ const NoticeList = () => {
   //     })
   //     .catch(error => console.error("Error posting notice:", error));
   // };
+
+
+
+  // 공지사항 데이터를 가져오는 useEffect
+  useEffect(() => {
+    const fetchData = () => {
+      axiosInToken(token).get('noticeList')
+          .then(res=> {
+            console.log(res.data)
+            setNotice([...res.data]);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+    };
+    // if(token!=null && token!=='') fetchData();
+    fetchData();
+  }, [token]);
 
   return (
     <ContentListDiv>
@@ -168,13 +129,14 @@ const NoticeList = () => {
               <div>{item.date}</div>
             </TableInfoList> */}
 
-      {[1, 2, 3, 4, 5].map(id => (
-        <div key={id}>
-          <TableInfoList onClick={() => handleItemClick(id)}>
-            <div>{id}</div>
-            <div>[주요 공지사항] 더치원액 팩 1000ml 액상 (브라질산으로 변경됨)</div>
-            <div>2024-10-11 13:49:46</div>
+      {notice.map((item) => (
+          <TableInfoList key={item.noticeNum} onClick={() => handleItemClick(item.noticeNum)}>
+            <div>{item.noticeNum}</div>
+            <div>{item.noticeTitle}</div>
+            <div>{new Date(item.noticeDate).toLocaleDateString()}</div>
           </TableInfoList>
+          ))}
+
 
           <CustomHorizontal width="basic" bg="grey" />
           {/* {selectedItem === id && ( */}
@@ -189,8 +151,8 @@ const NoticeList = () => {
             // </AnswerContainer> */}
           {/* ) */}
           {/* } */}
-        </div>
-      ))}
+        {/*</div>*/}
+
     </ContentListDiv>
   );
 };

@@ -1,35 +1,46 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
 import { CustomButton, TempSaveButton } from "../styledcomponent/Button.style";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
+import {axiosInToken} from '../../config.js';
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom } from '../../atoms.js';
+import axios from "axios";
 
+//!! 해당 페이지 접속 시, db에 MenuList요청하기
 const SalesWrite = () => {
+  const token = useAtomValue(tokenAtom);
+  // menuList가 undefined일 경우 기본값으로 빈 배열을 설정
+  const [menuList, setMenuList] = useState([]);
+  const [selMenu, setSelMenu] = useState({});
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const initSaleItem = {salesCount:1,salesStatus:1,menuCode:'',
+    menuName:'',storeCode:1,salesAmount:0, salesDate:''};
+  const [saleItem, setSaleItem] = useState(initSaleItem)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
+  const [salesList, setSalesList] = useState([]);
+  const [datePicker, setDatePicker] = useState({startDate: null,endDate: null});
+  const [date, setDate] = useState();
 
-  const [value, setValue] = useState({
-    startDate: null,
-    endDate: null,
-  });
+  // 메뉴 데이터를 가져오는 useEffect
+  useEffect(() => {
+    const fetchData = () => {
+      axiosInToken(token).get('menuList')
+          .then(res=> {
+            console.log(res.data)
+            setMenuList([...res.data]);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+    };
+    // if(token!=null && token!=='') fetchData();
+    fetchData();
+  }, [token]);
 
-  // 가상의 상품 목록 데이터
-  const products = [
-    { id: 1, name: "콜라 1" },
-    { id: 2, name: "콜라 2" },
-    { id: 3, name: "사이다" },
-    { id: 4, name: "콜라 제로" },
-    { id: 5, name: "오렌지 주스" },
-    { id: 6, name: "콜라 500ml" },
-    { id: 7, name: "레몬에이드" },
-    { id: 8, name: "콜라 1L" },
-    { id: 9, name: "포도 주스" },
-    { id: 10, name: "콜라 다이어트" },
-  ];
-
-  // 상품명 검색 결과 상태
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
   // 순번, 상품명, 수량, 매출 합계 상태 (배열로 관리)
   const [rows, setRows] = useState([
@@ -45,69 +56,108 @@ const SalesWrite = () => {
     return total.toLocaleString();
   };
 
-  // 상품 선택
-  const handleProductSelect = (index, product) => {
-    const updatedRows = [...rows];
-    updatedRows[index].상품명 = product.name;
-    updatedRows[index].filteredProducts = []; // 해당 행의 검색결과만 비움
-    setRows(updatedRows);
-
-    // 전역 검색 결과 비움
-    setFilteredProducts([]);
-  };
-
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedRows = [...rows];
-    updatedRows[index][name] = value;
-    setRows(updatedRows);
-
-    // 상품명 필터링
-    if (name === "상품명") {
-      const filtered = products.filter(product =>
-        product.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-    }
+  // 드롭다운 아이템 선택 처리
+  const handleItemClick = item => {
+    setSelMenu(item); // 선택한 값으로 검색어 업데이트
+    setIsDropdownOpen(false); // 드롭다운 닫기
   };
 
   const handleEnterKey = (event, index) => {
-    if (event.key === "Enter" && rows[index].매출합계) {
-      // 매출합계가 입력되었을 때, 새 입력 항목을 추가
-      const next순번 = rows.length + 1; // 새로운 순번은 현재 rows 길이에 +1
-      setRows([...rows, { 순번: next순번, 상품명: "", 수량: "", 매출합계: "" }]);
+    if(event.keyCode!==13) return;
+    console.log(selMenu.menuName)
+    if(selMenu.menuName===undefined) {
+      alert("메뉴를 선택하세요")
+      return;
     }
+    if(saleItem.salesCount==='' || saleItem.salesCount===0) {
+      alert("수량을 선택하세요")
+      return;
+    }
+    if(saleItem.salesAmount==='' || saleItem.salesAmount===0) {
+      alert("매출금액을 선택하세요")
+      return;
+    }
+    // setSalesList([...salesList, saleItem])
+    console.log("salesList1 = " + salesList);
+
+    setSalesList([...salesList,
+      {...saleItem, menuCode:selMenu.menuCode, menuName:selMenu.menuName}]);
+    console.log("salesList2 = " + salesList);
+    setSaleItem(initSaleItem)
+    setSelMenu({})
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const submit = (flag) => {
+    console.log(saleItem)
+    // setSalesList([saleItem])
 
-    const newNotice = {
-      type: "주요 공지사항",
-      title,
-      content,
-      date: new Date().toISOString(),
-    };
+    console.log(date)
+    console.log("salesList = " + salesList);
+    // const sendSalesList = salesList.map(s=>{s.salesStatus=flag; s.salesDate=date; return s});
+    // setSalesList([...sendSalesList])
 
-    fetch("https://www.localhost:8080/notice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Notice added:", data);
-        setTitle("");
-        setContent("");
+      axiosInToken(token).get("store")
+
+      const postdata = [...salesList, {...saleItem, menuCode: selMenu.menuCode, menuName: selMenu.menuName, storeCode: token}];
+      const dataToSend = {
+          salesList: postdata,
+          storeCode: initSaleItem.storeCode
+      };
+
+      //   [...salesList,
+      // {...saleItem, menuCode:selMenu.menuCode, menuName:selMenu.menuName}]);
+
+    // console.log("sendSalesList = " + sendSalesList);
+    // console.log("salesList = " + salesList);
+
+      console.log("dataToSend" + dataToSend);
+
+
+    // axiosInToken(token).post("salesWrite", {salesList:dataToSend})
+      axios.post('/salesWrite', JSON.stringify(dataToSend), {
+          headers: {
+              'Content-Type': 'application/json',
+          }
       })
-      .catch(error => console.error("Error posting notice:", error));
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err);
+        })
   };
+
+const newList = () => {
+    axiosInToken(token).post("salesWrite", {salesList: salesList})
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err);
+        })
+  }
+
+  const changeDate = (newDate) => {
+    setDatePicker(newDate)
+    const d = newDate.startDate;
+    const year = d.getFullYear(); // 2023
+    const month = (d.getMonth() + 1).toString().padStart(2, '0'); // 06
+    const day = d.getDate().toString().padStart(2, '0'); // 18
+    const dateString = year + '-' + month + '-' + day; // 2023-06-18
+    console.log(dateString); setDate(dateString)
+
+    axiosInToken(token).post("salesTemp", {salesDate:dateString, storeCode:initSaleItem.storeCode})
+        .then(res=> {
+          console.log(res)
+          setSalesList([...res.data])
+        })
+        .catch(err=> {
+          console.log(err)
+        })
+  }
 
   return (
-    <ContentListDiv>
-      <Form onSubmit={handleSubmit}>
+      <ContentListDiv>
         <HeadingContainer>
           <Heading>매출 입력</Heading>
         </HeadingContainer>
@@ -118,17 +168,16 @@ const SalesWrite = () => {
               <SalesDateText>매출 일자</SalesDateText>
 
               <Datepicker
-                useRange={false}
-                asSingle={true}
-                value={value}
-                onChange={newValue => setValue(newValue)}
+                  useRange={false}
+                  asSingle={true}
+                  value={datePicker} onChange={changeDate}
               />
             </SelectData>
 
-            <TempSaveButton style={{ borderRadius: "4px", marginTop: "3px" }}>
+            <TempSaveButton style={{ borderRadius: "4px", marginTop: "3px" }} onClick={()=>submit(1)}>
               임시저장
             </TempSaveButton>
-            <CustomButton style={{ borderRadius: "4px", marginTop: "3px" }}>등록</CustomButton>
+            <CustomButton style={{ borderRadius: "4px", marginTop: "3px" }} onClick={()=>submit(2)}>등록</CustomButton>
           </HeadingDataAndSave>
 
           <HeadingSummary>
@@ -148,45 +197,66 @@ const SalesWrite = () => {
 
         <CustomHorizontal width="basic" bg="black" />
 
-        {rows.map((row, index) => (
-          <TableRow key={index}>
-            <OrderInput name="순번" type="number" placeholder="순번" value={row.순번} readOnly />
+        {salesList.length > 0 && (<>
+              {salesList.map((s,index) => (
+                  <TableRow key={s.menuCode}>
+                    <ProductSearchWrapper>
+                      <OrderInput value={index+1} readOnly />
+                      <ProductSearchInput type="text" value={s.menuName}/>
+                      <QuantityInput value={s.salesCount} type="number"/>
+                      <TotalInput value={s.salesAmount}/>
+                    </ProductSearchWrapper>
+                  </TableRow>
+              ))}
+            </>
+        )}
+
+        <TableRow>
+          <ProductSearchWrapper menuList={menuList}>
+            <OrderInput readOnly />
             <ProductSearchInput
-              name="상품명"
-              type="text"
-              placeholder="상품명 검색"
-              value={row.상품명}
-              onChange={event => handleInputChange(index, event)}
-              onKeyDown={event => handleEnterKey(event, index)}
+                name="상품명"
+                type="text"
+                placeholder={
+                  menuList && menuList.length > 0 ? "검색어를 입력하세요" : "검색 결과 없음"
+                }
+                value={selMenu.menuName===undefined? '': selMenu.menuName}
+                onChange={(e)=>setSelMenu({...selMenu, menuName:e.target.value})}
+                onClick={() => setIsDropdownOpen(true)} // 클릭 시 드롭다운 열기
             />
-            {filteredProducts.length > 0 && (
-              <ProductList>
-                {filteredProducts.map(product => (
-                  <ProductItem key={product.id} onClick={() => handleProductSelect(index, product)}>
-                    {product.name}
-                  </ProductItem>
-                ))}
-              </ProductList>
+            {isDropdownOpen && selMenu.menuName!=='' && menuList && menuList.length > 0 && (
+                <DropdownList>
+                  <ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
+                    {menuList.filter(m=>m.menuName.includes(selMenu.menuName)).map(fm => (
+                        <DropdownItem key={fm.menuCode} onClick={() => handleItemClick(fm)}>
+                          {fm.menuName}
+                        </DropdownItem>
+                    ))}
+                  </ul>
+                </DropdownList>
             )}
-            <QuantityInput
+          </ProductSearchWrapper>
+
+          <QuantityInput
               name="수량"
               type="number"
               placeholder="수량"
-              value={row.수량}
-              onChange={event => handleInputChange(index, event)}
-            />
-            <TotalInput
+              value={saleItem.salesCount}
+              onChange={e => setSaleItem({...saleItem, salesCount:e.target.value})}
+          />
+          <TotalInput
               name="매출합계"
               type="number"
+              value={saleItem.salesAmount}
               placeholder="매출 합계"
-              value={row.매출합계}
-              onChange={event => handleInputChange(index, event)}
-              onKeyDown={event => handleEnterKey(event, index)}
-            />
-          </TableRow>
-        ))}
-      </Form>
-    </ContentListDiv>
+              onChange={e => setSaleItem({...saleItem, salesAmount:e.target.value})
+
+          }
+              onKeyDown={event => handleEnterKey(event)}
+          />
+        </TableRow>
+
+      </ContentListDiv>
   );
 };
 
@@ -211,7 +281,7 @@ const HeadingContainer1 = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-align:center;
+  text-align: center;
   margin-bottom: 10px;
   width: 1000px;
 `;
@@ -328,7 +398,25 @@ const OrderInput = styled.input`
   margin-right: 50px;
 `;
 
-const ProductSearchInput = styled.input`
+// const ProductSearchInput = styled.input`
+//   width: 600px;
+//   height: 40px;
+
+//   padding: 8px;
+//   font-size: 16px;
+//   border: 1px solid #ddd;
+//   border-radius: 5px;
+//   position: relative;
+
+//   // margin-right: 30px;
+// `;
+
+export const ProductSearchWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const ProductSearchInput = styled.input`
   width: 600px;
   height: 40px;
 
@@ -336,9 +424,38 @@ const ProductSearchInput = styled.input`
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  position: relative;
 
-  // margin-right: 30px;
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+`;
+
+export const DropdownList = styled.div`
+  // position: absolute;
+  top: 100%;
+  width:500px;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  z-index: 1000;
+`;
+
+export const DropdownItem = styled.li`
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+export const NoResults = styled.div`
+  padding: 8px;
+  color: #888;
 `;
 
 const QuantityInput = styled.input`
