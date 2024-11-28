@@ -2,13 +2,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/StyledHeader.tsx';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { url, axiosInToken } from '../../config.js';
-import { useSetAtom } from 'jotai/react';
-import { memberAtom, tokenAtom } from '../../atoms.js';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai/react';
+import { alarmsAtom, fcmTokenAtom, memberAtom, tokenAtom } from '../../atoms.js';
 
 const LoginStore = () => {
-    const [member, setMember] = useState({username:'',password:'',deptName:'',roles:''})
+    // 로그인 하면 storeCode 하나 가지고 오기(여러개의 store를 가지고 있으면 대표 하나만 가져오기)
+    // storeHeader에서 storeCode 바꿀 수 있음
+    const [member, setMember] = useState({username:'',password:'',deptName:'',roles:'', storeCode:0})
     
     // 세션 스토리지 token 설정
     const setToken = useSetAtom(tokenAtom);
@@ -16,8 +18,15 @@ const LoginStore = () => {
     const setSessionMember = useSetAtom(memberAtom);
     const navigate = useNavigate();
 
+    // fcm token value 가져오기
+    const fcmToken = useAtomValue(fcmTokenAtom);
+    // 알람 리스트 가져오기
+    const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+    // 소셜 로그인 url
     const kakaoAuthUrl = `${url}/oauth2/authorization/kakao`;
     const naverAuthUrl = `${url}/oauth2/authorization/naver`;
+
     // state 변수인 member 바뀔 때마다 설정
     const edit = (e)=>{
         setMember({...member, [e.target.name]:e.target.value});
@@ -42,8 +51,30 @@ const LoginStore = () => {
             .then(res=>{
                 // 성공 시 세션 스토리지에 사용자 정보 저장
                 setSessionMember(res.data);
-
                 console.log(res.data);
+
+                // 사용자 정보 저장 후 fcm token 요청
+                axios.post(`${url}/fcmToken`,{username:member.username, fcmToken:fcmToken})
+                .then(res=> {
+                    if(res.data!==null) {
+                        console.log(res.data);
+                        // 토큰 저장에 성공 시 알람 리스트 요청
+                        axios.post(`${url}/alarms`,{storeCode:res.data})
+                            .then(res=> {
+                                console.log(res.data)
+                                if(res.data.length!==0) {
+                                    setAlarms([...alarms,...res.data]);
+                                }
+                            })
+                            .catch(err=>{
+                                console.log(err);
+                            })
+                    }
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+
                 // 가맹점일 시 쇼핑몰로 이동(가맹점 페이지)
                 if(res.data.roles === 'ROLE_STORE') {
                     navigate('/shopMain');

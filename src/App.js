@@ -79,24 +79,45 @@ import ComplainDetailMain from './component/CommunityMainStore/ComplainDetailMai
 
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
-import { memberAtom } from './atoms.js';
-import { useAtom } from 'jotai/react';
+import { alarmsAtom, fcmTokenAtom, memberAtom } from './atoms.js';
+import { useAtom, useSetAtom } from 'jotai/react';
+import { firebaseReqPermission, registerServiceWorker } from './firebaseconfig.js';
 
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
   const [member, setMember] = useAtom(memberAtom);
 
-  useEffect(()=>{
+  // 알람 state 변수
+  const [alarm, setAlarm] = useState({});
+  // firebase token 가져오기
+  const setFcmToken = useSetAtom(fcmTokenAtom);
+  // 알람 리스트 가져오기
+  const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+  useEffect(async ()=>{
+    // app 실행하자마자 service Worker부터 받아오기
+    registerServiceWorker();
+    await navigator.serviceWorker.ready;
+
+    // service worker부터 받아오고 token 받아와야 하므로 await 사용
+    // firebase token과 알람 설정
+    firebaseReqPermission(setFcmToken, setAlarm);
+
     // 로그인 페이지는 헤더 안 보이게 하기
     if(location.pathname === 'loginStore' && path) setPath(false);
     else if(location.pathname !== 'loginStore' && !path) setPath(true);
-  })
+  }, []);
+
+  // alarm state 변수가 바뀔 때마다 alarm이 빈 객체가 아니면 Jotai의 alarms 알람 리스트에 새로운 알람 하나 추가
+  useEffect(()=>{
+    JSON.stringify(alarm)!=="{}" && setAlarms([...alarms, alarm]);
+  }, [alarm]);
 
   return (
     <div>
       {member.roles === '' && (path===true? <Header/>:null)}
-      {member.roles === 'ROLE_STORE' && <StoreHeader/>}
+      {member.roles === 'ROLE_STORE' && <StoreHeader alarms={alarms}/>}
       {member.roles === 'ROLE_MAINSTORE' && <MainStoreHeader/>}
 
       <Routes>
@@ -147,7 +168,7 @@ function App() {
 
 
         <Route exact path="/noticeList" element={<NoticeList/>} />
-        <Route exact path="/noticeDetail" element={<NoticeDetail/>}/>
+        <Route exact path="/noticeList/:noticeNum" element={<NoticeDetail />} />
         <Route exact path="/askWrite" element={<AskWrite/>} />
         <Route exact path="/askList" element={<AskList />} />
         <Route exact path="/complainList" element={<ComplainList/>} />
@@ -182,7 +203,7 @@ function App() {
         <Route path='/menuUpdate/:menuCode' element={<MenuUpdate/>}/>
 
         <Route exect path='/addStoreMain' element={<AddStoreMain/>}/>
-        <Route exect path="/modifyStoreMain" element={<ModifyStoreMain/>}/>
+        <Route exect path="/modifyStoreMain/:storeCode" element={<ModifyStoreMain/>}/>
         <Route exect path="/storeDetailMain/:storeCode" element={<StoreDetailMain/>}/>
 
         <Route exact path="/noticeListMain" element={<NoticeListMain/>} />

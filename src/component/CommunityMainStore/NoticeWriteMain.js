@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
+import React, {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
@@ -7,51 +7,81 @@ import { Link } from "react-router-dom";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
+import {axiosInToken} from "../../config";
+import {useAtomValue} from "jotai/react";
+import {tokenAtom} from "../../atoms";
+import axios from "axios";
 
 const NoticeWriteMain = () => {
+  const token = useAtomValue(tokenAtom);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  const [notice, setNotice] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axiosInToken(token).get('noticeWriteMain');
+                console.log(response.data);
+                setNotice([...response.data]);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        console.log("token" + token)
+
+        if (token) fetchData();
+    }, [token]);
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
-    navigate("/shopMain");
+    navigate("/noticeListMain");
   };
 
-  const handleRegister = () => {
-    navigate("/noticeList");
-  };
+    // 등록 버튼 클릭 시 처리
+    const handleRegister = async () => {
+        const isSuccess = await handleSubmit(); // handleSubmit 호출 및 성공 여부 확인
 
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    // 작성한 글을 서버로 전송
-    const newNotice = {
-      type: "주요 공지사항", // 항상 공지사항
-      title,
-      content,
-      date: new Date().toISOString(),
+        console.log("isSuccess = " + isSuccess)
+        if (isSuccess) {
+            navigate("/noticeListMain"); // 성공 시 페이지 이동
+        } else {
+            alert("등록에 실패했습니다. 다시 시도해주세요."); // 실패 시 알림
+        }
     };
 
-    fetch("https://www.localhost:8080/notice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Notice added:", data);
-        // 글 작성 후 입력 필드 초기화
+
+
+    // 작성한 글을 서버로 전송
+const handleSubmit = async () => {
+    const notice = {
+        noticeType: "주요 공지사항",
+        noticeTitle: "",
+        noticeContent: "",
+        date: new Date().toISOString(),
+    };
+
+    try {
+        const response = await axios.post("https://localhost:8080/noticeWriteMain", notice, {
+
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        console.log("Notice:",notice);
+        console.log("Notice added:", response.data);
+
+        // 입력 필드 초기화
         setTitle("");
         setContent("");
 
-        // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
-        navigate("/community/noticeList");
-      })
-      .catch(error => console.error("Error posting notice:", error));
-  };
+        // 공지사항 작성 완료 후, 리스트 페이지로 이동
+        navigate("/noticeListMain");
+    } catch (error) {
+        console.error("Error posting notice:", error);
+    }
+};
 
   return (
     <ContentListDiv>
@@ -72,13 +102,6 @@ const NoticeWriteMain = () => {
           </s.TableTextTd>
         </s.TrStyle>
 
-        {/* <FormContainer1>
-          <Form1div>공지유형 *</Form1div>
-          <InputSmall type="text" value="주요 공지사항" disabled />
-        </FormContainer1> */}
-
-        {/* <CustomHorizontal width="basic" bg="grey" /> */}
-
         <s.TrStyle>
           <s.TableTextTd>제목 *</s.TableTextTd>
           <s.TableTextTd>
@@ -91,13 +114,6 @@ const NoticeWriteMain = () => {
           </s.TableTextTd>
         </s.TrStyle>
 
-        {/* <CustomHorizontal width="basic" bc="grey" /> */}
-
-        {/* <FormContainer3>
-          <Form3div>내용 *</Form3div>
-          <Textarea value={content} onChange={e => setContent(e.target.value)} />
-        </FormContainer3> */}
-
         <s.TrStyle style={{ height: "200px", margin: "30px" }}>
           <s.TableTextTd>내용 *</s.TableTextTd>
           <s.TableTextTd>
@@ -106,23 +122,16 @@ const NoticeWriteMain = () => {
               onChange={e => setContent(e.target.value)}
               style={{ width: "680px" }}
             />
-            {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
           </s.TableTextTd>
         </s.TrStyle>
 
-        {/* <div> */}
-        {/* <CustomHorizontal width="basic" bc="grey" /> */}
-        {/* </div> */}
-
-        {/* <Button variant="outline"></Button> */}
-
         <ButtonContainer>
           <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
-            <Link to="/complain">취소</Link>
+            <Link to="/noticeListMain">취소</Link>
           </s.ButtonStyle>
           &nbsp;&nbsp;
           <s.ButtonStyle onClick={handleRegister}>
-            <Link to="/complain">등록하기</Link>
+            <Link to="/noticeListMain">등록하기</Link>
           </s.ButtonStyle>
         </ButtonContainer>
       </Form>
