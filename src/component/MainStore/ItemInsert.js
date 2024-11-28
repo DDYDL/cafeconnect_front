@@ -4,6 +4,8 @@ import styles from '../styles/ItemInsert.module.css'
 import upload_file from '../assets/img/upload-files-4ee86225-svg.svg'
 import { useNavigate } from 'react-router';
 import { useRef } from 'react';
+import * as s from "../styles/StyledStore.tsx";
+import { Option } from '@material-tailwind/react';
 function ItemInsert() {
 
 
@@ -150,6 +152,7 @@ function ItemInsert() {
                                             용량
                                         </div>
                                         <div className={`${styles['input-1']} ${styles['input-5']}`}>
+                                            
                                             <div className={styles['container-2']}>
                                                 <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
                                                     용량을 선택하세요
@@ -163,7 +166,7 @@ function ItemInsert() {
                                                 src={require("../assets/img/sort-down@2x.png")}
                                                 alt="Sort Down"
                                             />
-                                            
+
                                         </div>
                                     </div>
                                     <div className={styles['container-3']}>
