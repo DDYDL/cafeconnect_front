@@ -93,14 +93,14 @@ const StoreListMain = ()=>{
                 </h.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>
-                        <h.TableTextTh width='150px'>지역</h.TableTextTh>
-                        <h.TableTextTh width='120px'>매장명</h.TableTextTh>
+                        <s.TableTextTh width='150px'>지역</s.TableTextTh>
+                        <h.TableTextTh width='150px'>매장명</h.TableTextTh>
                         <h.TableTextTh width='500px'>주소</h.TableTextTh>
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
                         {storeList.map(store=>(
                         <s.TableTextTr key={store.storeCode}>
-                            <h.TableTextTd>{regionPart(store.storeAddress)}</h.TableTextTd >
+                            <s.TableTextTd>{regionPart(store.storeAddress)}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
                             <h.TableTextTd><a href={`/storeDetailMain/${store.storeCode}`}>{store.storeAddress}</a></h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >

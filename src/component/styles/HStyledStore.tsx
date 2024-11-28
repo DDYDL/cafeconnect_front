@@ -358,8 +358,66 @@ export const SpanSize = styled.span`
 `;
 
 export const InputStyleSearch = styled(Input)`
-    margin-bottom:10px;
-    border-radius:5px;
-    background-color:rgb(255, 255, 255);
-    height:40px;
+margin-bottom:10px;
+border-radius:5px;
+background-color:rgb(255, 255, 255);
+height:40px;
+`;
+
+export const DatePickerPeriodWrap =styled.div`
+    width:300px;
+    display: flex;
+    flex-direction:row;
+    justify-content: space-around;
+    align-items:center;
+    text-align:center;
+
+    // .flowbite-datepicker {
+    //   input {
+    //     width: 140px;
+    //     height: 40px;
+    //     text-align: center;
+    //     border-color: rgb(234, 234, 234);
+    //     border-radius: 5px;
+    //     color: rgb(0, 0, 0);
+    //     font-family "Noto Sans KR"
+    //     line-height: 24px;
+    //   }
+    //   svg { display:none; }
+    //   button {
+    //     height: 30px;
+    //     color: #333 !important;
+    //     padding: 0 8px;
+    //   }
+      
+    // }
+`;
+export const DatePickerWrap =styled.div`
+    width:300px;
+    display: flex;
+    flex-direction:row;
+    justify-content: space-around;
+    align-items:center;
+    text-align:center;
+
+    // .flowbite-datepicker {
+    //   input {
+    //     width: 300px;
+    //     height: 40px;
+    //     text-align: start;
+    //     padding: 8px 12px 8px 12px;
+    //     border-color: rgb(234, 234, 234);
+    //     border-radius: 5px;
+    //     color: rgb(0, 0, 0);
+    //     font-family "Noto Sans KR"
+    //     line-height: 24px;
+    //   }
+    //   svg { display:none; }
+    //   button {
+    //     height: 30px;
+    //     color: #333 !important;
+    //     padding: 0 8px;
+    //   }
+      
+    }
 `;

@@ -23,7 +23,7 @@ const StoreDetailMain = ()=>{
         ownerPhone:'',
         managerName:'',
         managerPhone:'',
-        contractPeriodStrart:'',
+        contractPeriodStart:'',
         contractPeriodEnd:'',
         contractDate:'',
         openingDate:'',
@@ -46,12 +46,14 @@ const StoreDetailMain = ()=>{
             .then(res=> {
                 console.log(res.data)
                 let resStore = res.data.store;
-                setStore({...resStore});
+                let resstoreOpenTime = res.data.storeOpenTime;
+                let resstoreCloseTime = res.data.storeCloseTime;
+                setStore({...resStore, ['storeOpenTime']: resstoreOpenTime, ['storeCloseTime']: resstoreCloseTime});
             })
     }
 
     const deleteStore = () => {
-        axiosInToken(token).get(`deleteStoreMain/${storeCode}`)
+        axiosInToken(token).post(`deleteStoreMain/${storeCode}`)
             .then(res=> {
                 console.log(res.data)
                 let resStore = res.data.store;
@@ -94,7 +96,7 @@ const StoreDetailMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractPeriodStrart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
+                        <m.TableInfoTd>{store.contractPeriodStart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>

@@ -25,7 +25,7 @@ const ModifyStoreMain = ()=>{
         ownerPhone:'',
         managerName:'',
         managerPhone:'',
-        contractPeriodStrart:'',
+        contractPeriodStart:'',
         contractPeriodEnd:'',
         contractDate:'',
         openingDate:'',
@@ -126,7 +126,7 @@ const ModifyStoreMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='contractPeriodStrart' value={store.contractPeriodStrart} onChange={edit}/> ~ <s.InputStyle width='140px' type='text' value={store.contractPeriodEnd}/></m.TableInfoTd>
+                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='contractPeriodStart' value={store.contractPeriodStart} onChange={edit}/> ~ <s.InputStyle width='140px' type='text' name='contractPeriodEnd' value={store.contractPeriodEnd}/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>
