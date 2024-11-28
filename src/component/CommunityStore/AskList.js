@@ -1,14 +1,18 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
+import {axiosInToken} from "../../config";
+import axios from "axios";
 
+// todo 답변 저장 -> 해당 답변이 계속 보여지도록 해야함.
 const AskList = () => {
+  const [askList, setAskList] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
@@ -17,9 +21,9 @@ const AskList = () => {
   const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장하는 상태
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
 
-  const handleItemClick = id => {
-    setSelectedItem(selectedItem === id ? null : id); // Toggle answer form visibility
-  };
+    const handleItemClick = (askNum) => {
+        setSelectedItem(selectedItem === askNum ? null : askNum); // askNum으로 비교
+    };
 
   const askWrite = () => {
     navigate("/askWrite");
@@ -33,56 +37,81 @@ const AskList = () => {
   };
 
   // 검색어 입력 시 상태 업데이트
-  const handleSearchChange = e => {
-    setSearchQuery(e.target.value);
-  };
+  // const handleSearchChange = e => {
+  //   setSearchQuery(e.target.value);
+  // };
 
-  // 검색 버튼 클릭 시 백엔드로 검색 요청
-  const handleSearch = () => {
-    fetch(`http://localhost:8080/AskList/search?query=${searchQuery}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("검색 결과:", data);
-        // 결과 처리
-      })
-      .catch(error => console.error("검색 오류:", error));
-  };
-
-  const handleSubmit = (id, event) => {
-    event.preventDefault();
-
-    const newNotice = {
-      type: "주요 공지사항",
-      title,
-      content,
-      date: new Date().toISOString(),
+  // 1:1문의 데이터를 가져오는 useEffect
+  useEffect(() => {
+    const fetchData = () => {
+        axios.get('http://localhost:8080/askList')
+          .then(res => {
+            console.log(res.data);
+            setAskList([...res.data]);
+          })
+          .catch(err => {
+            console.log(err);
+          });
     };
 
-    // 만약 답변을 저장하는 로직이 있다면 해당 로직에 맞춰 데이터를 저장
-    // 예시: id에 해당하는 답변도 함께 저장
-    // 각 항목에 대한 답변을 저장하는 로직
-    console.log("Saving answer for item", id, "with content:", answers[id]);
+    fetchData();
+  }, []);  // token은 더 이상 의존성 배열에 포함하지 않음
 
-    fetch("https://www.localhost:8080/AskList", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Ask added:", data);
-        setTitle("");
-        setContent("");
-      })
-      .catch(error => console.error("Error posting notice:", error));
-  };
+    //답변 저장
+    const handleSubmit = (askNum, e) => {
+        e.preventDefault(); // 기본 폼 제출 동작 방지
+
+        const answer = answers[askNum]; // 해당 askNum에 대한 답변을 가져옴
+
+        if (!answer) {
+            alert("답변을 작성해주세요.");
+            return;
+        }
+
+        const answerData = {
+            askAnswer: answer
+        };
+
+        console.log(answerData);  // 추가: 서버에 보내는 데이터 확인
+
+        // 서버에 답변을 제출하는 API 요청
+        axios
+            .post(`http://localhost:8080/askList/save/${askNum}`, answerData )
+            .then((res) => {
+                alert("답변이 저장되었습니다.");
+                // 답변 저장 후, 상태 초기화
+                setAnswers((prevAnswers) => ({
+                    ...prevAnswers,
+                    [askNum]: "", // 답변 필드 초기화
+                }));
+                setSelectedItem(null); // 답변 작성 후 해당 게시글 닫기
+            })
+            .catch((err) => {
+                alert("답변 저장에 실패했습니다.");
+                console.error("답변 저장 실패:", err);
+            });
+    };
+
+    // 답글 삭제 함수
+    const handleDelete = (askNum) => {
+
+        axios
+            .post(`http://localhost:8080/askList/delete/${askNum}`)
+            .then(() => {
+                alert("답변이 삭제되었습니다.");
+                setAnswers((prevAnswers) => {
+                    const newAnswers = { ...prevAnswers };
+                    delete newAnswers[askNum]; // 삭제한 답변 상태에서 제거
+                    return newAnswers;
+                });
+                setSelectedItem(null); // 답변 삭제 후 해당 게시글 닫기
+            })
+            .catch((err) => {
+                alert("답변 삭제에 실패했습니다.");
+                console.error("답변 삭제 실패:", err);
+            });
+    };
+
 
   return (
     // <Wrapper>
@@ -129,46 +158,33 @@ const AskList = () => {
               <div>{item.date}</div>
             </TableInfoList> */}
 
-      {[1, 2, 3, 4, 5].map(id => (
-        <div key={id}>
-          <TableInfoList onClick={() => handleItemClick(id)}>
-            <div>{id}</div>
-            <div>배송시간 단축 요청 - 배송이 지연되면서 ...</div>
-            <div>2024-10-11 13:49:46</div>
-          </TableInfoList>
+        {askList.map((askList) => (
+            <div key={askList.askNum}>
+                <TableInfoList onClick={() => handleItemClick(askList.askNum)}>
+                    <div>{askList.askTitle}</div>
+                    <div>{askList.askContent}</div>
+                    <div>{new Date(askList.askDate).toLocaleDateString('ko-KR')}</div>
+                </TableInfoList>
 
-          <CustomHorizontal width="basic" bg="grey" />
-          {selectedItem === id && (
-            <AnswerContainer>
-              <h4>답변 작성</h4>
-              <AnswerTextarea
-                value={answers[id] || ""}
-                onChange={e => handleChange(id, e.target.value)}
-                placeholder="답변을 작성하세요"
-              />
-              {/* <SubmitButton onClick={e => handleSubmit(id, e)}>답변 저장</SubmitButton>
-              <CancelButton>답변 삭제</CancelButton> */}
-            </AnswerContainer>
-          )}
-        </div>
-      ))}
+                <CustomHorizontal width="basic" bg="grey" />
+
+                {selectedItem === Number(askList.askNum) && ( // selectedItem과 askNum 비교 시 Number 타입으로 일치시킴
+                    <AnswerContainer>
+                        <h4>답변 작성</h4>
+                        <AnswerTextarea
+                            value={answers[askList.askNum] || ""}
+                            onChange={(e) => handleChange(askList.askNum, e.target.value)}
+                            placeholder="답변을 작성하세요"
+                        />
+                        <SubmitButton onClick={(e) => handleSubmit(askList.askNum, e)}>답변 저장</SubmitButton>
+                        <CancelButton onClick={(e) => handleDelete(askList.askNum, e)}>답변 삭제</CancelButton>
+                    </AnswerContainer>
+                )}
+            </div>
+        ))}
     </ContentListDiv>
   );
 };
-
-// const Wrapper = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   text-align: center;
-//   width: 100%;
-
-//   margin-top: 120px;
-//   box-sizing: border-box;
-
-//   position: relative;
-// `;
 
 const HeadingContainer = styled.div`
   display: flex;
