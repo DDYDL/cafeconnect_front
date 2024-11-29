@@ -7,36 +7,19 @@ import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import DaumPostcode from 'react-daum-postcode';
 import {useNavigate} from 'react-router-dom';
-// import { Modal } from 'flowbite-react';
-// import { DatePicker } from 'react-datepicker';
+import DaumPostcode from 'react-daum-postcode';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import {ko} from 'date-fns/locale';
+import {format} from 'date-fns';
+import * as ol from "../styledcomponent/orderlist.tsx";
 
 const AddStoreMain = ()=>{
     const token = useAtomValue(tokenAtom);
     const [isOpen, setIsOpen] = useState(false);
-    const [store, setStore] = useState({
-        storeCode:'',
-        storeName: '',
-        storeAddress: '',
-        storeAddressNum: '',
-        storePhone: '',
-        storeOpenTime: '',
-        storeCloseTime: '',
-        storeCloseDate: '',
-        ownerName:'',
-        ownerPhone:'',
-        managerName:'',
-        managerPhone:'',
-        contractPeriodStart:new Date(),
-        contractPeriodEnd:new Date(),
-        contractDate:new Date(),
-        openingDate:new Date(),
-        storeStatus:'',
-        memberNum:''
-        ,stockCount:''
-    });
+    const [store, setStore] = useState({});
     const navigate = useNavigate();
     
     const edit = (e) => {
@@ -57,12 +40,13 @@ const AddStoreMain = ()=>{
         
     const submit = () => {
         axiosInToken(token).post('addStoreMain',store)
-            .then(res=> {
-                console.log(res);
-                alert(`${store.storeName} 등록이 완료되었습니다.`);
-                navigate("/storeListMain");
-            })
-            .catch(err=>{
+        .then(res=> {
+            console.log(res);
+            alert(`${store.storeName} 등록이 완료되었습니다.`);
+            navigate("/storeListMain");
+        })
+        .catch(err=>{
+                console.log(store);
                 console.log(err.response.data);
             })
     }
@@ -97,7 +81,24 @@ const AddStoreMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd></m.TableInfoTd>
+                        <m.TableInfoTd>
+                        <h.TimePickerPeriodWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <TimePicker
+                                value={store.storeOpenTime}
+                                onChange={(time) => setStore({ ...store, ['storeOpenTime']: time })}
+                                className="CustomPicker"
+                                format='HH:mm'
+                            /><div>~</div>
+                            <TimePicker
+                                value={store.storeCloseTime}
+                                onChange={(time) => setStore({ ...store, ['storeCloseTime']: time })}
+                                className="CustomPicker"
+                                format='HH:mm'
+                            />
+                        </LocalizationProvider>
+                        </h.TimePickerPeriodWrap>
+                        </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
@@ -106,49 +107,57 @@ const AddStoreMain = ()=>{
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
-                        {/* <Datepicker
-                                    value={store.contractDate}
-                                    onChange={(date) => setStore({ ...store, ['contractDate']: date })}
-                                    className="flowbite-datepicker"
-                                    showTodayButton={true}
-                                    showClearButton={true}
-                                    dateFormat="yyyy-MM-dd"
-                                    /> */}
+                        <h.DatePickerWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={store.contractDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractDate']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </h.DatePickerWrap>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
-                        {/* <Datepicker
+                        <h.DatePickerPeriodWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
                                 value={store.contractPeriodStart}
-                                onChange={(date) => setStore({ ...store, ['contractPeriodStart']: date })}
-                                className="flowbite-datepicker"
-                                showTodayButton={true}
-                                showClearButton={true}
-                                dateFormat="yyyy-MM-dd"
-                                />
-                                <div>~</div>
-                                <Datepicker
-                                locale={ko}
-                                formatDay={(locale, date) =>
-                                    date.toLocaleString("en", { day: "numeric" })
-                                  }
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractPeriodStart']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                            <div>~</div>
+                            <DatePicker
                                 value={store.contractPeriodEnd}
-                                onChange={(date) => setStore({ ...store, ['contractPeriodEnd']: date })}
-                                className="flowbite-datepicker"
-                                showTodayButton={true}
-                                showClearButton={true}
-                                dateFormat="yyyy-MM-dd"
-                                /> */}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractPeriodEnd']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MMdd'
+                            />
+                        </LocalizationProvider>
+                        </h.DatePickerPeriodWrap>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
-                        {/* <DatePicker
-                            value={store.openingDate}
-                            onChange={(date) => setStore({ ...store, ['openingDate']: date })}
-                            /> */}
+                        <h.DatePickerWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={store.openingDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['openingDate']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </h.DatePickerWrap>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>

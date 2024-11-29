@@ -6,16 +6,14 @@ import {
 
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Datepicker } from "flowbite-react";
-import { StyledButton } from "../styledcomponent/button.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
 import { useState, useEffect, useMemo } from "react";
 import { axiosInToken } from '../../config.js';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai/react';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { enUS, ko } from 'date-fns/locale';
+import {ko} from 'date-fns/locale/ko';
 
 function ExpenseListByItems() {
   const today = new Date();
@@ -72,15 +70,6 @@ function ExpenseListByItems() {
       })
 
   }
-  const customKoLocale = {
-    ...ko,
-    localize: {
-      ...ko.localize,
-      ...ko.localize,
-      day: enUS.localize.day, // 요일(일, 월 등)만 영어 로케일 사용
-      date: enUS.localize.date, // 날짜(1, 2, 3 등)도 영어 로케일 사용
-    },
-  };
 
   //console.log(summaryByMajor);
   //console.log(orderItemSummary);
@@ -203,15 +192,13 @@ function ExpenseListByItems() {
     <CommonWrapper>
       <CommonContainer size="1500px">
         <ContainerTitleArea><h2>지출내역</h2></ContainerTitleArea>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={['DatePicker', 'DatePicker']}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko} >
         <DatePicker
           label="Controlled picker"
           showDaysOutsideCurrentMonth
           value={value}
           onChange={(newValue) => setValue(newValue)}
         />
-      </DemoContainer>
     </LocalizationProvider>
         
         

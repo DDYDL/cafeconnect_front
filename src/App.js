@@ -231,7 +231,7 @@ function App() {
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         <Route exact path="/noticeModal" element={<NoticeModal/>}/>
         <Route exact path="/askListMain" element={<AskListMain/>}/>
-        <Route exact path="/askDetailMain" element={<AskDetailMain />} />
+        <Route exact path="/askDetailMain/:askNum" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
         <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
 

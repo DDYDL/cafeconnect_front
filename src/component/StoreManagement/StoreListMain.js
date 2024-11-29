@@ -19,7 +19,7 @@ const StoreListMain = ()=>{
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
-        if(token!=null && token!=='')  submit(1);
+        if(token!=null && token!=='')  select(1);
     }, [token])
     
     const regionPart = (address)=>{
@@ -31,7 +31,7 @@ const StoreListMain = ()=>{
         return region;
     }
     
-    const submit = (page) => {
+    const select = (page) => {
         axiosInToken(token).get(`storeListMain?page=${page}&type=${type}&keyword=${keyword}`)
             .then(res=> {
                 let pageInfo = res.data.pageInfo;
@@ -47,13 +47,13 @@ const StoreListMain = ()=>{
     }
 
     const search = () => {
-        submit(1);
+        select(1);
     }
 
     const searchRegion = (selectedValue) => {
         setType("storeAddress");
         setKeyword(selectedValue);
-        submit(1);
+        select(1);
       };
 
     const searchName = (e) => {

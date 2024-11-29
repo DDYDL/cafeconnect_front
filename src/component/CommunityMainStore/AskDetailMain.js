@@ -1,9 +1,40 @@
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
+// 로그인 토큰
+import { axiosInToken} from '../../config.js'
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom } from '../../atoms';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 
+import { format } from "date-fns";
+
 const AskDetailMain = ()=>{
+    const token = useAtomValue(tokenAtom);
+    const {askNum} = useParams();
+    const [ask, setAsk] = useState({});
+
+    useEffect(()=> {
+        // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
+        if(token!=null && token!=='')  select();
+    }, [token])
+
+    const select = () => {
+        axiosInToken(token).get(`askDetailMain/${askNum}`)
+            .then(res=> {
+                console.log(res.data)
+                let resAsk = res.data.ask;
+                setAsk({...resAsk});
+            })
+    }
+
+    const edit = (e) => {
+        setAsk({ ...ask, ['askAnswer']: e.target.value });
+        console.log(ask);
+    }
+
     return (
         <>
             <s.ContentListDiv>
@@ -14,11 +45,11 @@ const AskDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>문의유형</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>상품문의</m.TableInfoTd>
+                        <m.TableInfoTd>{ask.askType}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>제목</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>판매상품 재고문의</m.TableInfoTd>
+                        <m.TableInfoTd>{ask.askTitle}</m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
@@ -28,11 +59,11 @@ const AskDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>작성일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>2024.10.23</m.TableInfoTd>
+                        <m.TableInfoTd>{ask.askDate}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>지점명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>독산역점</m.TableInfoTd>
+                        <m.TableInfoTd>{ask.storeName}</m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
@@ -44,7 +75,7 @@ const AskDetailMain = ()=>{
                         <m.TableInfoTd><m.TableTitleSpan>문의내용</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd>대량주문 하려고 하는데 콜라보 컵홀더 추가재고 입고 날짜나 따로 현재 재고보다 넘게 주문 가능한지 된다면 언제쯤 받을 수 있는지 궁금합니다.</m.TableInfoTd>
+                        <m.TableInfoTd>{ask.askContent}</m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
@@ -55,7 +86,7 @@ const AskDetailMain = ()=>{
                         <m.TableInfoTd><m.TableTitleSpan>답변</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><s.InputStyle width='800px' type='text'/></m.TableInfoTd>
+                        <m.TableInfoTd><s.InputStyle width='800px' type='text' value={ask.askAnswer} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>

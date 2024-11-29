@@ -1,11 +1,12 @@
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
-import {useParams} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+// 로그인 토큰
 import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
+import {useParams} from 'react-router-dom';
+import {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 
@@ -41,7 +42,6 @@ const StoreDetailMain = ()=>{
     }, [token])
 
     const select = () => {
-        console.log(token)
         axiosInToken(token).get(`storeDetailMain/${storeCode}`)
             .then(res=> {
                 console.log(res.data)
