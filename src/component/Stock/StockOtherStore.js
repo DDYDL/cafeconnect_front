@@ -3,12 +3,48 @@ import * as s from '../styles/StyledStore.tsx';
 import { Input } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { url } from '../../config.js';
 
 const StockOrderStore = () => {
     const navigate = useNavigate();
+    const [itemList, setItemList] = useState([]);
+    const [itemName, setItemName] = useState("");
 
-    const selectItem = ()=>{
-        navigate("/stockOtherStoreItem");
+    useEffect(()=>{
+        setItemList([]);
+        setItemName("");
+        getItemList();
+    }, [])
+
+    const getItemList = ()=>{
+        axios.get(`${url}/selectItemList`)
+        .then(res=>{
+            console.log(res.data);
+            setItemList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
+    const searchKeyword = (itemName)=>{
+        console.log(itemName);
+        axios.get(`${url}/selectItemByName/${itemName}`)
+        .then(res=>{
+            console.log(res.data);
+            setItemList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
+    const selectItem = (itemCode, itemName)=>{
+        navigate("/stockOtherStoreItem", {state: {"itemCode":itemCode, "itemName":itemName}});
     }
 
     return (
@@ -17,7 +53,7 @@ const StockOrderStore = () => {
                 <s.MainTitleText>타매장재고조회</s.MainTitleText>
                 <s.SearchButtonDiv>
                     <s.SearchDiv>
-                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="상품을 검색해주세요" />
+                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>searchKeyword(itemName)}/>} label="상품명 검색" onChange={(e)=>setItemName(e.target.value)}/>
                     </s.SearchDiv>
                 </s.SearchButtonDiv>
 
@@ -25,41 +61,17 @@ const StockOrderStore = () => {
                     <s.TableListThead><s.TableTextTh>상품정보</s.TableTextTh><s.TableTextTh>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
                         <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></s.TableListThead>
                     <tbody>
-                        <s.TableTextTr onClick={selectItem}>
-                            <s.TableTextTd><img src="/logo.svg" /><span>01542</span><br /><span>(원두)코소롱블랜드(1Kg*12)/Box</span></s.TableTextTd>
-                            <s.TableTextTd>커피자재/원두/카페인</s.TableTextTd>
-                            <s.TableTextTd>1kg*12/Box</s.TableTextTd>
-                            <s.TableTextTd>상온/식품</s.TableTextTd>
-                            <s.TableTextTd>150.000</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={selectItem}>
-                            <s.TableTextTd><img src="/logo.svg" /><span>01542</span><br /><span>(원두)코소롱블랜드(1Kg*12)/Box</span></s.TableTextTd>
-                            <s.TableTextTd>커피자재/원두/카페인</s.TableTextTd>
-                            <s.TableTextTd>1kg*12/Box</s.TableTextTd>
-                            <s.TableTextTd>상온/식품</s.TableTextTd>
-                            <s.TableTextTd>150.000</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={selectItem}>
-                            <s.TableTextTd><img src="/logo.svg" /><span>01542</span><br /><span>(원두)코소롱블랜드(1Kg*12)/Box</span></s.TableTextTd>
-                            <s.TableTextTd>커피자재/원두/카페인</s.TableTextTd>
-                            <s.TableTextTd>1kg*12/Box</s.TableTextTd>
-                            <s.TableTextTd>상온/식품</s.TableTextTd>
-                            <s.TableTextTd>150.000</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={selectItem}>
-                            <s.TableTextTd><img src="/logo.svg" /><span>01542</span><br /><span>(원두)코소롱블랜드(1Kg*12)/Box</span></s.TableTextTd>
-                            <s.TableTextTd>커피자재/원두/카페인</s.TableTextTd>
-                            <s.TableTextTd>1kg*12/Box</s.TableTextTd>
-                            <s.TableTextTd>상온/식품</s.TableTextTd>
-                            <s.TableTextTd>150.000</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={selectItem}>
-                            <s.TableTextTd><img src="/logo.svg" /><span>01542</span><br /><span>(원두)코소롱블랜드(1Kg*12)/Box</span></s.TableTextTd>
-                            <s.TableTextTd>커피자재/원두/카페인</s.TableTextTd>
-                            <s.TableTextTd>1kg*12/Box</s.TableTextTd>
-                            <s.TableTextTd>상온/식품</s.TableTextTd>
-                            <s.TableTextTd>150.000</s.TableTextTd>
-                        </s.TableTextTr>
+                        {
+                            itemList.map(item=>(
+                                <s.TableTextTr key={item.itemCode} onClick={()=>selectItem(item.itemCode, item.itemName)}>
+                                    <s.TableTextTd><img src="/${item.itemFileNum}" /><span>{item.itemCode}</span><br/><span>{item.itemName}</span></s.TableTextTd>
+                                    <s.TableTextTd>{item.itemMajorCategoryName}/{item.itemMiddleCategoryName}/{item.itemSubCategoryName}</s.TableTextTd>
+                                    <s.TableTextTd>{item.itemCapacity}*{item.itemUnitQuantity}/{item.itemUnit}</s.TableTextTd>
+                                    <s.TableTextTd>{item.itemStorage}</s.TableTextTd>
+                                    <s.TableTextTd>{item.itemPrice}</s.TableTextTd>
+                                </s.TableTextTr>
+                            ))
+                        }
                     </tbody>
                 </s.TableList>
             </s.ContentListDiv>
