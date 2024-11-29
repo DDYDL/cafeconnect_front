@@ -58,13 +58,13 @@ const StockOrderStore = () => {
                 </s.SearchButtonDiv>
 
                 <s.TableList>
-                    <s.TableListThead><s.TableTextTh>상품정보</s.TableTextTh><s.TableTextTh>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
+                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
                         <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></s.TableListThead>
                     <tbody>
                         {
                             itemList.map(item=>(
                                 <s.TableTextTr key={item.itemCode} onClick={()=>selectItem(item.itemCode, item.itemName)}>
-                                    <s.TableTextTd><img src="/${item.itemFileNum}" /><span>{item.itemCode}</span><br/><span>{item.itemName}</span></s.TableTextTd>
+                                    <s.TableTextTd><s.ImageSize src={`${url}/image/${item.itemFileNum}`}/><span style={{verticalAlign:'middle'}}>{item.itemCode}</span><br/><span style={{paddingTop:'20px'}}>{item.itemName}</span></s.TableTextTd>
                                     <s.TableTextTd>{item.itemMajorCategoryName}/{item.itemMiddleCategoryName}/{item.itemSubCategoryName}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemCapacity}*{item.itemUnitQuantity}/{item.itemUnit}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemStorage}</s.TableTextTd>
