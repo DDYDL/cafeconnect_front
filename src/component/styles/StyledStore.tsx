@@ -98,7 +98,7 @@ export const MenuBarDiv = styled.div`
     text-align:center;
     margin-top:580px;
     margin-bottom:50px;
-    background-color:rgba(255, 255, 255, 1.0);
+    background-color:rgba(255, 255, 255, 1);
 `;
 
 export const MenuBarLinkDiv = styled.div<Container>`
@@ -180,8 +180,8 @@ export const TableTextTh = styled.th<Container>`
     vertical-align:middle;
 `;
 
-export const TableTextTd = styled.td`
-    width:100px;
+export const TableTextTd = styled.td<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
     height:60px;
     font-size:14px;
     padding-left:20px;
@@ -342,4 +342,36 @@ export const InputStyleSearch = styled(Input)`
     border-radius:5px;
     background-color:rgb(255, 255, 255);
     height:40px;
+`;
+
+export const AutoSearchContainer = styled.div`
+    z-index: 3;
+    height: 100px;
+    width: 630px;
+    background-color: rgba(255, 255, 255, 1.0);
+    position: absolute;
+    top: 350px;
+    border: 1px solid rgba(234, 234, 234, 1);
+    border-radius: 0 0 5px 5px;
+    padding: 10px;
+    overflow: scroll;
+    scrollbar-width:thin;
+    overflow-x:hidden;
+`;
+
+export const AutoSearchWrap = styled.ul`
+
+`;
+
+export const AutoSearchData = styled.li`
+    padding: 10px 12px;
+    width: 100%;
+    font-size:14px;
+    z-index:4;
+    letter-spacing:1.5px;
+    &:hover {
+        background-color: rgba(234, 234, 234, 1);
+        cursor: pointer;
+    }
+    position: relative;
 `;
