@@ -4,110 +4,111 @@ import {
   ContainerTitleArea,
 } from "../styledcomponent/common.tsx";
 import * as w from "../styledcomponent/wishItem.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Select, Option } from "@material-tailwind/react";
+import { useAtomValue} from 'jotai/react';
+import { tokenAtom, memberAtom } from '../../atoms';
+import { axiosInToken } from '../../config.js';
+
 
 function WishItem() {
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState({
-    large: '',
-    medium: '',
-    small: ''
-});
+  const token = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
+  
 
-  const items = [
-    {
-      itemCode: 1,
-      name: "에티오피아 코케허니 G1스페셜티",
-      imageUrl: "/image/item1.jpg",
-      price: "11,500원",
-      bgColor: "#45b0da",
-      storageType: "냉동",
-    },
-    {
-      itemCode: 2,
-      name: "달보드레 블랜드",
-      imageUrl: "/image/item2.jpg",
-      price: "8,500원",
-    },
-    {
-      itemCode: 3,
-      name: "에티오피아 예가체프 G2",
-      imageUrl: "/image/item3.jpg",
-      price: "22,000원",
-      bgColor: "#45b0da",
-      storageType: "냉동",
-    },
-  ];
-  const categoryOptions = {
-    large: [
-      { value: 'coffee', label: '커피' },
-      { value: 'tea', label: '차' },
-      { value: 'beverage', label: '음료' }
-    ],
-    medium: {
-      coffee: [
-        { value: 'bean', label: '원두' },
-        { value: 'ground', label: '분쇄' },
-        { value: 'capsule', label: '캡슐' }
-      ],
-      tea: [
-        { value: 'loose', label: '잎차' },
-        { value: 'teabag', label: '티백' }
-      ],
-      beverage: [
-        { value: 'syrup', label: '시럽' },
-        { value: 'powder', label: '파우더' }
-      ]
-    },
-    small: {
-      bean: [
-        { value: 'ethiopia', label: '에티오피아' },
-        { value: 'brazil', label: '브라질' },
-        { value: 'colombia', label: '콜롬비아' }
-      ],
-      ground: [
-        { value: 'fine', label: '극세분' },
-        { value: 'medium', label: '중간분쇄' }
-      ]
+  // 요청 받아 올 배열
+  const [wishItems,setWishItems] = useState([]);
+  const [allCategories,setAllCategories] = useState([]);
+  const [categoryOptions,setCategoryOptions] = useState({major:[],middle:{},sub:{}});
+ 
+  //선택되면 담아 질 배열
+  const [selectedItems, setSelectedItems] = useState([]);
+  
+  const [selectAll, setSelectAll] = useState(false);
+  
+  const [selectedCategory, setSelectedCategory] = useState({major: '',middle: '',sub: ''}); //majorNum,middleNum,subNum
+  
+  useEffect(() => {
+    axiosInToken(token).get('shopCategory')
+    .then(res => {
+     setAllCategories(res.data); 
+    })
+    .catch(err => {
+      console.log(err);
+    })   
+    submit();
       
+  },[token]) 
+
+  const submit =()=>{
+    const formData = new FormData();
+    formData.append("storeCode", store.storeCode);
+
+    if(selectedCategory.major!=null) {
+      formData.append("majorNum",selectedCategory.major);
     }
-  };
+    if(selectedCategory.middle!=null) {
+      formData.append("middleNum",selectedCategory.middle);
+    }
+    if(selectedCategory.sub!=null) {
+      formData.append("subNum",selectedCategory.sub);
+    }
+
+    axiosInToken(token).post('wishItem', formData)
+    .then(res => {
+      setWishItems([...res.data]);
+     
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+  }
+  
+
+
  // 옵션 변경 
  const handleCategoryChange = (level, value) => {
+      
   setSelectedCategory(prev => {
-    const newCategory = { ...prev, [level]: value };
+      const newCategory = { ...prev, [level]: value };
     // 상위 카테고리가 변경되면 하위 카테고리 초기화
-    if (level === 'large') {
-      newCategory.medium = '';
-      newCategory.small = '';
-    } else if (level === 'medium') {
-      newCategory.small = '';
+    if (level === 'major') {
+      newCategory.middle = '';
+      newCategory.sub = '';
+    } else if (level === 'middle') {
+      newCategory.sub = '';
     }
     return newCategory;
   });
 };
 
-  //삭제하기위한 선택옵션
+  //전체 선택 체크 제어하기 위한 함수 
   const handleSelectAll = () => {
+    
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(items.map((item) => item.itemCode));
+      setSelectedItems(wishItems.map((item) => item.itemCode));
     }
+    
     setSelectAll(!selectAll);
   };
 
+  //개별 체크 선택 제어하기 위한 함수 
   const handleSelectItem = (itemCode) => {
-    if (selectedItems.includes(itemCode)) {
+    
+    // 개별 선택했다면~
+    if (selectedItems.includes(itemCode)) {  
       setSelectedItems(selectedItems.filter((id) => id !== itemCode));
       setSelectAll(false);
+    
+      //선택 안된 경우 
     } else {
       setSelectedItems([...selectedItems, itemCode]);
-      if (selectedItems.length + 1 === items.length) {
+      if (selectedItems.length + 1 === wishItems.length) {
         setSelectAll(true);
       }
     }
@@ -118,6 +119,16 @@ function WishItem() {
   };
 
   const handleAddToCart = (itemCode) => {
+    axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=1`)
+    .then(res => {
+      if(res.data !=null){
+        console.log('장바구니 등록 성공!');
+      } 
+    })
+    .catch(err => {
+      console.log(err);
+    })   
+
     console.log(`장바구니에 추가: 상품 ${itemCode}, 수량 1`);
   };
 
@@ -133,11 +144,11 @@ function WishItem() {
               <Select
                 variant="outlined"
                 label="대분류"
-                value={selectedCategory.large}
-                onChange={(value) => handleCategoryChange('large', value)}
+                value={selectedCategory.major}
+                onChange={(value) => handleCategoryChange('major', value)}
                 className="bg-white"
               >
-                {categoryOptions.large.map((option) => (
+                {categoryOptions.major.map((option) => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
                   </Option>
@@ -149,13 +160,13 @@ function WishItem() {
               <Select
                 variant="outlined"
                 label="중분류"
-                value={selectedCategory.medium}
-                onChange={(value) => handleCategoryChange('medium', value)}
-                disabled={!selectedCategory.large}
+                value={selectedCategory.middle}
+                onChange={(value) => handleCategoryChange('middle', value)}
+                disabled={!selectedCategory.major}
                 className="bg-white"
               >
-                {selectedCategory.large && 
-                  categoryOptions.medium[selectedCategory.large]?.map((option) => (
+                {selectedCategory.major && 
+                  categoryOptions.middle[selectedCategory.major]?.map((option) => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
                     </Option>
@@ -167,13 +178,13 @@ function WishItem() {
               <Select
                 variant="outlined"
                 label="소분류"
-                value={selectedCategory.small}
-                onChange={(value) => handleCategoryChange('small', value)}
-                disabled={!selectedCategory.medium}
+                value={selectedCategory.sub}
+                onChange={(value) => handleCategoryChange('sub', value)}
+                disabled={!selectedCategory.middle}
                 className="bg-white"
               >
-                {selectedCategory.medium && 
-                  categoryOptions.small[selectedCategory.medium]?.map((option) => (
+                {selectedCategory.middle && 
+                  categoryOptions.sub[selectedCategory.middle]?.map((option) => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
                     </Option>
@@ -183,7 +194,7 @@ function WishItem() {
           </w.FilterWrapper>
           <w.CountWrapper>
             <span className="all_counter">
-              총<span className="numbering">{items.length}</span>개
+              총<span className="numbering">{wishItems.length}</span>개
             </span>
           </w.CountWrapper>
 
@@ -192,8 +203,8 @@ function WishItem() {
               <input
                 type="checkbox"
                 id="check-all"
-                checked={selectAll}
-                onChange={handleSelectAll}
+                checked={selectAll} //true,false
+                onChange={handleSelectAll} 
               />
               <label htmlFor="check-all">전체 선택</label>
             </w.CheckWrap>
@@ -201,16 +212,17 @@ function WishItem() {
               size="sm"
               theme="white"
               onClick={handleDelete}
-              disabled={selectedItems.length === 0}
+              disabled={selectedItems.length === 0} //삭제할 상품 없으면 disalbe
             >
               삭제
             </StyledButton>
           </w.WishtemDeleteWrapper>
 
           <w.ItemListUl>
-            {items.map((item) => (
+            {wishItems.map((item) => (
               <w.ItemListLi key={item.itemCode}>
                 <w.ItemListChekcWrap>
+                  {/* 개별 체크박스 */}
                   <input
                     type="checkbox"
                     checked={selectedItems.includes(item.itemCode)}
@@ -218,15 +230,15 @@ function WishItem() {
                   />
                 </w.ItemListChekcWrap>
                 <w.ItemListImg>
-                  <img src={item.imageUrl} alt={item.name} />
+                  <img src='/image/item3.jpg' alt={item.itemFileNum} />
                 </w.ItemListImg>
                 <w.ItemListTextBox>
-                  <w.ItemTitle>{item.name}</w.ItemTitle>
-                  <w.ItemPrice>{item.price}</w.ItemPrice>
-                  {item.storageType && (
+                  <w.ItemTitle>{item.itemName}</w.ItemTitle>
+                  <w.ItemPrice>{item.itemPrice.toLocaleString()}원</w.ItemPrice>
+                  {item.itemStorage && (
                     <w.ItemStorageLabelP>
-                      <w.ItemStorageType storageType={item.storageType}>
-                        {item.storageType}
+                      <w.ItemStorageType storageWay="{item.itemStorage}">
+                        {item.itemStorage}
                       </w.ItemStorageType>
                     </w.ItemStorageLabelP>
                   )}
