@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
 import * as m from '../styles/StyledMypage.tsx';
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';

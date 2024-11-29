@@ -2,13 +2,77 @@ import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input, Button, Dialog, IconButton, Typography, DialogBody, DialogHeader, DialogFooter } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import axios from 'axios';
+import { url } from '../../config.js';
+import { useAtom } from 'jotai/react';
+import { memberAtom } from '../../atoms.js';
 
 const MyStoreManage = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
+
+    const [storeList, setStoreList] = useState([]);
+    const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
+
+    // Jotai의 member 가져오기
+    const [member, setMember] = useAtom(memberAtom);
+
+    useEffect(()=>{
+        setStoreList([]);
+        setMember(member);
+        getStoreList();
+    }, [])
+
+    const getStoreList = ()=>{
+        axios.get(`${url}/selectStoreList/${member.username}`)
+        .then(res=>{
+            console.log(res.data);
+            setStoreList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
+    const addStore = (e)=>{
+        const formData = new FormData();
+        formData.append("storeCode", store.storeCode);
+        formData.append("storeName", store.storeName);
+        e.preventDefault();
+        
+        axios.post(`${url}/addStore`, formData)
+        .then(res=>{
+            if(res.data === "true") {
+                console.log(res.data);
+                alert("가맹점이 추가 되었습니다.");
+                setStoreList([...storeList, formData]);
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
+    const deleteStore = (storeCode)=>{
+        axios.get(`${url}/deleteStore/${storeCode}`)
+        .then(res=>{
+            if(res.data === "true") {
+                console.log(res.data);
+                alert("가맹점 삭제신청이 되었습니다.");
+                // 삭제 신청된 가맹점은 삭제 버튼 없애기
+                setStoreList(storeList.map(store=>(store.storeCode===storeCode ? {...store, storeStatus:"request"} : store)));
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
     return (
         <>
             <s.ContentListDiv width='800px' marginLeft='580px'>
@@ -17,25 +81,21 @@ const MyStoreManage = () => {
                     <s.ButtonStyle><Link onClick={handleOpen}>가맹점 추가</Link></s.ButtonStyle>
                 </s.SearchButtonDiv>
 
-                <m.AlarmDiv height='120px' marginTop='10px'>
-                    <m.StoreButtonDiv>
-                        <s.ButtonStyle width='70px'><Link to="/">삭제 신청</Link></s.ButtonStyle>
-                    </m.StoreButtonDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan>Kosta커피 독산역점</m.AlarmSpan></m.AlarmInnerDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>서울 금천구 독산동 986-13(세림상가, 2층)</m.AlarmSpan></m.AlarmInnerDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>02)471-2087</m.AlarmSpan></m.AlarmInnerDiv>
-                </m.AlarmDiv>
-                <m.AlarmDiv height='120px' marginTop='10px'>
-                    <m.StoreButtonDiv>
-                        <s.ButtonStyle width='70px'><Link to="/">삭제 신청</Link></s.ButtonStyle>
-                    </m.StoreButtonDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan>Kosta커피 독산역점</m.AlarmSpan></m.AlarmInnerDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>서울 금천구 독산동 986-13(세림상가, 2층)</m.AlarmSpan></m.AlarmInnerDiv>
-                    <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>02)471-2087</m.AlarmSpan></m.AlarmInnerDiv>
-                </m.AlarmDiv>
+                {
+                    storeList.map(store=>(
+                        <m.AlarmDiv height='120px' marginTop='10px'>
+                            <m.StoreButtonDiv>
+                                {store.storeStatus==='active' ? <s.ButtonStyle width='70px'><Link onClick={()=>deleteStore(store.storeCode)}>삭제 신청</Link></s.ButtonStyle>:<></>}
+                            </m.StoreButtonDiv>
+                            <m.AlarmInnerDiv><m.AlarmSpan>{store.storeName}</m.AlarmSpan></m.AlarmInnerDiv>
+                            <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>{store.storeAddress}</m.AlarmSpan></m.AlarmInnerDiv>
+                            <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>{store.storePhone}</m.AlarmSpan></m.AlarmInnerDiv>
+                        </m.AlarmDiv>
+                    ))
+                }
             </s.ContentListDiv>
 
-            <Dialog size="xs" open={open} handler={handleOpen} className="p-4">
+            <Dialog size="s" open={open} handler={handleOpen} className="p-4">
                 <DialogHeader className="relative m-0 block">
                     가맹점 추가
                     <IconButton
