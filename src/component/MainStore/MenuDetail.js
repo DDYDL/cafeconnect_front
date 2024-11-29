@@ -4,9 +4,13 @@ import styles from '../styles/MenuDetail.module.css'
 import { useNavigate,useParams } from 'react-router';
 import { useState,useEffect } from 'react';
 import axios from 'axios';
+import { axiosInToken } from '../../config.js';
+import { useAtomValue } from "jotai/react";
+import { tokenAtom } from "../../atoms";
+
 function MenuDetail() {
 
-
+    const token = useAtomValue(tokenAtom);
     const [menu,setMenu] = useState({
         'menuCode' : '',
         'menuName' : '',
@@ -23,34 +27,30 @@ function MenuDetail() {
         'menuCategoryName' : '',
         'imageUrl' : '',
     })
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    
     const {menuCode} = useParams();
     const navigate = useNavigate();
     const fetchData = async () => {
         try {
-          setLoading(true); 
+          
           const response = await axios.get(`http://localhost:8080/selectMenuByMenuCode/${menuCode}`); 
           setMenu(response.data); 
           console.log(response.data);
         } catch (error) {
-          setError(error); 
-        } finally {
-          setLoading(false); 
-        }
+          alert('해당하는 메뉴가 없습니다')
+          navigate('/mainMenuList')
+        } 
       };
     const deleteData = async () => {
         try {
           
-          const response = await axios.get(`http://localhost:8080/deleteMenu/${menuCode}`); 
+          await axios.get(`http://localhost:8080/deleteMenu/${menuCode}`); 
           navigate('/mainMenuList')
           
         } catch (error) {
-          setError(error); 
-        } finally {
-          
-          alert('메뉴 삭제에 실패하였습니다'); 
-        }
+            alert('메뉴 삭제에 실패하였습니다'); 
+            navigate('/mainMenuList')
+        } 
     };
     
 
@@ -63,12 +63,15 @@ function MenuDetail() {
     }
 
     useEffect(()=>{
+        
         fetchData();
     },[])
 
 
+    if(token !== ""){
+       
 
-    return (
+        return (
         <>
             <m.CarouselDiv>
                 <input type="hidden" id="anPageName" name="page" value="MenuDetail" />
@@ -109,6 +112,12 @@ function MenuDetail() {
                                         {menu.menuName}
                                     </div>
                                     <div className={`${styles['table-body']} ${styles['notosanskr-medium-black-16px']}`}>
+                                    <div className={styles['table-body-item']}>
+                                            <div className={`${styles['data']} ${styles['valign-text-middle']}`}>메뉴코드</div>
+                                            <div className={styles['data-4']} style={{"width":"250px"}}>
+                                                <div className={`${styles['text-18']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.menuCode}</div>
+                                            </div>
+                                        </div>
                                         <div className={styles['table-body-item']}>
                                             <div className={`${styles['data']} ${styles['valign-text-middle']}`}>메뉴명</div>
                                             <div className={styles['data-4']} style={{"width":"250px"}}>
@@ -175,11 +184,13 @@ function MenuDetail() {
                                                 <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.protein}</div>
                                             </div>
                                         </div>
-                                        <div className={styles['table-body-item']}>
-                                            <div className={styles['data-6']}>
-                                                <div className={`${styles['text-21']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-black-16px']}`}>-</div>
+                                        <div className={`${styles['table-body-item']} ${styles['notosanskr-medium-black-16px']}`}>
+                                            <div className={`${styles['data-2']} ${styles['valign-text-middle']}`}>상태</div>
+                                            <div className={styles['data-3']} style={{"width":"250px"}}>
+                                                <div className={`${styles['x20mg']} ${styles['valign-text-middle']}`} style={{"width":"250px"}}>{menu.menuStatus}</div>
                                             </div>
                                         </div>
+                                        
                                         <div className={styles['table-body-item']}></div>
                                     </div>
                                 </div>
@@ -197,7 +208,7 @@ function MenuDetail() {
                                         </div>
                                     </div>
                                     <div className={styles['frame-98']}>
-                                        <div className={`${styles['text-15']} ${styles['valign-text-middle']}`}>{`${menu.menuCategoryName}/`}</div>
+                                        <div className={`${styles['text-15']} ${styles['valign-text-middle']}`}>{`${menu.menuCategoryName}`}</div>
                                     </div>
                                 </div>
                                 <div className={styles['frame-100']}>
@@ -265,7 +276,10 @@ function MenuDetail() {
                 </div>
             </m.CarouselDiv>
         </>
-    )
+    )}else{
+        
+        navigate('/loginStore')
+    }
 }
 
 export default MenuDetail

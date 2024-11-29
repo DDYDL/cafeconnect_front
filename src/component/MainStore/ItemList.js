@@ -38,7 +38,7 @@ function ItmListCopy() {
   const navigate = useNavigate()
   const handleNavigate = (index) => () => {
     const page = pageList[index]
-    navigate(`/${page.itemCode}`)
+    navigate(`/mainItemDetail/${page.itemCode}`)
   }
 
   const handleChangeKeyword = (e) => {
@@ -103,7 +103,7 @@ function ItmListCopy() {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`);
-
+      
 
       setCurrentPage(response.data.pageable.pageNumber)
       

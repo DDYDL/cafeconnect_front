@@ -35,7 +35,7 @@ function MenuList() {
   const handleNavigate = (index) => () => {
     const page = pageList[index]
     
-    navigate(`/${page.menuCode}`)
+    navigate(`/mainMenuDetail/${page.menuCode}`)
   }
 
   const handleChangeKeyword = (e) => {
@@ -48,7 +48,7 @@ function MenuList() {
 
   const handleChangeCategory = (value) => {
 
-    console.log(value)
+    
     setCategory(value)
 
     setUsingKeyword(false)
