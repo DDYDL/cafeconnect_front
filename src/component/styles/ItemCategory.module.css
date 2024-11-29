@@ -548,13 +548,15 @@
   display: flex;
   margin-top: 1px;
   min-width: 1000px;
+  min: height 416px;
+  height: 100%;
 }
 
 .ItemCategory .view {
   border-color: var(--gray-nurse);
   border-right-style: solid;
   border-right-width: 1px;
-  height: 414px;
+  height: 100%;
   position: relative;
   width: 334px;
 }
