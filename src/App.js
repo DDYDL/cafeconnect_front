@@ -82,6 +82,8 @@ import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 import { alarmsAtom, fcmTokenAtom, memberAtom } from './atoms.js';
 import { useAtom, useSetAtom } from 'jotai/react';
 import { firebaseReqPermission, registerServiceWorker } from './firebaseconfig.js';
+import { url } from './config.js';
+import axios from 'axios';
 
 function App() {
   const [path, setPath] = useState(false);
@@ -107,12 +109,30 @@ function App() {
     // 로그인 페이지는 헤더 안 보이게 하기
     if(location.pathname === 'loginStore' && path) setPath(false);
     else if(location.pathname !== 'loginStore' && !path) setPath(true);
+    getCategory();
   }, []);
 
   // alarm state 변수가 바뀔 때마다 alarm이 빈 객체가 아니면 Jotai의 alarms 알람 리스트에 새로운 알람 하나 추가
   useEffect(()=>{
     JSON.stringify(alarm)!=="{}" && setAlarms([...alarms, alarm]);
   }, [alarm]);
+
+  const [majorCategory, setMajorCategory] = useState([]);
+  const [middleCategory, setMiddleCategory] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
+  const getCategory = ()=>{
+    // {"major":{}, "middle":{}, "sub":{}}
+    axios.get(`${url}/selectCategory`)
+    .then(res=>{
+        console.log(res.data);
+        setMajorCategory(res.data.major);
+        setMiddleCategory(res.data.middle);
+        setSubCategory(res.data.sub);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
 
   return (
     <div>
@@ -156,9 +176,8 @@ function App() {
         <Route path='/shopItemDetail/:itemCode' element={<ShopItemDetail/>}/>
         <Route exect path="/expenseList" element={<ExpenseListByItems/>}/>
 
-
         <Route exect path="/stockOrderItemAdd" element={<StockOrderItemAdd/>}/>
-        <Route exect path="/stockManage" element={<StockManage/>}/>
+        <Route exect path="/stockManage" element={<StockManage major={majorCategory} middle={middleCategory} sub={subCategory}/>}/>
         <Route exect path="/stockOtherStore" element={<StockOrderStore/>}/>
         <Route exect path="/stockOtherStoreItem" element={<StockOrderStoreItem/>}/>
 

@@ -24,9 +24,10 @@ export const DatePickerWrap =styled.div`
       button {
         height: 30px;
         color: #333 !important;
-        padding: 0 8px;
+        // padding: 0 4px;
+        
       }
-      
+
     }
 `;
 
