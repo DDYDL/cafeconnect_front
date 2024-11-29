@@ -19,7 +19,7 @@ const StoreListMain = ()=>{
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
-        if(token!=null && token!=='')  submit(1);
+        if(token!=null && token!=='')  select(1);
     }, [token])
     
     const regionPart = (address)=>{
@@ -31,7 +31,7 @@ const StoreListMain = ()=>{
         return region;
     }
     
-    const submit = (page) => {
+    const select = (page) => {
         axiosInToken(token).get(`storeListMain?page=${page}&type=${type}&keyword=${keyword}`)
             .then(res=> {
                 let pageInfo = res.data.pageInfo;
@@ -47,13 +47,13 @@ const StoreListMain = ()=>{
     }
 
     const search = () => {
-        submit(1);
+        select(1);
     }
 
     const searchRegion = (selectedValue) => {
         setType("storeAddress");
         setKeyword(selectedValue);
-        submit(1);
+        select(1);
       };
 
     const searchName = (e) => {
@@ -93,14 +93,14 @@ const StoreListMain = ()=>{
                 </h.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>
-                        <h.TableTextTh width='150px'>지역</h.TableTextTh>
-                        <h.TableTextTh width='120px'>매장명</h.TableTextTh>
+                        <s.TableTextTh width='150px'>지역</s.TableTextTh>
+                        <h.TableTextTh width='150px'>매장명</h.TableTextTh>
                         <h.TableTextTh width='500px'>주소</h.TableTextTh>
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
                         {storeList.map(store=>(
                         <s.TableTextTr key={store.storeCode}>
-                            <h.TableTextTd>{regionPart(store.storeAddress)}</h.TableTextTd >
+                            <s.TableTextTd>{regionPart(store.storeAddress)}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
                             <h.TableTextTd><a href={`/storeDetailMain/${store.storeCode}`}>{store.storeAddress}</a></h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >

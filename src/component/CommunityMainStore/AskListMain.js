@@ -1,16 +1,45 @@
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
+import {useState, useEffect} from 'react';
+import {axiosInToken} from '../../config.js'
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom } from '../../atoms';
 import { Link } from 'react-router-dom';
-import { Input, Select, Option } from "@material-tailwind/react";
-import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale/ko";
+import { ArrowRightIcon, ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router';
 
 const AskListMain = ()=>{
+    const [askList, setAskList] = useState([]);
+    const [pageBtn, setPageBtn] = useState([]);
+    const [pageInfo, setPageInfo] = useState({});
+    const token = useAtomValue(tokenAtom);
     const navigate = useNavigate();
 
-    const askDetail = ()=>{
-        navigate("/askDetailMain");
+    useEffect(()=> {
+        // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
+        if(token!=null && token!=='')  select(1);
+    }, [token])
+
+    const select = (page) => {
+        axiosInToken(token).get(`askListMain?page=${page}`)
+            .then(res=> {
+                let pageInfo = res.data.pageInfo;
+                console.log(res.data.askList)
+                setAskList([...res.data.askList])
+                let page = [];
+                for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+                    page.push(i);
+                }
+                setPageBtn({...page});
+                setPageInfo(pageInfo);
+            })
+    }
+
+    const askDetail = (askNum)=>{
+        navigate(`/askDetailMain/${askNum}`);
     }
 
     return (
@@ -24,61 +53,23 @@ const AskListMain = ()=>{
                 <s.TableList>
                     <s.TableListThead>
                         <s.TableTextTh width='50px'></s.TableTextTh>
-                        <s.TableTextTh width='160px'>분류</s.TableTextTh>
-                        <s.TableTextTh width='300px'>제목</s.TableTextTh>
-                        <s.TableTextTh width='130px'>가맹점명</s.TableTextTh>
-                        <s.TableTextTh width='130px'>작성일</s.TableTextTh>
-                        <s.TableTextTh width='130px'>답변상태</s.TableTextTh>
+                        <h.TableTextTh width='160px'>분류</h.TableTextTh>
+                        <h.TableTextTh width='280px'>제목</h.TableTextTh>
+                        <h.TableTextTh width='130px'>가맹점명</h.TableTextTh>
+                        <h.TableTextTh width='130px'>작성일</h.TableTextTh>
+                        <h.TableTextTh width='130px'>답변상태</h.TableTextTh>
                     </s.TableListThead>
                     <tbody>
-                        <s.TableTextTr onClick={askDetail}>
-                            <s.TableTextTd width='50px'>82</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='300px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
+                    {askList.map(ask=>(
+                        <s.TableTextTr key={ask.askNum} onClick={askDetail}>
+                            <s.TableTextTd width='50px'>{ask.askNum}</s.TableTextTd >
+                            <h.TableTextTd width='160px'>{ask.askType}</h.TableTextTd >
+                            <h.TableTextTd width='300px'>{ask.askTitle}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{ask.storeName}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{format(ask.askDate, 'yyyy.MM.dd', {locale: ko})}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{ask.askStatus}</h.TableTextTd >
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={askDetail}>
-                        <s.TableTextTd width='160px'>81</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={askDetail}>
-                        <s.TableTextTd width='160px'>80</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={askDetail}>
-                        <s.TableTextTd width='160px'>79</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={askDetail}>
-                        <s.TableTextTd width='160px'>78</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={askDetail}>
-                        <s.TableTextTd width='160px'>77</s.TableTextTd>
-                            <s.TableTextTd width='160px'>[상품문의]</s.TableTextTd>
-                            <s.TableTextTd width='500px'>판매상품 재고문의</s.TableTextTd>
-                            <s.TableTextTd width='130px'>독산역점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
+                    ))}
                     </tbody>
                 </s.TableList>
             </s.ContentListDiv>
