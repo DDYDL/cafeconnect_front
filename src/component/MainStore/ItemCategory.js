@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import * as m from "../styles/StyledMain.tsx";
 import frame_300 from "../assets/img/frame-300.svg";
 import plus from "../assets/img/plus-circle-outline.svg";
@@ -6,8 +6,75 @@ import minus from "../assets/img/minus-circle-outline.svg";
 import circle_small from "../assets/img/circle-small.svg";
 import frame_296 from '../assets/img/frame-296.svg';
 import styles from "../styles/ItemCategory.module.css";
+import axios from "axios";
 
 function Category() {
+  const [majorCategoryList, setMajorCategoryList] = useState([])
+  const [middleCategoryList,setMiddleCategoryList] = useState([])
+  const [activeMajorInput, setActiveMajorInput] = useState(false);
+  const [activeMajorCategoryName, setActiveMajorCategoryName] = useState(null);
+  const [activeMajorUpdateInput, setActiveMajorUpdateInput] = useState({
+    name: '',
+    state: false
+  });
+
+  const [middleCategoryForm, setMiddleCategoryForm] = useState(false);
+  const [subCategoryForm, setSubCategoryForm] = useState(false);
+  const handleMajorClick = (index) => () => {
+    const target = majorCategoryList[index]
+    setActiveMajorCategoryName(target.itemCategoryName)
+    setActiveMajorUpdateInput({
+      name:target.itemCategoryName,
+      state:false
+    })
+    setMiddleCategoryForm(true)
+    setSubCategoryForm(false)
+    fetchMiddleData(target.itemCategoryName)
+  }
+  const handleMajorPlusButton = () => {
+    setActiveMajorInput(!activeMajorInput);
+  }
+  const handleMajorUpdate = () => {
+    setActiveMajorUpdateInput({
+      name:activeMajorCategoryName,
+      state:true
+    })
+  }
+
+  const handleMajorSave = () => {
+
+  }
+  const [activeMiddle, setActiveMiddle] = useState(false);
+  const [activeSub, setActiveSub] = useState(false);
+  const fetchData = async () => {
+    try {
+
+      const response = await axios.get(`http://localhost:8080/majorCategoryList`);
+      
+      setMajorCategoryList(response.data);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+  const fetchMiddleData = async (value) => {
+    try {
+
+      const response = await axios.get(`http://localhost:8080/middleCategoryList?itemMajorCategoryName=${value}`);
+      console.log(response.data)
+      setMiddleCategoryList(response.data);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
   return (
     <>
       <m.CarouselDiv>
@@ -17,7 +84,7 @@ function Category() {
           name="page"
           value="ItemCategory"
         />
-        <div className={styles['container-center-horizontal']}>
+        <div className={styles['container-center-horizontal']} >
           <div className={`${styles['ItemCategory']} ${styles['screen']}`}>
             <div className={`${styles['text-18']} ${styles['valign-text-middle']}`}>상품 카테고리 등록</div>
             <div className={styles['frame-container']}>
@@ -41,94 +108,80 @@ function Category() {
               <div className={styles['view']}>
                 <div className={styles['flex-col']}>
                   <div className={styles['frame-308-1']}>
-                    <img className={styles['frame-296']} src={frame_296} alt="Frame 296" />
+                    <div style={{ display: "flex", gap: "5px" }}>
+                      <img src={plus} alt="Frame 296" style={{ cursor: "pointer" }} onClick={handleMajorPlusButton} />
+                      <img src={minus} alt="Frame 296" />
+                    </div>
+
                     <div className={styles['frame-297']}>
-                      <div className={`${styles['small-btn_white']} ${styles['small']}`}>
+                      <div className={`${styles['small-btn_white']} ${styles['small']}`} style={{ cursor: "pointer" }} onClick={handleMajorUpdate}>
                         <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-log-cabin-12px']}`}>
                           수정
                         </div>
                       </div>
-                      <div className={`${styles['small-btn_brown']} ${styles['small']}`}>
+                      <div className={`${styles['small-btn_brown']} ${styles['small']}`} style={{ cursor: "pointer" }} onClick={handleMajorSave}>
                         <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-white-12px']}`}>
                           저장
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className={styles['frame-301']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        커피자재
+
+
+                  {majorCategoryList.map((majorCategory, index) => {
+
+
+                    if ((activeMajorUpdateInput.name !== majorCategory.itemCategoryName) || (activeMajorUpdateInput.name === majorCategory.itemCategoryName && activeMajorUpdateInput.state === false)) {
+                      return <>
+                        <div className={styles['frame-30']} key={index}
+                          onClick={handleMajorClick(index)}
+                          style={activeMajorCategoryName === majorCategory.itemCategoryName ? { "backgroundColor": "#f2878773", cursor: "pointer" } : { cursor: "pointer" }}
+
+                        >
+                          <div className={styles['frame-299']}>
+                            <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
+                              {majorCategory.itemCategoryName}
+                            </div>
+                          </div>
+                          <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
+                        </div>
+                      </>
+                    }
+                    if (activeMajorUpdateInput.name === majorCategory.itemCategoryName && activeMajorUpdateInput.state === true) {
+                      return <>
+                        <div className={styles['input']}>
+                          <div className={`${styles['text-2']} ${styles['valign-text-middle']} ${styles['notosanskr-light-gray-nurse-16px']}`}>
+                            카테고리명 입력
+                          </div>
+                        </div>
+                      </>
+                    }
+
+
+                  })}
+
+                  {activeMajorInput &&
+                    <div className={styles['input']}>
+                      <div className={`${styles['text-2']} ${styles['valign-text-middle']} ${styles['notosanskr-light-gray-nurse-16px']}`}>
+                        카테고리명 입력
                       </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        분말가공
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        시럽
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        차류
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        액체류
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        유가공품
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['frame-30']}>
-                    <div className={styles['frame-299']}>
-                      <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-black-16px']}`}>
-                        유지류
-                      </div>
-                    </div>
-                    <img className={styles['frame-300']} src={frame_300} alt="Frame 300" />
-                  </div>
-                  <div className={styles['input']}>
-                    <div className={`${styles['text-2']} ${styles['valign-text-middle']} ${styles['notosanskr-light-gray-nurse-16px']}`}>
-                      카테고리명 입력
-                    </div>
-                  </div>
+                    </div>}
                 </div>
               </div>
               <div className={styles['view-1']}>
                 <div className={`${styles['flex-col-1']} ${styles['flex-col-4']}`}>
                   <div className={styles['frame-308']}>
-                    <img className={styles['frame-296']} src={frame_296} alt="Frame 296" />
+                    <div style={{ display: "flex", gap: "5px" }}>
+                      <img src={plus} alt="Frame 296" />
+                      <img src={minus} alt="Frame 296" />
+                    </div>
                     <div className={styles['frame-297']}>
-                      <div className={`${styles['small-btn_white']} ${styles['small']}`}>
-                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-log-cabin-12px']}`}>
+                      <div className={`${styles['small-btn_white']} ${styles['small']}`} >
+                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-log-cabin-12px']}`} >
                           수정
                         </div>
                       </div>
-                      <div className={`${styles['small-btn_brown']} ${styles['small']}`}>
+                      <div className={`${styles['small-btn_brown']} ${styles['small']}`} >
                         <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-white-12px']}`}>
                           저장
                         </div>
@@ -169,7 +222,10 @@ function Category() {
               <div className={styles['view-2']}>
                 <div className={styles['view-3']}>
                   <div className={styles['frame-308']}>
-                    <img className={styles['frame-296-1']} src={frame_296} alt="Frame 296" />
+                    <div style={{ display: "flex", gap: "5px" }}>
+                      <img src={plus} alt="Frame 296" />
+                      <img src={minus} alt="Frame 296" />
+                    </div>
                     <div className={styles['frame-297']}>
                       <div className={`${styles['small-btn_white']} ${styles['small']}`}>
                         <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-medium-log-cabin-12px']}`}>
@@ -282,7 +338,7 @@ function Category() {
             </footer>
           </div>
         </div>
-      </m.CarouselDiv>
+      </m.CarouselDiv >
     </>
   );
 }
