@@ -82,17 +82,17 @@ const StockOrderItemAdd = () => {
             </s.SearchButtonDiv>
 
             <s.TableList>
-                    <s.TableListThead><s.TableTextTh></s.TableTextTh><s.TableTextTh>주문번호</s.TableTextTh><s.TableTextTh>주문날짜</s.TableTextTh><s.TableTextTh>상품정보</s.TableTextTh>
-                        <s.TableTextTh>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh><s.TableTextTh>단위</s.TableTextTh>
-                        <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>수량</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></s.TableListThead>
+                    <s.TableListThead><s.TableTextTh width='20px'></s.TableTextTh><s.TableTextTh>주문번호</s.TableTextTh><s.TableTextTh>주문날짜</s.TableTextTh><s.TableTextTh width='270px'>상품정보</s.TableTextTh>
+                        <s.TableTextTh width='120px'>카테고리</s.TableTextTh><s.TableTextTh width='80px'>규격</s.TableTextTh><s.TableTextTh width='60px'>단위</s.TableTextTh>
+                        <s.TableTextTh width='100px'>보관상태</s.TableTextTh><s.TableTextTh width='60px'>수량</s.TableTextTh><s.TableTextTh width='80px'>공급가</s.TableTextTh></s.TableListThead>
                 <tbody>
                     {
                         orderList.map(order=>(
                             <s.TableTextTr key={order.orderNum}>
                                 <s.TableTextTd><input type='checkbox' onChange={(e)=>orderConfirm(e.target.checked, order.orderNum)}/></s.TableTextTd>
                                 <s.TableTextTd>{order.orderCode}</s.TableTextTd>
-                                <s.TableTextTd>{order.orderDate}</s.TableTextTd>
-                                <s.TableTextTd><img src="/logo.svg" /><span>{order.itemCode}</span><br/><span>{order.itemName}</span></s.TableTextTd>
+                                <s.TableTextTd>{order.orderDateStr}</s.TableTextTd>
+                                <s.TableTextTd><s.ImageSize src={`${url}/image/${order.itemFileNum}`}/><span>{order.itemCode}</span><br/><span>{order.itemName}</span></s.TableTextTd>
                                 <s.TableTextTd>{order.itemMajorCategoryName}/{order.itemMiddleCategoryName}/{order.itemSubCategoryName}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemCapacity}*{order.itemUnitQuantity}/{order.itemUnit}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemUnit}</s.TableTextTd>

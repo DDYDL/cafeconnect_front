@@ -236,17 +236,17 @@ const StockManage = ({major, middle, sub})=>{
                 </s.ButtonDiv>
                 <s.ButtonDiv width='200px' float='right'>
                     <s.SearchDiv width='200px'>
-                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>searchKeyword(itemName)}/>} label="상품명 검색"  onChange={(e)=>setItemName(e.target.value)}/>
+                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>searchKeyword(itemName)}/>} label="상품명 검색" onChange={(e)=>setItemName(e.target.value)}/>
                     </s.SearchDiv>
                 </s.ButtonDiv>
                 </s.CategoryButtonGroupDiv>
 
                 <s.TableList>
-                    <s.TableListThead><s.TableTextTh width='250px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh width='100px'>규격</s.TableTextTh>
-                        <s.TableTextTh width='100px'>보관상태</s.TableTextTh><s.TableTextTh width='80px'>유통기한</s.TableTextTh><s.TableTextTh width='80px'>입고날짜</s.TableTextTh>
+                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='160px'>카테고리</s.TableTextTh><s.TableTextTh width='100px'>규격</s.TableTextTh>
+                        <s.TableTextTh width='100px'>보관상태</s.TableTextTh><s.TableTextTh width='100px'>유통기한</s.TableTextTh><s.TableTextTh width='100px'>입고날짜</s.TableTextTh>
                         <s.TableTextTh width='80px'>수량</s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh></s.TableListThead>
                     <tbody>
-                        <s.TableTextTr onClick={openStock}><PlusIcon className="h-5 w-5"/></s.TableTextTr>
+                        <s.TableTextTr onClick={openStock}><PlusIcon style={{marginLeft:'520px', marginTop:'11px'}} className="h-6 w-6"/></s.TableTextTr>
                         {add && <s.TableTextTr>
                             <s.TableTextTd><s.InputStyle width='250px'/></s.TableTextTd>
                             <s.TableTextTd><s.InputStyle width='150px'/></s.TableTextTd>
@@ -262,7 +262,7 @@ const StockManage = ({major, middle, sub})=>{
                             stockList.map(stock=>(
                                 <>
                                     <s.TableTextTr onClick={stockInfo}>
-                                        <s.TableTextTd width='250px'><s.ImageSize src="/logo.svg" /><s.SpanSizeDiv><s.SpanSize>{stock.itemCode}</s.SpanSize><br/><s.SpanSize>{stock.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
+                                        <s.TableTextTd width='250px'><s.ImageSize src={`${url}/image/${stock.itemFileNum}`} /><s.SpanSizeDiv><s.SpanSize>{stock.itemCode}</s.SpanSize><br/><s.SpanSize>{stock.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                         <s.TableTextTd width='150px'>{stock.itemMajorCategoryName}/{stock.itemMiddleCategoryName}/{stock.itemSubCategoryName}</s.TableTextTd>
                                         <s.TableTextTd width='100px'>{stock.itemCapacity}*{stock.itemUnitQuantity}/{stock.itemUnit}</s.TableTextTd>
                                         <s.TableTextTd width='100px'>{stock.itemStorage}</s.TableTextTd>

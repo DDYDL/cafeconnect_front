@@ -1,11 +1,46 @@
 import { Carousel } from "@material-tailwind/react";
 import * as m from '../styles/StyledMain.tsx';
 import * as s from '../styles/StyledStore.tsx';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {Input} from "@material-tailwind/react";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
+import axios from "axios";
+import { url } from "../../config.js";
+
+import { Map } from "react-kakao-maps-sdk";
 
 const Store = () => {
+    const [storeList, setStoreList] = useState([]);
+    const [storeName, setStoreName] = useState("");
+
+    useEffect(()=>{
+        setStoreList([]);
+        getStoreList();
+    }, [])
+
+    const getStoreList = (address)=>{
+        axios.get(`${url}/selectStoreByStoreAddress/${address}`)
+        .then(res=>{
+            console.log(res.data);
+            setStoreList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
+    const searchKeyword = (storeName)=>{
+        axios.get(`${url}/selectStoreByName/${storeName}`)
+        .then(res=>{
+            console.log(res.data);
+            setStoreList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
     return (
         <>
             <m.CarouselDiv>
@@ -44,9 +79,13 @@ const Store = () => {
             
             <s.ContentDiv>
                 <s.SearchDiv className="p-2">
-                    <Input icon={<MagnifyingGlassIcon className="h-5 w-5"/>} label="매장명 검색"/>
+                    <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>searchKeyword(storeName)}/>} label="매장명 검색" onChange={(e)=>setStoreName(e.target.value)}/>
                 </s.SearchDiv>
-                <img src='/map.png'/>
+                <Map
+                    center={{ lat: 33.450701, lng: 126.570667 }}
+                    style={{ width: '1000px', height: '600px' }}
+                    level={3}
+                />
             </s.ContentDiv>
         </>
     )

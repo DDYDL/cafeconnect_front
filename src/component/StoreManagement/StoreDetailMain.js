@@ -1,11 +1,12 @@
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
-import {useParams} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+// 로그인 토큰
 import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
+import {useParams} from 'react-router-dom';
+import {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 
@@ -23,7 +24,7 @@ const StoreDetailMain = ()=>{
         ownerPhone:'',
         managerName:'',
         managerPhone:'',
-        contractPeriodStrart:'',
+        contractPeriodStart:'',
         contractPeriodEnd:'',
         contractDate:'',
         openingDate:'',
@@ -41,17 +42,18 @@ const StoreDetailMain = ()=>{
     }, [token])
 
     const select = () => {
-        console.log(token)
         axiosInToken(token).get(`storeDetailMain/${storeCode}`)
             .then(res=> {
                 console.log(res.data)
                 let resStore = res.data.store;
-                setStore({...resStore});
+                let resstoreOpenTime = res.data.storeOpenTime;
+                let resstoreCloseTime = res.data.storeCloseTime;
+                setStore({...resStore, ['storeOpenTime']: resstoreOpenTime, ['storeCloseTime']: resstoreCloseTime});
             })
     }
 
     const deleteStore = () => {
-        axiosInToken(token).get(`deleteStoreMain/${storeCode}`)
+        axiosInToken(token).post(`deleteStoreMain/${storeCode}`)
             .then(res=> {
                 console.log(res.data)
                 let resStore = res.data.store;
@@ -94,7 +96,7 @@ const StoreDetailMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractPeriodStrart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
+                        <m.TableInfoTd>{store.contractPeriodStart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>

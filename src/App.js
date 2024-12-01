@@ -109,7 +109,9 @@ function App() {
     // 로그인 페이지는 헤더 안 보이게 하기
     if(location.pathname === 'loginStore' && path) setPath(false);
     else if(location.pathname !== 'loginStore' && !path) setPath(true);
-    getCategory();
+    
+    getItemCategory();
+    getMenuCategory();
   }, []);
 
   // alarm state 변수가 바뀔 때마다 alarm이 빈 객체가 아니면 Jotai의 alarms 알람 리스트에 새로운 알람 하나 추가
@@ -120,7 +122,8 @@ function App() {
   const [majorCategory, setMajorCategory] = useState([]);
   const [middleCategory, setMiddleCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
-  const getCategory = ()=>{
+  // item category 가져오기
+  const getItemCategory = ()=>{
     // {"major":{}, "middle":{}, "sub":{}}
     axios.get(`${url}/selectCategory`)
     .then(res=>{
@@ -132,7 +135,20 @@ function App() {
     .catch(err=>{
         console.log(err);
     })
-}
+  }
+
+  const [menuCategory, setMenuCategory] = useState([]);
+  // menu category 가져오기
+  const getMenuCategory = ()=>{
+    axios.get(`${url}/selectMenuCategory`)
+    .then(res=>{
+        console.log(res.data);
+        setMenuCategory(res.data);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+  }
 
   return (
     <div>
@@ -146,7 +162,7 @@ function App() {
         <Route exect path="/loginStore" element={<LoginStore/>}/>
 
         <Route exect path="/store" element={<Store/>}/>
-        <Route exect path="/menu" element={<MenuList/>}/>
+        <Route exect path="/menu" element={<MenuList menu={menuCategory}/>}/>
         <Route exect path="/complain" element={<Complain/>}/>
 
         <Route path='/complainWrite' element={<ComplainWrite/>}/>
@@ -186,39 +202,39 @@ function App() {
         <Route exect path="/myStoreManage" element={<MyStoreManage/>}/>
 
 
-        <Route exact path="/noticeList" element={<NoticeList/>} />
-        <Route exact path="/noticeList/:noticeNum" element={<NoticeDetail />} />
-        <Route exact path="/askWrite" element={<AskWrite/>} />
-        <Route exact path="/askList" element={<AskList />} />
-        <Route exact path="/complainList" element={<ComplainList/>} />
-        <Route exact path="/complainDetail" element={<ComplainDetail />} />
+        <Route exact path="/noticeList" element={<NoticeList/>}/>
+        <Route exact path="/noticeList/:noticeNum" element={<NoticeDetail/>}/>
+        <Route exact path="/askWrite" element={<AskWrite/>}/>
+        <Route exact path="/askList" element={<AskList/>}/>
+        <Route exact path="/complainList" element={<ComplainList/>}/>
+        <Route exact path="/complainDetail" element={<ComplainDetail/>}/>
 
         <Route exact path="/salesAnalysis" element={<SalesAnalysis/>}/>
         <Route exact path="/salesWrite" element={<SalesWrite/>}/>
 
 
         {/* 본사 페이지 링크 */}
-        <Route exect path="/storeListMain" element={<StoreListMain/>} />
-        <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>} />
-        <Route exect path="/restoreStoreMain" element={<RestoreStoreMain/>} />
-        <Route exect path="/storeItemRevenue" element={<StoreItemRevenue/>} />
+        <Route exect path="/storeListMain" element={<StoreListMain/>}/>
+        <Route exect path="/deleteReqStoreMain" element={<DeleteReqStoreMain/>}/>
+        <Route exect path="/restoreStoreMain" element={<RestoreStoreMain/>}/>
+        <Route exect path="/storeItemRevenue" element={<StoreItemRevenue/>}/>
 
-        <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>} />
+        <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore/>}/>
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore/>}/>
 
-        <Route path='/category' element={<ItemCategory />}/>
-        <Route path='/insertMainStore' element={<InsertMainStore />}/>
-        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail />}/>
-        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail />}/>
-        <Route path='/repairDetail/:repairNum' element={<RepairDetail />}/>
-        <Route path='/repairList' element={<RepairList />}/>
+        <Route path='/category' element={<ItemCategory/>}/>
+        <Route path='/insertMainStore' element={<InsertMainStore/>}/>
+        <Route path='/mainItemDetail/:itemCode' element={<MainStore_ItemDetail/>}/>
+        <Route path='/mainMenuDetail/:menuCode' element={<MainStore_MenuDetail/>}/>
+        <Route path='/repairDetail/:repairNum' element={<RepairDetail/>}/>
+        <Route path='/repairList' element={<RepairList/>}/>
 
-        <Route path='/mainItemList' element={<MainStore_ItemList />}/>
+        <Route path='/mainItemList' element={<MainStore_ItemList/>}/>
 
-        <Route path='/mainMenuList' element={<MainStore_MenuList />}/>
-        <Route path='/itemInsert' element={<ItemInsert />}/>
+        <Route path='/mainMenuList' element={<MainStore_MenuList/>}/>
+        <Route path='/itemInsert' element={<ItemInsert/>}/>
         <Route path='/itemUpdate/:itemCode' element={<ItemUpdate/>}/>
-        <Route path='/menuInsert' element={<MenuInsert />}/>
+        <Route path='/menuInsert' element={<MenuInsert/>}/>
         <Route path='/menuUpdate/:menuCode' element={<MenuUpdate/>}/>
 
         <Route exect path='/addStoreMain' element={<AddStoreMain/>}/>
@@ -231,7 +247,7 @@ function App() {
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         <Route exact path="/noticeModal" element={<NoticeModal/>}/>
         <Route exact path="/askListMain" element={<AskListMain/>}/>
-        <Route exact path="/askDetailMain" element={<AskDetailMain />} />
+        <Route exact path="/askDetailMain/:askNum" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
         <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
 
