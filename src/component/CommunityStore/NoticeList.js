@@ -1,87 +1,58 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import React, {useEffect, useState} from "react";
+import { useAtomValue } from "jotai/react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
-import {axiosInToken} from '../../config.js';
-import { tokenAtom } from '../../atoms';
-import {useAtomValue} from "jotai/react";
 
+// 공지사항 리스트(가맹점)
 const NoticeList = () => {
   const [notice, setNotice] = useState([]);
   const token = useAtomValue(tokenAtom);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
-  const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [searchQuery, setSearchQuery] = useState(""); // 검색 요청 시, 사용
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장하는 상태
-
-  const [selectedButton, setSelectedButton] = useState(null);
-
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-
-
-  const handleItemClick = noticeNum => {
-    setSelectedItem(selectedItem === noticeNum ? null : noticeNum); // Toggle answer form visibility
-    navigate(`/noticeList/${noticeNum}`);
-  };
-
-  const handleButtonClick = buttonId => {
-    setSelectedButton(buttonId);
-  };
-
-  // const handleSubmit = (id, event) => {
-  //   event.preventDefault();
-  //
-  //   const newNotice = {
-  //     type: "주요 공지사항",
-  //     title,
-  //     content,
-  //     date: new Date().toISOString(),
-  //   };
-  //
-  //   // 만약 답변을 저장하는 로직이 있다면 해당 로직에 맞춰 데이터를 저장
-  //   // 예시: id에 해당하는 답변도 함께 저장
-  //   // 각 항목에 대한 답변을 저장하는 로직
-  //   console.log("Saving answer for item", id, "with content:", answers[id]);
-  //
-  //   fetch("https://www.localhost:8080/AskList", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(newNotice),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log("Ask added:", data);
-  //       setTitle("");
-  //       setContent("");
-  //     })
-  //     .catch(error => console.error("Error posting notice:", error));
-  // };
-
-
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
+  const [searchNotice, setSearchNotice] = useState("");
 
   // 공지사항 데이터를 가져오는 useEffect
   useEffect(() => {
     const fetchData = () => {
-      axiosInToken(token).get('noticeList')
-          .then(res=> {
-            console.log(res.data)
-            setNotice([...res.data]);
-          })
-          .catch(err=>{
-            console.log(err);
-          })
+      axiosInToken(token)
+        .get("noticeList")
+        .then(res => {
+          console.log(res.data);
+          setNotice([...res.data]);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
-    // if(token!=null && token!=='') fetchData();
+    if (token != null && token !== "") fetchData();
     fetchData();
   }, [token]);
+
+  const handleItemClick = noticeNum => {
+    setSelectedItem(selectedItem === noticeNum ? null : noticeNum); // Toggle answer form visibility
+    navigate(`/noticeDetail/${noticeNum}`);
+  };
+
+  // 검색 버튼 클릭 핸들러
+  const onSearchClick = () => {
+    setIsSearchActive(true);
+  };
+
+  const onChangeNotice = e => {
+    setSearchNotice(e.target.value);
+  };
+
+  const filterNotice = notice.filter(n =>
+    n.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase())
+  );
 
   return (
     <ContentListDiv>
@@ -95,64 +66,71 @@ const NoticeList = () => {
       </HeadingContainer>
 
       <HeadingContainer1>
-        {/* <SearchContainer>
-          <SearchTitle>제목</SearchTitle>
-          <SearchInput placeholder="검색어를 입력하세요" />
-          <SearchButton>찾기</SearchButton>
-        </SearchContainer> */}
-
         <s.ButtonDiv width="200px" float="right">
           <s.SearchDiv width="200px">
-            <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="제목 검색" />
+            <Input
+              name="search"
+              label="제목 검색"
+              value={searchNotice}
+              onChange={onChangeNotice}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  onSearchClick(); // Enter 키를 누르면 onSearchClick 실행
+                }
+              }}
+            />
+            <MagnifyingGlassIcon
+              onClick={onSearchClick} // 검색 버튼으로 사용
+              className="h-5 w-5"
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#333",
+              }}
+            />
           </s.SearchDiv>
         </s.ButtonDiv>
       </HeadingContainer1>
-
       <CustomHorizontal width="basic" bg="black" />
-
       <TableHeader>
         <div>번호</div>
         <div>제목</div>
         <div>작성일</div>
       </TableHeader>
-
       <CustomHorizontal width="basic" bg="black" />
 
-      {/* // 백엔드 작업하고, 아래의 map부분 바꾸기 */}
-      {/* 검색 결과가 있을 경우 해당 결과를 렌더링
-      {searchResults.length > 0 ? (
-        searchResults.map((item) => (
-          <div key={item.id}>
-            <TableInfoList onClick={() => handleItemClick(item.id)}>
-              <div>{item.id}</div>
-              <div>{item.title}</div>
-              <div>{item.date}</div>
-            </TableInfoList> */}
+      {/* 조건부 렌더링 */}
+      <div>
+        {(isSearchActive ? filterNotice : notice).length > 0 ? (
+          (isSearchActive ? filterNotice : notice).map(n => (
+            <TableInfoList onClick={() => handleItemClick(n.noticeNum)} key={n.noticeNum}>
+              <div>{n.noticeNum}</div>
+              <div style={{ paddingLeft: "20px" }}>{n.noticeTitle}</div>
+              <div style={{ paddingRight: "20px" }}>
+                {new Date(n.noticeDate).toLocaleDateString()}
+              </div>
+            </TableInfoList>
+          ))
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              paddingTop: "20px",
+              paddingBottom: "20px",
+              paddingRight: "40px",
+              fontSize: "15px",
+              color: "grey",
+            }}
+          >
+            검색 결과가 없습니다.
+          </div>
+        )}
+      </div>
 
-      {notice.map((item) => (
-          <TableInfoList key={item.noticeNum} onClick={() => handleItemClick(item.noticeNum)}>
-            <div>{item.noticeNum}</div>
-            <div>{item.noticeTitle}</div>
-            <div>{new Date(item.noticeDate).toLocaleDateString()}</div>
-          </TableInfoList>
-          ))}
-
-
-          <CustomHorizontal width="basic" bg="grey" />
-          {/* {selectedItem === id && ( */}
-          {/* // <AnswerContainer>
-            //   <h3>공지사항 내용</h3>
-            //   <NoticeContent */}
-          {/* //     value={answers[id] || ""}
-            //     // onChange={e => handleChange(id, e.target.value)}
-            //     placeholder="본사에서 작성한 공지사항 내용입니다..."
-            //   />
-            //   <CloseButton onClick={e => handleSubmit(id, e)}>확인</CloseButton>
-            // </AnswerContainer> */}
-          {/* ) */}
-          {/* } */}
-        {/*</div>*/}
-
+      <CustomHorizontal width="basic" bg="grey" />
     </ContentListDiv>
   );
 };
