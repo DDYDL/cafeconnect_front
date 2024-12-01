@@ -3,13 +3,34 @@ import * as s from '../styles/StyledStore.tsx';
 import { IconButton, ButtonGroup, Button } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { url } from '../../config.js';
 
 const Complain = () => {
+    const [complainList, setComplainList] = useState([]);
+
+    useEffect(()=>{
+        setComplainList([]);
+        getComplainList();
+    }, [])
+
+    const getComplainList = ()=>{
+        axios.get(`${url}/complainList`)
+        .then(res=>{
+            console.log(res.data);
+            setComplainList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
     return (
         <>
             <s.ContentListDiv>
             <s.MainTitleText>고객의 소리</s.MainTitleText>
-            <s.ButtonDiv style={{ textAlign: 'right' }}>
+            <s.ButtonDiv width="1000px" style={{ textAlign: 'right' }}>
             <s.ButtonStyle><Link to="/complainWrite">글 작성</Link></s.ButtonStyle>
             </s.ButtonDiv>
 
@@ -17,27 +38,17 @@ const Complain = () => {
                 <s.TableListThead><s.TableTextTh>번호</s.TableTextTh><s.TableTextTh>제목</s.TableTextTh><s.TableTextTh>작성자</s.TableTextTh>
                     <s.TableTextTh>작성일</s.TableTextTh><s.TableTextTh>상태</s.TableTextTh></s.TableListThead>
                 <tbody>
-                    <s.TableTextTr>
-                        <s.TableTextTd>21</s.TableTextTd>
-                        <s.TableTextTd>[독산역점]아침 근무하는 알바 불친절함</s.TableTextTd>
-                        <s.TableTextTd>김*영</s.TableTextTd>
-                        <s.TableTextTd>2024.07.11 13:23</s.TableTextTd>
-                        <s.TableTextTd>전달중</s.TableTextTd>
-                    </s.TableTextTr>
-                    <s.TableTextTr>
-                        <s.TableTextTd>21</s.TableTextTd>
-                        <s.TableTextTd>[독산역점]아침 근무하는 알바 불친절함</s.TableTextTd>
-                        <s.TableTextTd>김*영</s.TableTextTd>
-                        <s.TableTextTd>2024.07.11 13:23</s.TableTextTd>
-                        <s.TableTextTd>전달완료</s.TableTextTd>
-                    </s.TableTextTr>
-                    <s.TableTextTr>
-                        <s.TableTextTd>21</s.TableTextTd>
-                        <s.TableTextTd>[독산역점]아침 근무하는 알바 불친절함</s.TableTextTd>
-                        <s.TableTextTd>김*영</s.TableTextTd>
-                        <s.TableTextTd>2024.07.11 13:23</s.TableTextTd>
-                        <s.TableTextTd>전달완료</s.TableTextTd>
-                    </s.TableTextTr>
+                    {
+                        complainList.map(complain=>(
+                            <s.TableTextTr key={complain.complainNum}>
+                                <s.TableTextTd>{complain.complainNum}</s.TableTextTd>
+                                <s.TableTextTd>[{complain.storeName}]{complain.complainTitle}</s.TableTextTd>
+                                <s.TableTextTd>{complain.userName}</s.TableTextTd>
+                                <s.TableTextTd>{complain.complainDate}</s.TableTextTd>
+                                <s.TableTextTd>{complain.complainStatus ? "전달완료":"전달중"}</s.TableTextTd>
+                            </s.TableTextTr>
+                        ))
+                    }
                 </tbody>
             </s.TableList>
 

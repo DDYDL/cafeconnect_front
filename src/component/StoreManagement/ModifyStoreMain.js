@@ -10,29 +10,14 @@ import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import {useNavigate} from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker, PickersDay, TimePicker } from '@mui/x-date-pickers';
+import {ko} from 'date-fns/locale';
+import {format} from 'date-fns';
 
 const ModifyStoreMain = ()=>{
-    const [store, setStore] = useState({
-        storeCode:'',
-        storeName: '',
-        storeAddress: '',
-        storeAddressNum: '',
-        storePhone: '',
-        storeOpenTime:'',
-        storeCloseTime: '',
-        storeCloseDate: '',
-        ownerName:'',
-        ownerPhone:'',
-        managerName:'',
-        managerPhone:'',
-        contractPeriodStrart:'',
-        contractPeriodEnd:'',
-        contractDate:'',
-        openingDate:'',
-        storeStatus:'',
-        memberNum:''
-        ,stockCount:''
-    });
+    const [store, setStore] = useState({});
     const token = useAtomValue(tokenAtom);
     const {storeCode} = useParams();
     const navigate = useNavigate();
@@ -99,7 +84,24 @@ const ModifyStoreMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='storeOpenTime' value={store.storeOpenTime} onChange={edit}/> ~ <s.InputStyle width='140px' type='text' name='storeCloseTime' value={store.storeCloseTime}/></m.TableInfoTd>
+                        <m.TableInfoTd>    
+                        <h.TimePickerPeriodWrap>          
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <TimePicker
+                                value={store.storeOpenTime}
+                                onChange={(time) => setStore({ ...store, ['storeOpenTime']: time })}
+                                className="CustomPicker"
+                                format='HH:mm'
+                            /><div>~</div>
+                            <TimePicker
+                                value={store.storeCloseTime}
+                                onChange={(time) => setStore({ ...store, ['storeCloseTime']: time })}
+                                className="CustomPicker"
+                                format='HH:mm'
+                            />
+                            </LocalizationProvider>
+                            </h.TimePickerPeriodWrap>
+                            </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
@@ -107,6 +109,7 @@ const ModifyStoreMain = ()=>{
                             <h.DateSelectDiv>
                             <h.TableTdDiv>매주</h.TableTdDiv>
                             <h.SelectInnerDiv>
+                                
                             <Select name='storeCloseDate' label='휴무일' defaultValue={store.storeCloseDate} onChange={option}>
                                 <Option value='월'>월</Option>
                                 <Option value='화'>화</Option>
@@ -122,15 +125,55 @@ const ModifyStoreMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' name='contractDate' value={store.contractDate} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd> 
+                        <h.DatePickerWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={store.contractDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractDate']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </h.DatePickerWrap></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='contractPeriodStrart' value={store.contractPeriodStrart} onChange={edit}/> ~ <s.InputStyle width='140px' type='text' value={store.contractPeriodEnd}/></m.TableInfoTd>
+                        <m.TableInfoTd>
+                            <h.DatePickerPeriodWrap>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={store.contractPeriodStart}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractPeriodStart']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            /><div>~</div>
+                            <DatePicker
+                                value={store.contractPeriodEnd}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['contractPeriodEnd']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MMdd'
+                            />
+                            </LocalizationProvider>
+                         </h.DatePickerPeriodWrap></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' name='openingDate' value={store.openingDate} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd>                        
+                        <h.DatePickerWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={store.openingDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStore({ ...store, ['openingDate']: format(date, 'yyyy.MM.dd') })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </h.DatePickerWrap></m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>

@@ -2,46 +2,31 @@ import { Carousel } from "@material-tailwind/react";
 import * as m from '../styles/StyledMain.tsx';
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/StyledHeader.tsx';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { url } from "../../config.js";
 
-const MenuList = () => {
-    const data = [
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1432462770865-65b70566d673?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1682407186023-12c70a4a35e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80",
-        },
-        {
-            imageLink:
-                "https://demos.creative-tim.com/material-kit-pro/assets/img/examples/blog5.jpg",
-        },
-        {
-            imageLink:
-                "https://material-taillwind-pro-ct-tailwind-team.vercel.app/img/content2.jpg",
-        },
-        {
-            imageLink:
-                "https://images.unsplash.com/photo-1620064916958-605375619af8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1493&q=80",
-        },
-    ];
+const MenuList = ({menu}) => {
+    const [menuCategory, setMenuCategory] = useState([]);
+    const [menuList, setMenuList] = useState([]);
+
+    useEffect(()=>{
+        setMenuCategory(menu);
+        setMenuList([]);
+        getMenuList(1);
+    }, [])
+
+    const getMenuList = (categoryNum)=>{
+        axios.get(`${url}/selectMenuByCategory/${categoryNum}`)
+        .then(res=>{
+            console.log(res.data);
+            setMenuList([...res.data]);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
     return (
         <>
             <m.CarouselDiv>
@@ -79,36 +64,33 @@ const MenuList = () => {
             </m.CarouselDiv>
 
             <s.MenuBarDiv>
-                <s.MenuBarLinkDiv borderLeft="none"><s.MenuBarLink to="/shopMain">커피</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/stockAdd">더치커피</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/orderList">주스</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/salesManagement">스무디</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/noticeList">티</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">에이드</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">프라페</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">디저트</s.MenuBarLink></s.MenuBarLinkDiv>
-                <s.MenuBarLinkDiv><s.MenuBarLink to="/myAlarmList">MD상품</s.MenuBarLink></s.MenuBarLinkDiv>
+                {
+                    menuCategory.map(menu=>(
+                        <s.MenuBarLinkDiv key={menu.menuCategoryNum} borderLeft={menu.menuCategoryNum===1?"none":""}><s.MenuBarLink onClick={()=>getMenuList(menu.menuCategoryNum)}>{menu.menuCategoryName}</s.MenuBarLink></s.MenuBarLinkDiv>
+                    ))
+                }
             </s.MenuBarDiv>
 
             <s.MenuImgDiv>
             <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3">
-                {data.map(({ imageLink }, index) => (
-                    <s.OneImgAndPDiv key={index}>
-                        <s.ImgHoverText>⚬ 카페인 : 208mg<br/>
-                            ⚬ 열량(kcal) : 258.3<br/>
-                            ⚬ 탄수화물(g) : 32.5<br/>
-                            ⚬ 당류(g) : 29.5<br/>
-                            ⚬ 단백질(g) : 7.5<br/>
-                            ⚬ 나트륨(mg) : 142.5<br/>
-                            ⚬ 지방(g) : 10
+                {menuList.map(menu=>(
+                    <s.OneImgAndPDiv key={menu.menuCode}>
+                        <s.ImgHoverText>
+                            {menu.caffine ? <div style={{paddingBottom:'10px'}}>⚬ 카페인 : {menu.caffine}<br/></div> : <></>}
+                            {menu.calories ? <div style={{paddingBottom:'10px'}}>⚬ 열량(kcal) : {menu.calories}<br/></div> : <></>}
+                            {menu.carbohydrate ? <div style={{paddingBottom:'10px'}}>⚬ 탄수화물(g) : {menu.carbohydrate}<br/></div> : <></>}
+                            {menu.sugar ? <div style={{paddingBottom:'10px'}}>⚬ 당류(g) : {menu.sugar}<br/></div> : <></>}
+                            {menu.protein ? <div style={{paddingBottom:'10px'}}>⚬ 단백질(g) : {menu.protein}<br/></div> : <></>}
+                            {menu.natrium ? <div style={{paddingBottom:'10px'}}>⚬ 나트륨(mg) : {menu.natrium}<br/></div> : <></>}
+                            {menu.fat ? <div>⚬ 지방(g) : {menu.fat}<br/></div> : <></>}
                         </s.ImgHoverText>
                     <s.ImgDiv>
                         <s.ImgStyle 
                             className="object-center"
-                            src={imageLink}
-                            alt="gallery-photo"
-                            />
-                    <s.TitleText>메뉴명</s.TitleText>
+                            src={`${url}/image/${menu.menuFileNum}`}
+                            alt="이미지 로딩 실패"
+                        />
+                    <s.TitleText>{menu.menuName}</s.TitleText>
                     </s.ImgDiv>
                     </s.OneImgAndPDiv>
                 ))}

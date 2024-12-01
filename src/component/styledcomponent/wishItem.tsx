@@ -134,9 +134,9 @@ export const ItemStorageLabelP = styled.p`
     margin: 0;
 `;
 
-export const ItemStorageType = styled.span<{ storageType?: string }>`
-${({ storageType }) =>
-    storageType === "냉동" &&
+export const ItemStorageType = styled.span<{ storageWay?: string }>`
+${({ storageWay }) =>
+    storageWay === "냉동" &&
     `
     background: #45b0da;
     color: #fff;
@@ -144,7 +144,17 @@ ${({ storageType }) =>
     font-size: 10px;
     line-height: 14px;
     border-radius: 2px;
-  `}
+  `||
+  storageWay != "냉동" &&
+    `
+    background: #d26717;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 10px;
+    line-height: 14px;
+    border-radius: 2px;
+  `
+}
 `;
 
 export const CartIconWrapper = styled.div`
