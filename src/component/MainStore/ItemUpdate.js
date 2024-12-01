@@ -1,381 +1,623 @@
-import * as m from '../styles/StyledMain.tsx';
-import React, { useState } from 'react'
-import styles from '../styles/ItemUpdate.module.css'
-import upload_file from '../assets/img/upload-files-4ee86225-svg.svg'
-import { useNavigate } from 'react-router';
-import { useRef } from 'react';
+import * as m from "../styles/StyledMain.tsx";
+import React, { useEffect, useState } from "react";
+import styles from "../styles/ItemInsert.module.css";
+import upload_file from "../assets/img/upload-files-4ee86225-svg.svg";
+import { useNavigate } from "react-router";
+import * as s from "../styles/StyledStore.tsx";
+import { Option, Select } from "@material-tailwind/react";
+import { useRef } from "react";
+import { useParams } from "react-router";
+import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
+
+import axios from "axios";
 function ItemInsert() {
+  const { itemCode } = useParams();
+  const imageInput = useRef();
+  const navigate = useNavigate();
+  const [item, setItem] = useState({
+    itemCode: "",
+    itemName: "",
+    itemPrice: "",
+    itemCapacity: "",
+    itemUnitQuantity: "",
+    itemUnit: "",
+    itemStandard: "",
+    itemStorage: "",
+    itemCountryOrigin: "",
+    itemMajorCategoryName: "",
+    itemMiddleCategoryName: "",
+    itemSubCategoryName: "",
+    imageUrl: null,
+  });
+  const [x, setX] = useState("");
+  const [y, setY] = useState("");
+  const [z, setZ] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
+  const [majorCategoryList, setMajorCategoryList] = useState([]);
+  const [middleCategoryList, setMiddleCategoryList] = useState([]);
+  const [subCategoryList, setSubCategoryList] = useState([]);
+  const [file, setFile] = useState(null);
+  const handleInput = (e) => {
+    setItem({
+      ...item,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleXStandardInput = (e) => {
+    setX(e.target.value);
+    setItem({
+      ...item,
+      itemStandard:
+        e.target.value +
+        " X " +
+        item.itemStandard.match(/\d+/g)[1] +
+        " X " +
+        item.itemStandard.match(/\d+/g)[2],
+    });
+  };
+  const handleYStandardInput = (e) => {
+    setY(e.target.value);
+    setItem({
+      ...item,
+      itemStandard:
+        item.itemStandard.match(/\d+/g)[0] +
+        " X " +
+        e.target.value +
+        " X " +
+        item.itemStandard.match(/\d+/g)[2],
+    });
+  };
+  const handleZStandardInput = (e) => {
+    setZ(e.target.value);
+    setItem({
+      ...item,
+      itemStandard:
+        item.itemStandard.match(/\d+/g)[0] +
+        " X " +
+        item.itemStandard.match(/\d+/g)[1] +
+        " X " +
+        e.target.value,
+    });
+  };
+  const handleItemMajorCategorySelectBox = (value) => {
+    setItem({
+      ...item,
+      itemMajorCategoryName: value,
+    });
 
+    fetchMiddleData(value);
+  };
+  const handleItemMiddleCategorySelectBox = (value) => {
+    setItem({
+      ...item,
+      itemMiddleCategoryName: value,
+    });
+    fetchSubData(value);
+  };
+  const handleItemSubCategorySelectBox = (value) => {
+    setItem({
+      ...item,
+      itemSubCategoryName: value,
+    });
+  };
+  const handleItemUnitSelectbox = (value) => {
+    setItem({
+      ...item,
+      itemUnit: value,
+    });
+  };
+  const handleItemStorageSelectbox = (value) => {
+    setItem({
+      ...item,
+      itemStorage: value,
+    });
+  };
+  const handleUploadImage = (e) => {
+    imageInput.current.click();
+  };
 
-    const [item, setItem] = useState({
-        'itemName': '상품명을 입력하세요',
-        'itemPrice': '공급가를 입력하세요',
-        'itemCapacity': '용량을 선택하세요',
-        'itemUnitQuantity': '단위수량을 입력하세요',
-        'itemUnit': '단위를 선택하세요',
-        'itemStandard': {
-            'itemX': '가로(cm)',
-            'itemY': '세로(cm)',
-            'itemZ': '높이(cm)',
-        },
-        'itemStorage': '보관상태를 선택하세요',
-        'itemCountryOrigin': '원산지를 입력하세요',
-        'itemMajorCategory': '대분류',
-        'itemMiddleCategory': '중분류',
-        'itemSubCategory': '소분류',
-        'file': '',
-
-    })
-
-
-
-    const imageInput = useRef();
-    const navigate = useNavigate();
-    const handleChangeInputExceptStandard = (e) => {
-
-        const name = e.target.name;
-        const value = e.target.value;
-
-
-        const newItem = {
-            ...item,
-            'itemStandard': { ...item['itemStandard'] },
-            [name]: value,
-
-        }
-
-        setItem(newItem);
+  const handleImageInput = (e) => {
+    setFile(e.target.files[0]);
+    setItem({
+      ...item,
+      imageUrl: URL.createObjectURL(e.target.files[0]),
+    });
+    setImageUrl(URL.createObjectURL(e.target.files[0]));
+  };
+  const fetchMajorData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      setMajorCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const handleClickInputExceptStandard = (e) => {
-        if (e.target.value == '상품명을 입력하세요') {
-            const name = e.target.name;
-            const value = '';
-
-            const newItem = {
-                ...item,
-                'itemStandard': { ...item['itemStandard'] },
-                [name]: value,
-
-            }
-
-            setItem(newItem);
-        }
-        return;
-
+  const fetchMiddleData = async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/middleCategory?categoryName=${value}`
+      );
+      setMiddleCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const handleChangeStandardInput = (e) => {
-        console.log('handleChangeStandardInput')
-
-
-        const name = e.target.name;
-        const value = e.target.value;
-        const newItem = {
-            ...item,
-            'itemStandard': {
-                ...item['itemStandard'],
-                [name]: value,
-            },
-
-
-        }
-        setItem(newItem);
-
+  const fetchSubData = async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/subCategory?categoryName=${value}`
+      );
+      setSubCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/selectItemByItemCode/${itemCode}`
+      );
+      console.log(response.data);
+      setItem(response.data);
+      setX(response.data.itemStandard.match(/\d+/g)[0]);
+      setY(response.data.itemStandard.match(/\d+/g)[1]);
+      setZ(response.data.itemStandard.match(/\d+/g)[2]);
+      setImageUrl(response.data.imageUrl);
+    } catch (error) {
+      console.log(error);
 
-
-
-    const handleSubmit = () => {
-
-        navigate('/mainItemList');
+      alert("해당하는 상품이 없습니다");
+      navigate("/mainItemList");
     }
-
-
-    const handleUploadImage = (e) => {
-
-        imageInput.current.click();
+  };
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const itemSaveForm = {
+      itemName: item.itemName,
+      itemPrice: item.itemPrice,
+      itemCapacity: item.itemCapacity,
+      itemUnitQuantity: item.itemUnitQuantity,
+      itemUnit: item.itemUnit,
+      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStorage: item.itemStorage,
+      itemCountryOrigin: item.itemCountryOrigin,
+      itemCategoryMajorName: item.itemMajorCategory,
+      itemCategoryMiddleName: item.itemMiddleCategory,
+      itemCategorySubName: item.itemSubCategory,
+    };
+    console.log({
+      itemName: item.itemName,
+      itemPrice: item.itemPrice,
+      itemCapacity: item.itemCapacity,
+      itemUnitQuantity: item.itemUnitQuantity,
+      itemUnit: item.itemUnit,
+      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStorage: item.itemStorage,
+      itemCountryOrigin: item.itemCountryOrigin,
+      itemCategoryMajorName: item.itemMajorCategoryName,
+      itemCategoryMiddleName: item.itemMiddleCategoryName,
+      itemCategorySubName: item.itemSubCategoryName,
+    });
+    const json = JSON.stringify(itemSaveForm);
+    const blob = new Blob([json], {
+      type: "application/json",
+    });
+    formData.append("itemUpdateForm", blob);
+    console.log(blob);
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/updateItem/${item.itemCode}`,
+        formData
+      );
+      alert("수정 성공: " + response.data);
+      navigate(`/mainItemDetail/${item.itemCode}`);
+    } catch (error) {
+      console.log(error);
+      alert("수정 실패");
     }
+  };
+  const handleSubmit = () => {
+    handleUpload();
+  };
 
-    const handleImageInput = () => {
+  useEffect(() => {
+    fetchData();
+    fetchMajorData();
+  }, []);
 
-    }
-
-
-
-
-    return (
-        <>
-            <m.CarouselDiv>
-                <input
-                    type="hidden"
-                    id="anPageName"
-                    name="page"
-                    value="ItemUpdate"
-                />
-                <div className={styles['container-center-horizontal']}>
-                    <div className={`${styles['ItemUpdate']} ${styles['screen']}`}>
-                        <div className={styles['overlap-group4']}>
-                            <div className={styles['background']}>
-                                <div className={`${styles['heading-4-create-products']} ${styles['valign-text-middle']}`}>
-                                    상품 수정
-                                </div>
-                                <div className={styles['overlap-group2']}>
-                                    <div className={styles['small-btn_brown']}>
-                                        <div className={`${styles['text-9']} ${styles['valign-text-middle']} ${styles['themewagongithubiosemanticheading-6']}`}>
-                                            상품수정
-                                        </div>
-                                    </div>
-                                    <div className={styles['form']}>
-                                        <div className={`${styles['flex-col-1']} ${styles['flex-col-4']}`}>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    상품명
-                                                </div>
-                                                <div className={styles['input']}>
-                                                    <div className={styles['container-1']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            상품명을 입력하세요
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    공급가
-                                                </div>
-                                                <div className={styles['input']}>
-                                                    <div className={styles['container-1']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            공급가를 입력하세요
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    용량
-                                                </div>
-                                                <div className={`${styles['input-1']} ${styles['input-6']}`}>
-                                                    <div className={styles['container-2']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            용량을 선택하세요
-                                                        </div>
-                                                    </div>
-                                                    <img
-                                                        className={styles['sort-down']}
-                                                        src={require("../assets/img/sort-down@2x.png")}
-                                                        alt="Sort Down"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={styles['container-3']}>
-                                                <div className={`${styles['flex-col']} ${styles['flex']}`}>
-                                                    <div className={`${styles['label-3']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                        규격
-                                                    </div>
-                                                    <div className={`${styles['input-2']} ${styles['input-6']}`}>
-                                                        <div className={`${styles['cm']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            가로(cm)
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className={`${styles['input-2']} ${styles['input-6']}`}>
-                                                    <div className={`${styles['cm-3']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                        세로(cm)
-                                                    </div>
-                                                </div>
-                                                <div className={`${styles['input-2']} ${styles['input-6']}`}>
-                                                    <div className={`${styles['cm-3']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                        높이(cm)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles['container-3']}>
-                                                <div className={`${styles['flex-col']} ${styles['flex']}`}>
-                                                    <div className={`${styles['label-3']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                        카테고리
-                                                    </div>
-                                                    <div className={`${styles['input-3']} ${styles['input-6']}`}>
-                                                        <img
-                                                            className={styles['sort-down-1']}
-                                                            src={require("../assets/img/sort-down@2x.png")}
-                                                            alt="Sort Down"
-                                                        />
-                                                        <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            대분류
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className={`${styles['input-3']} ${styles['input-6']}`}>
-                                                    <img
-                                                        className={styles['sort-down-1']}
-                                                        src={require("../assets/img/sort-down@2x.png")}
-                                                        alt="Sort Down"
-                                                    />
-                                                    <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                        중분류
-                                                    </div>
-                                                </div>
-                                                <div className={`${styles['input-3']} ${styles['input-6']}`}>
-                                                    <img
-                                                        className={styles['sort-down-1']}
-                                                        src={require("../assets/img/sort-down@2x.png")}
-                                                        alt="Sort Down"
-                                                    />
-                                                    <div className={`${styles['text-1']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                        소분류
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={`${styles['input-4']} ${styles['input-6']}`}>
-                                                <div className={`${styles['label-2']} ${styles['valign-text-middle']} ${styles['label-3']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    이미지 등록
-                                                </div>
-                                                <div className={styles['border-1']}>
-                                                    <img
-                                                        className={styles['upload-files4ee86225svg']}
-                                                        src={upload_file}
-                                                        alt="upload-files.4ee86225.svg"
-                                                    />
-                                                    <div className={`${styles['text-21']} ${styles['valign-text-middle']} ${styles['themewagongithubiosemanticitem']}`}>
-                                                        <span>
-                                                            <span className={styles['span0']}><br /></span>
-                                                            <span className={styles['span1-1']}>이미지 선택</span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className={styles['product-thumb-1bfdce747webp']}></div>
-                                            </div>
-                                        </div>
-                                        <div className={styles['container-container']}>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    상품 코드
-                                                </div>
-                                                <div className={`${styles['input-5']} ${styles['input-6']}`}>
-                                                    <div className={`${styles['text-16']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                        상품 코드를 입력하세요
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles['container-5']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    단위
-                                                </div>
-                                                <div className={`${styles['input-1']} ${styles['input-6']}`}>
-                                                    <div className={styles['container-2']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            단위를 선택하세요
-                                                        </div>
-                                                    </div>
-                                                    <img
-                                                        className={styles['sort-down']}
-                                                        src={require("../assets/img/sort-down@2x.png")}
-                                                        alt="Sort Down"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    보관 상태
-                                                </div>
-                                                <div className={`${styles['input-1']} ${styles['input-6']}`}>
-                                                    <div className={styles['container-2']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            보관 상태를 선택하세요
-                                                        </div>
-                                                    </div>
-                                                    <img
-                                                        className={styles['sort-down']}
-                                                        src={require("../assets/img/sort-down@2x.png")}
-                                                        alt="Sort Down"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    단위 수량
-                                                </div>
-                                                <div className={styles['input']}>
-                                                    <div className={styles['container-1']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            단위 수량을 입력하세요
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className={styles['container']}>
-                                                <div className={`${styles['label']} ${styles['valign-text-middle']} ${styles['notosanskr-bold-black-16px']}`}>
-                                                    원산지
-                                                </div>
-                                                <div className={styles['input']}>
-                                                    <div className={styles['container-1']}>
-                                                        <div className={`${styles['text']} ${styles['valign-text-middle']} ${styles['notosanskr-light-pink-swan-15px']}`}>
-                                                            원산지를 입력하세요
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <footer className={styles['footer']}>
-                                <div className={styles['footer-contents']}>
-                                    <div className={`${styles['flex-row']} ${styles['flex']}`}>
-                                        <div className={`${styles['flex-col-2']} ${styles['flex-col-4']}`}>
-                                            <div className={styles['overlap-group-1']}>
-                                                <p className={`${styles['x']} ${styles['valign-text-middle']} ${styles['notosanskr-light-coconut-12px']}`}>
-                                                    상호명 : ㈜더블유컨셉코리아 ㅣ 대표자 : 이주철 ㅣ 주소 : 서울특별시
-                                                    강남구 테헤란로 231, EAST동 20층(역삼동, 센터필드)
-                                                    <br />
-                                                    사업자등록번호 : 211-88-19183 ㅣ 통신판매업신고 : 제2009호-서울강남-00847호
-                                                </p>
-                                                <div className={`${styles['text-22']} ${styles['valign-text-middle']}`}>
-                                                    사업자정보확인
-                                                </div>
-                                                <p className={`${styles['text-23']} ${styles['valign-text-middle']} ${styles['notosanskr-light-coconut-12px']}`}>
-                                                    │ 개인정보보호책임자 : 허선희 │ 호스팅서비스 : ㈜ 더블유컨셉코리아
-                                                </p>
-                                            </div>
-                                            <p className={`${styles['copyright']} ${styles['valign-text-middle']} ${styles['notosanskr-light-coconut-12px']}`}>
-                                                COPYRIGHT ⓒ ㈜더블유컨셉코리아 ALL RIGHTS RESERVED
-                                            </p>
-                                        </div>
-                                        <div className={styles['vertical-divider-1']}></div>
-                                    </div>
-                                    <div className={`${styles['flex-col-3']} ${styles['flex-col-4']}`}>
-                                        <p className={`${styles['heading-3']} ${styles['valign-text-middle']}`}>
-                                            <span>
-                                                <span className={styles['span0-1']}>
-                                                    소비자피해보상보험
-                                                    <br />
-                                                </span>
-                                                <span className={styles['span1-2']}>
-                                                    고객님은 안전거래를 위해 현금 결제 시, Wconcept 에서 가입한
-                                                    <br />
-                                                    소비자피해보상보험 서비스를 이용하실 수 있습니다.
-                                                </span>
-                                            </span>
-                                        </p>
-                                        <div className={styles['text-container']}>
-                                            <div className={`${styles['text-24']} ${styles['valign-text-middle']} ${styles['notosanskr-light-coconut-12px']}`}>
-                                                보상대상 : 미배송/반품, 환불거부/쇼핑몰부도
-                                            </div>
-                                            <div className={`${styles['text-25']} ${styles['valign-text-middle']}`}>
-                                                서비스 가입사실 확인
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </footer>
-                        </div>
+  return (
+    <>
+      <m.CarouselDiv>
+        <input type="hidden" id="anPageName" name="page" value="ItemInsert" />
+        <div className={styles["container-center-horizontal"]}>
+          <div className={`${styles["ItemInsert"]} ${styles["screen"]}`}>
+            <div className={styles["background"]}>
+              <div
+                className={`${styles["heading-4-create-products"]} ${styles["valign-text-middle"]}`}
+              >
+                상품 수정
+              </div>
+              <div className={styles["form"]}>
+                <div className={styles["container-container"]}>
+                  <div className={styles["container"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      상품코드
                     </div>
+
+                    <s.InputStyle
+                      name="itemName"
+                      width="440px"
+                      type="text"
+                      placeholder="상품코드를 입력하세요"
+                      value={item.itemCode}
+                      readOnly
+                    />
+                  </div>
+                  <div className={styles["container"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      상품명
+                    </div>
+
+                    <s.InputStyle
+                      name="itemName"
+                      width="440px"
+                      type="text"
+                      placeholder="상품명을 입력하세요"
+                      value={item.itemName}
+                      onChange={handleInput}
+                    />
+                  </div>
+
+                  <div className={styles["container"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      공급가
+                    </div>
+                    <s.InputStyle
+                      name="itemPrice"
+                      width="440px"
+                      type="text"
+                      placeholder="공급가를 입력하세요"
+                      value={item.itemPrice}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <div className={styles["container"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      용량
+                    </div>
+
+                    <s.InputStyle
+                      name="itemCapacity"
+                      width="440px"
+                      type="text"
+                      placeholder="용량을 입력하세요"
+                      value={item.itemCapacity}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <div className={styles["container-3"]}>
+                    <div className={`${styles["flex-col"]} ${styles["flex"]}`}>
+                      <div
+                        className={`${styles["label-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                      >
+                        규격
+                      </div>
+                      <s.InputStyle
+                        name="itemX"
+                        width="120px"
+                        type="text"
+                        placeholder="가로(cm)"
+                        value={x}
+                        onChange={handleXStandardInput}
+                      />
+                    </div>
+                    <div style={{ width: "120px", marginBottom: "11px" }}>
+                      <s.InputStyle
+                        name="itemY"
+                        width="120px"
+                        type="text"
+                        placeholder="세로(cm)"
+                        value={y}
+                        onChange={handleYStandardInput}
+                      />
+                    </div>
+                    <div style={{ width: "120px", marginBottom: "11px" }}>
+                      <s.InputStyle
+                        name="itemZ"
+                        width="120px"
+                        type="text"
+                        placeholder="높이(cm)"
+                        value={z}
+                        onChange={handleYStandardInput}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles["container-3"]}>
+                    <div className={`${styles["flex-col"]} ${styles["flex"]}`}>
+                      <div
+                        className={`${styles["label-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                      >
+                        카테고리
+                      </div>
+                      <div>
+                        <div
+                          className="select-wrap"
+                          style={{ width: "440px", marginBottom: "20px" }}
+                        >
+                          <s.ButtonInnerDiv
+                            className="w-16"
+                            style={{ width: "440px", marginBottom: "20px" }}
+                          >
+                            <s.SelectStyle
+                              label="대분류"
+                              onChange={handleItemMajorCategorySelectBox}
+                            >
+                              {majorCategoryList.map((majorCategory) => (
+                                <Option
+                                  key={majorCategory.categoryName}
+                                  value={majorCategory.categoryName}
+                                >
+                                  {majorCategory.categoryName}
+                                </Option>
+                              ))}
+                            </s.SelectStyle>
+                          </s.ButtonInnerDiv>
+                        </div>
+                        <div
+                          className="select-wrap"
+                          style={{ width: "440px", marginBottom: "20px" }}
+                        >
+                          <s.ButtonInnerDiv
+                            className="w-16"
+                            style={{ width: "440px", marginBottom: "20px" }}
+                          >
+                            <s.SelectStyle
+                              label="중분류"
+                              onChange={handleItemMiddleCategorySelectBox}
+                            >
+                              {middleCategoryList.map((middleCategory) => (
+                                <Option
+                                  key={middleCategory.categoryName}
+                                  value={middleCategory.categoryName}
+                                >
+                                  {middleCategory.categoryName}
+                                </Option>
+                              ))}
+                            </s.SelectStyle>
+                          </s.ButtonInnerDiv>
+                        </div>
+                        <div className="select-wrap" style={{ width: "440px" }}>
+                          <s.ButtonInnerDiv
+                            className="w-16"
+                            style={{ width: "440px", marginBottom: "20px" }}
+                          >
+                            <s.SelectStyle
+                              label="소분류"
+                              onChange={handleItemSubCategorySelectBox}
+                            >
+                              {subCategoryList.map((subCategory) => (
+                                <Option
+                                  key={subCategory.categoryName}
+                                  value={subCategory.categoryName}
+                                >
+                                  {subCategory.categoryName}
+                                </Option>
+                              ))}
+                            </s.SelectStyle>
+                          </s.ButtonInnerDiv>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </m.CarouselDiv>
-        </>
-    )
+                <div
+                  className={`${styles["flex-col-1"]} ${styles["flex-col-4"]}`}
+                >
+                  <div className={styles["container"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      원산지
+                    </div>
+                    <s.InputStyle
+                      name="itemCountryOrigin"
+                      width="440px"
+                      type="text"
+                      placeholder="원산지를 입력하세요"
+                      value={item.itemCountryOrigin}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <div className={styles["container-6"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      단위
+                    </div>
+                    <div className="select-wrap" style={{ width: "440px" }}>
+                      <Select
+                        label="단위구분"
+                        value={item.itemUnit}
+                        onChange={handleItemUnitSelectbox}
+                      >
+                        <Option value="">단위를 선택하세요</Option>
+                        <Option value="단위1">단위1</Option>
+                        <Option value="단위2">단위2</Option>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className={styles["container-4"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      보관 상태
+                    </div>
+                    <div className="select-wrap" style={{ width: "440px" }}>
+                      <Select
+                        label="보관상태"
+                        value={item.itemStorage}
+                        onChange={handleItemStorageSelectbox}
+                      >
+                        <Option value="">보관상태를 선택하세요</Option>
+                        <Option value="냉장">냉장</Option>
+                        <Option value="냉동">냉동</Option>
+                        <Option value="상온">상온</Option>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className={styles["container-4"]}>
+                    <div
+                      className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      단위 수량
+                    </div>
+                    <s.InputStyle
+                      name="itemUnitQuantity"
+                      width="440px"
+                      type="text"
+                      placeholder="단위수량을 입력하세요"
+                      value={item.itemUnitQuantity}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <div className={`${styles["input-4"]} ${styles["input-5"]}`}>
+                    <div
+                      className={`${styles["label-2"]} ${styles["valign-text-middle"]} ${styles["label-3"]} ${styles["notosanskr-bold-black-16px"]}`}
+                    >
+                      이미지 등록
+                    </div>
+                    <div
+                      className={styles["border-1"]}
+                      onClick={handleUploadImage}
+                    >
+                      <img
+                        className={styles["upload-files4ee86225svg"]}
+                        src={upload_file}
+                        alt="upload-files.4ee86225.svg"
+                      />
+                      <div
+                        className={`${styles["text-11"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticitem"]}`}
+                      >
+                        <span>
+                          <span className={styles["span0"]}>
+                            <br />
+                          </span>
+                          <span className={styles["span1-1"]}>이미지 선택</span>
+                        </span>
+                      </div>
+                    </div>
+                    <img
+                      className={styles["product-thumb-1bfdce747webp"]}
+                      src={imageUrl === null ? thumb : imageUrl}
+                    ></img>
+                  </div>
+                  <input
+                    style={{ display: "none" }}
+                    ref={imageInput}
+                    type="file"
+                    onChange={handleImageInput}
+                  ></input>
+                  <div
+                    className={styles["small-btn_brown"]}
+                    style={{ cursor: "pointer" }}
+                    onClick={handleSubmit}
+                  >
+                    <div
+                      className={`${styles["text-12"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    >
+                      상품 수정
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <footer className={styles["footer"]}>
+              <div className={styles["footer-contents"]}>
+                <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
+                  <div
+                    className={`${styles["flex-col-2"]} ${styles["flex-col-4"]}`}
+                  >
+                    <div className={styles["overlap-group-1"]}>
+                      <p
+                        className={`${styles["x"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-coconut-12px"]}`}
+                      >
+                        상호명 : ㈜더블유컨셉코리아 ㅣ 대표자 : 이주철 ㅣ 주소 :
+                        서울특별시 강남구 테헤란로 231, EAST동 20층(역삼동,
+                        센터필드)
+                        <br />
+                        사업자등록번호 : 211-88-19183 ㅣ 통신판매업신고 :
+                        제2009호-서울강남-00847호
+                      </p>
+                      <div
+                        className={`${styles["text-21"]} ${styles["valign-text-middle"]}`}
+                      >
+                        사업자정보확인
+                      </div>
+                      <p
+                        className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-coconut-12px"]}`}
+                      >
+                        │ 개인정보보호책임자 : 허선희 │ 호스팅서비스 : ㈜
+                        더블유컨셉코리아
+                      </p>
+                    </div>
+                    <p
+                      className={`${styles["copyright"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-coconut-12px"]}`}
+                    >
+                      COPYRIGHT ⓒ ㈜더블유컨셉코리아 ALL RIGHTS RESERVED
+                    </p>
+                  </div>
+                  <div className={styles["vertical-divider-1"]}></div>
+                </div>
+                <div
+                  className={`${styles["flex-col-3"]} ${styles["flex-col-4"]}`}
+                >
+                  <p
+                    className={`${styles["heading-3"]} ${styles["valign-text-middle"]}`}
+                  >
+                    <span>
+                      <span className={styles["span0-1"]}>
+                        소비자피해보상보험
+                        <br />
+                      </span>
+                      <span className={styles["span1-2"]}>
+                        고객님은 안전거래를 위해 현금 결제 시, Wconcept 에서
+                        가입한
+                        <br />
+                        소비자피해보상보험 서비스를 이용하실 수 있습니다.
+                      </span>
+                    </span>
+                  </p>
+                  <div className={styles["text-container"]}>
+                    <div
+                      className={`${styles["text-23"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-coconut-12px"]}`}
+                    >
+                      보상대상 : 미배송/반품, 환불거부/쇼핑몰부도
+                    </div>
+                    <div
+                      className={`${styles["text-24"]} ${styles["valign-text-middle"]}`}
+                    >
+                      서비스 가입사실 확인
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </m.CarouselDiv>
+    </>
+  );
 }
 
-export default ItemInsert
+export default ItemInsert;
