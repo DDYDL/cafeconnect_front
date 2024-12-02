@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import HoverCategorySidebar from './HoverCategorySidebar.js';
 
-const ShopLayout = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  
+const ShopLayout = ({categories}) => {
+ 
+  const [isHovered, setIsHovered] = useState(false); 
   return (
     <>
 
@@ -16,16 +16,16 @@ const ShopLayout = () => {
         onMouseEnter={() => setIsHovered(true)}
       >
         <div className="bg-blue-gray-50 p-2 rounded-r-lg">
-          <ChevronRightIcon className="h-6 w-6" />
+          <ChevronRightIcon className="h-6 w-4" />
         </div>
       </div>
         {/* ShopMain에서 호버된 카테고리 */}
         {isHovered && (
         <div
-          className="fixed left-0 top-20 h-[calc(100vh-80px)] z-30 bg-white rounded-r-lg shadow-xl p-4"
+          className="fixed left-0 top-[150px] h-[calc(100vh-80px)] z-30 bg-white overflow-auto"
           onMouseLeave={() => setIsHovered(false)}
         >
-          <HoverCategorySidebar />
+          <HoverCategorySidebar categories={categories} />
         </div>
       )}
 

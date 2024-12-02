@@ -43,7 +43,7 @@ function ExpenseListByItems() {
     // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
     if (token != null && token !== '') 
       submit(startDate, endDate);
-  }, [token])
+  }, [token,store.storeCode])
 
   const submit = () => {
     const formData = new FormData();
@@ -83,7 +83,7 @@ function ExpenseListByItems() {
     
     //데이터 반복 시작, 주문 아이템을 기준으로 반복시킴 
     return orderItemSummary.map((item, index) => {
-      // 이전 행과 비교하여 조건 판단 첫번째 항목이거나, 변경된 경우 true  그대로 유지중 false반환 
+      // 이전 행과 비교하여 조건 판단 첫번째 항목이거나, 변경된 경우 true , 그대로 유지중이면 false반환 
       const showMajor =
         index === 0 ||
         orderItemSummary[index - 1].majorCategoryNum !== item.majorCategoryNum;

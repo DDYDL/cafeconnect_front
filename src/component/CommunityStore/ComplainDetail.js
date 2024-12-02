@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import axios from "axios";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
@@ -12,41 +14,34 @@ const ComplainDetail = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  const [complain, setComplain] = useState("");
+  const { complainNum } = useParams(); // URL에서 noticeNum 추출
 
-  const handleRegister = () => {
-    navigate("/complainList");
-  };
+  // const handleRegister = () => {
+  //   navigate("/complainList");
+  // };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  useEffect(() => {
+    const fetchNoticeDetail = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/complainDetailStore/${complainNum}`
+        );
 
-    // 작성한 글을 서버로 전송
-    const newNotice = {
-      type: "주요 공지사항", // 항상 공지사항
-      title,
-      content,
-      date: new Date().toISOString(),
+        const complainData = response.data;
+        console.log("complainData", complainData);
+
+        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+        const formattedDate = new Date(complainData.complainDate).toLocaleDateString("ko-KR");
+        setComplain({ ...complainData, complainDate: formattedDate });
+
+        console.log("complain" + complain);
+      } catch (error) {
+        console.error("Error fetching notice:", error);
+      }
     };
-
-    fetch("https://www.localhost:8080/notice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Notice added:", data);
-        // 글 작성 후 입력 필드 초기화
-        setTitle("");
-        setContent("");
-
-        // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
-        navigate("/community/noticeList");
-      })
-      .catch(error => console.error("Error posting notice:", error));
-  };
+    fetchNoticeDetail(); // 컴포넌트가 마운트될 때 공지사항 상세 정보 가져오기
+  }, [complainNum]); // complainNum이 변경될 때마다 다시 실행
 
   return (
     <ContentListDiv>
@@ -54,15 +49,22 @@ const ComplainDetail = () => {
         <Heading>컴플레인 상세</Heading>
       </HeadingContainer>
 
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <s.TrStyle>
           <s.TableTextTd>제목 *</s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
               type="text"
-              style={{ width: "290px", paddingLeft: "90px" }}
+              style={{
+                width: "290px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
               placeholder="직원이 불친절함"
               disabled
+              value={complain.complainTitle}
             />
           </s.TableTextTd>
 
@@ -70,9 +72,16 @@ const ComplainDetail = () => {
           <s.TableTextTd>
             <s.InputStyle
               type="text"
-              style={{ width: "290px", paddingLeft: "90px" }}
-              placeholder="2024-12-20"
+              style={{
+                width: "290px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+              placeholder="작성일(예_2024-12-11)"
               disabled
+              value={complain.complainDate}
             />
           </s.TableTextTd>
         </s.TrStyle>
@@ -82,9 +91,17 @@ const ComplainDetail = () => {
           <s.TableTextTd>
             <s.InputStyle
               type="text"
-              style={{ width: "680px", paddingLeft: "20px" }}
-              placeholder="자주가던 매장인데...."
+              style={{
+                width: "680px",
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "flex-start", // 수직 정렬을 위쪽으로
+                textAlign: "left", // 텍스트를 왼쪽 정렬
+                paddingLeft: "20px", // 왼쪽 여백
+              }}
+              placeholder="글 내용 입니다."
               disabled
+              value={complain.complainContent}
             />
           </s.TableTextTd>
         </s.TrStyle>
@@ -93,9 +110,15 @@ const ComplainDetail = () => {
           <s.TableTextTd>코멘트 *</s.TableTextTd>
           <s.TableTextTd>
             <Textarea
-              value={content}
               onChange={e => setContent(e.target.value)}
-              style={{ width: "680px" }}
+              style={{
+                width: "680px",
+                display: "flex",
+                alignItems: "flex-start", // 수직 정렬을 위쪽으로
+                textAlign: "left", // 텍스트를 왼쪽 정렬
+                paddingLeft: "20px", // 왼쪽 여백
+              }}
+              value={complain.complainAnswer}
             />
             {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
           </s.TableTextTd>
@@ -108,7 +131,7 @@ const ComplainDetail = () => {
         {/* <Button variant="outline"></Button> */}
 
         <ButtonContainer>
-          <s.ButtonStyle onClick={handleRegister}>
+          <s.ButtonStyle>
             <Link to="/complainList">목록으로</Link>
           </s.ButtonStyle>
         </ButtonContainer>

@@ -1,26 +1,40 @@
 import * as d from "../styledcomponent/shopitemdetail.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CommonWrapper, CommonContainer } from "../styledcomponent/common.tsx";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
-import {useNavigate} from 'react-router-dom';
-  
+import {useNavigate,useParams} from 'react-router-dom';
+import { tokenAtom, memberAtom } from '../../atoms';
+import { axiosInToken } from '../../config.js';  
+import { useAtomValue } from 'jotai/react';
 
-
-const ShopItemDetail = ({ itemCode }) => {
+const ShopItemDetail = () => {
   const navigate = useNavigate();
-  const item = {
-    itemCode: 1,
-    name: "에티오피아 코케허니 G1스페셜티",
-    imageUrl: "/image/item1.jpg",
-    price: 5900,
-    bgColor: "#45b0da",
-    storageType: "실온",
-    
-  };
-
+  const [item,setItem]=useState({});
+  const [isWished, setIsWished]= useState(false);
+  const token = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
   const [quantity, setQuantity] = useState(1);
+  const {itemCode} = useParams();
+
+  // 처음엔 카테고리와 카테고리 선택 안한 전체 데이터 가져오기 
+  useEffect(() => {
+    getItemInfo(itemCode);
+  }, [token,itemCode]);
+
+  const getItemInfo = (itemCode) => {
+    axiosInToken(token).get(`shopItemDetail/${itemCode}?storeCode=${store.storeCode}`)
+      .then(res => {
+        setItem(res.data.item);
+        if(res.data.wishNum!=null){
+          setIsWished(true);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   const handleIncrement = () => {
     setQuantity((prev) => prev + 1);
@@ -32,10 +46,8 @@ const ShopItemDetail = ({ itemCode }) => {
 
   const totalPrice = item.price * quantity;
 
-  const [isAdded, setIsAdded] = useState(false);
-
   const toggleWishlist = () => {
-    setIsAdded(!isAdded);
+    setIsWished(!isWished);
   };
 
   return (
@@ -46,23 +58,23 @@ const ShopItemDetail = ({ itemCode }) => {
             <d.PdtDetailLeft>
               <d.PdtDetailItemImg>
                 <d.PdtDetailItemImgArea>
-                  <img src={item.imageUrl} alt=""></img>
+                <img src='/image/item3.jpg' alt={item.itemFileNum} />
                 </d.PdtDetailItemImgArea>
               </d.PdtDetailItemImg>
             </d.PdtDetailLeft>
             <d.PdtDetailRight>
               <d.PdtDetailItemTitleGroup>
-                <d.PdtDetailItemTitle>{item.name}</d.PdtDetailItemTitle>
+                <d.PdtDetailItemTitle>{item.itemName}</d.PdtDetailItemTitle>
               </d.PdtDetailItemTitleGroup>
               <d.PdtDetailItemInfoGroup>
                 <d.PdtDetailItemInfoDl>
                   <d.PdtDetailItemInfoDt>상품코드</d.PdtDetailItemInfoDt>
-                  <d.PdtDetailItemInfoDd>G2000002676</d.PdtDetailItemInfoDd>
+                  <d.PdtDetailItemInfoDd>{item.itemCode}</d.PdtDetailItemInfoDd>
 
                   <d.PdtDetailItemInfoDt>공급가</d.PdtDetailItemInfoDt>
-                  <d.PdtDetailItemInfoDd>5,900원</d.PdtDetailItemInfoDd>
+                  <d.PdtDetailItemInfoDd>{item.itemPrice}원</d.PdtDetailItemInfoDd>
                   <d.PdtDetailItemInfoDt>보관상태</d.PdtDetailItemInfoDt>
-                  <d.PdtDetailItemInfoDd>실온</d.PdtDetailItemInfoDd>
+                  <d.PdtDetailItemInfoDd>{item.itemStorage}</d.PdtDetailItemInfoDd>
                 </d.PdtDetailItemInfoDl>
               </d.PdtDetailItemInfoGroup>
               <d.PdtDetailItemOtherGroup>
@@ -77,15 +89,15 @@ const ShopItemDetail = ({ itemCode }) => {
                 </d.QuantityControlWrapper>
                 <d.PriceWapper>
                   <span>합계</span>
-                  <d.TotalPrice>{totalPrice.toLocaleString()}원</d.TotalPrice>
+                  <d.TotalPrice>{totalPrice}원</d.TotalPrice>
                 </d.PriceWapper>
                 <d.ButtonWrapper>
                   <d.WishlistButton onClick={toggleWishlist}>
-                    <d.WishlistIcon isAdded={isAdded}>
-                      {isAdded ? <SolidHeartIcon /> : <OutlineHeartIcon />}
+                    <d.WishlistIcon isWished={isWished}>
+                      {isWished ? <SolidHeartIcon /> : <OutlineHeartIcon />}
                     </d.WishlistIcon>
                   </d.WishlistButton>
-                  <StyledButton size="extralg" theme="brown" onClick={()=>navigate("/cartList")}>
+                  <StyledButton size="extralg" theme="brown" >
                     장바구니
                   </StyledButton>
                 </d.ButtonWrapper>
@@ -106,7 +118,7 @@ const ShopItemDetail = ({ itemCode }) => {
             </tr>
             <tr>
               <d.PdtExtraInfoTableTh>원산지</d.PdtExtraInfoTableTh>
-              <d.PdtExtraInfoTableTd>대한민국</d.PdtExtraInfoTableTd>
+              <d.PdtExtraInfoTableTd>{item.itemCountryOrigin}</d.PdtExtraInfoTableTd>
             </tr>
           </d.PdtExtraInfoTable>
         </d.ProductDetail>

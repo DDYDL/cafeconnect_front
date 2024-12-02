@@ -1,117 +1,130 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import React, {useEffect, useState} from "react";
+import axios from "axios";
+import { useAtomValue } from "jotai/react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
-import {axiosInToken} from "../../config";
-import axios from "axios";
 
 // todo 답변 저장 -> 해당 답변이 계속 보여지도록 해야함.
 const AskList = () => {
-  const [askList, setAskList] = useState([]);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [ask, setAsk] = useState([]);
+  const [storeCode, setStoreCode] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
   const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [searchQuery, setSearchQuery] = useState(""); // 검색 요청 시, 사용
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장하는 상태
+  const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는 상태
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  const token = useAtomValue(tokenAtom);
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
+  const [searchAsk, setSearchAsk] = useState("");
 
-    const handleItemClick = (askNum) => {
-        setSelectedItem(selectedItem === askNum ? null : askNum); // askNum으로 비교
-    };
+  // useCallback 제거된 fetchStoreCode
+  const fetchStoreCode = async () => {
+    try {
+      if (!token) return;
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode;
+      setStoreCode(storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  };
+
+  // useCallback 제거된 fetchData
+  const fetchData = async () => {
+    if (!token || !storeCode) return;
+    try {
+      const response = await axiosInToken(token).get(`/askListStore/${storeCode}`);
+      const formattedData = response.data.map(ask => ({
+        ...ask,
+        askDate: new Date(ask.askDate).toLocaleDateString("ko-KR"),
+      }));
+      setAsk(formattedData);
+    } catch (err) {
+      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+    }
+  };
+
+  // useEffect는 그대로 유지
+  useEffect(() => {
+    fetchStoreCode();
+  }, [token]);
+
+  useEffect(() => {
+    fetchData();
+  }, [token, storeCode]);
+
+  // 검색 버튼 클릭 핸들러
+  const onSearchClick = () => {
+    setIsSearchActive(true);
+  };
+
+  // const handleItemClick = askNum => {
+  //   setSelectedItem(selectedItem === askNum ? null : askNum); // askNum으로 비교
+  //   navigate(`/askDetailStore/${storeCode}`);
+  // };
+
+  const handleItemClick = async askNum => {
+    if (selectedItem === askNum) {
+      // 이미 선택된 항목을 다시 클릭하면 초기화
+      setSelectedItem(null);
+      setSelectedAnswer(null);
+    } else {
+      setSelectedItem(askNum);
+      await fetchAnswerForSelectedItem(askNum); // 답변 가져오기
+    }
+  };
 
   const askWrite = () => {
     navigate("/askWrite");
   };
 
-  const handleChange = (id, value) => {
-    setAnswers(prevAnswers => ({
-      ...prevAnswers,
-      [id]: value, // 해당 id에 대한 답변 업데이트
-    }));
+  const fetchAnswerForSelectedItem = async askNum => {
+    try {
+      if (!storeCode) return;
+      const response = await axios.get(
+        `http://localhost:8080/askDetailStore/${storeCode}/getAnswer/${askNum}`
+      );
+      console.log("response data:", response.data); // 응답 데이터 확인
+
+      const answer = response.data.askAnswer; // 서버에서 받은 답변
+      setAnswers(prev => {
+        console.log("Previous answers:", prev); // 상태 업데이트 전 로그
+        const updatedAnswers = { ...prev, [askNum]: answer };
+        console.log("Updated answers:", updatedAnswers); // 업데이트된 상태 로그
+        return updatedAnswers;
+      });
+    } catch (err) {
+      console.error("답변 요청 중 오류 발생:", err);
+    }
   };
 
-  // 검색어 입력 시 상태 업데이트
-  // const handleSearchChange = e => {
-  //   setSearchQuery(e.target.value);
-  // };
+  const onChangeAsk = e => {
+    setSearchAsk(e.target.value);
+  };
 
-  // 1:1문의 데이터를 가져오는 useEffect
+  const filterAsk = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+
+  // 리스트를 불러오는 함수
+  const fetchAskList = async () => {
+    try {
+      if (!storeCode) return; // storeCode가 없는 경우 요청을 하지 않음
+      const response = await axios.get(`http://localhost:8080/askListStore/${storeCode}/`);
+      setAsk(response.data); // ask 리스트를 상태에 저장
+    } catch (err) {
+      console.error("리스트 불러오기 오류:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = () => {
-        axios.get('http://localhost:8080/askList')
-          .then(res => {
-            console.log(res.data);
-            setAskList([...res.data]);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-    };
-
-    fetchData();
-  }, []);  // token은 더 이상 의존성 배열에 포함하지 않음
-
-    //답변 저장
-    const handleSubmit = (askNum, e) => {
-        e.preventDefault(); // 기본 폼 제출 동작 방지
-
-        const answer = answers[askNum]; // 해당 askNum에 대한 답변을 가져옴
-
-        if (!answer) {
-            alert("답변을 작성해주세요.");
-            return;
-        }
-
-        const answerData = {
-            askAnswer: answer
-        };
-
-        console.log(answerData);  // 추가: 서버에 보내는 데이터 확인
-
-        // 서버에 답변을 제출하는 API 요청
-        axios
-            .post(`http://localhost:8080/askList/save/${askNum}`, answerData )
-            .then((res) => {
-                alert("답변이 저장되었습니다.");
-                // 답변 저장 후, 상태 초기화
-                setAnswers((prevAnswers) => ({
-                    ...prevAnswers,
-                    [askNum]: "", // 답변 필드 초기화
-                }));
-                setSelectedItem(null); // 답변 작성 후 해당 게시글 닫기
-            })
-            .catch((err) => {
-                alert("답변 저장에 실패했습니다.");
-                console.error("답변 저장 실패:", err);
-            });
-    };
-
-    // 답글 삭제 함수
-    const handleDelete = (askNum) => {
-
-        axios
-            .post(`http://localhost:8080/askList/delete/${askNum}`)
-            .then(() => {
-                alert("답변이 삭제되었습니다.");
-                setAnswers((prevAnswers) => {
-                    const newAnswers = { ...prevAnswers };
-                    delete newAnswers[askNum]; // 삭제한 답변 상태에서 제거
-                    return newAnswers;
-                });
-                setSelectedItem(null); // 답변 삭제 후 해당 게시글 닫기
-            })
-            .catch((err) => {
-                alert("답변 삭제에 실패했습니다.");
-                console.error("답변 삭제 실패:", err);
-            });
-    };
-
+    fetchAskList(); // 컴포넌트가 처음 렌더링될 때 ask 리스트를 불러옴
+  }, [storeCode]);
 
   return (
     // <Wrapper>
@@ -132,7 +145,29 @@ const AskList = () => {
 
         <s.ButtonDiv width="200px" float="right">
           <s.SearchDiv width="200px">
-            <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="제목 검색" />
+            <Input
+              name="search"
+              label="제목 검색"
+              value={searchAsk}
+              onChange={onChangeAsk}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  onSearchClick(); // Enter 키를 누르면 onSearchClick 실행
+                }
+              }}
+            />
+            <MagnifyingGlassIcon
+              onClick={onSearchClick} // 검색 버튼으로 사용
+              className="h-5 w-5"
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#333",
+              }}
+            />
           </s.SearchDiv>
         </s.ButtonDiv>
       </HeadingContainer1>
@@ -147,41 +182,51 @@ const AskList = () => {
 
       <CustomHorizontal width="basic" bg="black" />
 
-      {/* // 백엔드 작업하고, 아래의 map부분 바꾸기 */}
-      {/* 검색 결과가 있을 경우 해당 결과를 렌더링
-      {searchResults.length > 0 ? (
-        searchResults.map((item) => (
-          <div key={item.id}>
-            <TableInfoList onClick={() => handleItemClick(item.id)}>
-              <div>{item.id}</div>
-              <div>{item.title}</div>
-              <div>{item.date}</div>
-            </TableInfoList> */}
+      {/* 조건부 렌더링 */}
+      <div>
+        {(isSearchActive ? filterAsk : ask).length > 0 ? (
+          (isSearchActive ? filterAsk : ask).map((a, index) => (
+            <React.Fragment key={a.askNum}>
+              <TableInfoList onClick={() => handleItemClick(a.askNum)}>
+                <div>{index + 1}</div>
+                <div style={{ paddingLeft: "20px" }}>{a.askTitle}</div>
+                <div style={{ paddingRight: "20px" }}>
+                  {new Date(a.askDate).toLocaleDateString()}
+                </div>
+              </TableInfoList>
+              {selectedItem === a.askNum && (
+                <AnswerContainer>
+                  <h3
+                    style={{
+                      display: "flex",
+                      justifyContent: "left",
+                      paddingTop: "10px",
+                      paddingLeft: "20px",
+                      fontSize: "20px",
+                    }}
+                  >
+                    본사 답변
+                  </h3>
 
-        {askList.map((askList) => (
-            <div key={askList.askNum}>
-                <TableInfoList onClick={() => handleItemClick(askList.askNum)}>
-                    <div>{askList.askTitle}</div>
-                    <div>{askList.askContent}</div>
-                    <div>{new Date(askList.askDate).toLocaleDateString('ko-KR')}</div>
-                </TableInfoList>
-
-                <CustomHorizontal width="basic" bg="grey" />
-
-                {selectedItem === Number(askList.askNum) && ( // selectedItem과 askNum 비교 시 Number 타입으로 일치시킴
-                    <AnswerContainer>
-                        <h4>답변 작성</h4>
-                        <AnswerTextarea
-                            value={answers[askList.askNum] || ""}
-                            onChange={(e) => handleChange(askList.askNum, e.target.value)}
-                            placeholder="답변을 작성하세요"
-                        />
-                        <SubmitButton onClick={(e) => handleSubmit(askList.askNum, e)}>답변 저장</SubmitButton>
-                        <CancelButton onClick={(e) => handleDelete(askList.askNum, e)}>답변 삭제</CancelButton>
-                    </AnswerContainer>
-                )}
-            </div>
-        ))}
+                  <AnswerContent
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      padding: "20px",
+                      textAlign: "left",
+                    }}
+                    readOnly
+                  >
+                    {answers[a.askNum] || "아직 답변이 작성되지 않았습니다."}
+                  </AnswerContent>
+                </AnswerContainer>
+              )}
+            </React.Fragment>
+          ))
+        ) : (
+          <div>검색 결과가 없습니다.</div>
+        )}
+      </div>
     </ContentListDiv>
   );
 };
@@ -197,7 +242,6 @@ const HeadingContainer = styled.div`
 const HeadingContainer1 = styled.div`
   display: flex;
   justify-content: space-between;
-  text-align: center;
   align-items: center;
 `;
 
@@ -308,7 +352,25 @@ const AnswerContainer = styled.div`
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #eeeeee;
+
+  min-height: 100px; /* 최소 높이를 300px로 설정 */
+  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
+  overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
+`;
+
+const AnswerContent = styled.div`
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333; /* 글자 색 변경 */
+  // background-color: white; /* 답변 배경색 */
+
+  border-radius: 5px;
+
+  min-height: 100px; /* 최소 높이를 300px로 설정 */
+  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
+  overflow-y: auto; /* 내용이 많을 경우 스크롤 표시 */
 `;
 
 const AnswerTextarea = styled.textarea`

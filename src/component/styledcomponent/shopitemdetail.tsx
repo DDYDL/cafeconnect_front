@@ -158,10 +158,10 @@ export const TotalPrice = styled.span`
     color: #333;
 `;
 
-export const WishlistIcon = styled.div<{ isAdded: boolean }>`
+export const WishlistIcon = styled.div<{ isWished: boolean }>`
     width: 24px;
     height: 24px;
-    color: ${({ isAdded }) => (isAdded ? '#F28787' : '#959595')}; /* 찜 추가 시 브라운, 기본 회색 */
+    color: ${({ isWished }) => (isWished ? '#F28787' : '#959595')}; /* 찜 추가 시 브라운, 기본 회색 */
     transition: color 0.3s ease;
 `;
 
