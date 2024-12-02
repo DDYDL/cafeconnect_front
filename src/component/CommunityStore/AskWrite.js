@@ -1,57 +1,89 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useAtomValue } from "jotai/react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const AskWrite = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const initSaleItem = {
+    askType: "",
+    askTitle: "",
+    askContent: "",
+    storeCode: 1,
+    // askDate: new Date(), // 현재 날짜와 시간으로 초기화
+  };
+
+  const token = useAtomValue(tokenAtom);
+  const [ask, setAsk] = useState(initSaleItem);
+  const [storeCode, setStoreCode] = useState(null);
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [selectedInquiryType, setSelectedInquiryType] = useState("default");
+
+  //  fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
+
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
-    navigate("/shopMain");
+    navigate(`/askListStore/${storeCode}`);
   };
 
   const handleRegister = () => {
-    navigate("/askList");
+    navigate(`/askListStore/${storeCode}`);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    // 작성한 글을 서버로 전송
-    const newNotice = {
-      type: "주요 공지사항", // 항상 공지사항
-      title,
-      content,
-      date: new Date().toISOString(),
+    const newAsk = {
+      ...ask,
+      askType: ask.askType,
+      askTitle: ask.askTitle,
+      askContent: ask.askContent,
+      storeCode: storeCode,
+      askDate: new Date().toISOString(),
     };
+    console.log("newAsk" + newAsk);
 
-    fetch("https://www.localhost:8080/notice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Notice added:", data);
-        // 글 작성 후 입력 필드 초기화
-        setTitle("");
-        setContent("");
-
-        // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
-        navigate("/noticeList");
+    // !! 작성 완료, post내부 url 문제로 백엔드에 전송 안됐었음.
+    axios
+      .post(`http://localhost:8080/askWrite`, JSON.stringify(newAsk), {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // 필요한 경우 인증 토큰 추가
+        },
       })
-      .catch(error => console.error("Error posting notice:", error));
-  };
+      .then(res => {
+        console.log("newAsk", newAsk);
+        console.log("res.data", res.data);
 
+        // 등록 완료 후 alert을 먼저 띄운 뒤, 일정 시간이 지나면 페이지 이동
+        alert("문의가 성공적으로 등록되었습니다.");
+        navigate(`/askListStore/${storeCode}`);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("문의 등록 중 오류가 발생했습니다.");
+      });
+  };
   return (
     <ContentListDiv>
       <HeadingContainer>
@@ -65,15 +97,15 @@ const AskWrite = () => {
 
       <Form onSubmit={handleSubmit}>
         <s.TrStyle>
-          <s.TableTextTd>요구사항 유형 *</s.TableTextTd>
+          <s.TableTextTd style={{ width: "120px" }}>요구사항 유형 *</s.TableTextTd>
           <s.TableTextTd>
             {/* <s.InputStyle type="text" style={{ width: "680px" }} disabled /> */}
 
             <Select
               style={{ marginLeft: "20px" }}
               id="inquiryType"
-              value={selectedInquiryType}
-              onChange={e => setSelectedInquiryType(e.target.value)}
+              value={ask.askType}
+              onChange={e => setAsk({ ...ask, askType: e.target.value })}
             >
               <Option value="default">선택</Option>
               <Option value="상품 문의">상품 문의</Option>
@@ -86,36 +118,41 @@ const AskWrite = () => {
         </s.TrStyle>
 
         <s.TrStyle>
-          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd style={{ width: "120px" }}>제목 *</s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
-              style={{ width: "680px", marginLeft: "20px" }}
+              style={{ width: "630px", marginLeft: "20px" }}
               type="text"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={ask.askTitle}
+              onChange={e => setAsk({ ...ask, askTitle: e.target.value })}
             />
           </s.TableTextTd>
         </s.TrStyle>
 
         <s.TrStyle style={{ height: "200px", paddingTop: "20px" }}>
-          <s.TableTextTd>내용 *</s.TableTextTd>
+          <s.TableTextTd style={{ width: "120px" }}>내용 *</s.TableTextTd>
           <s.TableTextTd>
             <Textarea
-              style={{ width: "680px", marginLeft: "20px" }}
-              value={content}
-              onChange={e => setContent(e.target.value)}
+              style={{ width: "630px", marginLeft: "20px" }}
+              value={ask.askContent}
+              onChange={e => setAsk({ ...ask, askContent: e.target.value })}
             />
             {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
           </s.TableTextTd>
         </s.TrStyle>
 
         <ButtonContainer>
-          <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
-            <Link to="/complain">취소</Link>
+          <s.ButtonStyle
+            variant="outlined"
+            bgColor="white"
+            // onClick={handleCancel}
+          >
+            <Link to="/askListStore/:storeCode">취소</Link>
           </s.ButtonStyle>
           &nbsp;&nbsp;
-          <s.ButtonStyle onClick={handleRegister}>
-            <Link to="/complain">등록하기</Link>
+          <s.ButtonStyle type="submit">
+            등록하기
+            {/* <Link to="/askListStore/:storeCode">등록하기</Link> */}
           </s.ButtonStyle>
         </ButtonContainer>
       </Form>
