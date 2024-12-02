@@ -176,11 +176,11 @@ function App() {
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
 
         {/* 중첩 라우팅 설정 */}
-        <Route path="/shopMain" element={<ShopLayout/>}>
+        <Route path="/shopMain" element={<ShopLayout categories={{ major: majorCategory, middle: middleCategory, sub: subCategory}}/>}>
           <Route index element={<ShopMain />} />
         </Route>
 
-        <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
+        <Route exect path="/categoryItemList" element={<CategoryItemList categories={{ major: majorCategory, middle: middleCategory, sub: subCategory}}/>}/>
         <Route exect path="/orderList" element={<OrderListForStore/>}/>
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
 

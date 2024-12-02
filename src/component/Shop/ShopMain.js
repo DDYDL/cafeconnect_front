@@ -46,10 +46,10 @@ const ProductItem = ({ item }) => {
         <s.ItemListTextBox>
           <s.ItemTitle>{item.name}</s.ItemTitle>
           <s.ItemPrice>{item.price}</s.ItemPrice>
-          {item.storageType && (
+          {item.itemStorage && (
             <s.ItemStorageLabelP>
-              <s.ItemStorageType storageType={item.storageType}>
-                {item.storageType}
+              <s.ItemStorageType storageWay={item.itemStorage}>
+                {item.itemStorage}
               </s.ItemStorageType>
             </s.ItemStorageLabelP>
           )}
