@@ -109,7 +109,7 @@ function App() {
     // 로그인 페이지는 헤더 안 보이게 하기
     if(location.pathname === 'loginStore' && path) setPath(false);
     else if(location.pathname !== 'loginStore' && !path) setPath(true);
-    
+
     getItemCategory();
     getMenuCategory();
   }, []);
@@ -176,11 +176,11 @@ function App() {
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
 
         {/* 중첩 라우팅 설정 */}
-        <Route path="/shopMain" element={<ShopLayout/>}>
+        <Route path="/shopMain" element={<ShopLayout categories={{ major: majorCategory, middle: middleCategory, sub: subCategory}}/>}>
           <Route index element={<ShopMain />} />
         </Route>
 
-        <Route exect path="/categoryItemList" element={<CategoryItemList/>}/>
+        <Route exect path="/categoryItemList" element={<CategoryItemList categories={{ major: majorCategory, middle: middleCategory, sub: subCategory}}/>}/>
         <Route exect path="/orderList" element={<OrderListForStore/>}/>
         <Route exect path="/orderDetail" element={<OrderDetailForStore/>}/>
 
@@ -207,7 +207,7 @@ function App() {
         <Route exact path="/askWrite" element={<AskWrite/>}/>
         <Route exact path="/askList" element={<AskList/>}/>
         <Route exact path="/complainList" element={<ComplainList/>}/>
-        <Route exact path="/complainDetail" element={<ComplainDetail/>}/>
+        <Route exact path="/complainDetailStore/:complainNum" element={<ComplainDetail />} />
 
         <Route exact path="/salesAnalysis" element={<SalesAnalysis/>}/>
         <Route exact path="/salesWrite" element={<SalesWrite/>}/>
@@ -243,7 +243,7 @@ function App() {
 
         <Route exact path="/noticeListMain" element={<NoticeListMain/>} />
         <Route exact path="/noticeWriteMain" element={<NoticeWriteMain/>} />
-        <Route exact path="/noticeDetailMain" element={<NoticeDetailMain/>} />
+        <Route exact path="/NoticeDetailMain/:noticeNum" element={<NoticeDetailMain />} />
         <Route exact path="/noticeWrite" element={<NoticeWriteMain/>} />
         <Route exact path="/noticeModal" element={<NoticeModal/>}/>
         <Route exact path="/askListMain" element={<AskListMain/>}/>

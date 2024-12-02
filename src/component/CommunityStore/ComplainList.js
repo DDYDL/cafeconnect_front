@@ -1,97 +1,107 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import React, { useState } from "react";
+import { useAtomValue } from "jotai/react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const ComplainList = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
-  const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [searchQuery, setSearchQuery] = useState(""); // 검색 요청 시, 사용
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장하는 상태
-
-  const buttonLabels = ["1주일", "1개월", "3개월"]; // 버튼 텍스트 설정
+  const [complain, setComplain] = useState([]);
+  const [storeCode, setStoreCode] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
+  const [searchComplain, setSearchComplain] = useState("");
+  const navigate = useNavigate();
+  const token = useAtomValue(tokenAtom);
+  const buttonLabels = ["1주일", "1개월", "3개월"];
 
-  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  // / fetchStoreCode를 useCallback으로 래핑
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
 
-  const handleItemClick = id => {
-    // setSelectedItem(selectedItem === id ? null : id); // Toggle answer form visibility
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
-    navigate(`/complainDetail/${id}`);
+  const fetchData = useCallback(async () => {
+    if (!token || !storeCode) return; // 토큰 또는 storeCode가 없는 경우 요청 생략
+    try {
+      const response = await axiosInToken(token).get(`/complainListStore/${storeCode}`);
+      const formattedData = response.data.map(item => ({
+        ...item,
+        complainDate: new Date(item.complainDate).toLocaleDateString("ko-KR"),
+      }));
+      setComplain(formattedData);
+    } catch (err) {
+      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+      alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+  }, [token, storeCode]); // token, storeCode를 의존성 배열에 추가
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]); // fetchData를 의존성 배열에 추가
+
+  // 기간 필터링
+  const filterComplainsByPeriod = period => {
+    const currentDate = new Date();
+    let periodStartDate;
+
+    switch (period) {
+      case "1주일":
+        periodStartDate = new Date(currentDate.setDate(currentDate.getDate() - 7));
+        break;
+      case "1개월":
+        periodStartDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+        break;
+      case "3개월":
+        periodStartDate = new Date(currentDate.setMonth(currentDate.getMonth() - 3));
+        break;
+      default:
+        periodStartDate = new Date(0);
+    }
+
+    return complain.filter(c => new Date(c.complainDate) >= periodStartDate);
   };
 
-  const handleButtonClick = buttonId => {
-    setSelectedButton(buttonId);
+  // 검색 필터링
+  const filterComplainsBySearch = searchText =>
+    complain.filter(c => c.complainTitle.toLowerCase().includes(searchText.toLowerCase()));
+
+  // 전체 필터링
+  const getFilteredComplains = () => {
+    let filtered = complain;
+
+    if (selectedButton !== null) {
+      filtered = filterComplainsByPeriod(buttonLabels[selectedButton]);
+    }
+    if (searchComplain) {
+      filtered = filterComplainsBySearch(searchComplain);
+    }
+
+    return filtered;
   };
 
-  const askWrite = () => {
-    navigate("/community/askWrite");
+  const handleButtonClick = index => {
+    setSelectedButton(selectedButton === index ? null : index);
   };
 
-  const handleChange = (id, value) => {
-    setAnswers(prevAnswers => ({
-      ...prevAnswers,
-      [id]: value, // 해당 id에 대한 답변 업데이트
-    }));
+  const handleItemClick = complainNum => {
+    navigate(`/complainDetailStore/${complainNum}`);
   };
-
-  // 검색어 입력 시 상태 업데이트
-  const handleSearchChange = e => {
-    setSearchQuery(e.target.value);
-  };
-
-  // 검색 버튼 클릭 시 백엔드로 검색 요청
-  const handleSearch = () => {
-    fetch(`http://localhost:8080/AskList/search?query=${searchQuery}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("검색 결과:", data);
-        // 결과 처리
-      })
-      .catch(error => console.error("검색 오류:", error));
-  };
-
-  // const handleSubmit = (id, event) => {
-  //   event.preventDefault();
-
-  //   const newNotice = {
-  //     type: "주요 공지사항",
-  //     title,
-  //     content,
-  //     date: new Date().toISOString(),
-  //   };
-
-  //   // 만약 답변을 저장하는 로직이 있다면 해당 로직에 맞춰 데이터를 저장
-  //   // 예시: id에 해당하는 답변도 함께 저장
-  //   // 각 항목에 대한 답변을 저장하는 로직
-  //   console.log("Saving answer for item", id, "with content:", answers[id]);
-
-  //   fetch(`https://www.localhost:8080/complainDetail/${id}`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(newNotice),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log("Ask added:", data);
-  //       setTitle("");
-  //       setContent("");
-  //     })
-  //     .catch(error => console.error("Error posting notice:", error));
-  // };
 
   return (
     <ContentListDiv>
@@ -105,60 +115,70 @@ const ComplainList = () => {
       </HeadingContainer>
 
       <HeadingContainer1>
-        {buttonLabels.map((label, index) => (
-          <PeriodButton
-            key={index}
-            isSelected={selectedButton === index}
-            onClick={() => handleButtonClick(index)}
-          >
-            {label}
-          </PeriodButton>
-        ))}
-
-        <SearchContainer>
-          <s.ButtonDiv width="200px" float="right">
-            <s.SearchDiv width="200px">
-              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="제목 검색" />
-            </s.SearchDiv>
-          </s.ButtonDiv>
-        </SearchContainer>
+        <div style={{ display: "flex", gap: "2px" }}>
+          {buttonLabels.map((label, index) => (
+            <PeriodButton
+              key={index}
+              isSelected={selectedButton === index}
+              onClick={() => handleButtonClick(index)}
+            >
+              {label}
+            </PeriodButton>
+          ))}
+        </div>
+        <s.ButtonDiv width="200px" float="right">
+          <s.SearchDiv width="200px">
+            <Input
+              name="search"
+              label="제목 검색"
+              value={searchComplain}
+              onChange={e => setSearchComplain(e.target.value)}
+            />
+            <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} />
+          </s.SearchDiv>
+        </s.ButtonDiv>
       </HeadingContainer1>
 
       <CustomHorizontal width="basic" bg="black" />
-
       <TableHeader>
         <div>번호</div>
         <div>제목</div>
         <div>작성일</div>
       </TableHeader>
-
       <CustomHorizontal width="basic" bg="black" />
 
-      {/* // 백엔드 작업하고, 아래의 map부분 바꾸기 */}
-      {/* 검색 결과가 있을 경우 해당 결과를 렌더링
-      {searchResults.length > 0 ? (
-        searchResults.map((item) => (
-          <div key={item.id}>
-            <TableInfoList onClick={() => handleItemClick(item.id)}>
-              <div>{item.id}</div>
-              <div>{item.title}</div>
-              <div>{item.date}</div>
-            </TableInfoList> */}
-
-      {[1, 2, 3, 4, 5].map(id => (
-        <div key={id}>
-          <TableInfoList onClick={() => handleItemClick(id)}>
-            <div>{id}</div>
-            <div>[컴플레인 공지] 매장 내 청소 상태 관련</div>
-            <div>2024-10-11 13:49:46</div>
-          </TableInfoList>
-
-          <CustomHorizontal width="basic" bg="grey" />
-        </div>
-      ))}
+      <div>
+        {getFilteredComplains().length > 0 ? (
+          getFilteredComplains().map((c, index) => (
+            <TableInfoList onClick={() => handleItemClick(c.complainNum)} key={c.complainNum}>
+              <div>{index + 1}</div>
+              <div style={{ paddingLeft: "20px" }}>{c.complainTitle}</div>
+              <div style={{ paddingRight: "20px" }}>{c.complainDate}</div>
+            </TableInfoList>
+          ))
+        ) : (
+          <NoResults>검색 결과가 없습니다.</NoResults>
+        )}
+      </div>
     </ContentListDiv>
   );
 };
+
+const searchIconStyle = {
+  position: "absolute",
+  right: "10px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "pointer",
+  color: "#333",
+};
+
+const NoResults = styled.div`
+  text-align: center;
+  padding: 20px;
+  font-size: 15px;
+  color: grey;
+`;
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -170,10 +190,10 @@ const HeadingContainer = styled.div`
 
 const HeadingContainer1 = styled.div`
   display: flex;
-  // justify-content: space-between;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
   text-align: center;
+  gap: 10px;
 `;
 
 const Heading = styled.h2`
@@ -195,7 +215,7 @@ const PeriodButton = styled.button`
   text-align: center;
   align-items: center;
 
-  width: 120px;
+  width: 60px;
   height: 40px;
   margin-top: 30px;
 
@@ -207,12 +227,12 @@ const PeriodButton = styled.button`
 `;
 
 const SearchContainer = styled.div`
-  width: 800px;
+  // width: 800px;
   display: flex;
   align-items: center;
   justify-content: right;
   gap: 10px;
-  margin-left: 200px;
+  margin-left: 20px;
 `;
 
 const SearchTitle = styled.div`
