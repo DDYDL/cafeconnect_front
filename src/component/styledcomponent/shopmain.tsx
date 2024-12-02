@@ -128,9 +128,9 @@ export const ItemStorageLabelP = styled.p`
 `
     ;
 
-export const ItemStorageType = styled.span<{ storageType?: string }>`
-     ${({ storageType }) => 
-     storageType === "냉동" &&
+export const ItemStorageType = styled.span<{ storageWay?: string }>`
+     ${({ storageWay }) => 
+        storageWay === "냉동" &&
     `
     background: #45b0da;
     color: #fff;
@@ -139,6 +139,16 @@ export const ItemStorageType = styled.span<{ storageType?: string }>`
     text-indent: initial;
     font-size: 11px;
     line-height: 14px;
+  `
+  ||
+  storageWay != "냉동" &&
+    `
+    background: #d26717;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 10px;
+    line-height: 14px;
+    border-radius: 2px;
   `}
 
 `;
@@ -246,3 +256,60 @@ export const CartButton = styled.button`
     }
 `;
 //장바구니 수량선택 컴포넌트 추가 끝 
+
+
+//카테고리ShopList시작
+export const ItemCategoryListWrapper = styled.div`
+    position: relative;
+    //width: 1240px;
+    width:1000px;
+    padding: 0;
+
+`;
+
+export const ItemListAlignWrapper= styled.div`
+    align-items: center;
+    display: flex;
+    height: 4rem;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    width: 100%;
+    border-bottom: 2px solid #333;
+    border-top:2px solid #333;    
+`;
+export const CountWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 1rem;
+    
+    /* .all_counter 클래스 스타일 */
+    .all_counter {
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+    }
+
+    /* .numbering 클래스 스타일 */
+    .numbering {
+        color: #CBD2A4; /* numbering 색상을 #CBD2A4로 설정 */
+        font-weight: bold;
+        margin-left: 5px;
+    }
+`;
+export const CategoryItemListUl = styled.ul`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);  // 4개의 균등한 컬
+    /* grid-template-columns: repeat(auto-fill, minmax(242px, 1fr)); 1240ver. */
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative; // 아이콘 포함시킴 
+`;
+export const CategoryItemListLi = styled.li`
+    position: relative;
+    margin-bottom: 30px;
+`;
+
