@@ -104,7 +104,9 @@ function ItmListCopy() {
   };
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      const response = await axios.get(
+        `http://localhost:8080/majorCategoryCopy`
+      );
       setMajorCategoryList(response.data);
       console.log(response.data);
     } catch (error) {
@@ -114,7 +116,7 @@ function ItmListCopy() {
   const fetchMiddleData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategory?categoryName=${value}`
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -125,7 +127,7 @@ function ItmListCopy() {
   const fetchSubData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/subCategory?categoryName=${value}`
+        `http://localhost:8080/subCategoryCopy?categoryName=${value}`
       );
       setSubCategoryList(response.data);
     } catch (error) {
@@ -330,7 +332,7 @@ function ItmListCopy() {
                     onChange={handleSelectMajorCategory}
                   >
                     {majorCategoryList.map((majorCategory, index) => (
-                      <Option value={majorCategory.categoryName}>
+                      <Option value={majorCategory.categoryValue} key={index}>
                         {majorCategory.categoryName}
                       </Option>
                     ))}
@@ -343,7 +345,7 @@ function ItmListCopy() {
                     onChange={handleSelectMiddleCategory}
                   >
                     {middleCategoryList.map((middleCategory, index) => (
-                      <Option value={middleCategory.categoryName}>
+                      <Option value={middleCategory.categoryValue} key={index}>
                         {middleCategory.categoryName}
                       </Option>
                     ))}
@@ -356,7 +358,7 @@ function ItmListCopy() {
                     onChange={handleSelectSubCategory}
                   >
                     {subCategoryList.map((subCategory, index) => (
-                      <Option value={subCategory.categoryName}>
+                      <Option value={subCategory.categoryValue} key={index}>
                         {subCategory.categoryName}
                       </Option>
                     ))}
