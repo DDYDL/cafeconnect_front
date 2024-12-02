@@ -27,7 +27,7 @@ const SalesWrite = () => {
 
   // menuList가 undefined일 경우 기본값으로 빈 배열을 설정
   const [menuList, setMenuList] = useState([]);
-  // const [selMenu, setSelMenu] = useState([initSaleItem]);
+  const [selMenu, setSelMenu] = useState([initSaleItem]);
   const [salesCount, setSaleCount] = useState(0);
   const [salesTotal, setSaleTotal] = useState(0);
   const [sale, setSale] = useState(initSaleItem);
@@ -289,7 +289,7 @@ const SalesWrite = () => {
               <QuantityInput
                 type="number"
                 value={selMenu.count}
-                onChange={e => setCount({ ...selMenu, count: e.target.value })}
+                // onChange={e => setCount({ ...selMenu, count: e.target.value })}
               />
             </QuantityInputWrapper>
 
