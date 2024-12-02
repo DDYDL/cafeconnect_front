@@ -555,7 +555,7 @@
     display: flex;
     flex-direction: column;
     gap: 50px;
-    min-height: 600px;
+    min-height: 100%;
     width: 440px;
   }
   
@@ -650,7 +650,7 @@
   .ItemInsert .flex-col {
     align-self: flex-start;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
     margin-top: -1px;
     min-height: 81px;
     width: 120px;
@@ -749,6 +749,7 @@
     min-height: 220px;
     padding: 43px 0;
     width: 424px;
+    cursor: pointer;
   }
   
   .ItemInsert .upload-files4ee86225svg {
@@ -780,7 +781,7 @@
   
   .ItemInsert .product-thumb-1bfdce747webp {
     align-self: flex-end;
-    background-image: url(../assets/img/product-thumb-1-bfdce747-webp@2x.png);
+    
     background-position: 50% 50%;
     background-size: cover;
     height: 60px;

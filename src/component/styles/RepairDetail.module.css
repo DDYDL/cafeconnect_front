@@ -770,6 +770,7 @@
   left: 0;
   min-width: 174px;
   padding: 20px 39px;
+  justify-content: cetner;
   position: absolute;
   top: 0;
 }

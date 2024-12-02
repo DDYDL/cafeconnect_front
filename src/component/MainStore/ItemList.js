@@ -9,231 +9,291 @@ import { useNavigate } from "react-router";
 import * as m from "../styles/StyledMain.tsx";
 import axios from "axios";
 
-
 function ItmListCopy() {
-
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [startPage, setStartPage] = useState(0)
+  const [startPage, setStartPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [totalPageNumber, setTotalPageNumber] = useState(0)
+  const [totalPageNumber, setTotalPageNumber] = useState(0);
   const [hasNext, setHasNext] = useState(null);
-  const [hasPrevious, setHasPrevious] = useState(null)
+  const [hasPrevious, setHasPrevious] = useState(null);
   const [empty, setEmpty] = useState(null);
-  const [usingKeyword, setUsingKeyword] = useState(true)
-  const [usingCategory, setUsingCategory] = useState(false)
+  const [usingKeyword, setUsingKeyword] = useState(true);
+  const [usingCategory, setUsingCategory] = useState(false);
 
-
-  const [keyWord, setKeyWord] = useState('');
+  const [keyWord, setKeyWord] = useState("");
 
   const [category, setCategory] = useState({
-    'ItemCategoryMajorName': '',
-    'ItemCategoryMiddleName': '',
-    'ItemCategorySubName': '',
-  })
+    ItemCategoryMajorName: "",
+    ItemCategoryMiddleName: "",
+    ItemCategorySubName: "",
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [emptyList, setEmptyList] = useState([])
-  const [pageNumList, setPageNumList] = useState([])
-  const navigate = useNavigate()
+  const [emptyList, setEmptyList] = useState([]);
+  const [pageNumList, setPageNumList] = useState([]);
+  const [majorCategoryList, setMajorCategoryList] = useState([]);
+  const [middleCategoryList, setMiddleCategoryList] = useState([]);
+  const [subCategoryList, setSubCategoryList] = useState([]);
+  const navigate = useNavigate();
   const handleNavigate = (index) => () => {
-    const page = pageList[index]
-    navigate(`/${page.itemCode}`)
-  }
+    const page = pageList[index];
+    navigate(`/mainItemDetail/${page.itemCode}`);
+  };
 
   const handleChangeKeyword = (e) => {
     const value = e.target.value;
     setKeyWord(value);
-    setUsingKeyword(true)
-    setUsingCategory(false)
-    fetchKeywordData(value, 0)
-  }
+    setUsingKeyword(true);
+    setUsingCategory(false);
+    fetchKeywordData(value, 0);
+  };
 
   const handleSelectMajorCategory = (value) => {
-    
-    console.log(value)
+    console.log(value);
     setCategory({
       ...category,
-      'ItemCategoryMajorName': value
-    })
-
-    setUsingKeyword(false)
-    setUsingCategory(true)
-    fetchCategoryData({
-      ...category,
-      'ItemCategoryMajorName': value
-    },0)
-
-  }
+      ItemCategoryMajorName: value,
+    });
+    fetchMiddleData(value);
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategoryMajorName: value,
+      },
+      0
+    );
+  };
 
   const handleSelectMiddleCategory = (value) => {
-    console.log(value)
+    console.log(value);
     setCategory({
       ...category,
-      'ItemCategoryMiddleName': value
-    })
-    setUsingKeyword(false)
-    setUsingCategory(true)
-    fetchCategoryData({
-      ...category,
-      'ItemCategoryMiddleName': value
-    },0)
-
-  }
+      ItemCategoryMiddleName: value,
+    });
+    fetchSubData(value);
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategoryMiddleName: value,
+      },
+      0
+    );
+  };
 
   const handleSelectSubCategory = (value) => {
-    console.log(value)
+    console.log(value);
     setCategory({
       ...category,
-      'ItemCategorySubName': value
-    })
-    
-    setUsingKeyword(false)
-    setUsingCategory(true)
-    fetchCategoryData({
-      ...category,
-      'ItemCategorySubName': value
-    },0)
+      ItemCategorySubName: value,
+    });
 
-  }
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategorySubName: value,
+      },
+      0
+    );
+  };
+  const fetchMajorData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      setMajorCategoryList(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchMiddleData = async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/middleCategory?categoryName=${value}`
+      );
+      setMiddleCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-
+  const fetchSubData = async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/subCategory?categoryName=${value}`
+      );
+      setSubCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchKeywordData = async (keyword, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`);
+      const response = await axios.get(
+        `http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
+      );
 
+      setCurrentPage(response.data.pageable.pageNumber);
 
-      setCurrentPage(response.data.pageable.pageNumber)
-      
-      setStartPage(Math.floor(response.data.pageable.pageNumber/5)*5)
-      
-      setTotalElements(response.data.totalElements)
-      setTotalPageNumber(response.data.totalPages)
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
+
+      setTotalElements(response.data.totalElements);
+      setTotalPageNumber(response.data.totalPages);
       //넘어가는 부분이 있음
-      if (Math.floor(response.data.pageable.pageNumber / 5) < Math.floor((response.data.totalPages - 1) / 5)) {
-
+      if (
+        Math.floor(response.data.pageable.pageNumber / 5) <
+        Math.floor((response.data.totalPages - 1) / 5)
+      ) {
         setHasNext(true);
-        setEmptyList([])
+        setEmptyList([]);
       } else {
         setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements
-          
-          setEmptyList(new Array(emptyListSize).fill(1));
-          
-          if(response.data.pageable.pageNumber % 5 ===0){
-            setPageNumList(Array.from({ length: 1 },
-              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
-          }else{
-            
-            setPageNumList(Array.from({ length: (response.data.pageable.pageNumber % 5) + 1 },
-              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
-          }
-          
-          
-          
-          
-        } else {
-          
-          setEmptyList([])
-          
-          const pageNumListSize = response.data.totalPages - Math.floor(response.data.pageable.pageNumber/5)*5
-          
-          
-          setPageNumList(Array.from({ length: pageNumListSize },
-            (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
-        }
+          const emptyListSize = 10 - response.data.numberOfElements;
 
+          setEmptyList(new Array(emptyListSize).fill(1));
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(
+              Array.from(
+                { length: 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          } else {
+            setPageNumList(
+              Array.from(
+                { length: (response.data.pageable.pageNumber % 5) + 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          }
+        } else {
+          setEmptyList([]);
+
+          const pageNumListSize =
+            response.data.totalPages -
+            Math.floor(response.data.pageable.pageNumber / 5) * 5;
+
+          setPageNumList(
+            Array.from(
+              { length: pageNumListSize },
+              (_, index) =>
+                response.data.pageable.pageNumber -
+                (response.data.pageable.pageNumber % 5) +
+                index
+            )
+          );
+        }
       }
       if (currentPage > 4) {
-        setHasPrevious(true)
+        setHasPrevious(true);
       } else {
         setHasPrevious(false);
-
       }
 
-
-
       setPageList(response.data.content);
-      setEmpty(response.data.empty)
-
-
+      setEmpty(response.data.empty);
     } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
     }
   };
-  
+
   const fetchCategoryData = async (category, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8080/itemListByCategory?ItemCategoryMajorName?=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&ItemCategorySubName=${category.ItemCategorySubName}&pageNum=${pageNum}&pageSize=10`);
+      const response = await axios.get(
+        `http://localhost:8080/itemListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&ItemCategorySubName=${category.ItemCategorySubName}&pageNum=${pageNum}&pageSize=10`
+      );
 
+      setCurrentPage(response.data.pageable.pageNumber);
 
-      setCurrentPage(response.data.pageable.pageNumber)
-      
-      setStartPage(Math.floor(response.data.pageable.pageNumber/5)*5)
-      
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
 
-      setTotalElements(response.data.totalElements)
-      setTotalPageNumber(response.data.totalPages)
+      setTotalElements(response.data.totalElements);
+      setTotalPageNumber(response.data.totalPages);
       //넘어가는 부분이 있음
-      if (Math.floor(response.data.pageable.pageNumber / 5) < Math.floor((response.data.totalPages - 1) / 5)) {
-        
+      if (
+        Math.floor(response.data.pageable.pageNumber / 5) <
+        Math.floor((response.data.totalPages - 1) / 5)
+      ) {
         setHasNext(true);
-        setEmptyList([])
+        setEmptyList([]);
       } else {
         setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements
+          const emptyListSize = 10 - response.data.numberOfElements;
 
           setEmptyList(new Array(emptyListSize).fill(1));
-          
-          if(response.data.pageable.pageNumber % 5 === 0){
-            setPageNumList(Array.from({ length: 1 },
-              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
-          }else{
-            
-            setPageNumList(Array.from({ length: (response.data.pageable.pageNumber % 5) + 1 },
-              (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(
+              Array.from(
+                { length: 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          } else {
+            setPageNumList(
+              Array.from(
+                { length: (response.data.pageable.pageNumber % 5) + 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
           }
-          
-          
-          
-
         } else {
-          
-          setEmptyList([])
-          
-          const pageNumListSize = response.data.totalPages - Math.floor(response.data.pageable.pageNumber/5)*5
-          
-          console.log(Math.floor(response.data.pageable.pageNumber/5)*5)
-          
-          setPageNumList(Array.from({ length: pageNumListSize },
-            (_, index) => (response.data.pageable.pageNumber - (response.data.pageable.pageNumber % 5)) + index))
-        }
+          setEmptyList([]);
 
+          const pageNumListSize =
+            response.data.totalPages -
+            Math.floor(response.data.pageable.pageNumber / 5) * 5;
+
+          console.log(Math.floor(response.data.pageable.pageNumber / 5) * 5);
+
+          setPageNumList(
+            Array.from(
+              { length: pageNumListSize },
+              (_, index) =>
+                response.data.pageable.pageNumber -
+                (response.data.pageable.pageNumber % 5) +
+                index
+            )
+          );
+        }
       }
       if (currentPage > 4) {
-        setHasPrevious(true)
+        setHasPrevious(true);
       } else {
         setHasPrevious(false);
-
       }
 
-
-
       setPageList(response.data.content);
-      setEmpty(response.data.empty)
-
-
+      setEmpty(response.data.empty);
     } catch (error) {
       setError(error);
     } finally {
@@ -242,8 +302,9 @@ function ItmListCopy() {
   };
 
   useEffect(() => {
-    fetchKeywordData('', 0);
-  }, [])
+    fetchKeywordData("", 0);
+    fetchMajorData();
+  }, []);
 
   return (
     <>
@@ -263,27 +324,42 @@ function ItmListCopy() {
                 {`총${totalElements}건`}
               </div>
               <div className={styles["flex-row"]}>
-                <s.ButtonInnerDiv className="w-16 p-r-2" >
-                  <s.SelectStyle label="대분류"  onChange={handleSelectMajorCategory}>
-                    <Option value="">대분류</Option>
-                    <Option value="커피">커피</Option>
-
+                <s.ButtonInnerDiv className="w-16 p-r-2">
+                  <s.SelectStyle
+                    label="대분류"
+                    onChange={handleSelectMajorCategory}
+                  >
+                    {majorCategoryList.map((majorCategory, index) => (
+                      <Option value={majorCategory.categoryName}>
+                        {majorCategory.categoryName}
+                      </Option>
+                    ))}
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="중분류" onChange={handleSelectMiddleCategory}>
-                    <Option value="">중분류</Option>
-                    <Option value="스무디">스무디</Option>
-
+                  <s.SelectStyle
+                    label="중분류"
+                    onChange={handleSelectMiddleCategory}
+                  >
+                    {middleCategoryList.map((middleCategory, index) => (
+                      <Option value={middleCategory.categoryName}>
+                        {middleCategory.categoryName}
+                      </Option>
+                    ))}
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="소분류" onChange={handleSelectSubCategory}>
-                    <Option value="">소분류</Option>
-                    <Option value="라떼">라떼</Option>
-
+                  <s.SelectStyle
+                    label="소분류"
+                    onChange={handleSelectSubCategory}
+                  >
+                    {subCategoryList.map((subCategory, index) => (
+                      <Option value={subCategory.categoryName}>
+                        {subCategory.categoryName}
+                      </Option>
+                    ))}
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
 
@@ -341,194 +417,330 @@ function ItmListCopy() {
                   </div>
                 </div>
 
-                {!empty && pageList.map((page, index) => (
-                  <div className={styles["frame"]} key={index}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        {`${page.itemMajorCategoryName}/${page.itemMiddleCategoryName}/${page.itemSubCategoryName}`}
-                      </div>
-                    </div>
-                    <div className={styles["frame-88"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        {page.itemCode}
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-5"]}`}>
-                      <div className={styles["frame-90"]}>
-                        <img onClick={handleNavigate(index)}
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          } src={page.imageUrl} alt="image"
-                        ></img>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                            onClick={handleNavigate(index)}
-                          >
-                            {page.itemName}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-5"]}`}>
-                      <div
-                        className={`${styles["number"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        {page.itemUnitQuantity}
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-5"]}`}>
-                      <div
-                        className={`${styles["text-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        {`${page.itemPrice}원`}
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-5"]}`}>
-                      <div
-                        className={`${styles["text-4"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        {page.itemStorage}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {!empty && emptyList.map((page, index) => (
-                  <div className={styles["frame"]} key={index}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        
-                      </div>
-                    </div>
-                    <div className={styles["frame-88"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-5"]}`}>
-                      <div className={styles["frame-90"]}>
+                {!empty &&
+                  pageList.map((page, index) => (
+                    <div className={styles["frame"]} key={index}>
+                      <div className={styles["data"]}>
                         <div
-                          className={
-                            styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                          } 
-                        ></div>
-                        <div className={styles["frame-89"]}>
-                          <div
-                            className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-
-                          >
-                            
+                          className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {`${page.itemMajorCategoryName}/${
+                            page.itemMiddleCategoryName
+                          }/${
+                            page.ItemCategorySubName == true
+                              ? page.itemSubCategoryName
+                              : ""
+                          }`}
+                        </div>
+                      </div>
+                      <div className={styles["frame-88"]}>
+                        <div
+                          className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.itemCode}
+                        </div>
+                      </div>
+                      <div
+                        className={`${styles["data-1"]} ${styles["data-5"]}`}
+                      >
+                        <div className={styles["frame-90"]}>
+                          <img
+                            onClick={handleNavigate(index)}
+                            className={
+                              styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
+                            }
+                            src={page.imageUrl}
+                            alt="image"
+                          ></img>
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                              onClick={handleNavigate(index)}
+                            >
+                              {page.itemName}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-5"]}`}>
                       <div
-                        className={`${styles["number"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        className={`${styles["data-2"]} ${styles["data-5"]}`}
                       >
-                        
+                        <div
+                          className={`${styles["number"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.itemUnitQuantity}
+                        </div>
+                      </div>
+                      <div
+                        className={`${styles["data-3"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["text-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {`${page.itemPrice}원`}
+                        </div>
+                      </div>
+                      <div
+                        className={`${styles["data-4"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["text-4"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.itemStorage}
+                        </div>
                       </div>
                     </div>
-                    <div className={`${styles["data-3"]} ${styles["data-5"]}`}>
+                  ))}
+
+                {!empty &&
+                  emptyList.map((page, index) => (
+                    <div className={styles["frame"]} key={index}>
+                      <div className={styles["data"]}>
+                        <div
+                          className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        ></div>
+                      </div>
+                      <div className={styles["frame-88"]}>
+                        <div
+                          className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        ></div>
+                      </div>
                       <div
-                        className={`${styles["text-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        className={`${styles["data-1"]} ${styles["data-5"]}`}
                       >
-                        
+                        <div className={styles["frame-90"]}>
+                          <div
+                            className={
+                              styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
+                            }
+                          ></div>
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className={`${styles["data-2"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["number"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        ></div>
+                      </div>
+                      <div
+                        className={`${styles["data-3"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["text-3"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        ></div>
+                      </div>
+                      <div
+                        className={`${styles["data-4"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["text-4"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        ></div>
                       </div>
                     </div>
-                    <div className={`${styles["data-4"]} ${styles["data-5"]}`}>
-                      <div
-                        className={`${styles["text-4"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-
-
-
+                  ))}
               </div>
 
               <div style={{ marginTop: "30px" }}>
-
                 <s.PageButtonGroupDiv>
-
-
                   <s.ButtonGroupStyle variant="outlined">
-                    {!empty && hasPrevious &&
-                      <s.IconButtonStyle onClick={() => (fetchKeywordData(keyWord, startPage - 1))}>
+                    {!empty && hasPrevious && (
+                      <s.IconButtonStyle
+                        onClick={() => fetchKeywordData(keyWord, startPage - 1)}
+                      >
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>}
-                    {usingKeyword && !empty && hasNext &&
+                      </s.IconButtonStyle>
+                    )}
+                    {usingKeyword && !empty && hasNext && (
                       <>
-                        <s.IconButtonStyle style={currentPage == startPage ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage)}>{startPage + 1}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 1 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 1)}>{startPage + 2}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 2 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 2)}>{startPage + 3}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 3 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 3)}>{startPage + 4}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 4 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData(keyWord, startPage + 4)}>{startPage + 5}</s.IconButtonStyle>
-                      </>}
-                    {usingCategory && !empty && hasNext &&
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() => fetchKeywordData(keyWord, startPage)}
+                        >
+                          {startPage + 1}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 1
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchKeywordData(keyWord, startPage + 1)
+                          }
+                        >
+                          {startPage + 2}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 2
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchKeywordData(keyWord, startPage + 2)
+                          }
+                        >
+                          {startPage + 3}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 3
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchKeywordData(keyWord, startPage + 3)
+                          }
+                        >
+                          {startPage + 4}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 4
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchKeywordData(keyWord, startPage + 4)
+                          }
+                        >
+                          {startPage + 5}
+                        </s.IconButtonStyle>
+                      </>
+                    )}
+                    {usingCategory && !empty && hasNext && (
                       <>
-                        <s.IconButtonStyle style={currentPage == startPage ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage)}>{startPage + 1}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 1 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 1)}>{startPage + 2}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 2 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 2)}>{startPage + 3}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 3 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 3)}>{startPage + 4}</s.IconButtonStyle>
-                        <s.IconButtonStyle style={currentPage == startPage + 4 ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, startPage + 4)}>{startPage + 5}</s.IconButtonStyle>
-                      </>}
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() => fetchCategoryData(category, startPage)}
+                        >
+                          {startPage + 1}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 1
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchCategoryData(category, startPage + 1)
+                          }
+                        >
+                          {startPage + 2}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 2
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchCategoryData(category, startPage + 2)
+                          }
+                        >
+                          {startPage + 3}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 3
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchCategoryData(category, startPage + 3)
+                          }
+                        >
+                          {startPage + 4}
+                        </s.IconButtonStyle>
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == startPage + 4
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() =>
+                            fetchCategoryData(category, startPage + 4)
+                          }
+                        >
+                          {startPage + 5}
+                        </s.IconButtonStyle>
+                      </>
+                    )}
 
-                    {usingKeyword && !empty && !hasNext &&
+                    {usingKeyword &&
+                      !empty &&
+                      !hasNext &&
                       pageNumList.map((value, index) => (
-
-                        <s.IconButtonStyle style={currentPage == value ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchKeywordData('', value)}>{value + 1}</s.IconButtonStyle>
-
-                      ))
-                    }
-                    {usingCategory && !empty && !hasNext &&
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == value
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() => fetchKeywordData("", value)}
+                        >
+                          {value + 1}
+                        </s.IconButtonStyle>
+                      ))}
+                    {usingCategory &&
+                      !empty &&
+                      !hasNext &&
                       pageNumList.map((value, index) => (
+                        <s.IconButtonStyle
+                          style={
+                            currentPage == value
+                              ? { backgroundColor: "skyblue" }
+                              : null
+                          }
+                          onClick={() => fetchCategoryData(category, value)}
+                        >
+                          {value + 1}
+                        </s.IconButtonStyle>
+                      ))}
 
-                        <s.IconButtonStyle style={currentPage == value ? { "backgroundColor": "skyblue" } : null} onClick={() => fetchCategoryData(category, value)}>{value + 1}</s.IconButtonStyle>
+                    {usingKeyword && empty && (
+                      <s.IconButtonStyle style={{ backgroundColor: "skyblue" }}>
+                        1
+                      </s.IconButtonStyle>
+                    )}
 
-                      ))
-                    }
-
-                    {usingKeyword && empty &&
-                      <s.IconButtonStyle style={{ "backgroundColor": "skyblue" }} >1</s.IconButtonStyle>
-                    }
-
-                    {!empty && hasNext &&
-                      <s.IconButtonStyle onClick={fetchKeywordData(keyWord, 5 * (Math.floor(fetchKeywordData / 5) + 1))} >
+                    {!empty && hasNext && (
+                      <s.IconButtonStyle
+                        onClick={fetchKeywordData(
+                          keyWord,
+                          5 * (Math.floor(fetchKeywordData / 5) + 1)
+                        )}
+                      >
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>}
-
+                      </s.IconButtonStyle>
+                    )}
                   </s.ButtonGroupStyle>
                 </s.PageButtonGroupDiv>
-
-                
-
-
               </div>
               <div className={styles["overlap-group"]}>
                 <div
                   className={`${styles["text-6-1"]} ${styles["valign-text-middle"]}`}
-
                 >
                   상품 등록
                 </div>
                 <div className={styles["small-btn_brown"]}>
                   <div
                     className={`${styles["text-7-1"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
-                    onClick={() => (navigate('/itemInsert'))}
+                    onClick={() => navigate("/itemInsert")}
                   >
                     상품등록
                   </div>
