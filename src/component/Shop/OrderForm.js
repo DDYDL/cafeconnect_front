@@ -5,68 +5,68 @@ import {
 } from "../styledcomponent/common.tsx";
 import * as o from "../styledcomponent/order.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
-import {useNavigate} from 'react-router-dom';
-import {useState}from 'react';
+import {useNavigate,useLocation} from 'react-router-dom';
+import {useState,useEffect}from 'react';
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom, memberAtom } from '../../atoms';
+import { axiosInToken } from '../../config.js';
+
 
 function Order() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const token = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
+  const [orderItem,setOrderItem] = useState([]);
+  const [storeInfo,setStoreInfo] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState('');
-
-  const orderItem = [
-    {
-      itemCode: 1,
-      name: "에티오피아 코케허니 G1스페셜티",
-      price: 24800,
-      quantity: 2,
-      image: "/image/item1.jpg",
-      category: "major/middel/sub",
-      shipping: "기본배송",
-      storageType: "냉동",
-    },
-    {
-        itemCode: 1,
-        name: "에티오피아 코케허니 G1스페셜티",
-        price: 24800,
-        quantity: 2,
-        image: "/image/item1.jpg",
-        category: "major/middel/sub",
-        shipping: "기본배송",
-        storageType: "냉동",
-      },
-    {
-      itemCode: 2,
-      name: "에티오피아 코케허니 G1스페셜티",
-      price: 24800,
-      quantity: 3,
-      image: "/image/item1.jpg",
-      category: "major/middel/sub",
-      shipping: "기본배송",
-      storageType: "일반",
-    },
-    {
-        itemCode: 1,
-        name: "에티오피아 코케허니 G1스페셜티",
-        price: 24800,
-        quantity: 2,
-        image: "/image/item1.jpg",
-        category: "major/middel/sub",
-        shipping: "기본배송",
-        storageType: "냉동",
-      },
-    
-  ]; 
+  
+  //아임포트 연결 
+  //const IMP = window.IMP;
+  
 
 
+    useEffect(()=>{
+    const cartNums = location.state?.cartNums; // cartList에서 받아옴 
+   
+   
+    const formData = new FormData();
+      formData.append('storeCode', store.storeCode);
+      formData.append('check', cartNums);
+     
+      axiosInToken(token).post('order', formData)
+      .then(res=>{
+         // 주문 상품 정보 
+        setOrderItem(res.data.map(cart => ({ // 중첩구조라 분리 시킴 
+        cartNum: cart.cartNum,
+        quantity: cart.cartItemCount,
+        itemCode: cart.item.itemCode,
+        name: cart.item.itemName,
+        price: cart.item.itemPrice,
+        storage: cart.item.itemStorage,
+        category: `${cart.item.itemMajorCategoryName}/${cart.item.itemMiddleCategoryName}/${cart.item.itemSubCategoryName || "-"}`
+      })));
+        //주문 가맹점 정보
+        setStoreInfo(res.data[0].store);//첫번째에 담긴 정보 사용 
+      })
+      .catch(err=>{
+        console.log(err);
+      })
 
+  },[token,location.state]);
+  
+ 
  // 결제 방법 변경 시 state 변경
  const handlePaymentSelect = (method) => {
    setSelectedPayment(method);
  };
 
   // StorageType별로 상품 그룹화
-  //reduce 로 배열 요소 순회하며 차례로 처리, 하나의 최종 결과를 반환, 결과는 배열,객체,숫자 등 원하는 형태 가능
+  //reduce(누적값,현재값) : 배열의 값을 누적해서 처리, 배열 요소 순회하며 차례로 처리, 하나의 최종 결과를 반환, 결과는 배열,객체,숫자 등 원하는 형태 가능
   const groupedItems = orderItem.reduce((acc, item) => {
-    const groupName = item.storageType === "냉동" ? "업체배송" : "일반배송";
+    const groupName = item.storage === "냉동" ? "업체배송" : "일반배송";
+    
+    // 해당 배열이 없으면 생성
     if (!acc[groupName]) {
       acc[groupName] = [];
     }
@@ -75,7 +75,7 @@ function Order() {
   }, {});
 
   // 배송 타입별 상품 개수 계산
-  //Object.entries 객체를 key-vlalue로 반환 
+  //Object.entries 객체를 key-vlalue형태로 반환 
   const itemCounts = Object.entries(groupedItems).reduce((acc, [type, items]) => {
     acc[type] = items.reduce((sum, item) => sum + item.quantity, 0);
     return acc;
@@ -121,14 +121,14 @@ function Order() {
 
             <o.OrderInfoSection>
               <o.OrderFinalTitle>주문자 정보</o.OrderFinalTitle>
-              <o.InputField type="text" placeholder="이름" />
-              <o.InputField type="tel" placeholder="연락처" />
-              <o.InputField type="text" placeholder="이메일" />
+              <o.InputField type="text" placeholder="이름" readOnly value={storeInfo.storeName}/>
+              <o.InputField type="tel" placeholder="연락처" readOnly value={storeInfo.storePhone}/>
+              <o.InputField type="text" placeholder="가맹점코드" readOnly value={storeInfo.storeCode}/>
 
               <o.OrderFinalTitle>배송지 정보</o.OrderFinalTitle>
-              <o.InputField type="text" placeholder="우편번호" />
-              <o.InputField type="text" placeholder="기본주소" />
-              <o.InputField type="text" placeholder="상세주소" />
+              <o.InputField type="text" placeholder="우편번호" readOnly value={storeInfo.storeAddressNum}/>
+              <o.InputField type="text" placeholder="기본주소" readOnly value={storeInfo.storeAddress}/>
+              {/* <o.InputField type="text" placeholder="상세주소" readOnly/> */}
             </o.OrderInfoSection>
             <o.OrderFinalTitle>결제 방법 선택</o.OrderFinalTitle>
             <StyledButton

@@ -1,7 +1,7 @@
 import {
   CommonWrapper,
   CommonContainer,
-  ContainerTitleArea
+  ContainerTitleArea,
 } from "../styledcomponent/common.tsx";
 import * as c from "../styledcomponent/cartlist.tsx";
 import {
@@ -10,60 +10,122 @@ import {
 } from "../styledcomponent/wishItem.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import {useState} from 'react';
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PreviousOrderItemsModal from './PreviousOrderItemModal.js';
-
+import PreviousOrderItemsModal from "./PreviousOrderItemModal.js";
+import { useAtomValue } from "jotai/react";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 
 function CartList() {
-  
   const navigate = useNavigate();
+  const token = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [cartItems, setCartItems] = useState([
-    {
-      itemCode: 1,
-      name: "에티오피아 코케허니 G1스페셜티",
-      price: 24800,
-      quantity: 1,
-      image: "/image/item1.jpg",
-      category: "major/middel/sub",
-      shipping: "기본배송",
-      storageType: "냉동",
-    },
-    {
-      itemCode: 2,
-      name: "에티오피아 코케허니 G1스페셜티",
-      price: 24800,
-      quantity: 1,
-      image: "/image/item1.jpg",
-      category: "major/middel/sub",
-      shipping: "기본배송",
+  const [cartItems, setCartItems] = useState([]);
+  const [tempQuantity, setTempQuantity] = useState({}); 
+  const [prevOrderDateList,setPrevOrderDateList] =useState([]);
   
-    },
-  
-  ]);
+  useEffect(() => {
+    if (token && store?.storeCode) {
+    getCartList();
+    getPrevOrderDateList(); //modal에 날짜 전달해서 바로 조회 되도록
+    }
+  }, [token, store.storeCode]);
 
-  // 선택된 이전 상품들을 현재 장바구니에 추가하는 로직
-  const handleAddPreviousItems = (items) => {
-    setCartItems(prevItems => [...prevItems, ...items.map(item => ({
-      itemCode: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: "/image/item1.jpg", // 기본 이미지
-      category: item.category,
-      shipping: "기본배송",
-    }))]);
+  const getCartList = () => {
+    axiosInToken(token)
+      .get(`cartList?storeCode=${store.storeCode}`)
+      .then((res) => {
+        setCartItems(res.data);
+        setTempQuantity(res.data.item.cartItemCount); // 재 조회 시 임시 수량도 저장
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const handleQuantityChange = (itemCode, value) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.itemCode === itemCode ? { ...item, quantity: value } : item
-      )
-    );
+  const getPrevOrderDateList=() =>{
+    axiosInToken(token)
+    .get(`selectPreviouOrderDate?storeCode=${store.storeCode}`)
+    .then((res) => {
+      setPrevOrderDateList(res.data.orderDates);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  //삭제
+  const handleDelete = (cartNum) => {
+    const formData = new FormData();
+    formData.append("storeCode", store.storeCode);
+    formData.append("cartNum", cartNum); 
+    axiosInToken(token).post('deleteCartItem', formData)
+      .then(res => { //true false반환
+        if (res.data === true) {
+          alert('장바구니에서 삭제됐습니다.');
+          getCartList();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
   };
+
+  // 임시 수량 변경 
+  const handleTempQuantityChange = (cartNum, value) => {
+    const newCount = parseInt(value);
+    if (newCount >= 1 && newCount <= 999) {
+      setTempQuantity(prev => ({
+        ...prev,[cartNum]: newCount
+      }));
+    }
+  };
+  
+  //수량 변경 확정
+  const handleQuantityChange = (cartNum) => {
+    const formData = new FormData();
+    const newCount = tempQuantity[cartNum];  //cartNum key로 value가져오기 
+    formData.append("cartNum",cartNum);
+    formData.append("count",newCount);
+    axiosInToken(token).post('updateCartItemQuantity', formData)
+    .then(res=>{
+        alert("수량 변경 됐습니다.");
+        getCartList(); // 다시 재 조회 
+    }).catch(err=>{
+      console.log(err);
+    })
+  };
+
+ // 총 합계 
+const calculateTotal = () => {
+  let totalPrice = 0; //변수 재 할당을 위해서 반드시 let으로 선언해야 에러 안남 
+  for (let i = 0; i < cartItems.length; i++) {
+    totalPrice += cartItems[i].item.itemPrice * cartItems[i].cartItemCount;
+  }
+  return totalPrice;
+};
+
+// 카테고리 
+const formatCategory = (item) => {
+  let categoryFormat = item.itemMajorCategoryName + '/';  
+  categoryFormat += item.itemMiddleCategoryName + '/';    
+  
+  // 소분류가 없는경우엔 "-"
+  if (item.itemSubCategoryName) {
+    categoryFormat += item.itemSubCategoryName;
+  } else {
+    categoryFormat += '-';
+  }
+  return categoryFormat;
+};
+
+//주문하기 -장바구니 전체 주문 
+const handleOrder = () => {
+  const cartNums = cartItems.map(item => item.cartNum);
+  navigate('/order', { state: { cartNums } }); //주문처리는 url에 남지 않도록 state에 담음.
+ };
 
   return (
     <CommonWrapper>
@@ -72,17 +134,28 @@ function CartList() {
           <h2>장바구니</h2>
         </ContainerTitleArea>
         <c.AddPreviousOrderItem>
-          <StyledButton size="sm" theme="brown" hasIcon onClick={() => setIsModalOpen(true)}>
+          <StyledButton
+            size="sm"
+            theme="brown"
+            hasIcon
+            onClick={() => setIsModalOpen(true)}
+          >
             <PlusIcon />
             이전 상품 추가
           </StyledButton>
         </c.AddPreviousOrderItem>
 
-       {/* 모달 추가 */}
-       <PreviousOrderItemsModal 
+        {/* 모달 추가- 필요한 데이터 전달*/}
+        <PreviousOrderItemsModal
           open={isModalOpen}
           handleClose={() => setIsModalOpen(false)}
-          onAddItems={handleAddPreviousItems}
+          storeCode={store.storeCode}
+          token={token}
+          prevOrderDateList={prevOrderDateList}
+          onSuccess={() => { // 모달에서 장바구니에 추가하는 작업이 있을 경우 실행 
+            getCartList();  // 장바구니 다시 로드
+            setIsModalOpen(false);  // 모달 닫기
+          }}
         />
 
         <c.CartWrap>
@@ -98,16 +171,19 @@ function CartList() {
           </c.CartHeader>
 
           {cartItems.map((item) => (
-            <c.CartItem key={item.itemCode}>
+            <c.CartItem key={item.cartNum}>
               <div>
-                <c.ProductImage src={item.image} alt={item.name} />
+                <c.ProductImage
+                  src="/image/item3.jpg"
+                  alt={item.item.itemFileNum}
+                />
               </div>
               <c.ProductInfo>
-                <c.ProductName>{item.name}</c.ProductName>
-                {item.storageType && (
+                <c.ProductName>{item.item.itemName}</c.ProductName>
+                {item.item.itemStorage && (
                   <ItemStorageLabelP>
-                    <ItemStorageType storageType={item.storageType}>
-                      {item.storageType}
+                    <ItemStorageType storageWay={item.item.itemStorage}>
+                      {item.item.itemStorage}
                     </ItemStorageType>
                   </ItemStorageLabelP>
                 )}
@@ -117,34 +193,35 @@ function CartList() {
                   type="number"
                   min="1"
                   max="999"
-                  value={item.quantity}
+                  value={tempQuantity[item.cartNum]||item.cartItemCount}
                   onChange={(e) =>
-                    handleQuantityChange(
-                      item.itemCode,
-                      parseInt(e.target.value)
-                    )
+                    handleTempQuantityChange(item.cartNum,parseInt(e.target.value))
                   }
                 />
-                <StyledButton size="sm" theme="white">
+                <StyledButton size="sm" theme="white" onClick={() => handleQuantityChange(item.cartNum)}>
                   변경
                 </StyledButton>
               </c.QuantityControl>
-              <div>{item.price.toLocaleString()}원</div>
-              <c.CategoryInfo>{item.category}</c.CategoryInfo>
-              <div>{item.shipping}</div>
-              <div>{item.storageType}</div>
+              <div>{item.item.itemPrice?.toLocaleString()}원</div>
+              <c.CategoryInfo>{formatCategory(item.item)}</c.CategoryInfo>
+              <div>{item.item.itemStorage==="냉동"?"업체":"일반"}</div>
+              <div>{item.item.itemStorage}</div>
               <div>
-                <StyledButton size="sm" theme="white">
+                <StyledButton size="sm" theme="white" onClick={()=>handleDelete(item.cartNum)}>
                   삭제
                 </StyledButton>
               </div>
             </c.CartItem>
           ))}
           <c.SummarySection>
-           합계 : <strong>51,700원</strong>
+            합계 : <strong>{calculateTotal().toLocaleString()}원</strong>
           </c.SummarySection>
           <c.ButtonSection>
-            <StyledButton size="md" theme="brown" onClick={() => navigate("/order")}>
+            <StyledButton
+              size="md"
+              theme="brown"
+              onClick={() =>handleOrder()}
+            >
               주문하기
             </StyledButton>
           </c.ButtonSection>

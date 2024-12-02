@@ -11,20 +11,23 @@ import { useAtomValue } from 'jotai/react';
 
 const ShopItemDetail = () => {
   const navigate = useNavigate();
-  const [item,setItem]=useState({});
+  const [item,setItem]=useState({});  // toLocaleString()사용 시, 데이터 선언을 안했기 때문에 에러 방지를 위해 ?.(옵셔널체이닝 적용)
   const [isWished, setIsWished]= useState(false);
   const token = useAtomValue(tokenAtom);
-  const store = useAtomValue(memberAtom);
+  const store = useAtomValue(memberAtom); //store.roles = ROLE_MAINSTORE 이면 버튼 비활성화 
   const [quantity, setQuantity] = useState(1);
   const {itemCode} = useParams();
 
   // 처음엔 카테고리와 카테고리 선택 안한 전체 데이터 가져오기 
+  
   useEffect(() => {
+    if (token != null && token !== '')
     getItemInfo(itemCode);
+
   }, [token,itemCode]);
 
   const getItemInfo = (itemCode) => {
-    axiosInToken(token).get(`shopItemDetail/${itemCode}?storeCode=${store.storeCode}`)
+    axiosInToken(token).get(`shopItemDetail/${itemCode}${store.storeCode?`?storeCode=${store.storeCode}` : ''}`)
       .then(res => {
         setItem(res.data.item);
         if(res.data.wishNum!=null){
@@ -43,11 +46,43 @@ const ShopItemDetail = () => {
   const handleDecrement = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
   };
-
-  const totalPrice = item.price * quantity;
-
+  //총합계
+  const totalPrice = item.itemPrice * quantity;
+  //카테고리 
+  const categoryFormat = item.itemMajorCategoryName+'/'+item.itemMiddleCategoryName+'/'+ (item.itemSubCategoryName == null ? '-' : item.itemSubCategoryName);
+  
+  //관심상품 등록
   const toggleWishlist = () => {
-    setIsWished(!isWished);
+    const formData = new FormData();
+    formData.append("storeCode",store.storeCode);
+    formData.append("itemCode",itemCode);
+    axiosInToken(token).post('addWishItem',formData)
+      .then((res) => {
+        if(res.data===true) {
+          setIsWished(!isWished);
+          alert("관심 상품 등록 성공");  
+        }else {
+          setIsWished(!isWished);
+          alert("관심 상품 삭제 성공");  
+          
+        }    
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  };
+  const handleAddToCart = () => {
+    axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${quantity}`)
+      .then(res => {
+        if (res.data != null) {
+          alert('장바구니에 등록되었습니다.');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      alert('장바구니에 등록되었습니다.');
+    console.log(`장바구니에 추가: 상품 ${itemCode}, 수량 1`);
   };
 
   return (
@@ -72,7 +107,7 @@ const ShopItemDetail = () => {
                   <d.PdtDetailItemInfoDd>{item.itemCode}</d.PdtDetailItemInfoDd>
 
                   <d.PdtDetailItemInfoDt>공급가</d.PdtDetailItemInfoDt>
-                  <d.PdtDetailItemInfoDd>{item.itemPrice}원</d.PdtDetailItemInfoDd>
+                  <d.PdtDetailItemInfoDd>{item.itemPrice?.toLocaleString()}원</d.PdtDetailItemInfoDd>  
                   <d.PdtDetailItemInfoDt>보관상태</d.PdtDetailItemInfoDt>
                   <d.PdtDetailItemInfoDd>{item.itemStorage}</d.PdtDetailItemInfoDd>
                 </d.PdtDetailItemInfoDl>
@@ -89,18 +124,20 @@ const ShopItemDetail = () => {
                 </d.QuantityControlWrapper>
                 <d.PriceWapper>
                   <span>합계</span>
-                  <d.TotalPrice>{totalPrice}원</d.TotalPrice>
+                  <d.TotalPrice>{totalPrice?.toLocaleString()}원</d.TotalPrice>
                 </d.PriceWapper>
+                {store.roles==='ROLE_STORE' &&
                 <d.ButtonWrapper>
                   <d.WishlistButton onClick={toggleWishlist}>
                     <d.WishlistIcon isWished={isWished}>
                       {isWished ? <SolidHeartIcon /> : <OutlineHeartIcon />}
                     </d.WishlistIcon>
                   </d.WishlistButton>
-                  <StyledButton size="extralg" theme="brown" >
+                  <StyledButton size="extralg" theme="brown" onClick={handleAddToCart} >
                     장바구니
                   </StyledButton>
                 </d.ButtonWrapper>
+                }
               </d.PdtDetailItemOtherGroup>
             </d.PdtDetailRight>
           </d.PdtDetailHead>
@@ -113,7 +150,7 @@ const ShopItemDetail = () => {
             <tr>
               <d.PdtExtraInfoTableTh>카테고리</d.PdtExtraInfoTableTh>
               <d.PdtExtraInfoTableTd>
-                커피자재/원두/카페인
+                {categoryFormat}
               </d.PdtExtraInfoTableTd>
             </tr>
             <tr>
