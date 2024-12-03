@@ -116,7 +116,7 @@ function ExpenseListByItems() {
           {/* 대분류 카테고리명 */}
           {/* ?. 옵셔닝 체인지 : undefine이거나 null인경우 오류 방지  || 1 로 대체된다.  */}
           {showMajor && (
-            <td rowSpan={majorSummary?.rowspanCount || 1} className="px-6 py-3 border"> 
+            <td rowSpan={majorSummary?.rowspanCount || 1} className="px-6 py-3"> 
               {item.majorCategoryName}
             </td>
           )}
@@ -220,7 +220,7 @@ function ExpenseListByItems() {
         <>
 
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg table-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto w-max " >
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto w-max" >
               <thead class="text-xs text-gray-700 uppercase bg-gray-200   dark:bg-gray-700 dark:text-gray-400 table-auto">
                 <tr>
                   <th scope="col" class="px-6 py-3">
