@@ -11,27 +11,7 @@ import { Link } from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 
 const StoreDetailMain = ()=>{
-    const [store, setStore] = useState({
-        storeCode:'',
-        storeName: '',
-        storeAddress: '',
-        storeAddressNum: '',
-        storePhone: '',
-        storeOpenTime:'',
-        storeCloseTime: '',
-        storeCloseDate: '',
-        ownerName:'',
-        ownerPhone:'',
-        managerName:'',
-        managerPhone:'',
-        contractPeriodStart:'',
-        contractPeriodEnd:'',
-        contractDate:'',
-        openingDate:'',
-        storeStatus:'',
-        memberNum:''
-        ,stockCount:''
-    });
+    const [store, setStore] = useState({});
     const token = useAtomValue(tokenAtom);
     const {storeCode} = useParams();
     const navigate = useNavigate();
@@ -46,9 +26,14 @@ const StoreDetailMain = ()=>{
             .then(res=> {
                 console.log(res.data)
                 let resStore = res.data.store;
-                let resstoreOpenTime = res.data.storeOpenTime;
-                let resstoreCloseTime = res.data.storeCloseTime;
-                setStore({...resStore, ['storeOpenTime']: resstoreOpenTime, ['storeCloseTime']: resstoreCloseTime});
+                const resStoreOpenTime = new Date();
+                resStoreOpenTime.setHours(resStore.storeOpenTime.split(':')[0], resStore.storeOpenTime.split(':')[1], 0, 0);
+                const formattedOpenTime = resStoreOpenTime.toTimeString().slice(0, 8);
+                
+                const resStoreCloseTime = new Date();
+                resStoreCloseTime.setHours(resStore.storeCloseTime.split(':')[0], resStore.storeCloseTime.split(':')[1], 0, 0);
+                const formattedCloseTime = resStoreCloseTime.toTimeString().slice(0, 8);
+                setStore({...resStore, ['storeOpenTime']: formattedOpenTime, ['storeCloseTime']: formattedCloseTime});
             })
     }
 

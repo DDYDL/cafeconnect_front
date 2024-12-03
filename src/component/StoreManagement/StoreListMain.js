@@ -6,6 +6,7 @@ import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { Input, Select, Option} from "@material-tailwind/react";
+import { useNavigate } from 'react-router';
 import { ArrowRightIcon, ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const StoreListMain = ()=>{
@@ -14,6 +15,7 @@ const StoreListMain = ()=>{
     const [pageInfo, setPageInfo] = useState({});
     const [type, setType] = useState('');
     const [keyword, setKeyword] = useState('');
+    const navigate = useNavigate();
     const token = useAtomValue(tokenAtom);
     let region;
 
@@ -27,6 +29,7 @@ const StoreListMain = ()=>{
         switch(region){
             case '서울' : region='서울특별시'; break;
             case '서울시' : region='서울특별시'; break;
+            default : region='경기도'; break;
         }
         return region;
     }
@@ -48,6 +51,10 @@ const StoreListMain = ()=>{
 
     const search = () => {
         select(1);
+    }
+
+    const storeDetail = (storeCode)=>{
+        navigate(`/storeDetailMain/${storeCode}`);
     }
 
     const searchRegion = (selectedValue) => {
@@ -99,10 +106,10 @@ const StoreListMain = ()=>{
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
                         {storeList.map(store=>(
-                        <s.TableTextTr key={store.storeCode}>
+                        <s.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
                             <s.TableTextTd>{regionPart(store.storeAddress)}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
-                            <h.TableTextTd><a href={`/storeDetailMain/${store.storeCode}`}>{store.storeAddress}</a></h.TableTextTd >
+                            <h.TableTextTd>{store.storeAddress}</h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >
                         </s.TableTextTr>
                     ))}

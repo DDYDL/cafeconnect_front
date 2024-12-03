@@ -27,10 +27,6 @@ const AddStoreMain = ()=>{
         console.log(store);
     }
     
-    // const option = (val) => {
-    //     setStore({ ...store, [val.name]: val });
-    // }
-
     const onCompletePost = (data) => {
         console.log(data);
         const {address, zonecode, bname, buildingName} = data;

@@ -239,10 +239,10 @@ export const TrStyle = styled.tr`
     border-bottom:1px solid rgba(234, 234, 234, 1);
 `;
 
-export const InputStyle = styled.input<Container>`
+export const BigInputStyle = styled.input<Container>`
     width:${(props) => props.width ? props.width : "630px"};
     margin-top:${(props) => props.marginTop ? props.marginTop : "0px"};
-    height:40px;
+    padding-left:20px;
     border:1px solid rgba(234, 234, 234, 1);
     border-radius:5px;
 `;
@@ -444,16 +444,16 @@ export const DatePickerPeriodWrap =styled.div`
     }
 `;
 export const DatePickerWrap =styled.div`
-    width:300px;
-    text-align:center;
-    box-shadow:none;
-    border: none;
-    
-    .CustomPicker{
-        width: 300px;
-        height: 40px;
-        border-radius: 5px;
-        background-color: rgb(255, 255, 255);
+width:300px;
+text-align:center;
+box-shadow:none;
+border: none;
+
+.CustomPicker{
+    width: 300px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
         border-color: rgb(234, 234, 234);
         border-style:solid;
         border:1px;
@@ -462,15 +462,51 @@ export const DatePickerWrap =styled.div`
         letter-spacing :normal;
         line-height: 24px;
         box-shadow:none;
-
+        
         div {
             box-shadow:none;
             border: none;
         }
         
-      input {
-        padding: 8px 12px 8px 12px;
-        text-align: start;
-      } 
+        input {
+            padding: 8px 12px 8px 12px;
+            text-align: start;
+        } 
     }
+    `;
+    
+    export const StatusTextFalse =styled.p`
+    color:red;
+    font-weight:bold;
+    `;
+    export const StatusTextTrue =styled.p`
+    color: lightgray;
+    `;
+    export const SaveButtonDiv =styled.div`
+    display:flex;
+    justify-content: center;
+    margin-top:30px;
+    `;
+    
+    export const TableInfo = styled.table`
+    text-align:left;
+    width:1000px;
+    margin-top:80px;
+    `;
+    export const BigInputWrap =styled.div`
+        display:flex;
+        align-items: flex-start;
+        text-align: left;
+    `;
+
+    export const Textarea = styled.textarea`
+  width:1000px;
+  height: 180px;
+  font-size: 14px;
+  border-radius: 8px;
+  padding-top: 10px;
+  padding-left: 10px;
+
+  border: 1px solid #ccc9; /* 90% 불투명한 연한 회색 */
 `;
+
