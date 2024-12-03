@@ -17,9 +17,13 @@ const StockManage = ({major, middle, sub})=>{
     const [middleCategory, setMiddleCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
     const [itemName, setItemName] = useState("");
+    const [expirationDate, setExpirationDate] = useState(false);
+    const [itemCategoryStr, setItemCategoryStr] = useState("");
+    const [itemCategoryNum, setItemCategoryNum] = useState("");
 
     const [selectedCategory, setSelectedCategory] = useState({'major':'', 'middle':'', 'sub':''});
     const [middleCategoryFilter, setMiddleCategoryFilter] = useState(middle);
+    const [subCategoryFilter, setSubCategoryFilter] = useState(sub);
 
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
@@ -126,14 +130,26 @@ const StockManage = ({major, middle, sub})=>{
         setInfo(!info);
     }
 
-    const selectDate = (e)=>{
+    const searchCategory = (e, expirationDate, itemCateStr, itemCateNum)=>{
+        e.preventDefault();
         const formData = new FormData();
 
+        setItemCategoryStr(itemCateStr);
+        setItemCategoryNum(itemCateNum);
+
         formData.append("storeCode", member.storeCode);
-        formData.append("category", "");
-        formData.append("categoryNum");
-        formData.append("expirationDate", "true");
-        e.preventDefault();
+        console.log(member.storeCode);
+        formData.append("category", itemCategoryStr);
+        console.log(itemCategoryStr);
+        formData.append("categoryNum", itemCategoryNum);
+        console.log(itemCategoryNum);
+
+        if(expirationDate) {
+            formData.append("expirationDate", "true");
+            console.log("true");
+        } else {
+            formData.append("expirationDate", "");
+        }
         
         axios.post(`${url}/selectStockByCategory`, formData)
         .then(res=>{
@@ -143,27 +159,7 @@ const StockManage = ({major, middle, sub})=>{
         .catch(err=>{
             console.log(err);
             alert("잠시후 다시 시도해주세요.");
-        })
-    }
-
-    const searchCategory = (e)=>{
-        const formData = new FormData();
-
-        formData.append("storeCode", member.storeCode);
-        formData.append("category", "");
-        formData.append("categoryNum", 0);
-        formData.append("expirationDate");
-        e.preventDefault();
-        
-        axios.post(`${url}/selectStockByCategory`, formData)
-        .then(res=>{
-            console.log(res.data);
-            setStockList([...res.data]);
-        })
-        .catch(err=>{
-            console.log(err);
-            alert("잠시후 다시 시도해주세요.");
-        })
+        });
     }
 
     const searchKeyword = (keyword)=>{
@@ -183,23 +179,19 @@ const StockManage = ({major, middle, sub})=>{
             selectedCategory.middle = '';
             selectedCategory.sub = '';
             selectedCategory.major = value;
-            console.log(selectedCategory.major);
 
-            // 다시 모든 middleCategory 가져오기
-            setMiddleCategoryFilter([middleCategory]);
-            console.log(middleCategoryFilter);
+            // 다시 모든 middleCategory 가져오기(배열 깊은 복사)
+            let tempArrayM = Array.from(middleCategory);
             // majorCategoryNum이 동일한 것만 설정
-            setMiddleCategoryFilter(middleCategoryFilter.filter(item=>item.itemCategoryMajorNum===value));
-            console.log(middleCategoryFilter);
+            setMiddleCategoryFilter(tempArrayM.filter(item=>item.itemCategoryMajorNum===value));
         } else if(category === 'middle') {
             selectedCategory.sub = '';
             selectedCategory.middle = value;
-            console.log(selectedCategory.middle);
 
-            // 다시 모든 subCategory 가져오기
-            categorySetting();
+            // 다시 모든 subCategory 가져오기(배열 깊은 복사)
+            let tempArrayS = Array.from(subCategory);
             // middleCategoryNum이 동일한 것만 설정
-            setSubCategory(subCategory.filter(item=>item.itemCategoryMiddleNum===value));
+            setSubCategoryFilter(tempArrayS.filter(item=>item.itemCategoryMiddleNum===value));
         }
     }
 
@@ -210,26 +202,27 @@ const StockManage = ({major, middle, sub})=>{
                 <s.CategoryButtonGroupDiv>
                 <s.ButtonDiv>
                     <s.ButtonInnerDiv>
-                        <input type='checkbox' value='유통기한' onChange={selectDate}/>
+                        <s.dateCheckbox type='checkbox' checked={expirationDate} value='유통기한' onChange={(e)=>searchCategory(e, setExpirationDate(!expirationDate), itemCategoryStr, itemCategoryNum)}/>
+                        <s.SaveIDCheckBox checked={expirationDate}>유통기한</s.SaveIDCheckBox>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className='w-16'>
                     <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
                         {majorCategory.map(major=>(
-                            <Option key={major.itemCategoryNum} value={major.itemCategoryNum}>{major.itemCategoryName}</Option>
+                            <Option key={major.itemCategoryNum} value={major.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'major', major.itemCategoryNum)}>{major.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className="w-16">
                         <s.SelectStyle label="중분류" onChange={(e)=>selectCategory('middle', e)} disabled={!selectedCategory.major}>
                         {middleCategoryFilter.map(middle=>(
-                            <Option key={middle.itemCategoryNum} value={middle.itemCategoryNum}>{middle.itemCategoryName}</Option>
+                            <Option key={middle.itemCategoryNum} value={middle.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'middle', middle.itemCategoryNum)}>{middle.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv className="w-16">
                         <s.SelectStyle label="소분류" onChange={(e)=>selectCategory('sub', e)} disabled={!selectedCategory.middle}>
-                        {subCategory.map(sub=>(
-                            <Option key={sub.itemCategoryNum} value={sub.itemCategoryNum} onClick={searchCategory}>{sub.itemCategoryName}</Option>
+                        {subCategoryFilter.map(sub=>(
+                            <Option key={sub.itemCategoryNum} value={sub.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'sub', sub.itemCategoryNum)}>{sub.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>

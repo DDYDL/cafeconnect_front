@@ -132,12 +132,33 @@ export const ButtonDiv = styled.div<Container>`
 `;
 
 export const ButtonInnerDiv = styled.div<Container>`
+    width:120px;
     float:left;
-    margin-right:140px;
+    margin-right:10px;
 `;
 
 export const SelectStyle = styled(Select)`
+    width:120px;
+    min-width:120px;
     display:inline-block;
+    background: rgba(255, 255, 255, 1);
+
+    & div {
+        width:120px;
+        min-width:120px !important;
+    }
+    
+    & svg {
+        width:20px;
+    }
+
+    & ul {
+        top:0px !important;
+        padding:5px;
+        overflow: scroll;
+        scrollbar-width:thin;
+        overflow-x:hidden;
+    }
 `;
 
 export const SearchButtonDiv = styled.div<Container>`
@@ -375,3 +396,38 @@ export const AutoSearchData = styled.li`
     }
     position: relative;
 `;
+
+export const dateCheckbox = styled.input.attrs((props) => ({
+    type:"checkbox",
+    checked:props.checked,
+    onChange:props.onChange,
+    }))`
+
+    border: 0;
+    clip: rect(0 0 0 0);
+    clippath: inset(50%);
+    height: 40px;
+    width:120px;
+    margin:-1px;
+    overflow:hidden;
+    padding:0;
+    position:absolute;
+    white-space:nowrap;
+`;
+
+export const SaveIDCheckBox = styled.div<{ checked: boolean }>`
+    width:120px;
+    height:40px;
+    background:${(props) => (props.checked ? "rgba(234, 234, 234, 1)" : "rgba(255, 255, 255, 1)")};
+    border:1px soild rgba(234, 234, 234, 1);
+    border-radius:5px;
+    font-size:14px;
+    text-align:center;
+    vertical-align:middle;
+    transition:all 100ms;
+
+    &:hover {
+      background: rgba(234, 234, 234, 1);
+      opacity: 1;
+    }
+}`;

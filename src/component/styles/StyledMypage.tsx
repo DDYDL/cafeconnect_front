@@ -121,4 +121,7 @@ export const ModalDialog = styled.div`
     overflow-x:hidden;
     border-radius:5px;
     background-color:rgb(255, 255, 255);
+    // 맨 앞으로
+    z-index: 99;
+    box-shadow : -1px 3px 5px 5px rgba(234, 234, 234, 1);
 `;
