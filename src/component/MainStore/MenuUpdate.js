@@ -378,7 +378,7 @@ function MenuInsert() {
                     >
                       <Select
                         label="상태"
-                        value={menu.menuStatus}
+                        
                         onChange={handleMenuStatusSelectbox}
                       >
                         <Option value="">상태</Option>

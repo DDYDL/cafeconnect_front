@@ -261,7 +261,7 @@ function MenuInsert() {
                           className="w-16"
                           style={{ width: "440px", marginBottom: "20px" }}
                         >
-                          <s.SelectStyle
+                          <Select
                             label="대분류"
                             onChange={handleCategoryeSelectbox}
                           >
@@ -273,7 +273,7 @@ function MenuInsert() {
                                 {category.categoryName}
                               </Option>
                             ))}
-                          </s.SelectStyle>
+                          </Select>
                         </s.ButtonInnerDiv>
                       </div>
                     </div>
@@ -364,7 +364,7 @@ function MenuInsert() {
                       >
                         <Select
                           label="상태"
-                          value={menu.menuStatus}
+                          
                           onChange={handleMenuStatusSelectbox}
                         >
                           <Option value="">상태</Option>

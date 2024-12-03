@@ -8,6 +8,7 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import img from "../assets/img/img.svg";
 import { Option, Input } from "@material-tailwind/react";
 import axios from "axios";
+import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 function RepairListCopy() {
@@ -309,8 +310,8 @@ function RepairListCopy() {
                 {`총${totalElements}건`}
               </div>
               <div className={styles["frame-container"]}>
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
+                <s.ButtonInnerDiv className="w-16 p-r-2" style={{width:"200px"}}>
+                  <Select
                     label="대분류"
                     onChange={handleSelectMajorCategory}
                   >
@@ -319,11 +320,11 @@ function RepairListCopy() {
                         {majorCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
+                  <Select
                     label="중분류"
                     onChange={handleSelectMiddleCategory}
                   >
@@ -332,7 +333,7 @@ function RepairListCopy() {
                         {middleCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "307px" }}>

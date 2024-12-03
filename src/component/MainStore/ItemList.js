@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/ItemList.module.css";
 import img from "../assets/img/img.svg";
-import { Input, Option } from "@material-tailwind/react";
+import { Input, Option, Select } from "@material-tailwind/react";
 import * as s from "../styles/StyledStore.tsx";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -327,7 +327,7 @@ function ItmListCopy() {
               </div>
               <div className={styles["flex-row"]}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
+                  <Select
                     label="대분류"
                     onChange={handleSelectMajorCategory}
                   >
@@ -336,11 +336,11 @@ function ItmListCopy() {
                         {majorCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
+                  <Select
                     label="중분류"
                     onChange={handleSelectMiddleCategory}
                   >
@@ -349,11 +349,11 @@ function ItmListCopy() {
                         {middleCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
+                  <Select
                     label="소분류"
                     onChange={handleSelectSubCategory}
                   >
@@ -362,7 +362,7 @@ function ItmListCopy() {
                         {subCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "100px" }}>
