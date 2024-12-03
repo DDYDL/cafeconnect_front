@@ -21,7 +21,7 @@ function ItemInsert() {
     itemCapacity: "",
     itemUnitQuantity: "",
     itemUnit: "",
-    itemStandard: "",
+    itemStandard: null,
     itemStorage: "",
     itemCountryOrigin: "",
     itemMajorCategoryName: "",
@@ -49,10 +49,16 @@ function ItemInsert() {
       ...item,
       itemStandard:
         e.target.value +
-        " X " +
-        item.itemStandard.match(/\d+/g)[1] +
-        " X " +
-        item.itemStandard.match(/\d+/g)[2],
+        "X" +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[1] !== undefined
+          ? item.itemStandard.split("X")[1]
+          : "") +
+        "X" +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[2] !== undefined
+          ? item.itemStandard.split("X")[2]
+          : ""),
     });
   };
   const handleYStandardInput = (e) => {
@@ -60,11 +66,17 @@ function ItemInsert() {
     setItem({
       ...item,
       itemStandard:
-        item.itemStandard.match(/\d+/g)[0] +
-        " X " +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[0] !== undefined
+          ? item.itemStandard.split("X")[0]
+          : "") +
+        "X" +
         e.target.value +
-        " X " +
-        item.itemStandard.match(/\d+/g)[2],
+        "X" +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[2] !== undefined
+          ? item.itemStandard.split("X")[2]
+          : ""),
     });
   };
   const handleZStandardInput = (e) => {
@@ -72,10 +84,16 @@ function ItemInsert() {
     setItem({
       ...item,
       itemStandard:
-        item.itemStandard.match(/\d+/g)[0] +
-        " X " +
-        item.itemStandard.match(/\d+/g)[1] +
-        " X " +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[0] !== undefined
+          ? item.itemStandard.split("X")[0]
+          : "") +
+        "X" +
+        (item.itemStandard !== null &&
+        item.itemStandard.split("X")[1] !== undefined
+          ? item.itemStandard.split("X")[1]
+          : "") +
+        "X" +
         e.target.value,
     });
   };
@@ -161,9 +179,24 @@ function ItemInsert() {
       );
       console.log(response.data);
       setItem(response.data);
-      setX(response.data.itemStandard.match(/\d+/g)[0]);
-      setY(response.data.itemStandard.match(/\d+/g)[1]);
-      setZ(response.data.itemStandard.match(/\d+/g)[2]);
+      setX(
+        response.data.itemStandard !== null &&
+          response.data.itemStandard.split("X")[0] !== undefined
+          ? response.data.itemStandard.split("X")[0]
+          : ""
+      );
+      setY(
+        response.data.itemStandard !== null &&
+          response.data.itemStandard.split("X")[1] !== undefined
+          ? response.data.itemStandard.split("X")[1]
+          : ""
+      );
+      setZ(
+        response.data.itemStandard !== null &&
+          response.data.itemStandard.split("X")[2] !== undefined
+          ? response.data.itemStandard.split("X")[2]
+          : ""
+      );
       setImageUrl(response.data.imageUrl);
     } catch (error) {
       console.log(error);
@@ -181,12 +214,12 @@ function ItemInsert() {
       itemCapacity: item.itemCapacity,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
-      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStandard: item.itemStandard,
       itemStorage: item.itemStorage,
       itemCountryOrigin: item.itemCountryOrigin,
-      itemCategoryMajorName: item.itemMajorCategory,
-      itemCategoryMiddleName: item.itemMiddleCategory,
-      itemCategorySubName: item.itemSubCategory,
+      itemCategoryMajorName: item.itemMajorCategoryName,
+      itemCategoryMiddleName: item.itemMiddleCategoryName,
+      itemCategorySubName: item.itemSubCategoryName,
     };
     console.log({
       itemName: item.itemName,
@@ -194,7 +227,7 @@ function ItemInsert() {
       itemCapacity: item.itemCapacity,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
-      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
       itemStorage: item.itemStorage,
       itemCountryOrigin: item.itemCountryOrigin,
       itemCategoryMajorName: item.itemMajorCategoryName,
@@ -339,7 +372,7 @@ function ItemInsert() {
                         type="text"
                         placeholder="높이(cm)"
                         value={z}
-                        onChange={handleYStandardInput}
+                        onChange={handleZStandardInput}
                       />
                     </div>
                   </div>
@@ -359,7 +392,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="대분류"
                               onChange={handleItemMajorCategorySelectBox}
                             >
@@ -371,7 +404,7 @@ function ItemInsert() {
                                   {majorCategory.categoryName}
                                 </Option>
                               ))}
-                            </s.SelectStyle>
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                         <div
@@ -382,7 +415,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="중분류"
                               onChange={handleItemMiddleCategorySelectBox}
                             >
@@ -394,7 +427,7 @@ function ItemInsert() {
                                   {middleCategory.categoryName}
                                 </Option>
                               ))}
-                            </s.SelectStyle>
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                         <div className="select-wrap" style={{ width: "440px" }}>
@@ -402,7 +435,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="소분류"
                               onChange={handleItemSubCategorySelectBox}
                             >
@@ -414,7 +447,7 @@ function ItemInsert() {
                                   {subCategory.categoryName}
                                 </Option>
                               ))}
-                            </s.SelectStyle>
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                       </div>

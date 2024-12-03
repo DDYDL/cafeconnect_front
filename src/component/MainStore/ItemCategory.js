@@ -27,10 +27,12 @@ function Category() {
   const [majorUpdateState, setMajorUpdateState] = useState(false);
   const [majorSaveText, setMajorSaveText] = useState("");
   const [majorUpdateText, setMajorUpdateText] = useState("");
+
   const [middleSaveState, setMiddleSaveState] = useState(false);
   const [middleUpdateState, setMiddleUpdateState] = useState(false);
   const [middleSaveText, setMiddleSaveText] = useState("");
   const [middleUpdateText, setMiddleUpdateText] = useState("");
+
   const [subSaveState, setSubSaveState] = useState(false);
   const [subUpdateState, setSubUpdateState] = useState(false);
   const [subSaveText, setSubSaveText] = useState("");
@@ -100,7 +102,6 @@ function Category() {
     });
 
     setMajorUpdateText(target.categoryName);
-
     fetchMiddleData(target.categoryName);
     setMiddleCategoryForm(true);
     setSubCategoryForm(false);
@@ -115,7 +116,6 @@ function Category() {
     });
 
     setMiddleUpdateText(target.categoryName);
-
     fetchSubData(target.categoryName);
     setMiddleCategoryForm(true);
     setSubCategoryForm(true);

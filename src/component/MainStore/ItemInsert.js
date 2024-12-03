@@ -138,7 +138,7 @@ function ItemInsert() {
       itemCapacity: item.itemCapacity,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
-      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
       itemStorage: item.itemStorage,
       itemCountryOrigin: item.itemCountryOrigin,
       itemCategoryMajorName: item.itemMajorCategory,
@@ -282,11 +282,8 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-
-
                             <Select
                               label="대분류"
-                              
                               onChange={handleItemMajorCategorySelectBox}
                             >
                               {majorCategoryList.map((majorCategory, index) => (
@@ -297,9 +294,7 @@ function ItemInsert() {
                                   {majorCategory.categoryName}
                                 </Option>
                               ))}
-                              
                             </Select>
-                           
                           </s.ButtonInnerDiv>
                         </div>
                         <div
@@ -312,18 +307,18 @@ function ItemInsert() {
                           >
                             <Select
                               label="중분류"
-                              
                               onChange={handleItemMiddleCategorySelectBox}
                             >
-                              {middleCategoryList.map((middleCategory, index) => (
-                                <Option
-                                  key={index}
-                                  value={middleCategory.categoryName}
-                                >
-                                  {middleCategory.categoryName}
-                                </Option>
-                              ))}
-                              
+                              {middleCategoryList.map(
+                                (middleCategory, index) => (
+                                  <Option
+                                    key={index}
+                                    value={middleCategory.categoryName}
+                                  >
+                                    {middleCategory.categoryName}
+                                  </Option>
+                                )
+                              )}
                             </Select>
                           </s.ButtonInnerDiv>
                         </div>
@@ -334,7 +329,6 @@ function ItemInsert() {
                           >
                             <Select
                               label="소분류"
-                              
                               onChange={handleItemSubCategorySelectBox}
                             >
                               {subCategoryList.map((subCategory, index) => (
@@ -345,7 +339,6 @@ function ItemInsert() {
                                   {subCategory.categoryName}
                                 </Option>
                               ))}
-                              
                             </Select>
                           </s.ButtonInnerDiv>
                         </div>

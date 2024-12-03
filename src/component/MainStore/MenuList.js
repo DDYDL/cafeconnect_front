@@ -84,6 +84,15 @@ function MenuList() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -168,6 +177,15 @@ function MenuList() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
