@@ -224,6 +224,7 @@ export const PdtExtraInfoTable = styled.table`
     }
 `;
 export const PdtExtraInfoTableTh = styled.th`
+    align-content: center;
     padding-right: 15px;
     width:315px;
     word-break: keep-all;
@@ -232,6 +233,7 @@ export const PdtExtraInfoTableTh = styled.th`
     font-size: 16px;
 `;
 export const PdtExtraInfoTableTd = styled.td`
+    align-content: center;
     padding: 0;
     padding: 0 19px;
     color: #000;

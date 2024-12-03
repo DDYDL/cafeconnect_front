@@ -1,82 +1,104 @@
 //import {Carousel} from "flowbite-react";
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import { Carousel } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import * as s from '../styledcomponent/shopmain.tsx'
-
-
-const ProductItem = ({ item }) => {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrement = (e) => {
-    e.stopPropagation();
-    setQuantity(prev => prev + 1);
-  };
-
-  const handleDecrement = (e) => {
-    e.stopPropagation();
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
-    }
-  };
-
-  const handleAddToCart = (e) => {
-    
-    e.stopPropagation();
-    console.log(`Added ${quantity} of ${item.name} to cart`);
-  };
-
-  return (
-    <s.ItemListLi>
-        <s.ItemListImg>
-          <img src={item.imageUrl} alt={item.name} />
-          <s.HoverControls className="hover-controls">
-            <s.QuantityControl>
-              <s.QuantityButton onClick={handleDecrement}>-</s.QuantityButton>
-              <s.QuantityDisplay>{quantity}</s.QuantityDisplay>
-              <s.QuantityButton onClick={handleIncrement}>+</s.QuantityButton>
-            </s.QuantityControl>
-
-            <s.CartButton onClick={handleAddToCart}>
-              <ShoppingCartIcon className="h-6 w-6" />
-            </s.CartButton>
-          </s.HoverControls>
-        </s.ItemListImg>
-        <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
-        <s.ItemListTextBox>
-          <s.ItemTitle>{item.name}</s.ItemTitle>
-          <s.ItemPrice>{item.price}</s.ItemPrice>
-          {item.itemStorage && (
-            <s.ItemStorageLabelP>
-              <s.ItemStorageType storageWay={item.itemStorage}>
-                {item.itemStorage}
-              </s.ItemStorageType>
-            </s.ItemStorageLabelP>
-          )}
-        </s.ItemListTextBox>
-      </s.ItemListA>
-    </s.ItemListLi>
-  );
-};
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom, memberAtom } from '../../atoms';
+import { axiosInToken } from '../../config.js';
 
 function ShopMain() {
+  
+  const token = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
+  const [items,setItems] = useState({});
+  const [quantity, setQuantity] = useState({});
 
-  const renderProductSection = (title) => (
+  useEffect(()=>{
+    getMajorItems();
+  },[token]);
+
+  const getMajorItems=()=>{
+    axiosInToken(token).get('shopMain')
+    .then(res=>{
+      setItems(res.data.allCategory)
+    })
+    
+  }
+
+
+  const handleQuantityChange = (itemCode, change) => {
+    setQuantity(prev => ({
+      ...prev,
+      [itemCode]: Math.max(1, (prev[itemCode] || 1) + change)
+    }));
+  };
+
+  const handleAddToCart = (e, itemCode) => {
+    const sendQuantity = quantity[itemCode] || 1;
+    e.stopPropagation();
+    axiosInToken(token)
+    .get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${sendQuantity}`)
+    .then(res => {
+      if (res.data != null) {
+        alert('장바구니에 등록되었습니다.');
+      }
+    }).catch(err => {
+      console.log(err);
+      alert('장바구니 등록에 실패했습니다.');
+    });
+  };
+
+  const renderProductSection = (category) => (
  
-        <s.ShopMainContent>
-          <s.ShopMainTitle>
-            {title}
-            <s.ShopMaintTitlePlus>+</s.ShopMaintTitlePlus>
-          </s.ShopMainTitle>
-          <s.ShopMainItemList>
-            <s.ItemListUl>
-              {items.map((item) => (
-                <ProductItem key={item.itemCode} item={item} />
-              ))}
-            </s.ItemListUl>
-          </s.ShopMainItemList>
-        </s.ShopMainContent>
-  );
+    <s.ShopMainContent key={category}>
+    <s.ShopMainTitle>
+      {category}
+      <s.ShopMaintTitlePlus>+</s.ShopMaintTitlePlus>
+    </s.ShopMainTitle>
+    <s.ShopMainItemList>
+      <s.ItemListUl>
+        {items[category]?.map((item) => (
+          <s.ItemListLi key={item.itemCode}>
+            <s.ItemListImg>
+              {/* 이미지 경로대로 업데이트하기 */}
+              <img src='/image/item3.jpg' alt={item.itemNum} /> 
+              <s.HoverControls className="hover-controls">
+                <s.QuantityControl>
+                  <s.QuantityButton onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuantityChange(item.itemCode, -1);
+                            }}>-</s.QuantityButton>
+                  <s.QuantityDisplay>{quantity[item.itemCode] || 1}</s.QuantityDisplay>
+                  <s.QuantityButton onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuantityChange(item.itemCode, 1);
+                            }}>+</s.QuantityButton>
+                </s.QuantityControl>
+                <s.CartButton onClick={(e) => handleAddToCart(e,item.itemCode)}>
+                  <ShoppingCartIcon className="h-6 w-6" />
+                </s.CartButton>
+              </s.HoverControls>
+            </s.ItemListImg>
+            <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
+              <s.ItemListTextBox>
+                <s.ItemTitle>{item.itemName}</s.ItemTitle>
+                <s.ItemPrice>{item.itemPrice?.toLocaleString()}원</s.ItemPrice>
+                {item.itemStorage && (
+                  <s.ItemStorageLabelP>
+                    <s.ItemStorageType storageWay={item.itemStorage}>
+                      {item.itemStorage}
+                    </s.ItemStorageType>
+                  </s.ItemStorageLabelP>
+                )}
+              </s.ItemListTextBox>
+            </s.ItemListA>
+          </s.ItemListLi>
+        ))}
+      </s.ItemListUl>
+    </s.ShopMainItemList>
+  </s.ShopMainContent>
+);
 
   const bannerImages = [
     {
@@ -93,56 +115,7 @@ function ShopMain() {
     }
 
   ];
-  const items = [
-    {
-      itemCode: 1,
-      name: '에티오피아 코케허니 G1스페셜티',
-      imageUrl: "/image/item1.jpg",
-      price: '	11,500원',
-      bgColor: "#45b0da",
-      storageType: "냉동"
-
-    },
-    {
-      itemCode: 2,
-      name: '달보드레 블랜드',
-      imageUrl: "/image/item2.jpg",
-      price: '8,500원'
-
-    },
-    {
-      itemCode: 3,
-      name: '에티오피아 예가체프 G2',
-      imageUrl: "/image/item3.jpg",
-      price: '22,000원',
-      bgColor: "#45b0da",
-      storageType: "냉동"
-
-    },
-    {
-      itemCode: 4,
-      name: '코스타리카 드립백',
-      imageUrl: "/image/item4.jpg",
-      price: '8,500원'
-
-    },
-    {
-      itemCode: 5,
-      name: '에티오피아 첼베사 워시드 스페셜티',
-      imageUrl: "/image/item5.jpg",
-      price: '13,000원'
-
-    },
-    {
-      itemCode: 6,
-      name: '과테말라 코반 스페셜',
-      imageUrl: "/image/item1.jpg",
-      price: '8,900원'
-
-    },
-  ]
-
-
+ 
   return (
     <s.ShopMainWrapper>
           <div className="h-[480px] mt-16">

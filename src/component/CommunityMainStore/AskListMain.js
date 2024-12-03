@@ -5,11 +5,10 @@ import {useState, useEffect} from 'react';
 import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import { Link } from 'react-router-dom';
 import { format } from "date-fns";
 import { ko } from "date-fns/locale/ko";
-import { ArrowRightIcon, ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router';
+import { ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 
 const AskListMain = ()=>{
     const [askList, setAskList] = useState([]);
@@ -33,7 +32,7 @@ const AskListMain = ()=>{
                 for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
                     page.push(i);
                 }
-                setPageBtn({...page});
+                setPageBtn([...page]);
                 setPageInfo(pageInfo);
             })
     }
@@ -61,17 +60,33 @@ const AskListMain = ()=>{
                     </s.TableListThead>
                     <tbody>
                     {askList.map(ask=>(
-                        <s.TableTextTr key={ask.askNum} onClick={askDetail}>
+                        <s.TableTextTr key={ask.askNum} onClick={e=>askDetail(ask.askNum)}>
                             <s.TableTextTd width='50px'>{ask.askNum}</s.TableTextTd >
                             <h.TableTextTd width='160px'>{ask.askType}</h.TableTextTd >
                             <h.TableTextTd width='300px'>{ask.askTitle}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{ask.storeName}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{format(ask.askDate, 'yyyy.MM.dd', {locale: ko})}</h.TableTextTd >
-                            <h.TableTextTd width='130px'>{ask.askStatus}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{ask.askStatus=="answered"?            
+                            <h.StatusTextTrue>답변완료</h.StatusTextTrue>:
+                            <h.StatusTextFalse>미답변</h.StatusTextFalse>}
+                            </h.TableTextTd >
                         </s.TableTextTr>
                     ))}
                     </tbody>
                 </s.TableList>
+                <s.PageButtonGroupDiv>
+                  <s.ButtonGroupStyle variant="outlined">
+                    <s.IconButtonStyle>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    </s.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    ))}
+                    <s.IconButtonStyle>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    </s.IconButtonStyle>
+                  </s.ButtonGroupStyle>
+                </s.PageButtonGroupDiv>
             </s.ContentListDiv>
         </>
     )
