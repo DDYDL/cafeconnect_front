@@ -1,5 +1,6 @@
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
+import * as h from '../styles/HStyledStore.tsx';
 
 // 로그인 토큰
 import { axiosInToken} from '../../config.js'
@@ -7,14 +8,13 @@ import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect} from 'react';
-import { Link } from 'react-router-dom';
-
-import { format } from "date-fns";
+import { useNavigate } from 'react-router';
 
 const AskDetailMain = ()=>{
     const token = useAtomValue(tokenAtom);
     const {askNum} = useParams();
     const [ask, setAsk] = useState({});
+    const navigate = useNavigate();
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
@@ -33,6 +33,18 @@ const AskDetailMain = ()=>{
     const edit = (e) => {
         setAsk({ ...ask, ['askAnswer']: e.target.value });
         console.log(ask);
+    }
+
+    const addAnswer = () => {
+        axiosInToken(token).post('askAnswerMain',ask)
+            .then(res=> {
+                console.log(res);
+                alert('답변이 등록되었습니다.');
+                navigate(`/askDetailMain/${res.data}`);
+            })
+            .catch(err=>{
+                console.log(err.response.data);
+            })
     }
 
     return (
@@ -68,7 +80,7 @@ const AskDetailMain = ()=>{
                 </tbody>
             </m.TableInfo>
 
-            <m.TableInfo>
+            <h.TableInfo>
                 <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                 <m.TableInfoTr>
@@ -78,18 +90,21 @@ const AskDetailMain = ()=>{
                         <m.TableInfoTd>{ask.askContent}</m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
-            </m.TableInfo>
-            <m.TableInfo>
+            </h.TableInfo>
+            <h.TableInfo>
                 <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                 <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>답변</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><s.InputStyle width='800px' type='text' value={ask.askAnswer} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd><h.Textarea type='text' value={ask.askAnswer} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
-            </m.TableInfo>
+            </h.TableInfo>
+            <s.SearchButtonDiv>
+                <s.ButtonStyle width='70px' style={{marginTop:'30px', marginLeft:'10px'}} onClick={addAnswer}>답변 저장</s.ButtonStyle>
+            </s.SearchButtonDiv>
             </s.ContentListDiv >
         </>
     )

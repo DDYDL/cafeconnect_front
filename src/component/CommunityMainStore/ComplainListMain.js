@@ -1,16 +1,44 @@
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
-import { Link } from 'react-router-dom';
-import { Input, Select, Option } from "@material-tailwind/react";
-import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from 'react';
+import { axiosInToken } from '../../config.js'
+import { useAtomValue } from 'jotai/react';
+import { tokenAtom } from '../../atoms';
+import { format } from "date-fns";
+import { ko } from "date-fns/locale/ko";
 import { useNavigate } from 'react-router';
+import { ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 
 const ComplainListMain = ()=>{
+    const [complainList, setComplainList] = useState([]);
+    const [pageBtn, setPageBtn] = useState([]);
+    const [pageInfo, setPageInfo] = useState({});
+    const token = useAtomValue(tokenAtom);
     const navigate = useNavigate();
 
-    const complainDetail = ()=>{
-        navigate("/complainDetailMain");
+    useEffect(()=> {
+        // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
+        if(token!=null && token!=='')  select(1);
+    }, [token])
+
+    const select = (page) => {
+        axiosInToken(token).get(`complainListMain?page=${page}`)
+            .then(res=> {
+                let pageInfo = res.data.pageInfo;
+                console.log(res.data.complainList)
+                setComplainList([...res.data.complainList])
+                let page = [];
+                for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+                    page.push(i);
+                }
+                setPageBtn([...page]);
+                setPageInfo(pageInfo);
+            })
+    }
+
+    const complainDetail = (n)=>{
+        navigate(`/complainDetailMain/${n}`);
     }
 
     return (
@@ -30,56 +58,33 @@ const ComplainListMain = ()=>{
                         <s.TableTextTh width='130px'>답변상태</s.TableTextTh>
                     </s.TableListThead>
                     <tbody>
-                        <s.TableTextTr onClick={complainDetail}>
-                            <s.TableTextTd width='50px'>82</s.TableTextTd>
-                            <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
+                    {complainList.map(complain=>(
+                        <s.TableTextTr key={complain.complainNum} onClick={e => complainDetail(complain.complainNum)}>
+                            <s.TableTextTd width='50px' name="complainNum">{complain.complainNum}</s.TableTextTd >
+                            <h.TableTextTd width='160px'>{complain.userName}</h.TableTextTd >
+                            <h.TableTextTd width='300px'>{complain.complainTitle}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{complain.storeName}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{format(complain.complainDate, 'yyyy.MM.dd', {locale: ko})}</h.TableTextTd >
+                            <h.TableTextTd width='130px'>{complain.complainStatus==null||complain.complainStatus==0?
+                            <h.StatusTextFalse>미답변</h.StatusTextFalse>:
+                            <h.StatusTextTrue>답변완료</h.StatusTextTrue>}</h.TableTextTd >
                         </s.TableTextTr>
-                        <s.TableTextTr onClick={complainDetail}>
-                        <s.TableTextTd width='160px'>81</s.TableTextTd>
-                        <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변대기</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={complainDetail}>
-                        <s.TableTextTd width='160px'>80</s.TableTextTd>
-                        <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={complainDetail}>
-                        <s.TableTextTd width='160px'>79</s.TableTextTd>
-                        <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={complainDetail}>
-                        <s.TableTextTd width='160px'>78</s.TableTextTd>
-                        <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
-                        <s.TableTextTr onClick={complainDetail}>
-                        <s.TableTextTd width='160px'>77</s.TableTextTd>
-                        <s.TableTextTd width='160px'>김**</s.TableTextTd>
-                            <s.TableTextTd width='300px'>직원이 굉장히 불친절함</s.TableTextTd>
-                            <s.TableTextTd width='130px'>가산호서대점</s.TableTextTd>
-                            <s.TableTextTd width='130px'>2024.10.23</s.TableTextTd>
-                            <s.TableTextTd width='130px'>답변완료</s.TableTextTd>
-                        </s.TableTextTr>
+                    ))}
                     </tbody>
                 </s.TableList>
+                <s.PageButtonGroupDiv>
+                  <s.ButtonGroupStyle variant="outlined">
+                    <s.IconButtonStyle>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    </s.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    ))}
+                    <s.IconButtonStyle>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    </s.IconButtonStyle>
+                  </s.ButtonGroupStyle>
+                </s.PageButtonGroupDiv>
             </s.ContentListDiv>
         </>
     )
