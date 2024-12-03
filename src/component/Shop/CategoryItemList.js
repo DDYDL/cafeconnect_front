@@ -32,6 +32,7 @@ const CategoryItemList = ({ categories }) => {
     submit();
   }, [majorNum, middleNum, subNum]);
 
+  // 병렬 처리를 위해 async await 사용
   const submit = async () => {
     const formData = new FormData();
     
@@ -43,7 +44,6 @@ const CategoryItemList = ({ categories }) => {
     } else if (majorNum) {
       formData.append("majorNum", majorNum);
     }
-
     try {
       const response = await axiosInToken(token).post('categoryItemList', formData);
       setItems(response.data);
@@ -80,7 +80,7 @@ const CategoryItemList = ({ categories }) => {
     }));
   };
 
-  const addToCart = (itemCode) => {
+  const handleAddToCart = (itemCode) => {
     const quantity = quantities[itemCode] || 1;
     axiosInToken(token)
       .get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${quantity}`)
@@ -136,6 +136,7 @@ const CategoryItemList = ({ categories }) => {
                     <s.CategoryItemListLi key={item.itemCode}>
                       <s.ItemListImg>
                         <img src='/image/item3.jpg' alt={item.itemFileNum} />
+                        {store.roles==='ROLE_STORE' &&
                         <s.HoverControls className="hover-controls">
                           <s.QuantityControl>
                             <s.QuantityButton onClick={(e) => {
@@ -153,11 +154,12 @@ const CategoryItemList = ({ categories }) => {
 
                           <s.CartButton onClick={(e) => {
                             e.stopPropagation(); //클릭한 곳에서만 해당 이벤트가 실행되도록 함 
-                            addToCart(item.itemCode);
+                            handleAddToCart(item.itemCode);
                           }}>
                             <ShoppingCartIcon className="h-6 w-6" />
                           </s.CartButton>
                         </s.HoverControls>
+                          } 
                       </s.ItemListImg>
                       <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
                         <s.ItemListTextBox>

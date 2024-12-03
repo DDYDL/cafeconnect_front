@@ -1,57 +1,97 @@
-import { useState } from 'react';
-import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import {
+  XMarkIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@heroicons/react/24/outline";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as c from "../styledcomponent/cartlist.tsx";
+import { axiosInToken } from "../../config.js";
 
-const PreviousOrderItemsModal = ({ open, handleClose, onAddItems }) => {
-  const [selectedDate, setSelectedDate] = useState("2024/10/20");
-  const [selectedItems, setSelectedItems] = useState([]);
+const PreviousOrderItemsModal = ({
+  open,
+  handleClose,
+  storeCode,
+  token,
+  prevOrderDateList,
+  onSuccess,
+}) => {
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0); // 날짜 목록의 인덱스
+  const [selectedItems, setSelectedItems] = useState([]); // 선택한 주문했던 아이템 담기
+  const [orderItems, setOrderItems] = useState([]); // 구매했던 아이템 리스트
 
-  const sampleItems = [
-    {
-      id: 1,
-      name: "제다치즈 단백질 쿠키(8개입)",
-      category: "웰빙/쿠키류/-",
-      price: 26900,
-      quantity: 50,
-      orderDate: "2024/10/20"
-    },
-    {
-      id: 2,
-      name: "더블 볼랜드 하우스5PK",
-      category: "웰빙/쿠키류/-",
-      price: 26900,
-      quantity: 50,
-      orderDate: "2024/10/20"
+  useEffect(() => {
+    //date가 있으면
+    if (prevOrderDateList && prevOrderDateList.length > 0) {
+      setSelectedDate(prevOrderDateList[0]); // 최근 날짜 셋
+      getOrderItems(prevOrderDateList[0]); // 데이터 호출
     }
-  ];
+  }, [prevOrderDateList]);
 
+  const getOrderItems = (selectDate) => {
+    const formData = new FormData();
+    formData.append("storeCode", storeCode);
+    formData.append("orderDate", selectDate);
+    formData.append("page", 1); // 1로 고정
+    axiosInToken(token)
+      .post("selectPreviouOrder", formData)
+      .then((res) => {
+        setOrderItems(res.data.items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 방향키로 데이터 변경 (인덱스값으로 조정하기)
   const handleDateChange = (direction) => {
-    const currentDate = new Date(selectedDate);
-    const newDate = new Date(currentDate);
-    
-    if (direction === 'prev') {
-      newDate.setMonth(currentDate.getMonth() - 1);
-    } else {
-      newDate.setMonth(currentDate.getMonth() + 1);
+    if (
+      direction === "prev" &&
+      selectedDateIndex < prevOrderDateList.length - 1
+    ) {
+      setSelectedDateIndex(selectedDateIndex + 1);
+      const newDate = prevOrderDateList[selectedDateIndex + 1];
+      setSelectedDate(newDate);
+      getOrderItems(newDate);
+    } else if (direction === "next" && selectedDateIndex > 0) {
+      setSelectedDateIndex(selectedDateIndex - 1);
+      const newDate = prevOrderDateList[selectedDateIndex - 1];
+      setSelectedDate(newDate);
+      getOrderItems(newDate);
     }
-    
-    setSelectedDate(newDate.toLocaleDateString('ko-KR').replace(/\./g, '/'));
   };
 
-  const handleCheckboxChange = (item) => {
-    setSelectedItems(prev => {
-      const exists = prev.find(i => i.id === item.id);
-      if (exists) {
-        return prev.filter(i => i.id !== item.id);
-      }
-      return [...prev, item];
-    });
+  // 체크박스 상태 변경 처리
+  const handleCheckboxChange = (itemCode, isChecked) => {
+    //체크하면 기존꺼에 새로 추가 
+    if (isChecked) {
+      setSelectedItems((prev) => [...prev, itemCode]); 
+    //체크해제하면 빼기 (code !== itemCode 애들만 새로운 배열로 만들어 저장 )
+    } else {
+      setSelectedItems((prev) => prev.filter((code) => code !== itemCode)); 
+    }
   };
 
-  const handleAddSelected = () => {
-    onAddItems(selectedItems);
-    handleClose();
+  const handleAddToCart = () => {
+    if (selectedItems.length === 0) {
+      alert("선택된 상품이 없습니다.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("storeCode", storeCode);
+    formData.append("check", selectedItems);
+
+    axiosInToken(token)
+      .post("addPreOrderItemToCart", formData)
+      .then((res) => {
+        alert("장바구니에 상품을 추가했습니다.");
+        onSuccess(); //장바구니 리스트 재로드;
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("장바구니에 상품을 추가하는데 실패했습니다.");
+      });
   };
 
   return (
@@ -62,11 +102,19 @@ const PreviousOrderItemsModal = ({ open, handleClose, onAddItems }) => {
       </c.ModalHeader>
 
       <c.DateNavigation>
-        <button onClick={() => handleDateChange('prev')}>
+        <button
+          onClick={() => handleDateChange("prev")}
+          disabled={selectedDateIndex === prevOrderDateList.length  - 1}
+          className={`w-10 ${selectedDateIndex === prevOrderDateList.length - 1 ? 'invisible' : ''}`}
+        >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
         <div className="date">{selectedDate}</div>
-        <button onClick={() => handleDateChange('next')}>
+        <button
+          onClick={() => handleDateChange("next")}
+          disabled={selectedDateIndex === 0}
+          className={`w-10 ${selectedDateIndex === 0 ? 'invisible' : ''}`}
+        >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
       </c.DateNavigation>
@@ -84,20 +132,22 @@ const PreviousOrderItemsModal = ({ open, handleClose, onAddItems }) => {
             </tr>
           </thead>
           <tbody>
-            {sampleItems.map(item => (
-              <tr key={item.id}>
+            {orderItems.map((item) => (
+              <tr key={item.itemCode}>
                 <c.CheckboxCell>
                   <input
                     type="checkbox"
-                    checked={selectedItems.some(i => i.id === item.id)}
-                    onChange={() => handleCheckboxChange(item)}
+                    checked={selectedItems.includes(item.itemCode)}
+                    onChange={(e) => handleCheckboxChange(item.itemCode, e.target.checked)}
                   />
                 </c.CheckboxCell>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
-                <td>{item.price.toLocaleString()}원</td>
-                <td>상온</td>
-                <td>{item.quantity}개</td>
+                <td>{item.itemName}</td>
+                <td>{`${item.majorCategoryName}/${item.middleCategoryName}/${
+                  item.subCategoryName || "-"
+                }`}</td>
+                <td>{item.itemPrice?.toLocaleString()}원</td>
+                <td>{item.itemStorage}</td>
+                <td>{item.totalOrderCount}개</td>
               </tr>
             ))}
           </tbody>
@@ -105,7 +155,7 @@ const PreviousOrderItemsModal = ({ open, handleClose, onAddItems }) => {
       </div>
 
       <c.ModalFooter>
-        <StyledButton size="sm" theme="brown" onClick={handleAddSelected}>
+        <StyledButton size="sm" theme="brown" onClick={handleAddToCart}>
           장바구니에 추가
         </StyledButton>
       </c.ModalFooter>
