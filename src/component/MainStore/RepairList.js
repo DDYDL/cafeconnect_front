@@ -7,8 +7,290 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import img from "../assets/img/img.svg";
 import { Option, Input } from "@material-tailwind/react";
-
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 function RepairListCopy() {
+  const [pageList, setPageList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [startPage, setStartPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPageNumber, setTotalPageNumber] = useState(0);
+  const [hasNext, setHasNext] = useState(null);
+  const [hasPrevious, setHasPrevious] = useState(null);
+  const [empty, setEmpty] = useState(null);
+  const [usingKeyword, setUsingKeyword] = useState(true);
+  const [usingCategory, setUsingCategory] = useState(false);
+
+  const [keyWord, setKeyWord] = useState("");
+
+  const [category, setCategory] = useState({
+    ItemCategoryMajorName: "",
+    ItemCategoryMiddleName: "",
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [emptyList, setEmptyList] = useState([]);
+  const [pageNumList, setPageNumList] = useState([]);
+  const [majorCategoryList, setMajorCategoryList] = useState([]);
+  const [middleCategoryList, setMiddleCategoryList] = useState([]);
+  const [subCategoryList, setSubCategoryList] = useState([]);
+  const navigate = useNavigate();
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+  const handleNavigate = (index) => () => {
+    const page = pageList[index];
+    navigate(`/repairDetail/${page.repairNum}`);
+  };
+
+  const handleChangeKeyword = (e) => {
+    const value = e.target.value;
+    setKeyWord(value);
+    setUsingKeyword(true);
+    setUsingCategory(false);
+    fetchKeywordData(value, 0);
+  };
+
+  const handleSelectMajorCategory = (value) => {
+    console.log(value);
+    setCategory({
+      ...category,
+      ItemCategoryMajorName: value,
+    });
+    fetchMiddleData(value);
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategoryMajorName: value,
+      },
+      0
+    );
+  };
+
+  const handleSelectMiddleCategory = (value) => {
+    console.log(value);
+    setCategory({
+      ...category,
+      ItemCategoryMiddleName: value,
+    });
+
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategoryMiddleName: value,
+      },
+      0
+    );
+  };
+
+  const fetchMajorData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/majorCategoryCopy`
+      );
+      setMajorCategoryList(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchMiddleData = async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
+      );
+      setMiddleCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchKeywordData = async (keyword, pageNum) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:8080/repairListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
+      );
+
+      setCurrentPage(response.data.pageable.pageNumber);
+
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
+
+      setTotalElements(response.data.totalElements);
+      setTotalPageNumber(response.data.totalPages);
+      //넘어가는 부분이 있음
+      if (
+        Math.floor(response.data.pageable.pageNumber / 5) <
+        Math.floor((response.data.totalPages - 1) / 5)
+      ) {
+        setHasNext(true);
+        setEmptyList([]);
+      } else {
+        setHasNext(false);
+
+        //마지막 페이지 확인
+        if (response.data.last) {
+          const emptyListSize = 10 - response.data.numberOfElements;
+
+          setEmptyList(new Array(emptyListSize).fill(1));
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(
+              Array.from(
+                { length: 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          } else {
+            setPageNumList(
+              Array.from(
+                { length: (response.data.pageable.pageNumber % 5) + 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          }
+        } else {
+          setEmptyList([]);
+
+          const pageNumListSize =
+            response.data.totalPages -
+            Math.floor(response.data.pageable.pageNumber / 5) * 5;
+
+          setPageNumList(
+            Array.from(
+              { length: pageNumListSize },
+              (_, index) =>
+                response.data.pageable.pageNumber -
+                (response.data.pageable.pageNumber % 5) +
+                index
+            )
+          );
+        }
+      }
+      if (currentPage > 4) {
+        setHasPrevious(true);
+      } else {
+        setHasPrevious(false);
+      }
+
+      setPageList(response.data.content);
+      setEmpty(response.data.empty);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategoryData = async (category, pageNum) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:8080/repairListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&pageNum=${pageNum}&pageSize=10`
+      );
+
+      setCurrentPage(response.data.pageable.pageNumber);
+
+      setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
+
+      setTotalElements(response.data.totalElements);
+      setTotalPageNumber(response.data.totalPages);
+      //넘어가는 부분이 있음
+      if (
+        Math.floor(response.data.pageable.pageNumber / 5) <
+        Math.floor((response.data.totalPages - 1) / 5)
+      ) {
+        setHasNext(true);
+        setEmptyList([]);
+      } else {
+        setHasNext(false);
+
+        //마지막 페이지 확인
+        if (response.data.last) {
+          const emptyListSize = 10 - response.data.numberOfElements;
+
+          setEmptyList(new Array(emptyListSize).fill(1));
+
+          if (response.data.pageable.pageNumber % 5 === 0) {
+            setPageNumList(
+              Array.from(
+                { length: 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          } else {
+            setPageNumList(
+              Array.from(
+                { length: (response.data.pageable.pageNumber % 5) + 1 },
+                (_, index) =>
+                  response.data.pageable.pageNumber -
+                  (response.data.pageable.pageNumber % 5) +
+                  index
+              )
+            );
+          }
+        } else {
+          setEmptyList([]);
+
+          const pageNumListSize =
+            response.data.totalPages -
+            Math.floor(response.data.pageable.pageNumber / 5) * 5;
+
+          console.log(Math.floor(response.data.pageable.pageNumber / 5) * 5);
+
+          setPageNumList(
+            Array.from(
+              { length: pageNumListSize },
+              (_, index) =>
+                response.data.pageable.pageNumber -
+                (response.data.pageable.pageNumber % 5) +
+                index
+            )
+          );
+        }
+      }
+      if (currentPage > 4) {
+        setHasPrevious(true);
+      } else {
+        setHasPrevious(false);
+      }
+
+      setPageList(response.data.content);
+      setEmpty(response.data.empty);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKeywordData("", 0);
+    fetchMajorData();
+  }, []);
+
   return (
     <>
       <m.CarouselDiv>
@@ -24,26 +306,32 @@ function RepairListCopy() {
               <div
                 className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
               >
-                총102건
+                {`총${totalElements}건`}
               </div>
               <div className={styles["frame-container"]}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="대분류">
-                    <Option>Material Tailwind HTML</Option>
-                    <Option>Material Tailwind React</Option>
-                    <Option>Material Tailwind Vue</Option>
-                    <Option>Material Tailwind Angular</Option>
-                    <Option>Material Tailwind Svelte</Option>
+                  <s.SelectStyle
+                    label="대분류"
+                    onChange={handleSelectMajorCategory}
+                  >
+                    {majorCategoryList.map((majorCategory, index) => (
+                      <Option value={majorCategory.categoryValue} key={index}>
+                        {majorCategory.categoryName}
+                      </Option>
+                    ))}
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="대분류">
-                    <Option>Material Tailwind HTML</Option>
-                    <Option>Material Tailwind React</Option>
-                    <Option>Material Tailwind Vue</Option>
-                    <Option>Material Tailwind Angular</Option>
-                    <Option>Material Tailwind Svelte</Option>
+                  <s.SelectStyle
+                    label="중분류"
+                    onChange={handleSelectMiddleCategory}
+                  >
+                    {middleCategoryList.map((middleCategory, index) => (
+                      <Option value={middleCategory.categoryValue} key={index}>
+                        {middleCategory.categoryName}
+                      </Option>
+                    ))}
                   </s.SelectStyle>
                 </s.ButtonInnerDiv>
 
@@ -51,6 +339,7 @@ function RepairListCopy() {
                   <Input
                     icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                     label="매장명 검색"
+                    onChange={handleChangeKeyword}
                   />
                 </div>
               </div>
@@ -101,483 +390,307 @@ function RepairListCopy() {
                       </div>
                     </div>
                   </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
+
+                  {!empty &&
+                    pageList.map((page, index) => (
+                      <div className={styles["frame"]}>
+                        <div className={styles["data"]}>
+                          <div
+                            className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            onClick={handleNavigate(index)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {page.repairNum}
+                          </div>
+                        </div>
                         <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          className={`${styles["data-1"]} ${styles["data-6"]}`}
                         >
-                          머신/소도구
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            >
+                              {`${page.itemCategoryMajorName}/${page.itemCategoryMiddleName}`}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className={`${styles["data-2"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          >
+                            {formatDate(new Date(page.repairDate))}
+                          </div>
+                        </div>
+                        <div
+                          className={`${styles["data-3"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          >
+                            {page.repairType}
+                          </div>
+                        </div>
+                        <div
+                          className={`${styles["data-4"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          >
+                            {page.storeName}
+                          </div>
+                        </div>
+                        <div
+                          className={`${styles["data-5"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          >
+                            {page.repairStatus}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
+                    ))}
+
+                  {!empty &&
+                    emptyList.map((page, index) => (
+                      <div className={styles["frame"]}>
+                        <div className={styles["data"]}>
+                          <div
+                            className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          ></div>
+                        </div>
                         <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          className={`${styles["data-1"]} ${styles["data-6"]}`}
                         >
-                          머신/소도구
+                          <div className={styles["frame-89"]}>
+                            <div
+                              className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                            ></div>
+                          </div>
+                        </div>
+                        <div
+                          className={`${styles["data-2"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          ></div>
+                        </div>
+                        <div
+                          className={`${styles["data-3"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          ></div>
+                        </div>
+                        <div
+                          className={`${styles["data-4"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          ></div>
+                        </div>
+                        <div
+                          className={`${styles["data-5"]} ${styles["data-6"]}`}
+                        >
+                          <div
+                            className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                          ></div>
                         </div>
                       </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles["frame"]}>
-                    <div className={styles["data"]}>
-                      <div
-                        className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        A12345
-                      </div>
-                    </div>
-                    <div className={`${styles["data-1"]} ${styles["data-6"]}`}>
-                      <div className={styles["frame-89"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                        >
-                          머신/소도구
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`${styles["data-2"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["date"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        2024/01/01
-                      </div>
-                    </div>
-                    <div className={`${styles["data-3"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        기기 세척
-                      </div>
-                    </div>
-                    <div className={`${styles["data-4"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["strong-8900"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        독산점
-                      </div>
-                    </div>
-                    <div className={`${styles["data-5"]} ${styles["data-6"]}`}>
-                      <div
-                        className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                      >
-                        수리중
-                      </div>
-                    </div>
-                  </div>
+                    ))}
                 </div>
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      <s.IconButtonStyle>
-                        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>
-                      <s.IconButtonStyle>1</s.IconButtonStyle>
-                      <s.IconButtonStyle>2</s.IconButtonStyle>
-                      <s.IconButtonStyle>3</s.IconButtonStyle>
-                      <s.IconButtonStyle>4</s.IconButtonStyle>
-                      <s.IconButtonStyle>5</s.IconButtonStyle>
-                      <s.IconButtonStyle>
-                        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
-                      </s.IconButtonStyle>
+                      {!empty && hasPrevious && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchKeywordData(keyWord, startPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {usingKeyword && !empty && hasNext && (
+                        <>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() => fetchKeywordData(keyWord, startPage)}
+                          >
+                            {startPage + 1}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 1
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchKeywordData(keyWord, startPage + 1)
+                            }
+                          >
+                            {startPage + 2}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 2
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchKeywordData(keyWord, startPage + 2)
+                            }
+                          >
+                            {startPage + 3}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 3
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchKeywordData(keyWord, startPage + 3)
+                            }
+                          >
+                            {startPage + 4}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 4
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchKeywordData(keyWord, startPage + 4)
+                            }
+                          >
+                            {startPage + 5}
+                          </s.IconButtonStyle>
+                        </>
+                      )}
+                      {usingCategory && !empty && hasNext && (
+                        <>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchCategoryData(category, startPage)
+                            }
+                          >
+                            {startPage + 1}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 1
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchCategoryData(category, startPage + 1)
+                            }
+                          >
+                            {startPage + 2}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 2
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchCategoryData(category, startPage + 2)
+                            }
+                          >
+                            {startPage + 3}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 3
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchCategoryData(category, startPage + 3)
+                            }
+                          >
+                            {startPage + 4}
+                          </s.IconButtonStyle>
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == startPage + 4
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() =>
+                              fetchCategoryData(category, startPage + 4)
+                            }
+                          >
+                            {startPage + 5}
+                          </s.IconButtonStyle>
+                        </>
+                      )}
+
+                      {usingKeyword &&
+                        !empty &&
+                        !hasNext &&
+                        pageNumList.map((value, index) => (
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == value
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() => fetchKeywordData("", value)}
+                          >
+                            {value + 1}
+                          </s.IconButtonStyle>
+                        ))}
+                      {usingCategory &&
+                        !empty &&
+                        !hasNext &&
+                        pageNumList.map((value, index) => (
+                          <s.IconButtonStyle
+                            style={
+                              currentPage == value
+                                ? { backgroundColor: "skyblue" }
+                                : null
+                            }
+                            onClick={() => fetchCategoryData(category, value)}
+                          >
+                            {value + 1}
+                          </s.IconButtonStyle>
+                        ))}
+
+                      {usingKeyword && empty && (
+                        <s.IconButtonStyle
+                          style={{ backgroundColor: "skyblue" }}
+                        >
+                          1
+                        </s.IconButtonStyle>
+                      )}
+
+                      {!empty && hasNext && (
+                        <s.IconButtonStyle
+                          onClick={fetchKeywordData(
+                            keyWord,
+                            5 * (Math.floor(fetchKeywordData / 5) + 1)
+                          )}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
                     </s.ButtonGroupStyle>
                   </s.PageButtonGroupDiv>
                 </div>
