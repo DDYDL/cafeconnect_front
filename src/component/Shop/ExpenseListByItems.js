@@ -9,7 +9,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import { axiosInToken } from '../../config.js';
 import { useAtomValue} from 'jotai/react';
 import { tokenAtom, memberAtom } from '../../atoms';
