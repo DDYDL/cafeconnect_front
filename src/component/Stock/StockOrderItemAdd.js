@@ -58,14 +58,13 @@ const StockOrderItemAdd = () => {
     const addStock = ()=>{
         axios.get(`${url}/addStockByOrderNum/${orderNumList}`)
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("재고가 추가 되었습니다.");
-                for(let orderNum in orderNumList) {
-                    // 재고 추가된 order 제외
-                    setOrderList(orderList.filter(item=>item.orderNum!==orderNum));
-                }
-            }
+            console.log(res.data);
+            alert("재고가 추가 되었습니다.");
+            orderNumList.forEach(function(orderNum) {
+                // 재고 추가된 order 제외
+                setOrderList(orderList.filter(item=>item.orderNum!==orderNum));
+                //setOrderList(orderList.map(item=>(item.orderNum===orderNum ? {...item, orderState:item.orderState} : item)));
+            });
         })
         .catch(err=>{
             console.log(err);

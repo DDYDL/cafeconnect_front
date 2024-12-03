@@ -14,6 +14,8 @@ interface Container {
     fontSize:string;
     float:string;
     height:string;
+    top:string;
+    left:string;
 }
 
 export const ContentDiv = styled.div`
@@ -138,22 +140,27 @@ export const ButtonInnerDiv = styled.div<Container>`
 `;
 
 export const SelectStyle = styled(Select)`
-    width:120px;
-    min-width:120px;
+    width:120px!important;
+    min-width:120px!important;
     display:inline-block;
     background: rgba(255, 255, 255, 1);
 
+    & > div {
+        width:120px!important;
+        min-width:120px!important;
+    }
+
     & div {
-        width:120px;
-        min-width:120px !important;
+        width:120px!important;
+        min-width:120px!important;
     }
     
     & svg {
         width:20px;
     }
 
-    & ul {
-        top:0px !important;
+    & > ul {
+        top:0px;
         padding:5px;
         overflow: scroll;
         scrollbar-width:thin;
@@ -365,13 +372,14 @@ export const InputStyleSearch = styled(Input)`
     height:40px;
 `;
 
-export const AutoSearchContainer = styled.div`
+export const AutoSearchContainer = styled.div<Container>`
     z-index: 3;
-    height: 100px;
-    width: 630px;
+    height:${(props) => props.height ? props.height : "100px"};
+    width:${(props) => props.width ? props.width : "630px"};
     background-color: rgba(255, 255, 255, 1.0);
     position: absolute;
-    top: 350px;
+    top:${(props) => props.top ? props.top : "350px"};
+    left:${(props) => props.left ? props.left : "750px"};
     border: 1px solid rgba(234, 234, 234, 1);
     border-radius: 0 0 5px 5px;
     padding: 10px;
@@ -397,37 +405,20 @@ export const AutoSearchData = styled.li`
     position: relative;
 `;
 
-export const dateCheckbox = styled.input.attrs((props) => ({
-    type:"checkbox",
-    checked:props.checked,
-    onChange:props.onChange,
-    }))`
-
-    border: 0;
-    clip: rect(0 0 0 0);
-    clippath: inset(50%);
-    height: 40px;
-    width:120px;
-    margin:-1px;
-    overflow:hidden;
-    padding:0;
-    position:absolute;
-    white-space:nowrap;
-`;
-
-export const SaveIDCheckBox = styled.div<{ checked: boolean }>`
-    width:120px;
-    height:40px;
-    background:${(props) => (props.checked ? "rgba(234, 234, 234, 1)" : "rgba(255, 255, 255, 1)")};
+export const dateCheckbox = styled.input`
     border:1px soild rgba(234, 234, 234, 1);
     border-radius:5px;
     font-size:14px;
-    text-align:center;
-    vertical-align:middle;
-    transition:all 100ms;
+    height:40px;
+    width:120px;
 
     &:hover {
-      background: rgba(234, 234, 234, 1);
-      opacity: 1;
+        background-color: rgba(234, 234, 234, 1);
     }
-}`;
+
+    &:checked {
+        background-color: rgba(234, 234, 234, 1);
+        border:none;
+        text:'';
+    }
+`;
