@@ -81,7 +81,6 @@ const ShopItemDetail = () => {
       .catch(err => {
         console.log(err);
       })
-      alert('장바구니에 등록되었습니다.');
     console.log(`장바구니에 추가: 상품 ${itemCode}, 수량 1`);
   };
 
