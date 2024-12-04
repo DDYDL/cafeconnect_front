@@ -20,6 +20,15 @@ const StockManage = ({major, middle, sub})=>{
     const [expirationDate, setExpirationDate] = useState(false);
     const [itemCategoryStr, setItemCategoryStr] = useState("");
     const [itemCategoryNum, setItemCategoryNum] = useState("");
+    const [stock, setStock] = useState({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
+
+    // 아이템 리스트
+    const [itemList, setItemList] = useState([]);
+    // 필터링된 아이템 리스트를 담을 변수
+    const [itmeListFilter, setItemListFilter] = useState([]);
+    const [itemNameFilter, setItemNameFilter] = useState("");
+
+    const [item, setItem] = useState({});
 
     const [selectedCategory, setSelectedCategory] = useState({'major':'', 'middle':'', 'sub':''});
     const [middleCategoryFilter, setMiddleCategoryFilter] = useState(middle);
@@ -33,7 +42,19 @@ const StockManage = ({major, middle, sub})=>{
         setStockList([]);
         setMember(member);
         getStockList();
+        getItem();
     }, [])
+
+    // 검색어 자동완성
+    useEffect(() => {
+        // 사용자가 입력한 단어를 바로 검색하는게 아니라 0.2초 정도 기다림
+        const debounce = setTimeout(() => {
+            if(itemNameFilter) updateData();
+        },200)
+        return () => {
+            clearTimeout(debounce)
+        }
+    },[itemNameFilter])
 
     const categorySetting = ()=>{
         setMajorCategory(major);
@@ -56,26 +77,31 @@ const StockManage = ({major, middle, sub})=>{
         setAdd(!add);
     }
 
+    const edit = (e)=>{
+        setStock({...stock, [e.target.name]:e.target.value});
+    }    
+
     const addStock = (e)=>{
         const formData = new FormData();
 
         formData.append("storeCode", member.storeCode);
-        // 상품정보 선택 시 카테고리, 규격, 보관상태 자동으로 들어감
-        formData.append("itemCode", member.password);
+        formData.append("itemCode", item.itemCode);
         // 유통기한, 입고날짜, 수량만 입력
-        formData.append("stockExpirationDate", member.password);
-        formData.append("stockReceiptDate", member.password);
-        formData.append("stockCount", member.username);
+        formData.append("stockExpirationDate", stock.stockExpirationDate);
+        formData.append("stockReceiptDate", stock.stockReceiptDate);
+        formData.append("stockCount", stock.stockCount);
         e.preventDefault();
         
         axios.post(`${url}/addStock`, formData)
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("재고가 추가 되었습니다.");
-                // stockList에 추가
-                setStockList([...stockList, formData]);
-            }
+            console.log(res.data);
+            alert("재고가 추가 되었습니다.");
+            // stockList에 추가
+            setStockList([...stockList, formData]);
+            setItem({});
+            setItemNameFilter("");
+            setItemListFilter([]);
+            setAdd(false);
         })
         .catch(err=>{
             console.log(err);
@@ -88,12 +114,11 @@ const StockManage = ({major, middle, sub})=>{
 
         formData.append("stockNum", stockNum);
         formData.append("storeCode", member.storeCode);
-        // 상품정보 선택 시 카테고리, 규격, 보관상태 자동으로 들어감
-        formData.append("itemCode", member.password);
+        formData.append("itemCode",  stock.itemCode);
         // 유통기한, 입고날짜, 수량만 입력
-        formData.append("stockExpirationDate", member.password);
-        formData.append("stockReceiptDate", member.password);
-        formData.append("stockCount", member.username);
+        formData.append("stockExpirationDate", stock.stockExpirationDate);
+        formData.append("stockReceiptDate", stock.stockReceiptDate);
+        formData.append("stockCount", stock.stockCount);
         e.preventDefault();
         
         axios.post(`${url}/updateStock`, formData)
@@ -134,21 +159,23 @@ const StockManage = ({major, middle, sub})=>{
         e.preventDefault();
         const formData = new FormData();
 
+        setExpirationDate(expirationDate);
         setItemCategoryStr(itemCateStr);
         setItemCategoryNum(itemCateNum);
 
         formData.append("storeCode", member.storeCode);
         console.log(member.storeCode);
-        formData.append("category", itemCategoryStr);
-        console.log(itemCategoryStr);
-        formData.append("categoryNum", itemCategoryNum);
-        console.log(itemCategoryNum);
+        formData.append("category", itemCateStr);
+        console.log(itemCateStr);
+        formData.append("categoryNum", itemCateNum);
+        console.log(itemCateNum);
 
         if(expirationDate) {
             formData.append("expirationDate", "true");
             console.log("true");
         } else {
             formData.append("expirationDate", "");
+            console.log("false");
         }
         
         axios.post(`${url}/selectStockByCategory`, formData)
@@ -195,6 +222,38 @@ const StockManage = ({major, middle, sub})=>{
         }
     }
 
+    // 아이템 리스트 가져오기
+    const getItem = ()=>{
+        axios.get(`${url}/allItemList`)
+        .then(res=>{
+          console.log(res.data);
+          setItemList([...res.data]);
+          setItemListFilter([...res.data]);
+        })
+        .catch(err=>{
+          console.log(err);
+          alert("잠시후 다시 시도해주세요.");
+        })
+      }
+
+    const updateData = () => {
+        // 데이터 먼저 가져오기
+        if(itemList.length > 0) {
+          // 배열 깊은 복사로 가져오기
+          let tempArray = Array.from(itemList);
+          // 사용자가 검색한 단어가 포함된 store 이름만 주기
+          let nameList = tempArray.filter(item=>item.itemName.includes(itemNameFilter)===true);
+          setItemListFilter(nameList);
+        }
+        console.log(itmeListFilter);
+    }
+
+    const clickKeyword = (itemName)=>{
+        setItemNameFilter(itemName);
+        // 자동 완성된 검색어 클릭 시 초기화
+        setItemListFilter([]);
+    }
+
     return (
         <>
             <s.ContentListDiv>
@@ -202,24 +261,23 @@ const StockManage = ({major, middle, sub})=>{
                 <s.CategoryButtonGroupDiv>
                 <s.ButtonDiv>
                     <s.ButtonInnerDiv>
-                        <s.dateCheckbox type='checkbox' checked={expirationDate} value='유통기한' onChange={(e)=>searchCategory(e, setExpirationDate(!expirationDate), itemCategoryStr, itemCategoryNum)}/>
-                        <s.SaveIDCheckBox checked={expirationDate}>유통기한</s.SaveIDCheckBox>
+                        <s.dateCheckbox type='checkbox' value='유통기한' checked={expirationDate} onClick={(e)=>searchCategory(e, !expirationDate, itemCategoryStr, itemCategoryNum)}/>
                     </s.ButtonInnerDiv>
-                    <s.ButtonInnerDiv className='w-16'>
+                    <s.ButtonInnerDiv>
                     <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
                         {majorCategory.map(major=>(
                             <Option key={major.itemCategoryNum} value={major.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'major', major.itemCategoryNum)}>{major.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
-                    <s.ButtonInnerDiv className="w-16">
+                    <s.ButtonInnerDiv>
                         <s.SelectStyle label="중분류" onChange={(e)=>selectCategory('middle', e)} disabled={!selectedCategory.major}>
                         {middleCategoryFilter.map(middle=>(
                             <Option key={middle.itemCategoryNum} value={middle.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'middle', middle.itemCategoryNum)}>{middle.itemCategoryName}</Option>
                         ))}
                         </s.SelectStyle>
                     </s.ButtonInnerDiv>
-                    <s.ButtonInnerDiv className="w-16">
+                    <s.ButtonInnerDiv>
                         <s.SelectStyle label="소분류" onChange={(e)=>selectCategory('sub', e)} disabled={!selectedCategory.middle}>
                         {subCategoryFilter.map(sub=>(
                             <Option key={sub.itemCategoryNum} value={sub.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'sub', sub.itemCategoryNum)}>{sub.itemCategoryName}</Option>
@@ -241,13 +299,31 @@ const StockManage = ({major, middle, sub})=>{
                     <tbody>
                         <s.TableTextTr onClick={openStock}><PlusIcon style={{marginLeft:'520px', marginTop:'11px'}} className="h-6 w-6"/></s.TableTextTr>
                         {add && <s.TableTextTr>
-                            <s.TableTextTd><s.InputStyle width='250px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='150px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='50px'/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='50px'/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='250px' name='itemName' value={itemNameFilter} onChange={(e)=>{setItemNameFilter(e.target.value)}} autocomplete='off' required/>
+                            {itmeListFilter.length > 0 && itemNameFilter && ( //키워드가 존재하고,해당키워드에 맞는 이름이 있을때만 보여주기 
+                                <s.AutoSearchContainer top='400px' width='250px' left='505px'>
+                                <s.AutoSearchWrap>
+                                    {itmeListFilter.map((item, idx) => (
+                                    <s.AutoSearchData
+                                        key={item.itemName}
+                                        onClick={() => {
+                                            setItemNameFilter(item.itemName);
+                                            setItem(item);
+                                        }}
+                                    >
+                                    <a onClick={()=>clickKeyword(item.itemName)}>{item.itemName}</a>
+                                    </s.AutoSearchData>
+                                    ))}
+                                    </s.AutoSearchWrap>
+                                </s.AutoSearchContainer>
+                            )}
+                            </s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='150px' value={Object.keys(item).length===0 ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' value={Object.keys(item).length===0 ? "" : `${item.itemCapacity}*${item.itemUnitQuantity}/${item.itemUnit}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' value={Object.keys(item).length===0 ? "" : item.itemStorage} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' name='stockExpirationDate' onChange={edit} autocomplete='off' required/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='50px' name='stockReceiptDate' onChange={edit} autocomplete='off' required/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='50px' name='stockCount' onChange={edit} autocomplete='off' required/></s.TableTextTd>
                             <s.TableTextTd width='50px'><s.ButtonStyle width="50px" onClick={addStock}><Link>저장</Link></s.ButtonStyle></s.TableTextTd>
                             </s.TableTextTr>}
 

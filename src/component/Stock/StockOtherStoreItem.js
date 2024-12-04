@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { url } from '../../config.js';
 
-import { CustomOverlayMap, Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker, Polyline, useMap } from "react-kakao-maps-sdk";
 import { useAtom } from 'jotai/react';
 import { memberAtom } from '../../atoms.js';
 
@@ -17,9 +17,6 @@ const StockOrderStoreItem = () => {
     const [storeList, setStoreList] = useState([]);
     const [isStore, setIsStore] = useState(false);
 
-    // 마커 클릭 시 나올 div
-    const [isVisible, setIsVisible] = useState(false);
-
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
 
@@ -30,13 +27,13 @@ const StockOrderStoreItem = () => {
     });
 
     // store와 지도 마커를 찍을 위치(위도, 경도)
-    const [latlngPositions, setLatlngPosition] = useState([]);
+    const [latlngPositions, setLatlngPositions] = useState([]);
 
     // 주소-좌표 변환 객체를 생성
     const geocoder = new window.kakao.maps.services.Geocoder();
 
     useEffect(()=>{
-        setLatlngPosition([]);
+        setLatlngPositions([]);
         setStoreList([]);
         getStoreList();
         // 1. 현재 위치 얻어오기
@@ -50,6 +47,10 @@ const StockOrderStoreItem = () => {
             getLatLng();
         }
     }, [isStore])
+
+    useEffect(()=>{
+        console.log(latlngPositions);
+    }, [latlngPositions])
 
     const getStoreList = ()=>{
         axios.get(`${url}/selectStoreByItemCode/${itemCode}`)
@@ -66,6 +67,7 @@ const StockOrderStoreItem = () => {
 
     // 2. store address로 해당 위도, 경도로 바꾸기
     const getLatLng = ()=>{
+        const newArray = [];
         // 주소로 좌표를 검색 후 위도, 경도 저장
         storeList.forEach(function(store) {
             console.log(store);
@@ -79,14 +81,14 @@ const StockOrderStoreItem = () => {
                     let dist = getDistanceFromLatLonInKm(center.lat, center.lng, coords.Ma, coords.La);
                     var coord = { lat: coords.Ma, lng: coords.La };
                     if(dist <= 2) { // 2km 이하에 있으면 추가
-                        setLatlngPosition([...latlngPositions, {"store":store, "coords":coord}]);
+                        newArray.push({"store":store, "coords":coord});
                     }
                     console.log(store.storeCode + " : " + dist);
-                    console.log(latlngPositions);
                 }
             });
         });
         setIsStore(!isStore);
+        setLatlngPositions(newArray);
     }
 
     // 두 좌표 사이의 거리를 km로 계산
@@ -102,6 +104,41 @@ const StockOrderStoreItem = () => {
         var d = R * c; // Distance in km
         return d; 
     }
+
+    const EventMarkerContainer = ({ position }) => {
+        const map = useMap();
+        const [isVisible, setIsVisible] = useState(false);
+    
+        return (
+            <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+                position={position.coords} // 마커를 표시할 위치
+            >   
+                                {isVisible && (
+                                    <div style={{position:'absolute', bottom:'40px', width:'250px', padding: "5px", border:"1px solid rgba(234, 234, 234, 1)", backgroundColor:"rgba(255, 255, 255, 1)"}} onClick={()=>setIsVisible(false)}>
+                                        <img
+                                            alt="close" 
+                                            width="14"
+                                            height="13"
+                                            src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
+                                            style={{
+                                                position:"absolute",
+                                                right:"5px",
+                                                top:"5px",
+                                                cursor:"pointer",
+                                            }}
+                                            />
+                                        {position.store.storeName}<br/>
+                                        {position.store.storeAddress}<br/>
+                                        {position.store.storePhone}&nbsp;&nbsp;&nbsp;{position.store.storeOpenTimeStr}~{position.store.storeCloseTimeStr}
+                                    </div>
+                                )}
+                                <div style={{position:'relative', width:'64px', height:'40px'}} onClick={()=>setIsVisible(true)}>
+                                    <img src="/marker.png" alt='' style={{width:'64px', height:'40px'}}/>
+                                    <span className="center" style={{position:'absolute', top:'5px', left:'34px', fontSize:'14px', fontWeight:'bold'}}>{position.store.stockCount}개</span>
+                                </div>
+                            </CustomOverlayMap>
+        )
+      }
 
     return (
         <>
@@ -124,35 +161,10 @@ const StockOrderStoreItem = () => {
 
                     {// 4. 해당하는 store 마커로 보여주기
                         latlngPositions.map((position, index)=>(
-                            <CustomOverlayMap // 커스텀 오버레이를 표시할 Container\
-                                position={position.coords} // 마커를 표시할 위치
-                                onClick={()=>setIsVisible(true)} // 마우스 클릭시
-                                >
-                                    <div style={{position:'relative'}}>
-                                        <img src="/marker.png" style={{width:'64px', height:'40px'}}/>
-                                        <span className="center" style={{position:'absolute', top:'5px', left:'34px', fontSize:'14px', fontWeight:'bold'}}>{position.store.stockCount}개</span>
-                                    </div>
-                                {isVisible && (
-                                    <div style={{ padding: "5px", color: "#000"}}>
-                                        <img
-                                            alt="close"
-                                            width="14"
-                                            height="13"
-                                            src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
-                                            style={{
-                                                position: "absolute",
-                                                right: "5px",
-                                                top: "5px",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={()=>setIsVisible(false)}
-                                            />
-                                        {position.store.storeName}<br/>
-                                        {position.store.storeAddress}<br/>
-                                        {position.store.storePhone}&nbsp;&nbsp;&nbsp;{position.store.storeOpenTime}~{position.store.storeCloseTime}
-                                    </div>
-                                )}
-                            </CustomOverlayMap>
+                            <EventMarkerContainer
+                                key={`${position.store.storeCode}${index}`}
+                                position={position}
+                            />
                     ))}
                     </Map>
                 </s.SearchButtonDiv>
