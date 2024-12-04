@@ -17,28 +17,17 @@ const StoreListMain = ()=>{
     const [keyword, setKeyword] = useState('');
     const navigate = useNavigate();
     const token = useAtomValue(tokenAtom);
-    let region;
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
         if(token!=null && token!=='')  select(1);
     }, [token])
     
-    const regionPart = (address)=>{
-        region = address.split(' ')[0];
-        switch(region){
-            case '서울' : region='서울특별시'; break;
-            case '서울시' : region='서울특별시'; break;
-            default : region='경기도'; break;
-        }
-        return region;
-    }
-    
     const select = (page) => {
         axiosInToken(token).get(`storeListMain?page=${page}&type=${type}&keyword=${keyword}`)
             .then(res=> {
                 let pageInfo = res.data.pageInfo;
-                console.log(res.data.storeList)
+                console.log(res.data.storeList);
                 setStoreList([...res.data.storeList])
                 let page = [];
                 for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
@@ -107,7 +96,7 @@ const StoreListMain = ()=>{
                     <tbody>
                         {storeList.map(store=>(
                         <s.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
-                            <s.TableTextTd>{regionPart(store.storeAddress)}</s.TableTextTd >
+                            <s.TableTextTd>{store.storeRegion}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
                             <h.TableTextTd>{store.storeAddress}</h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >
