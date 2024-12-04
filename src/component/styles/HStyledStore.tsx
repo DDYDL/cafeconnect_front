@@ -510,3 +510,8 @@ border: none;
   border: 1px solid #ccc9; /* 90% 불투명한 연한 회색 */
 `;
 
+export const Required = styled.p`
+float:right;
+color: red;
+`;
+
