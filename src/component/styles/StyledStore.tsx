@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface Container {
-    borderLeft:string;
+    borderleft:string;
     textAlign:string;
     bgColor:string;
     width:string;
@@ -110,7 +110,7 @@ export const MenuBarLinkDiv = styled.div<Container>`
     padding:10px 20px;
     border-color:rgba(248, 248, 248, 1);
     
-    border-left:${(props) => props.borderLeft ? props.borderLeft : "3px solid rgba(248, 248, 248, 1)"};
+    border-left:${(props) => props.borderleft ? props.borderleft : "3px solid rgba(248, 248, 248, 1)"};
     `;
 
 export const MenuBarLink = styled(NavLink)`

@@ -3,6 +3,7 @@ import {atomWithStorage,createJSONStorage} from 'jotai/utils';
 export const initMember = {
     // member가 store를 하나는 꼭 가지고 있기 때문에(회원가입 시 store있어야 함) storeCode 하나씩 가지고 있기
     storeCode:'',
+    storeName:'',
     username:'',
     deptName:'',
     roles:''
