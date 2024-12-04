@@ -8,6 +8,7 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import img from "../assets/img/img.svg";
 import { Option, Input } from "@material-tailwind/react";
 import axios from "axios";
+import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 function RepairListCopy() {
@@ -66,7 +67,7 @@ function RepairListCopy() {
       ...category,
       ItemCategoryMajorName: value,
     });
-    fetchMiddleData(value);
+
     setUsingKeyword(false);
     setUsingCategory(true);
     fetchCategoryData(
@@ -107,10 +108,10 @@ function RepairListCopy() {
       console.log(error);
     }
   };
-  const fetchMiddleData = async (value) => {
+  const fetchMiddleData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
+        `http://localhost:8080/middleCategoryCopy2`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -138,6 +139,15 @@ function RepairListCopy() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -221,6 +231,15 @@ function RepairListCopy() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -289,6 +308,7 @@ function RepairListCopy() {
   useEffect(() => {
     fetchKeywordData("", 0);
     fetchMajorData();
+    fetchMiddleData();
   }, []);
 
   return (
@@ -309,30 +329,27 @@ function RepairListCopy() {
                 {`총${totalElements}건`}
               </div>
               <div className={styles["frame-container"]}>
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
-                    label="대분류"
-                    onChange={handleSelectMajorCategory}
-                  >
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "200px" }}
+                >
+                  <Select label="대분류" onChange={handleSelectMajorCategory}>
                     {majorCategoryList.map((majorCategory, index) => (
                       <Option value={majorCategory.categoryValue} key={index}>
                         {majorCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
-                    label="중분류"
-                    onChange={handleSelectMiddleCategory}
-                  >
+                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
                     {middleCategoryList.map((middleCategory, index) => (
                       <Option value={middleCategory.categoryValue} key={index}>
                         {middleCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "307px" }}>

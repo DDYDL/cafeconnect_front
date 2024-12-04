@@ -8,6 +8,7 @@ import * as s from "../styles/StyledStore.tsx";
 import { Option, Select } from "@material-tailwind/react";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
+import zIndex from "@mui/material/styles/zIndex";
 function ItemInsert() {
   const [item, setItem] = useState({
     itemName: "",
@@ -137,7 +138,7 @@ function ItemInsert() {
       itemCapacity: item.itemCapacity,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
-      itemStandard: `${item.itemStandard.itemX} X ${item.itemStandard.itemY} X ${item.itemStandard.itemZ}`,
+      itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
       itemStorage: item.itemStorage,
       itemCountryOrigin: item.itemCountryOrigin,
       itemCategoryMajorName: item.itemMajorCategory,
@@ -281,19 +282,19 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="대분류"
                               onChange={handleItemMajorCategorySelectBox}
                             >
                               {majorCategoryList.map((majorCategory, index) => (
                                 <Option
-                                  key={majorCategory.categoryName}
+                                  key={index}
                                   value={majorCategory.categoryName}
                                 >
                                   {majorCategory.categoryName}
                                 </Option>
                               ))}
-                            </s.SelectStyle>
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                         <div
@@ -304,19 +305,21 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="중분류"
                               onChange={handleItemMiddleCategorySelectBox}
                             >
-                              {middleCategoryList.map((middleCategory) => (
-                                <Option
-                                  key={middleCategory.categoryName}
-                                  value={middleCategory.categoryName}
-                                >
-                                  {middleCategory.categoryName}
-                                </Option>
-                              ))}
-                            </s.SelectStyle>
+                              {middleCategoryList.map(
+                                (middleCategory, index) => (
+                                  <Option
+                                    key={index}
+                                    value={middleCategory.categoryName}
+                                  >
+                                    {middleCategory.categoryName}
+                                  </Option>
+                                )
+                              )}
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                         <div className="select-wrap" style={{ width: "440px" }}>
@@ -324,19 +327,19 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <s.SelectStyle
+                            <Select
                               label="소분류"
                               onChange={handleItemSubCategorySelectBox}
                             >
-                              {subCategoryList.map((subCategory) => (
+                              {subCategoryList.map((subCategory, index) => (
                                 <Option
-                                  key={subCategory.categoryName}
+                                  key={index}
                                   value={subCategory.categoryName}
                                 >
                                   {subCategory.categoryName}
                                 </Option>
                               ))}
-                            </s.SelectStyle>
+                            </Select>
                           </s.ButtonInnerDiv>
                         </div>
                       </div>

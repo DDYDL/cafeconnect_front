@@ -8,6 +8,7 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import * as s from "../styles/StyledStore.tsx";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
+import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 function MenuList() {
@@ -83,6 +84,15 @@ function MenuList() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -167,6 +177,15 @@ function MenuList() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -256,13 +275,13 @@ function MenuList() {
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle label="분류" onChange={handleChangeCategory}>
+                  <Select label="분류" onChange={handleChangeCategory}>
                     {categoryList.map((category, index) => (
                       <Option value={category.categoryValue}>
                         {category.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
                 <div style={{ marginLeft: "508px" }}>
                   <Input

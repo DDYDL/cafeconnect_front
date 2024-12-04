@@ -17,7 +17,7 @@ function ItemDetail() {
     itemCapacity: "",
     itemUnitQuantity: null,
     itemUnit: "",
-    itemStandard: "",
+    itemStandard: null,
     itemStorage: "",
     itemCountryOrigin: "",
     itemMajorCategoryName: "",
@@ -263,7 +263,21 @@ function ItemDetail() {
                         className={`${styles["text-16"]} ${styles["valign-text-middle"]}`}
                         style={{ width: "250px" }}
                       >
-                        {item.itemStandard}
+                        {item.itemStandard !== null &&
+                        item.itemStandard.split("X")[0] !== "" &&
+                        item.itemStandard.split("X")[0] !== undefined
+                          ? item.itemStandard.split("X")[0]
+                          : ""}
+                        {item.itemStandard !== null &&
+                        item.itemStandard.split("X")[1] !== "" &&
+                        item.itemStandard.split("X")[1] !== undefined
+                          ? " X " + item.itemStandard.split("X")[1]
+                          : ""}
+                        {item.itemStandard !== null &&
+                        item.itemStandard.split("X")[2] !== "" &&
+                        item.itemStandard.split("X")[2] !== undefined
+                          ? " X " + item.itemStandard.split("X")[2]
+                          : ""}
                       </div>
                     </div>
                   </div>

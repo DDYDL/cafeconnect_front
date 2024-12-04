@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/ItemList.module.css";
 import img from "../assets/img/img.svg";
-import { Input, Option } from "@material-tailwind/react";
+import { Input, Option, Select } from "@material-tailwind/react";
 import * as s from "../styles/StyledStore.tsx";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -55,7 +55,7 @@ function ItmListCopy() {
       ...category,
       ItemCategoryMajorName: value,
     });
-    fetchMiddleData(value);
+
     setUsingKeyword(false);
     setUsingCategory(true);
     fetchCategoryData(
@@ -73,7 +73,7 @@ function ItmListCopy() {
       ...category,
       ItemCategoryMiddleName: value,
     });
-    fetchSubData(value);
+
     setUsingKeyword(false);
     setUsingCategory(true);
     fetchCategoryData(
@@ -108,15 +108,14 @@ function ItmListCopy() {
         `http://localhost:8080/majorCategoryCopy`
       );
       setMajorCategoryList(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
-  const fetchMiddleData = async (value) => {
+  const fetchMiddleData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
+        `http://localhost:8080/middleCategoryCopy2`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -124,10 +123,10 @@ function ItmListCopy() {
     }
   };
 
-  const fetchSubData = async (value) => {
+  const fetchSubData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/subCategoryCopy?categoryName=${value}`
+        `http://localhost:8080/subCategoryCopy2`
       );
       setSubCategoryList(response.data);
     } catch (error) {
@@ -155,6 +154,15 @@ function ItmListCopy() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -238,6 +246,15 @@ function ItmListCopy() {
       ) {
         setHasNext(true);
         setEmptyList([]);
+        setPageNumList(
+          Array.from(
+            { length: 5 },
+            (_, index) =>
+              response.data.pageable.pageNumber -
+              (response.data.pageable.pageNumber % 5) +
+              index
+          )
+        );
       } else {
         setHasNext(false);
 
@@ -306,6 +323,8 @@ function ItmListCopy() {
   useEffect(() => {
     fetchKeywordData("", 0);
     fetchMajorData();
+    fetchMiddleData();
+    fetchSubData();
   }, []);
 
   return (
@@ -326,43 +345,43 @@ function ItmListCopy() {
                 {`총${totalElements}건`}
               </div>
               <div className={styles["flex-row"]}>
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
-                    label="대분류"
-                    onChange={handleSelectMajorCategory}
-                  >
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "200px" }}
+                >
+                  <Select label="대분류" onChange={handleSelectMajorCategory}>
                     {majorCategoryList.map((majorCategory, index) => (
                       <Option value={majorCategory.categoryValue} key={index}>
                         {majorCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
-                    label="중분류"
-                    onChange={handleSelectMiddleCategory}
-                  >
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "200px" }}
+                >
+                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
                     {middleCategoryList.map((middleCategory, index) => (
                       <Option value={middleCategory.categoryValue} key={index}>
                         {middleCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <s.SelectStyle
-                    label="소분류"
-                    onChange={handleSelectSubCategory}
-                  >
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "200px" }}
+                >
+                  <Select label="소분류" onChange={handleSelectSubCategory}>
                     {subCategoryList.map((subCategory, index) => (
                       <Option value={subCategory.categoryValue} key={index}>
                         {subCategory.categoryName}
                       </Option>
                     ))}
-                  </s.SelectStyle>
+                  </Select>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "100px" }}>
