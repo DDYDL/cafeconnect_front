@@ -20,6 +20,7 @@ const JoinStore = () => {
   const [storeCode, setStoreCode] = useState(null);
   const token = useAtomValue(tokenAtom);
   const [storeName, setStoreName] = useState("");
+
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [storeCodeMessage, setStoreCodeMessage] = useState(""); // 가맹점 아이디 조회 메시지 상태
@@ -97,43 +98,29 @@ const JoinStore = () => {
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
-    navigate("/");
+    navigate("/shopMain");
   };
 
-  const handleRegister = () => {
-    navigate("/askList");
+  const handleRegister = async () => {
+    try {
+      // 예시: 백엔드에 회원 가입 요청 보내는 코드
+      const response = await axios.post("http://localhost:8080/joinStore", {
+        username,
+        password,
+        storeCode,
+      });
+      console.log("response" + JSON.stringify(response));
+
+      // 등록이 성공하면 알림창 띄우기
+      if (response.status === 200) {
+        alert("등록이 완료되었습니다.");
+        navigate("/shopMain"); // 홈 화면으로 리디렉션
+      }
+    } catch (error) {
+      console.error("등록 중 오류 발생:", error);
+      alert("등록 중 오류가 발생했습니다.");
+    }
   };
-
-  // const handleSubmit = event => {
-  //   event.preventDefault();
-
-  //   // 작성한 글을 서버로 전송
-  //   const newNotice = {
-  //     type: "주요 공지사항", // 항상 공지사항
-  //     title,
-  //     content,
-  //     date: new Date().toISOString(),
-  //   };
-
-  //   fetch("https://www.localhost:8080/joinStore", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(newNotice),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       console.log("Notice added:", data);
-  //       // 글 작성 후 입력 필드 초기화
-  //       setTitle("");
-  //       setContent("");
-
-  //       // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
-  //       navigate("/noticeList");
-  //     })
-  //     .catch(error => console.error("Error posting notice:", error));
-  // };
 
   return (
     <ContentListDiv>
@@ -141,9 +128,7 @@ const JoinStore = () => {
         <Heading>회원가입</Heading>
       </HeadingContainer>
 
-      <Form
-      //  onSubmit={handleSubmit}
-      >
+      <Form>
         <s.TrStyle
           style={{
             display: "flex",
@@ -186,15 +171,11 @@ const JoinStore = () => {
               <div
                 style={{
                   width: "300px",
-                  // position: "absolute",
-                  display: "flex-start",
-                  justifyContent: "left",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  // marginRight: "80px",
                   paddingTop: "5px",
-                  // marginLeft: "30px",
-                  paddingLeft: "10px",
-                  // top: "50%", // 수직 중앙 정렬
-                  // right: 0, // 오른쪽 끝에 위치
-                  // transform: "translateY(-50%)", // 수직 중앙 정렬
+                  paddingLeft: "15px",
                   color: errorMessage ? "red" : "blue",
                   fontSize: "12px", // 작은 폰트 크기
                 }}
@@ -280,11 +261,7 @@ const JoinStore = () => {
             bgColor="white"
             onClick={searchStoreCode}
           >
-            <Link
-            //  to="/checkStoreCode"
-            >
-              조회
-            </Link>
+            <Link>조회</Link>
           </s.ButtonStyle>
         </s.TrStyle>
 
@@ -331,11 +308,11 @@ const JoinStore = () => {
 
         <ButtonContainer>
           <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
-            <Link to="/complain">취소</Link>
+            <div>취소</div>
           </s.ButtonStyle>
           &nbsp;&nbsp;
           <s.ButtonStyle onClick={handleRegister}>
-            <Link to="/complain">등록하기</Link>
+            <div>등록하기</div>
           </s.ButtonStyle>
         </ButtonContainer>
       </Form>

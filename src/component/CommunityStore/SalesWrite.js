@@ -1,8 +1,6 @@
 import { Option, Select } from "@material-tailwind/react";
-import axios from "axios";
 import { useAtomValue } from "jotai/react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms.js";
@@ -13,65 +11,44 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 //!! 해당 페이지 접속 시, db에 MenuList요청하기
 const SalesWrite = () => {
+  const [storeCode, setStoreCode] = useState(null);
   const token = useAtomValue(tokenAtom);
-
-  const initSaleItem = {
-    salesCount: 1,
-    salesStatus: 1,
-    menuCode: "",
-    menuName: "",
-    storeCode: 1,
-    salesAmount: 1,
-    salesDate: "",
-  };
-
   // menuList가 undefined일 경우 기본값으로 빈 배열을 설정
   const [menuList, setMenuList] = useState([]);
-  const [selMenu, setSelMenu] = useState([initSaleItem]);
-  const [salesCount, setSaleCount] = useState(0);
-  const [salesTotal, setSaleTotal] = useState(0);
-  const [sale, setSale] = useState(initSaleItem);
-  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-
-  // const [saleItem, setSaleItem] = useState(initSaleItem);
+  const [selMenu, setSelMenu] = useState({});
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
   const [salesList, setSalesList] = useState([]);
   const [datePicker, setDatePicker] = useState({ startDate: null, endDate: null });
   const [date, setDate] = useState();
-
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    const newSale = {
-      ...sale,
-      menuName: sale.salesMenu,
-      salesCount: sale.salesCount,
-      salesAmount: sale.salesAmount,
-      salesDate: new Date().toISOString(),
-    };
-    console.log("newSale" + newSale);
-
-    // !! 작성 완료, post내부 url 문제로 백엔드에 전송 안됐었음.
-    axios
-      .post(`http://localhost:8080/salesWrite`, JSON.stringify(newSale), {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 필요한 경우 인증 토큰 추가
-        },
-      })
-      .then(res => {
-        console.log("newSale", newSale);
-        console.log("res.data", res.data);
-
-        // 등록 완료 후 alert을 먼저 띄운 뒤, 일정 시간이 지나면 페이지 이동
-        alert("매출이 성공적으로 등록되었습니다.");
-        navigate(`/salesWrite`);
-      })
-      .catch(err => {
-        console.error(err);
-        alert("문의 등록 중 오류가 발생했습니다.");
-      });
+  const initSaleItem = {
+    storeCode: 1,
+    salesDate: "",
+    menuName: "",
+    menuCode: "",
+    salesCount: 1,
+    salesStatus: 1,
+    salesAmount: 0,
   };
+  const [saleItem, setSaleItem] = useState(initSaleItem);
+
+  // / fetchStoreCode를 useCallback으로 래핑
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
+
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
   // 메뉴 데이터를 가져오는 useEffect
   useEffect(() => {
@@ -81,7 +58,6 @@ const SalesWrite = () => {
         .then(res => {
           console.log("menuList" + res.data);
           setMenuList([...res.data]);
-          console.log("menuList" + menuList);
         })
         .catch(err => {
           console.log(err);
@@ -105,104 +81,125 @@ const SalesWrite = () => {
     return total.toLocaleString();
   };
 
-  // 입력값 변경 핸들러
-  const handleInputChange = (index, field, value) => {
-    const updatedMenu = [...selMenu]; // 기존 상태 복사
-    updatedMenu[index][field] = value; // 해당 항목의 값 업데이트
-    setSelMenu(updatedMenu); // 업데이트된 상태 설정
+  // 매출 합계 수정
+  const handleSalesAmountChange = (index, value) => {
+    const updatedRows = [...rows];
+    updatedRows[index].매출합계 = value;
+    setRows(updatedRows);
   };
 
-  // 항목 추가 핸들러
-  const handleAddItem = () => {
-    const newIndex = selMenu.length > 0 ? selMenu[selMenu.length - 1].index + 1 : 0;
-    setSelMenu([...selMenu, { index: newIndex, 상품명: "", 수량: "", 합계: "" }]);
-  };
-
-  // 드롭다운 아이템 선택 처리
   const handleItemClick = item => {
-    setSelMenu(item); // 선택한 값으로 검색어 업데이트
+    setSelMenu(item); // 선택한 메뉴 정보를 selMenu에 업데이트
+    setSaleItem(prev => ({
+      ...prev,
+      menuCode: item.menuCode, // 선택된 메뉴의 코드
+      menuName: item.menuName, // 선택된 메뉴의 이름
+    })); // saleItem에도 선택된 메뉴 정보 반영
     setIsDropdownOpen(false); // 드롭다운 닫기
   };
-  const handleSelect = (index, value) => {
-    console.log(value); // value를 확인
-    handleInputChange(index, "menuName", value); // 해당 항목에 menuName 값 업데이트
-  };
 
-  const handleEnterKey = (event, index) => {
+  const handleEnterKey = event => {
     if (event.keyCode !== 13) return;
-    console.log(sale.menuName);
-    if (sale.menuName === undefined) {
+
+    if (!selMenu.menuName) {
       alert("메뉴를 선택하세요");
       return;
     }
-    if (sale.salesCount === "" || sale.salesCount === 0) {
+
+    if (saleItem.salesCount === "" || saleItem.salesCount === 0) {
       alert("수량을 선택하세요");
       return;
     }
-    if (sale.salesAmount === "" || sale.salesAmount === 0) {
+
+    if (saleItem.salesAmount === "" || saleItem.salesAmount === 0) {
       alert("매출금액을 선택하세요");
       return;
     }
-    // setSalesList([...salesList, saleItem])
-    console.log("salesList1 = " + salesList);
 
-    setSalesList([...salesList, { ...sale, menuCode: sale.menuCode, menuName: sale.menuName }]);
-    console.log("salesList2 = " + salesList);
-    setSale(initSaleItem);
-    // setSelMenu({});
+    // 첫 번째 항목을 rows에 추가
+    setRows(prevRows => [
+      ...prevRows,
+      {
+        순번: prevRows.length + 1,
+        상품명: saleItem.menuName,
+        수량: saleItem.salesCount,
+        매출합계: saleItem.salesAmount,
+      },
+    ]);
+    // 두 번째 항목을 위한 초기화
+    setSaleItem({
+      menuCode: "",
+      menuName: "",
+      salesCount: 1,
+      salesAmount: 0,
+    });
+
+    // 기존 salesList에 해당 menuCode와 menuName이 이미 있는지 확인하고, 있다면 해당 항목을 수정
+    setSalesList(prevSalesList => {
+      if (!saleItem.menuName || !saleItem.salesCount || !saleItem.salesAmount) {
+        console.warn("유효하지 않은 saleItem:", saleItem);
+        return prevSalesList; // saleItem이 유효하지 않으면 추가하지 않음
+      }
+
+      const updatedSalesList = prevSalesList.map(item =>
+        item.menuCode === saleItem.menuCode ? { ...item, ...saleItem } : item
+      );
+
+      if (!prevSalesList.some(item => item.menuCode === saleItem.menuCode)) {
+        updatedSalesList.push({ ...saleItem });
+      }
+      return updatedSalesList;
+    });
+
+    setSaleItem(initSaleItem);
+    setSelMenu({});
   };
 
+  useEffect(() => {
+    console.log("salesList updated", salesList);
+  }, [salesList]); // salesList가 업데이트될 때마다 로그 출력
+
   const submit = flag => {
-    console.log(sale);
-    // setSalesList([saleItem])
+    console.log("date", date); // 날짜 확인
+    console.log("salesList before send:", salesList); // 전송 전 salesList 확인
+    console.log("storeCode", storeCode);
 
-    console.log(date);
-    console.log("salesList = " + salesList);
-    // const sendSalesList = salesList.map(s=>{s.salesStatus=flag; s.salesDate=date; return s});
-    // setSalesList([...sendSalesList])
+    // salesList의 각 항목에 대해 salesStatus를 flag로 설정
+    const sendSalesList = salesList.map(s => {
+      s.salesStatus = flag;
+      s.salesDate = date;
+      s.storeCode = storeCode;
+      return s;
+    });
 
-    axiosInToken(token).get("store");
+    console.log("sendSalesList", sendSalesList); // 전송할 리스트 확인
 
-    const postdata = [
-      ...salesList,
-      { ...sale, menuCode: sale.menuCode, menuName: sale.menuName, storeCode: token },
-    ];
-
-    const dataToSend = {
-      salesList: postdata,
-      storeCode: initSaleItem.storeCode,
-    };
-
-    const handleMenuSelect = selectedMenu => {
-      setSale(selectedMenu);
-      setSale(prevState => ({
-        ...prevState,
-        menuName: selectedMenu.menuName,
-        menuCode: selectedMenu.menuCode,
-      }));
-    };
-
-    //   [...salesList,
-    // {...saleItem, menuCode:selMenu.menuCode, menuName:selMenu.menuName}]);
-
-    // console.log("sendSalesList = " + sendSalesList);
-    // console.log("salesList = " + salesList);
-
-    console.log("dataToSend" + dataToSend);
-
-    // axiosInToken(token).post("salesWrite", {salesList:dataToSend})
-    axios
-      .post("/salesWrite", JSON.stringify(dataToSend), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // flag가 1이면 salesTemp 호출 (임시저장)
+    if (flag === 1) {
+      axiosInToken(token)
+        .post("/salesTemp", { salesList: sendSalesList })
+        .then(res => {
+          console.log(res);
+          // 기존 값 대신 서버 응답 데이터로 정확히 상태 설정
+          setSalesList(res.data);
+          alert("임시 저장 완료");
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+    // flag가 2이면 salesWrite 호출 (저장)
+    else if (flag === 2) {
+      axiosInToken(token)
+        .post("/salesWrite", { salesList: sendSalesList })
+        .then(res => {
+          console.log(res.data);
+          alert("등록 완료");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
   const changeDate = newDate => {
@@ -215,11 +212,17 @@ const SalesWrite = () => {
     console.log(dateString);
     setDate(dateString);
 
+    // salesDate는 dateString으로 설정하고 나머지 필드는 기본값으로 사용합니다.
     axiosInToken(token)
-      .post("salesTemp", { salesDate: dateString, storeCode: initSaleItem.storeCode })
+      .get("salesTemp", {
+        params: {
+          salesDate: dateString,
+          storeCode: storeCode, // storeCode 파라미터 전달
+        },
+      })
       .then(res => {
         console.log(res);
-        setSalesList([...res.data]);
+        setSalesList([...res.data]); // 임시저장된 데이터를 salesList에 설정
       })
       .catch(err => {
         console.log(err);
@@ -231,6 +234,7 @@ const SalesWrite = () => {
       <HeadingContainer>
         <Heading>매출 입력</Heading>
       </HeadingContainer>
+
       <HeadingContainer1>
         <HeadingDataAndSave>
           <SelectData>
@@ -252,135 +256,87 @@ const SalesWrite = () => {
 
         <HeadingSummary>
           <div style={{ fontWeight: "bold", marginRight: "20px" }}>총 합계: </div>
-          <div style={{ color: "blue", fontWeight: "bold" }}>{calculateTotal()}원</div>
+          <div style={{ color: "blue", fontWeight: "bold" }}>{calculateTotal()}원</div>{" "}
+          {/* 총합계 계산된 값 표시 */}
         </HeadingSummary>
       </HeadingContainer1>
       <CustomHorizontal width="basic" bg="black" style={{ marginTop: "10px" }} />
+
       <TableHeader>
         <TableHeaderItem1>순번</TableHeaderItem1>
         <TableHeaderItem2>상품명</TableHeaderItem2>
         <TableHeaderItem3>수량</TableHeaderItem3>
         <TableHeaderItem4>매출 합계</TableHeaderItem4>
       </TableHeader>
+
       <CustomHorizontal width="basic" bg="black" />
 
-      <TableRowBody>
-        {sale.map((row, index) => (
-          <TableRow key={index}>
-            {/* 순번을 동적으로 표시 */}
-            <OrderDiv>{index + 1}</OrderDiv>
+      {[...salesList, saleItem].map((saleItem, index) => (
+        <TableRow key={index}>
+          {/* 순번 */}
+          <div className="w-10 text-center">{index + 1}</div>
 
-            <SelectDataWrapper>
-              <Select
-                style={{ width: "100%" }}
-                size="md"
-                value={selMenu.menuName || ""}
-                onChange={e => handleInputChange({ ...selMenu, selMenu: e.target.value })}
-              >
-                {menuList.map(menu => (
+          {/* 상품명 */}
+          <div className="flex w-72 flex-col gap-6" style={{ width: "600px", paddingLeft: "40px" }}>
+            <Select
+              name="상품명"
+              value={saleItem.menuName || ""}
+              onChange={value => {
+                // 선택된 메뉴 항목 찾기
+                const selectedMenu = menuList.find(menu => menu.menuName === value);
+
+                if (selectedMenu) {
+                  setSelMenu(selectedMenu); // 선택된 메뉴 저장
+                  setSaleItem(prev => ({
+                    ...prev,
+                    menuCode: selectedMenu.menuCode,
+                    menuName: selectedMenu.menuName,
+                  }));
+                  setIsDropdownOpen(false); // 드롭다운 닫기
+                }
+              }}
+              placeholder="상품명을 선택하세요"
+            >
+              {menuList && menuList.length > 0 ? (
+                menuList.map(menu => (
                   <Option key={menu.menuCode} value={menu.menuName}>
                     {menu.menuName}
                   </Option>
-                ))}
-              </Select>
-            </SelectDataWrapper>
+                ))
+              ) : (
+                <Option disabled>검색 결과 없음</Option>
+              )}
+            </Select>
+          </div>
 
-            <QuantityInputWrapper>
-              <QuantityInput
-                type="number"
-                value={selMenu.count}
-                // onChange={e => setCount({ ...selMenu, count: e.target.value })}
-              />
-            </QuantityInputWrapper>
-
-            <TotalInputWrapper>
-              <TotalInput
-                type="number"
-                value={selMenu[index].salesAmount} // 매출 금액을 해당 항목으로 변경
-                onChange={e => handleInputChange({ ...selMenu, total: e.target.value })} // 값 변경 처리
-                onKeyDown={e => handleEnterKey(e, index)} // 엔터 키 이벤트 추가
-              />
-            </TotalInputWrapper>
-
-            {/* 추가된 매출 항목 표시 */}
-            {salesList.map((item, index) => (
-              <div key={index}>
-                {/* 메뉴 선택 */}
-                <select
-                  value={item.menuCode}
-                  onChange={e => {
-                    const newSalesList = [...salesList];
-                    newSalesList[index].menuCode = e.target.value;
-                    setSalesList(newSalesList);
-                  }}
-                >
-                  <option value="">메뉴를 선택하세요</option>
-                  {/* 메뉴 선택 옵션들 */}
-                </select>
-
-                {/* 수량 입력 */}
-                <input
-                  type="number"
-                  value={item.salesCount}
-                  onChange={e => {
-                    const newSalesList = [...salesList];
-                    newSalesList[index].salesCount = e.target.value;
-                    setSalesList(newSalesList);
-                  }}
-                />
-
-                {/* 매출 금액 입력 */}
-                <input
-                  type="number"
-                  value={item.salesAmount}
-                  onChange={e => {
-                    const newSalesList = [...salesList];
-                    newSalesList[index].salesAmount = e.target.value;
-                    setSalesList(newSalesList);
-                  }}
-                />
-              </div>
-            ))}
-          </TableRow>
-        ))}
-      </TableRowBody>
+          {/* 수량, 합계 등 다른 입력 필드 */}
+          <QuantityInput
+            name="수량"
+            type="number"
+            placeholder="수량"
+            value={saleItem.salesCount || ""}
+            onChange={e => setSaleItem({ ...saleItem, salesCount: e.target.value })}
+          />
+          <TotalInput
+            name="매출합계"
+            type="number"
+            value={saleItem.salesAmount || ""}
+            placeholder="매출 합계"
+            onChange={e => setSaleItem({ ...saleItem, salesAmount: e.target.value })}
+            onKeyDown={event => handleEnterKey(event)}
+          />
+        </TableRow>
+      ))}
     </ContentListDiv>
   );
 };
 
 const Form = styled.form`
   display: flex;
-  // flex-direction: column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-`;
-
-const TableInfoList = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  height: 50px;
-
-  // margin-top: 5px;
-  margin-bottom: 5px;
-
-  cursor: pointer;
-
-  & > div {
-    onClick =>() = > {
-      color: red;
-    }
-  }
-
-  & > div:first-child {
-    margin-left: 37px;
-  }
-
-  & > div:last-child {
-    margin-right: 37px;
-  }
 `;
 
 const HeadingContainer = styled.div`
@@ -462,53 +418,23 @@ const TableHeaderItem4 = styled.div`
   margin-left: 70px;
 `;
 
-const TableRowBody = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin-top: 10px;
-  width: 1000px;
-`;
-
 const TableRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-  width: 1000px; /* 너비를 지정하여 일정한 크기 유지 */
-`;
-
-const SelectDataWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 560px; /* Select의 너비를 좁혀줍니다 */
-  padding-right: 30px;
-`;
-
-const QuantityInputWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100px; /* 수량 입력 영역의 너비 조정 */
-  margin-right: 20px;
-`;
-
-const TotalInputWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px; /* 매출 합계 입력 영역의 너비 조정 */
+  padding-left: 42px;
+  position: relative; /* 여기에 추가 */
 `;
 
 const SelectData = styled.div`
   display: flex;
+
   justify-content: center;
   align-items: center;
   text-align: center;
   width: 340px;
+  // border: 1px solid lightblue;
   border-radius: 5px;
   padding-left: 10px;
 `;
@@ -523,7 +449,7 @@ const SalesDateText = styled.div`
   width: 100px;
 `;
 
-const OrderDiv = styled.div`
+const OrderInput = styled.input`
   width: 50px;
   height: 40px;
 
@@ -557,19 +483,12 @@ const OrderDiv = styled.div`
 //   // margin-right: 30px;
 // `;
 
-const ProductSearchWrapper = styled.div`
-  // position: relative;
-  // width: 100%;
+export const ProductSearchWrapper = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
-const ProductSearchWrapper1 = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px; /* 각 요소 간의 간격을 적당히 추가 */
-`;
-
-const ProductSearchInput = styled.input`
+export const ProductSearchInput = styled.input`
   width: 600px;
   height: 40px;
 
@@ -613,11 +532,14 @@ export const NoResults = styled.div`
 
 const QuantityInput = styled.input`
   width: 64px;
-  height: 40px;
+  height: 40px
+  display: flex;
+  justify-content: left;
+
   font-size: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-left: 10px; /* 왼쪽 여백 */
+  // margin-left: 80px;
   padding-top: 5px;
   padding-bottom: 7px;
 `;
@@ -625,17 +547,20 @@ const QuantityInput = styled.input`
 const TotalInput = styled.input`
   width: 140px;
   height: 40px;
+
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-left: 10px; /* 왼쪽 여백 */
+  // margin-left: 20px;
   margin-right: 10px;
-  padding-left: 10px;
+
+  // padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 7px;
 `;
 
 const ProductList = styled.div`
+  position: absolute;
   top: 45px; /* input 아래쪽으로 위치 설정 */
   // left: 0; /* 왼쪽 정렬 */
 

@@ -1,16 +1,17 @@
-import React, {useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import axios from "axios";
+import { useAtomValue } from "jotai/react";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { tokenAtom } from "../../atoms.js";
+import { axiosInToken } from "../../config.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
-import {axiosInToken} from "../../config";
-import {useAtomValue} from "jotai/react";
-import {tokenAtom} from "../../atoms";
-import axios from "axios";
 
 const NoticeWriteMain = () => {
   const token = useAtomValue(tokenAtom);
@@ -18,78 +19,83 @@ const NoticeWriteMain = () => {
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const [notice, setNotice] = useState([]);
+  const { noticeNum } = useParams(); // URL에서 noticeNum 추출
+  const [storeCode, setStoreCode] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosInToken(token).get('noticeWriteMain');
-                console.log(response.data);
-                setNotice([...response.data]);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        console.log("token" + token)
+  // / fetchStoreCode를 useCallback으로 래핑
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+      console.log("token" + token);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
 
-        if (token) fetchData();
-    }, [token]);
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
+
+  // 등록 버튼 클릭 시 처리
+  const handleRegister = async () => {
+    console.log("제목:", title); // title 상태값 출력
+    console.log("내용:", content); // content 상태값 출력
+
+    await handleSubmit(); // handleSubmit 호출 및 성공 여부 확인
+  };
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
     navigate("/noticeListMain");
   };
 
-    // 등록 버튼 클릭 시 처리
-    const handleRegister = async () => {
-        const isSuccess = await handleSubmit(); // handleSubmit 호출 및 성공 여부 확인
+  // 작성한 글을 서버로 전송
+  const handleSubmit = () => {
+    console.log("제목 (서버로 전송):", title);
+    console.log("내용 (서버로 전송):", content);
 
-        console.log("isSuccess = " + isSuccess)
-        if (isSuccess) {
-            navigate("/noticeListMain"); // 성공 시 페이지 이동
-        } else {
-            alert("등록에 실패했습니다. 다시 시도해주세요."); // 실패 시 알림
-        }
-    };
-
-
-
-    // 작성한 글을 서버로 전송
-const handleSubmit = async () => {
     const notice = {
-        noticeType: "주요 공지사항",
-        noticeTitle: "",
-        noticeContent: "",
-        date: new Date().toISOString(),
+      noticeType: "주요 공지사항",
+      noticeTitle: title,
+      noticeContent: content,
+      noticeDate: new Date().toISOString(),
+      mainStoreId: storeCode,
     };
+    console.log("notice 객체:", notice);
 
-    try {
-        const response = await axios.post("https://localhost:8080/noticeWriteMain", notice, {
-
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        console.log("Notice:",notice);
-        console.log("Notice added:", response.data);
-
+    const res = axios
+      .post("http://localhost:8080/noticeWriteMain", notice, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(res => {
+        console.log(res.data);
         // 입력 필드 초기화
         setTitle("");
         setContent("");
 
-        // 공지사항 작성 완료 후, 리스트 페이지로 이동
-        navigate("/noticeListMain");
-    } catch (error) {
-        console.error("Error posting notice:", error);
-    }
-};
-
+        console.log("Notice:", notice);
+        console.log("Notice added:", res.data);
+        alert("등록 완료");
+        navigate("/noticeListMain"); // 성공 시 페이지 이동
+      })
+      .catch(err => {
+        alert("등록에 실패했습니다. 다시 시도해주세요."); // 실패 시 알림
+        console.log(err);
+      });
+  };
   return (
     <ContentListDiv>
       <HeadingContainer>
         <Heading>공지사항 작성</Heading>
       </HeadingContainer>
 
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <s.TrStyle>
           <s.TableTextTd>공지유형 *</s.TableTextTd>
           <s.TableTextTd>
