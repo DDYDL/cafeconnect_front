@@ -33,10 +33,10 @@ function ExpenseListByItems() {
   const [summaryBySub, setSummaryBySub] = useState([]);
 
   //yyyy-MM-dd형식으로 바꾸어야함!!
-  const formatDateForServer = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  };
+  // const formatDateForServer = (dateString) => {
+  //   const date = new Date(dateString);
+  //   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  // };
 
 
   useEffect(() => {
