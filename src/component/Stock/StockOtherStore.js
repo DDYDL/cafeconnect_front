@@ -58,8 +58,8 @@ const StockOrderStore = () => {
                 </s.SearchButtonDiv>
 
                 <s.TableList>
-                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
-                        <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></s.TableListThead>
+                    <s.TableListThead><tr><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
+                        <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></tr></s.TableListThead>
                     <tbody>
                         {
                             itemList.map(item=>(

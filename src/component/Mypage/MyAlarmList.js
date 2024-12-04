@@ -49,7 +49,7 @@ const MyAlarmList = ()=>{
     }
     
     const selectAlarmType = (alarmType)=>{
-        axios.get(`${url}/selectAlarmType/${alarmType}`)
+        axios.get(`${url}/selectAlarmType/${member.storeCode}/${alarmType}`)
         .then(res=>{
             console.log(res.data);
             setAlarmList([...res.data]);
