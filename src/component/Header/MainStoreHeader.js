@@ -58,9 +58,11 @@ const MainStoreHeader = ()=>{
                         </h.MenuListDiv>
                         <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/mainItemList">상품 조회</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/Category">상품 카테고리 관리</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/mainMenuList">메뉴 조회</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/menuCategory">메뉴 카테고리 관리</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/storeItemRevenue">상품별 매출 조회</NavLink></MenuItem>

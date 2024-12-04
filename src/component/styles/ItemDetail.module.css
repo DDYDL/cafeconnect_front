@@ -523,7 +523,7 @@
 .ItemDetail .flex-row {
   align-items: flex-end;
   height: 99px;
-  left: 53px;
+  left: 93px;
   min-width: 913px;
   top: 31px;
 }
@@ -660,8 +660,8 @@
   display: flex;
   flex-direction: column;
   margin-left: 26px;
-  margin-top: 31px;
-  padding: 35px 8px;
+  margin-top: 21px;
+  padding-top: 17.7px;
   position: relative;
   width: 212px;
 }
@@ -1062,7 +1062,7 @@
 .ItemDetail .background-3 {
   background-color: #729e07;
   height: 3px;
-  width: 419px;
+  width: 415px;
 }
 
 .ItemDetail .data-5 {
