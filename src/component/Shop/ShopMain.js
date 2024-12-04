@@ -63,6 +63,7 @@ function ShopMain() {
             <s.ItemListImg>
               {/* 이미지 경로대로 업데이트하기 */}
               <img src='/image/item3.jpg' alt={item.itemNum} /> 
+              {store.roles==='ROLE_STORE' &&
               <s.HoverControls className="hover-controls">
                 <s.QuantityControl>
                   <s.QuantityButton onClick={(e) => {
@@ -79,6 +80,7 @@ function ShopMain() {
                   <ShoppingCartIcon className="h-6 w-6" />
                 </s.CartButton>
               </s.HoverControls>
+            }
             </s.ItemListImg>
             <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
               <s.ItemListTextBox>

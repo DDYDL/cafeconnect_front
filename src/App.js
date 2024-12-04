@@ -249,7 +249,7 @@ function App() {
         <Route exact path="/askListMain" element={<AskListMain/>}/>
         <Route exact path="/askDetailMain/:askNum" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
-        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
+        <Route exact path="/complainDetailMain/:complainNum" element={<ComplainDetailMain />} />
 
       </Routes>
     </div>

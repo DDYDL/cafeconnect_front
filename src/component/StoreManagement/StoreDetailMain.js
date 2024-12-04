@@ -27,13 +27,13 @@ const StoreDetailMain = ()=>{
                 console.log(res.data)
                 let resStore = res.data.store;
                 const resStoreOpenTime = new Date();
-                resStoreOpenTime.setHours(resStore.storeOpenTime.split(':')[0], resStore.storeOpenTime.split(':')[1], 0, 0);
-                const formattedOpenTime = resStoreOpenTime.toTimeString().slice(0, 8);
+                // resStoreOpenTime.setHours(resStore.storeOpenTime.split(':')[0], resStore.storeOpenTime.split(':')[1], 0, 0);
+                // const formattedOpenTime = resStoreOpenTime.toTimeString().slice(0, 8);
                 
-                const resStoreCloseTime = new Date();
-                resStoreCloseTime.setHours(resStore.storeCloseTime.split(':')[0], resStore.storeCloseTime.split(':')[1], 0, 0);
-                const formattedCloseTime = resStoreCloseTime.toTimeString().slice(0, 8);
-                setStore({...resStore, ['storeOpenTime']: formattedOpenTime, ['storeCloseTime']: formattedCloseTime});
+                // const resStoreCloseTime = new Date();
+                // resStoreCloseTime.setHours(resStore.storeCloseTime.split(':')[0], resStore.storeCloseTime.split(':')[1], 0, 0);
+                // const formattedCloseTime = resStoreCloseTime.toTimeString().slice(0, 8);
+                // setStore({...resStore, ['storeOpenTime']: formattedOpenTime, ['storeCloseTime']: formattedCloseTime});
             })
     }
 

@@ -18,6 +18,7 @@ export const CountWrapper = styled.div`
     align-items: center;
     margin-bottom: 10px;
     margin-top: 1rem;
+    
     /* .all_counter 클래스 스타일 */
     .all_counter {
         font-size: 16px;
