@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
-import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAtom, useSetAtom } from 'jotai/react';
+import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
 import axios from 'axios';
 import { url } from '../../config.js';
 
@@ -12,12 +12,18 @@ const MyStoreInfo = () => {
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
 
+    const navigate = useNavigate();
+    // Jotai에 있는 로그인 token 가져오기
+    const setToken = useSetAtom(tokenAtom);
+    // Jotai에 있는 알람 가져오기
+    const setAlarms = useSetAtom(alarmsAtom);
+
     const [store, setStore] = useState(
     {
         storeCode:0, storeName:'', storeAddress:'', storeAddressNum:0, storePhone:'',
-        storeOpenTime:'', storeCloseTime:'', storeCloseDate:'',
+        storeOpenTime:'', storeCloseTime:'', storeCloseDate:'', storeOpenTimeStr:'', storeCloseTimeStr:'',
         contractDate:'', contractPeriodStart:'', contractPeriodEnd:'', openingDate:'',
-        username:member.username, password:member.password,
+        username:member.username, password:'********',
         ownerName:'', ownerPhone:'', managerName:'', managerPhone:''
     });
 
@@ -42,13 +48,25 @@ const MyStoreInfo = () => {
         })
     }
 
+    // 로그아웃
+    const logout = ()=>{
+        setMember({...initMember});
+        setToken('');
+        setAlarms([]);
+
+        navigate("/loginStore");
+    }
+
     const updateStore = (e)=>{
         const formData = new FormData();
 
+        const openStr = store.storeOpenTimeStr + ":00";
+        const closeStr = store.storeCloseTimeStr + ":00";
+
         formData.append("storeCode", member.storeCode);
         formData.append("storePhone", store.storePhone);
-        formData.append("storeOpenTime", store.storeOpenTime);
-        formData.append("storeCloseTime", store.storeCloseTime);
+        formData.append("storeOpenTime", openStr);
+        formData.append("storeCloseTime", closeStr);
         formData.append("storeCloseDate", store.storeCloseDate);
 
         formData.append("username", store.username);
@@ -63,7 +81,14 @@ const MyStoreInfo = () => {
         axios.post(`${url}/updateStore`, formData)
         .then(res=>{
             console.log(res.data);
-            setStore(store);
+            if(res.data === 'changePassword') {
+                alert("수정이 완료되었습니다. 다시 로그인해주세요.");
+                logout();
+            } else {
+                console.log(res.data);
+                alert("수정이 완료되었습니다.");
+                setStore(store);
+            }
         })
         .catch(err=>{
             console.log(err);
@@ -96,8 +121,8 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='storeOpenTime' value={store.storeOpenTime} onChange={edit}/>&nbsp;~&nbsp;
-                            <s.InputStyle width='140px' type='text' name='storeCloseTime' value={store.storeCloseTime} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='storeOpenTimeStr' value={store.storeOpenTimeStr} onChange={edit}/>&nbsp;~&nbsp;
+                            <s.InputStyle width='140px' type='text' name='storeCloseTimeStr' value={store.storeCloseTimeStr} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>

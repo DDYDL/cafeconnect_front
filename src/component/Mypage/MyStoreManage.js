@@ -21,6 +21,7 @@ const MyStoreManage = () => {
     const [member, setMember] = useAtom(memberAtom);
 
     useEffect(()=>{
+        setStore({});
         setStoreList([]);
         setMember(member);
         getStoreList();
@@ -37,19 +38,29 @@ const MyStoreManage = () => {
         })
     }
 
-    const addStore = (e)=>{
-        const formData = new FormData();
-        formData.append("storeCode", store.storeCode);
-        formData.append("storeName", store.storeName);
-        e.preventDefault();
-        
-        axios.post(`${url}/addStore`, formData)
+    // 가맹점 추가 전 가맹점 조회
+    const selectStore = (storeCode)=>{
+        axios.get(`${url}/selectStore/${storeCode}`)
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("가맹점이 추가 되었습니다.");
-                setStoreList([...storeList, formData]);
-            }
+            console.log(res.data);
+            setStore(res.data);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
+
+    const edit = (e)=>{
+        setStore({...store, [e.target.name]:e.target.value});
+    } 
+
+    const addStore = (e)=>{
+        setOpen(false);
+        axios.get(`${url}/addStore/${store.storeCode}/${member.username}`)
+        .then(res=>{
+            console.log(res.data);
+            alert("가맹점이 추가 되었습니다.");
+            setStoreList([...storeList, res.data]);
         })
         .catch(err=>{
             console.log(err);
@@ -60,12 +71,10 @@ const MyStoreManage = () => {
     const deleteStore = (storeCode)=>{
         axios.get(`${url}/deleteStore/${storeCode}`)
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("가맹점 삭제신청이 되었습니다.");
-                // 삭제 신청된 가맹점은 삭제 버튼 없애기
-                setStoreList(storeList.map(store=>(store.storeCode===storeCode ? {...store, storeStatus:"request"} : store)));
-            }
+            console.log(res.data);
+            alert("가맹점 삭제신청이 되었습니다.");
+            // 삭제 신청된 가맹점은 삭제 버튼 없애기
+            setStoreList(storeList.map(store=>(store.storeCode===storeCode ? {...store, storeStatus:"request"} : store)));
         })
         .catch(err=>{
             console.log(err);
@@ -116,7 +125,7 @@ const MyStoreManage = () => {
                         <s.InputStyle width='340px'
                             color="gray"
                             size="lg"
-                            name="name"
+                            name="storeCode"
                             className="placeholder:opacity-100 focus:!border-t-gray-900"
                             containerProps={{
                                 className: "!min-w-full",
@@ -124,8 +133,10 @@ const MyStoreManage = () => {
                             labelProps={{
                                 className: "hidden",
                             }}
+                            value={store.storeCode===0 ? "" : store.storeCode}
+                            onChange={edit}
                         />&nbsp;&nbsp;
-                        <s.ButtonStyle variant="outlined" bgColor="white" width='60px'>조회</s.ButtonStyle>
+                        <s.ButtonStyle variant="outlined" bgColor="white" width='60px' onClick={()=>selectStore(store.storeCode)}>조회</s.ButtonStyle>
                     </div>
                     <div>
                         <Typography
@@ -143,11 +154,12 @@ const MyStoreManage = () => {
                             labelProps={{
                                 className: "hidden",
                             }}
+                            value={store.storeName} readOnly
                         />
                     </div>
                 </DialogBody>
                 <DialogFooter>
-                    <s.ButtonStyle width='60px' className="ml-auto" onClick={handleOpen}>추가</s.ButtonStyle>
+                    <s.ButtonStyle width='60px' className="ml-auto" onClick={addStore}>추가</s.ButtonStyle>
                 </DialogFooter>
             </Dialog>
         </>

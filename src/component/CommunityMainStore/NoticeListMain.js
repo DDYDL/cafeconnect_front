@@ -235,7 +235,18 @@ const NoticeListMain = () => {
               </React.Fragment>
             ))
           ) : (
-            <div>검색 결과가 없습니다.</div>
+            <div
+              style={{
+                display: "flex", // flexbox 사용
+                justifyContent: "center", // 수평 가운데 정렬
+                alignItems: "center", // 수직 가운데 정렬
+                height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
+                fontSize: "16px", // 텍스트 크기 설정
+                color: "#555", // 텍스트 색상 설정
+              }}
+            >
+              검색 결과가 없습니다.
+            </div>
           )}
         </div>
       }

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Textarea } from "flowbite-react";
 // @ts-ignore
 import {BaseGridHeader,BaseGridItem} from "./common.tsx";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
@@ -9,6 +8,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 export const RepairFormtWrap = styled.div`
     width: 800px;
     margin: 30px auto;
+
 `;
 export const FormTr = styled.div`
   display: flex;
@@ -32,20 +32,36 @@ export const FormTh = styled.div`
 export const FormTd = styled.div`
   width: 660px;
   padding: 15px;
+
+  .select{
+    background: rgba(255, 255, 255, 1);
+  }
 `;
 
-export const StyledTextarea = styled(Textarea)`
- min-width: 500px;
- min-height: 200px;
- background-color: #f8f8f8;
- border: 1px solid #e5e7eb;
- border-radius: 0.5rem;
- color: #111827;
+export const StyledInput = styled.input`
+  width: ${props => props.width || "200px"};
+  height: 40px;
+  border: 1px solid rgba(234, 234, 234, 1);
+  border-radius: 5px;
+  padding: 0 10px;
+
+  &:focus {
+    outline: none;
+    border-color: #6b7280;
+  }
+`;
+
+export const StyledTextarea = styled.textarea`
+  width: 100%; 
+  min-height: 200px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid #e5e7eb; 
+  border-radius: 0.5rem;
+  color: #111827;
  
  &:focus {
-   outline: none;
-   border-color: #795548;
-   box-shadow: none;
+    --tw-ring-color: #9ca3af !important;
+      border-color: #6b7280 !important;;
  }
  
  resize: none;

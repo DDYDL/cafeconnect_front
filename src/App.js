@@ -203,9 +203,9 @@ function App() {
 
 
         <Route exact path="/noticeList" element={<NoticeList/>}/>
-        <Route exact path="/noticeList/:noticeNum" element={<NoticeDetail/>}/>
+        <Route exact path="/noticeDetail/:noticeNum" element={<NoticeDetail/>}/>
         <Route exact path="/askWrite" element={<AskWrite/>}/>
-        <Route exact path="/askList" element={<AskList/>}/>
+        <Route exact path="/askListStore" element={<AskList/>}/>
         <Route exact path="/complainList" element={<ComplainList/>}/>
         <Route exact path="/complainDetailStore/:complainNum" element={<ComplainDetail />} />
 
@@ -249,7 +249,7 @@ function App() {
         <Route exact path="/askListMain" element={<AskListMain/>}/>
         <Route exact path="/askDetailMain/:askNum" element={<AskDetailMain />} />
         <Route exact path="/complainListMain" element={<ComplainListMain />} />
-        <Route exact path="/complainDetailMain" element={<ComplainDetailMain />} />
+        <Route exact path="/complainDetailMain/:complainNum" element={<ComplainDetailMain />} />
 
       </Routes>
     </div>
