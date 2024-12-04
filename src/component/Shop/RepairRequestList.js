@@ -21,8 +21,9 @@ function RepairRequestList() {
   const token = useAtomValue(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRepair, setSelectedRepair] = useState(null);//modal에 넘김
-  const [selectedStatus, setSelectedStatus] = useState({}); 
+ 
+  const [selectedRepair, setSelectedRepair] = useState({});//modal에 넘김
+
   const [repairList,setRepairList] = useState([]);
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -30,7 +31,10 @@ function RepairRequestList() {
   const [pageInfo, setPageInfo] = useState({});
   
   const navigate = useNavigate();
+  
+  //modal열기
   const handleOpenModal = (repair) => {
+    if(!repair) return;
     setSelectedRepair(repair);
     setIsModalOpen(true);
   };
@@ -65,8 +69,8 @@ function RepairRequestList() {
     })
   }
 
-  // 카테고리 
-const formatCategory = (item) => {
+  // 카테고리 폼 변환
+  const formatCategory = (item) => {
   let categoryFormat = item.itemCategoryMajorName + '/';  
   categoryFormat += item.itemCategoryMiddleName + '/';    
   
@@ -78,7 +82,10 @@ const formatCategory = (item) => {
   }
   return categoryFormat;
 };
-  
+  //날짜 폼 변환 
+  //백(boot)에서 프론트에게 데이터를 JSON으로 넘기려고 할 때 java.sql.Date->timestamp밀리초로 자동 변환 함 
+  //결과적으로 프론트는 number타입의 밀리초값을 받는다!!!
+  //모달의 경우엔 date가 선택해야 데이터가 넘어가기 때문에 초기에 빈데이터로 렌더링 되어 에러 발생됨 
   const formatDate=(date)=>{
     let newDate = format(new Date(date),'yyyy-MM-dd');
     return newDate;
@@ -92,6 +99,8 @@ const formatCategory = (item) => {
   }
   //모달
   const RepairDetailModal = ({ open, handleClose, repairData }) => {
+    console.log('repairData:', repairData);
+    console.log('repairDate:', repairData?.repairDate);
     return (
       <r.StyledDialog open={open} handler={handleClose} size="lg">
       <r.StyledDialogHeader className="flex items-center justify-between">
@@ -107,7 +116,7 @@ const formatCategory = (item) => {
               <r.InfoLabel>상품명</r.InfoLabel>
               <r.InfoValue>{repairData?.itemName}</r.InfoValue>
               <r.InfoLabel>접수일</r.InfoLabel>
-              {/* <r.InfoValue>{formatDate(repairData?.repairDate)}</r.InfoValue> */}
+              <r.InfoValue>{repairData.repairDate && formatDate(repairData.repairDate)}</r.InfoValue> 
               
             </div>
           </r.ProductInfo>
@@ -130,15 +139,15 @@ const formatCategory = (item) => {
           <r.RepairStatusSection>
             <r.ContentTitle>수리단계</r.ContentTitle>
             <r.StatusFlow>
-              <r.StatusCircle isActive={repairData?.repairStatus === "접수"}>
+              <r.StatusCircle $isActive={repairData?.repairStatus === "접수"}>
                 접수
               </r.StatusCircle>
               <r.StatusArrow />
-              <r.StatusCircle isActive={repairData?.repairStatus === "수리중"}>
+              <r.StatusCircle $isActive={repairData?.repairStatus === "수리중"}>
                 수리중
               </r.StatusCircle>
               <r.StatusArrow />
-              <r.StatusCircle isActive={repairData?.repairStatus === "수리완료"}>
+              <r.StatusCircle $isActive={repairData?.repairStatus === "수리완료"}>
                 수리완료
               </r.StatusCircle>
             </r.StatusFlow>
@@ -194,7 +203,7 @@ const formatCategory = (item) => {
           </r.RepairHeader>
 
           {repairList && repairList.map((item) => (
-            <r.RepairItem key={item.repairNum} onClick={() => handleOpenModal(item)}>
+            <r.RepairItem key={item.repairNum} onClick={() => handleOpenModal(item)}> 
               <div className="flex items-center gap-4">
                 <img src="/image/machine.jpg" alt="상품" className="w-20 h-20" />
                 <div>
@@ -223,6 +232,7 @@ const formatCategory = (item) => {
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
                 </s.PageButtonGroupDiv> 
+        {/* 모달컴포넌트 */}
         <RepairDetailModal
           open={isModalOpen}
           handleClose={() => setIsModalOpen(false)}

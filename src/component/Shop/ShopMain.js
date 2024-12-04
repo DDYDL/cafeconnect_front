@@ -88,7 +88,7 @@ function ShopMain() {
                 <s.ItemPrice>{item.itemPrice?.toLocaleString()}원</s.ItemPrice>
                 {item.itemStorage && (
                   <s.ItemStorageLabelP>
-                    <s.ItemStorageType storageWay={item.itemStorage}>
+                    <s.ItemStorageType $storageway={item.itemStorage}> 
                       {item.itemStorage}
                     </s.ItemStorageType>
                   </s.ItemStorageLabelP>

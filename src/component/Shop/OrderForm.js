@@ -22,11 +22,6 @@ function Order() {
   const [storeInfo,setStoreInfo] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState('');
   
-  //아임포트 연결 (index.html에 cdn추가 ) 
-  const { IMP } = window; // IMP(아임포트 모듈) 객체를 IMP window에서 추출
-  IMP.init('imp43078557') // 가맹점 식별 코드로 초기화
-
-
 
     useEffect(()=>{
     const cartNums = location.state?.cartNums; // cartList에서 받아옴 
@@ -89,86 +84,99 @@ function Order() {
   const handlePaymentSelect = (method) => {
     setSelectedPayment(method);
   };
+    //**결제 시작** 
+   //아임포트 연결 (index.html에 cdn추가 ) 
+   const { IMP } = window; // IMP(아임포트 모듈) 객체를 IMP window에서 추출
+   IMP.init('imp43078557') // 가맹점 식별 코드로 초기화
+  
+  //1.아임포트 결제 요청  
+    const handlePayment = async () => {
+      if(selectedPayment === null ||!selectedPayment) {
+          alert("결제수단을 선택하세요");
+          return;
+      }
+  
+      //2.결제 전 검증절차 및 주문번호 받아오기
+      try {
+        const paymentRequest = {
+          storeCode: parseInt(store.storeCode),
+          cartNums: orderItem.map(item =>parseInt(item.cartNum)),
+          amount: calculateTotalPrice()
+        };
+          const res = await axiosInToken(token).post('paymentRequest', paymentRequest);
+          if(res.data.isValidated === false) {
+              alert("검증 실패");
+              return;
+          }
+  
+          // 백엔드에서 생성한 주문번호 저장
+          const merchantUid = res.data.orderCode;
+  
+          //3.PG사별 결제 요청 데이터 설정
+          const requestData = {
+              pg: selectedPayment === 'card' ? "html5_inicis" : "kcp.AO09C", // PG사 설정
+              pay_method: selectedPayment === 'card' ? "card" : "trans",  // 결제 방법
+              merchant_uid: merchantUid,  // 백엔드에서 받은 주문번호 사용
+              name: orderItem[0].name + "...",  // 첫번째상품 이름+....
+              amount: calculateTotalPrice(), // 결제 가격
+              buyer_name: storeInfo.storeName ||"", // 구매자 이름 (buyer_ 부분은 꼭 작성하지 않아도된다. (선택사항))
+              buyer_tel: storeInfo.storePhone || "", // 구매자 연락처
+              buyer_postcode: store.storeAddressNum ||"", // 구매자 우편번호
+              buyer_addr: store.storeAddress || "", // 구매자 주소
+              bank_name: selectedPayment === 'transfer' ? '국민' : 'undefined', // 계좌이체은행 설정
+              digital: false // 실물컨텐츠여부
+          };
+  
+          //4.결제 요청 (결제창 불러오기)
+          // 서버에서 받는 대신 백엔드에서 생성한 주문번호 전달
+          // 콜백 
+          // 단계1.-생략 (추가할 예정 )
+          // 백엔드-api key와 secret으로  서버인증토큰발급과,발급받은 토큰으로 서버와 결제정보 조회 및 검증 (response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인)
+          // if (res.success) {
+          //   axiosInToken(token).post(payment/validation/${res.imp_uid})
+          // }
+          IMP.request_pay(requestData, async (response)=>{
+            const {
+              success,
+              imp_uid,
+              error_msg,
+              paid_amount,
+              status,
+              pay_method
+          } = response;
 
+          if(success) {
+              try {
+                  const paymentData = {
+                      merchantUid: merchantUid,
+                      impUid: imp_uid,
+                      totalAmount: paid_amount,
+                      cartNums: orderItem.map(item => item.cartNum),
+                      storeCode: store.storeCode,
+                      paymentMethod: pay_method === 'card' ? '카드결제' : '계좌이체',
+                      status: status
+                  };
 
-  //결제 사전 검증 (주문번호 받아오기)
-  const orderCheck=()=>{
-    
-    const formData = new FormData();
-    formData.append('amount', store.storeCode);
-    formData.append('cartNums',orderItem.map(item=>item.cartNum));
-    formData.append('amount',calculateTotalPrice());
+                  await axiosInToken(token).post('paymentComplete', paymentData);
+                  alert('결제가 완료되었습니다.');
+                  navigate("/orderList");
+              } catch (error) {
+                  console.error('주문 처리 실패:', error);
+                  alert('주문 처리 중 오류가 발생했습니다.');
+              }
+          } else {
+              alert(`결제 실패: ${error_msg}`);
+          }
+      });
+
+  } catch(err) {
+      console.error(err);
+      alert('결제 요청 중 오류가 발생했습니다.');
+  }
+  };
    
-    axiosInToken(token).post('paymentRequest', formData)
-    .then(res=>{
-      setOrderCode(res.data.orderCode);
-      console.log(res.data);
-      if(res.data.isValidated === false){
-        alert("검증 실패");
-        return;
-      } 
-    })
-    .catch(err=>{
-      console.log(err);
-    })
-  }
-
-  //결제 창 불러오기 (IMP.request_pay() 함수를 호출,결제 수단에따른 결제창 열기) 
-  // pay_method: CARD면 이니시스 TRANSFER  KCP  PG사 이용 
-  const requsetData = {
-    pg: selectedPayment === 'card'?"html5_inicis":"kcp.AO09C",   // PG사 설정
-    pay_method : selectedPayment ==='card'?"card":"trans", // 결제 방법
-    merchant_uid : orderCode,  // 주문 번호
-    name : orderItem.map(item=>item.name)[0]+"...", // 첫번째상품 이름+....
-    amount: calculateTotalPrice(), // 결제 가격
-    buyer_name : storeInfo.storeName, // 구매자 이름 (buyer_ 부분은 꼭 작성하지 않아도된다. (선택사항))
-    buyer_tel : storeInfo.storePhone, // 구매자 연락처
-    buyer_postcode : store.storeAddressNum, // 구매자 우편번호
-    buyer_addr : store.storeAddress, // 구매자 주소
- 
-    //테스트모드 계좌이체의 경우 필수 파라미터 테스트 모드는 계좌이체 결제x 바로 이체 성공 됨 
-    //KCP 계좌이체필수 파라미터
-    bank_name: selectedPayment==='transfer'?'국민':'undefined', // 계좌이체은행 설정
-    digital:false// 실물컨텐츠여부
-  } ;
   
-  const handlePayment=()=>{
-    if(selectedPayment ===null) {
-      alert("결제수단을 선택하세요");
-      return;
-    }
-    orderCheck(); // 결제 전 검증절차 및 주문번호 받아오기 
-    
-    //결제 요청
-    IMP.request_pay(requsetData, 
-    function (res) {
-      // 결제 종료 시 호출되는 콜백 함수
-      // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
-      // 결제 결과를 처리하는 로직을 작성합니다.
-      if (res.success) {
-        axios({
-            method: "post",
-            url: `/payment/validation/${res.imp_uid}`
-        })
-      // 응답 데이터의 정보들
-        console.log("Payment success!");
-        console.log("Payment ID : " + res.imp_uid);
-        console.log("Order ID : " + res.merchant_uid);
-        console.log("Payment Amount : " + res.paid_amount);
-    } else {
-        console.error(res.error_msg);
-    }  
-    
-    },
-    );
-  }
-
-  //결제 완료 검증
-  const callback=()=>{
-
-  }
-
-  
+                      
   return (
     <CommonWrapper>
       <CommonContainer size="1240px">

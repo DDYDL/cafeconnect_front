@@ -137,7 +137,7 @@ const handleOrder = () => {
           <StyledButton
             size="sm"
             theme="brown"
-            hasIcon
+            $hasicon
             onClick={() => setIsModalOpen(true)}
           >
             <PlusIcon />
@@ -182,7 +182,7 @@ const handleOrder = () => {
                 <c.ProductName>{item.item.itemName}</c.ProductName>
                 {item.item.itemStorage && (
                   <ItemStorageLabelP>
-                    <ItemStorageType storageWay={item.item.itemStorage}>
+                    <ItemStorageType $storageway={item.item.itemStorage}>
                       {item.item.itemStorage}
                     </ItemStorageType>
                   </ItemStorageLabelP>
