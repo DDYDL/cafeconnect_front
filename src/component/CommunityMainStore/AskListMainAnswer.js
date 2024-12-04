@@ -2,18 +2,17 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { useAtomValue } from "jotai/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
+import { tokenAtom } from "../../atoms.js";
 import { axiosInToken } from "../../config.js";
-import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 // todo 답변 저장 -> 해당 답변이 계속 보여지도록 해야함.
-const AskList = () => {
+const AskWriteMain = () => {
   const [ask, setAsk] = useState([]);
   const [storeCode, setStoreCode] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
@@ -24,41 +23,44 @@ const AskList = () => {
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchAsk, setSearchAsk] = useState("");
 
-  // useCallback 제거된 fetchStoreCode
-  const fetchStoreCode = async () => {
+  const fetchStoreCode = useCallback(async () => {
     try {
-      if (!token) return;
+      if (!token) return; // 토큰 없으면 요청 생략
+      console.log("storeCode1:", storeCode);
+
       const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode;
+      console.log("Response Data:", response.data); // 응답 데이터를 출력
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
       setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
     } catch (err) {
       console.error("storeCode 요청 중 오류 발생:", err);
     }
-  };
+  }, [token]); // 의존성 배열에 token 추가
 
-  // useCallback 제거된 fetchData
-  const fetchData = async () => {
-    if (!token || !storeCode) return;
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
+
+  const fetchData = useCallback(async () => {
+    if (!token || !storeCode) return; // 토큰 또는 storeCode가 없는 경우 요청 생략
     try {
       const response = await axiosInToken(token).get(`/askListStore/${storeCode}`);
       const formattedData = response.data.map(ask => ({
         ...ask,
         askDate: new Date(ask.askDate).toLocaleDateString("ko-KR"),
       }));
+      console.log(response.data);
       setAsk(formattedData);
     } catch (err) {
       console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+      alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
-  };
-
-  // useEffect는 그대로 유지
-  useEffect(() => {
-    fetchStoreCode();
-  }, [token]);
+  }, [token, storeCode]); // token, storeCode를 의존성 배열에 추가
 
   useEffect(() => {
     fetchData();
-  }, [token, storeCode]);
+  }, [fetchData]); // fetchData를 의존성 배열에 추가
 
   // 검색 버튼 클릭 핸들러
   const onSearchClick = () => {
@@ -85,31 +87,58 @@ const AskList = () => {
     navigate("/askWrite");
   };
 
+  // todo AskList페이지는 상세보기 대신에, 해당 게시글 클릭 시, 답변 보기로 진행<<<<<<<
+
+  // // 검색된 항목에서 클릭한 경우에 대해 답변을 가져오는 함수
   const fetchAnswerForSelectedItem = async askNum => {
     try {
+      console.log("Fetching answer for askNum:", askNum);
       if (!storeCode) return;
       const response = await axios.get(
         `http://localhost:8080/askDetailStore/${storeCode}/getAnswer/${askNum}`
       );
-      console.log("response data:", response.data); // 응답 데이터 확인
-
-      const answer = response.data.askAnswer; // 서버에서 받은 답변
-      setAnswers(prev => {
-        console.log("Previous answers:", prev); // 상태 업데이트 전 로그
-        const updatedAnswers = { ...prev, [askNum]: answer };
-        console.log("Updated answers:", updatedAnswers); // 업데이트된 상태 로그
-        return updatedAnswers;
-      });
+      setAnswers(prev => ({ ...prev, [askNum]: response.data.answer })); // 선택된 항목에 대한 답변 저장
+      console.log("response.data" + response.data);
     } catch (err) {
       console.error("답변 요청 중 오류 발생:", err);
     }
   };
+
+  // const handleItemClick = askNum => {
+  //   if (selectedItem !== askNum) {
+  //     fetchAnswerForSelectedItem(askNum);
+  //     setSelectedItem(askNum); // 클릭한 게시글의 번호를 저장
+  //     navigate(`/askDetailStore/${storeCode}/getAnswer/${askNum}`); // 답변 페이지로 이동
+  //   } else {
+  //     setSelectedItem(null); // 이미 선택된 게시글이면 선택 해제
+  //     setSelectedAnswer(null); // 답변 초기화
+  //   }
+  // };
 
   const onChangeAsk = e => {
     setSearchAsk(e.target.value);
   };
 
   const filterAsk = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+
+  // 공지사항 데이터를 가져오는 useEffect
+  // useEffect(() => {
+  //   const fetchData = () => {
+  //     axiosInToken(token)
+  //       .get("askListStore/{storeCode}")
+  //       .then(res => {
+  //         console.log(res.data);
+  //         setAsk([...res.data]);
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   };
+  //   if (token != null && token !== "") fetchData();
+  //   fetchData();
+  // }, [token]);
+
+  // / fetchStoreCode를 useCallback으로 래핑
 
   // 리스트를 불러오는 함수
   const fetchAskList = async () => {
@@ -126,6 +155,58 @@ const AskList = () => {
     fetchAskList(); // 컴포넌트가 처음 렌더링될 때 ask 리스트를 불러옴
   }, [storeCode]);
 
+  //답변 저장
+  // const handleSubmit = (askNum, e) => {
+  //   e.preventDefault(); // 기본 폼 제출 동작 방지
+
+  //   const answer = answers[askNum]; // 해당 askNum에 대한 답변을 가져옴
+
+  //   if (!answer) {
+  //     alert("답변을 작성해주세요.");
+  //     return;
+  //   }
+  //   const answerData = {
+  //     askAnswer: answer,
+  //   };
+  //   console.log(answerData); // 추가: 서버에 보내는 데이터 확인
+
+  //   // 서버에 답변을 제출하는 API 요청
+  //   axios
+  //     .post(`http://localhost:8080/askListStore/${storeCode}/save/${askNum}`, answerData)
+  //     .then(res => {
+  //       alert("답변이 저장되었습니다.");
+  //       // 답변 저장 후, 상태 초기화
+  //       setAnswers(prevAnswers => ({
+  //         ...prevAnswers,
+  //         [askNum]: "", // 답변 필드 초기화
+  //       }));
+  //       setSelectedItem(null); // 답변 작성 후 해당 게시글 닫기
+  //     })
+  //     .catch(err => {
+  //       alert("답변 저장에 실패했습니다.");
+  //       console.error("답변 저장 실패:", err);
+  //     });
+  // };
+
+  // 답글 삭제 함수
+  // const handleDelete = askNum => {
+  //   axios
+  //     .post(`http://localhost:8080/askListStore/${storeCode}/delete/${askNum}`)
+  //     .then(() => {
+  //       alert("답변이 삭제되었습니다.");
+  //       setAnswers(prevAnswers => {
+  //         const newAnswers = { ...prevAnswers };
+  //         delete newAnswers[askNum]; // 삭제한 답변 상태에서 제거
+  //         return newAnswers;
+  //       });
+  //       setSelectedItem(null); // 답변 삭제 후 해당 게시글 닫기
+  //     })
+  //     .catch(err => {
+  //       alert("답변 삭제에 실패했습니다.");
+  //       console.error("답변 삭제 실패:", err);
+  //     });
+  // };
+
   return (
     // <Wrapper>
     <ContentListDiv>
@@ -139,10 +220,6 @@ const AskList = () => {
       </HeadingContainer>
 
       <HeadingContainer1>
-        <StyledButton size="md" theme="brown" onClick={askWrite} style={{ marginTop: "30px" }}>
-          글 작성
-        </StyledButton>
-
         <s.ButtonDiv width="200px" float="right">
           <s.SearchDiv width="200px">
             <Input
@@ -189,91 +266,25 @@ const AskList = () => {
             <React.Fragment key={a.askNum}>
               <TableInfoList onClick={() => handleItemClick(a.askNum)}>
                 <div>{index + 1}</div>
-                <div style={{ paddingLeft: "20px" }}>
-                  <span style={{ color: "red", marginRight: "5px" }}>[{a.askType}]</span>
-                  {a.askTitle}
-                </div>
+                <div style={{ paddingLeft: "20px" }}>{a.askTitle}</div>
                 <div style={{ paddingRight: "20px" }}>
                   {new Date(a.askDate).toLocaleDateString()}
                 </div>
               </TableInfoList>
               {selectedItem === a.askNum && (
                 <AnswerContainer>
-                  <DetailContainer>
-                    <h2
-                      style={{
-                        display: "flex",
-                        justifyContent: "left",
-                        paddingTop: "10px",
-                        paddingLeft: "20px",
-                        fontSize: "20px",
-                      }}
-                    >
-                      문의 상세
-                    </h2>
-                    <AnswerContent
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        padding: "20px",
-                        textAlign: "left",
-                      }}
-                      readOnly
-                    >
-                      {
-                        // 선택된 항목의 상세 내용만 렌더링
-                        (isSearchActive ? filterAsk : ask)
-                          .filter(a => a.askNum === selectedItem) // 선택된 askNum 필터링
-                          .map(a => (
-                            <div key={a.askNum}>
-                              {a.askContent || "아직 답변이 작성되지 않았습니다."}
-                            </div>
-                          ))
-                      }
-                    </AnswerContent>
-                  </DetailContainer>
-                  <DetailContainer1>
-                    <h3
-                      style={{
-                        display: "flex",
-                        justifyContent: "left",
-                        paddingTop: "10px",
-                        paddingLeft: "20px",
-                        fontSize: "20px",
-                      }}
-                    >
-                      본사 답변
-                    </h3>
-
-                    <AnswerContent
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        padding: "20px",
-                        textAlign: "left",
-                      }}
-                      readOnly
-                    >
-                      {answers[a.askNum] || "아직 답변이 작성되지 않았습니다."}
-                    </AnswerContent>
-                  </DetailContainer1>
+                  <h3>본사의 답변:</h3>
+                  <AnswerTextarea
+                    value={answers[a.askNum] || "아직 답변이 작성되지 않았습니다."}
+                    style={{ display: "flex", justifyContent: "flex-start", padding: "20px" }}
+                    readOnly
+                  />
                 </AnswerContainer>
               )}
             </React.Fragment>
           ))
         ) : (
-          <div
-            style={{
-              display: "flex", // flexbox 사용
-              justifyContent: "center", // 수평 가운데 정렬
-              alignItems: "center", // 수직 가운데 정렬
-              height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
-              fontSize: "16px", // 텍스트 크기 설정
-              color: "#555", // 텍스트 색상 설정
-            }}
-          >
-            검색 결과가 없습니다.
-          </div>
+          <div>검색 결과가 없습니다.</div>
         )}
       </div>
     </ContentListDiv>
@@ -290,7 +301,7 @@ const HeadingContainer = styled.div`
 
 const HeadingContainer1 = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
   align-items: center;
 `;
 
@@ -391,41 +402,6 @@ const TableInfoList = styled.div`
   }
 `;
 
-const DetailContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #ffffff;
-
-  min-height: 100px; /* 최소 높이를 300px로 설정 */
-  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
-  overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
-`;
-
-const DetailContainer1 = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fafafa;
-  font-weight: bold;
-
-  min-height: 100px; /* 최소 높이를 300px로 설정 */
-  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
-  overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
-`;
-
 const AnswerContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -433,29 +409,10 @@ const AnswerContainer = styled.div`
   text-align: center;
 
   margin-top: 20px;
-  margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid black;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #ffffff;
-
-  min-height: 100px; /* 최소 높이를 300px로 설정 */
-  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
-  overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
-`;
-
-const AnswerContent = styled.div`
-  padding: 15px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #333; /* 글자 색 변경 */
-  // background-color: white; /* 답변 배경색 */
-
-  border-radius: 5px;
-
-  min-height: 100px; /* 최소 높이를 300px로 설정 */
-  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
-  overflow-y: auto; /* 내용이 많을 경우 스크롤 표시 */
+  background-color: #f9f9f9;
 `;
 
 const AnswerTextarea = styled.textarea`
@@ -504,4 +461,4 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-export default AskList;
+export default AskWriteMain;

@@ -18,13 +18,17 @@ const AskWrite = () => {
     storeCode: 1,
     // askDate: new Date(), // 현재 날짜와 시간으로 초기화
   };
-
+  const [askTitle, setAskTitle] = useState("");
+  const [askContent, setAskContent] = useState("");
   const token = useAtomValue(tokenAtom);
+  // const { storeCode } = useParams();
   const [ask, setAsk] = useState(initSaleItem);
   const [storeCode, setStoreCode] = useState(null);
-  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
 
-  //  fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
+  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  const [askType, setAskType] = useState("default");
+
+  // / fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
   const fetchStoreCode = useCallback(async () => {
     try {
       if (!token) return; // 토큰 없으면 요청 생략
@@ -77,7 +81,7 @@ const AskWrite = () => {
 
         // 등록 완료 후 alert을 먼저 띄운 뒤, 일정 시간이 지나면 페이지 이동
         alert("문의가 성공적으로 등록되었습니다.");
-        navigate(`/askListStore/${storeCode}`);
+        navigate(`/askListStore`);
       })
       .catch(err => {
         console.error(err);
@@ -147,13 +151,10 @@ const AskWrite = () => {
             bgColor="white"
             // onClick={handleCancel}
           >
-            <Link to="/askListStore/:storeCode">취소</Link>
+            <Link to="/askListStore">취소</Link>
           </s.ButtonStyle>
           &nbsp;&nbsp;
-          <s.ButtonStyle type="submit">
-            등록하기
-            {/* <Link to="/askListStore/:storeCode">등록하기</Link> */}
-          </s.ButtonStyle>
+          <s.ButtonStyle type="submit">등록하기</s.ButtonStyle>
         </ButtonContainer>
       </Form>
     </ContentListDiv>

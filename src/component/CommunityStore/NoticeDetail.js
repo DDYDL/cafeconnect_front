@@ -1,16 +1,12 @@
-import React, {useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
-// import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import { Link } from "react-router-dom";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
-import {axiosInToken} from "../../config";
-import {useParams} from "react-router";
-import axios from "axios";
-
 
 // todo noticeDate String으로 받아지는 부분, date형식으로 변환 필요
 const NoticeDetail = () => {
@@ -20,41 +16,20 @@ const NoticeDetail = () => {
   const { noticeNum } = useParams(); // URL에서 noticeNum 추출
   const [notice, setNotice] = useState("");
 
-  // const noticeDate = notice.noticeDate;  // 백엔드에서 받은 타임스탬프
-  // const date = new Date(noticeDate);  // 타임스탬프를 Date 객체로 변환
-  // const formattedDate = new Intl.DateTimeFormat('ko-KR').format(date);  // 한국 형식으로 변환
-  // console.log(formattedDate);  // 예: "2024년 12월 10일"
-
-  // useEffect(() => {
-  //   const fetchData = () => {
-  //     axiosInToken(token).get('noticeList')
-  //         .then(res=> {
-  //           console.log(res.data)
-  //           setNotice([...res.data]);
-  //         })
-  //         .catch(err=>{
-  //           console.log(err);
-  //         })
-  //   };
-  //   // if(token!=null && token!=='') fetchData();
-  //   fetchData();
-  // }, [token]);
-
   useEffect(() => {
-
     const fetchNoticeDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/noticeList/${noticeNum}`);
-        setNotice(response.data);
-        console.log("Notice:", response.data);  // noticeNum이 제대로 전달되었는지 확인
+        const response = await axios.get(`http://localhost:8080/noticeDetail/${noticeNum}`);
+        const noticeData = response.data;
+        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+        const formattedDate = new Date(noticeData.noticeDate).toLocaleDateString("ko-KR");
+        setNotice({ ...noticeData, noticeDate: formattedDate });
       } catch (error) {
         console.error("Error fetching notice:", error);
       }
     };
-    fetchNoticeDetail();  // 컴포넌트가 마운트될 때 공지사항 상세 정보 가져오기
-  }, [noticeNum]);  // noticeNum이 변경될 때마다 다시 실행
-
-
+    fetchNoticeDetail(); // 컴포넌트가 마운트될 때 공지사항 상세 정보 가져오기
+  }, [noticeNum]); // noticeNum이 변경될 때마다 다시 실행
 
   return (
     <ContentListDiv>
@@ -62,20 +37,19 @@ const NoticeDetail = () => {
         <Heading>공지사항 상세</Heading>
       </HeadingContainer>
 
-      <Form
-          // onSubmit={handleSubmit}
-      >
+      <Form>
         <s.TrStyle>
           <s.TableTextTd>공지 유형 *</s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
-              // type="text"
-              // style={{ width: "290px", paddingLeft: "110px" }}
-              // placeholder="상품"
-              // disabled
-
               type="text"
-              style={{ width: "290px", paddingLeft: "110px" }}
+              style={{
+                width: "290px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
               // placeholder="상품"
               value={notice.noticeType} // 받아온 값으로 input을 채웁니다
               disabled // 수정 불가
@@ -86,7 +60,13 @@ const NoticeDetail = () => {
           <s.TableTextTd>
             <s.InputStyle
               type="text"
-              style={{ width: "290px", paddingLeft: "90px" }}
+              style={{
+                width: "290px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
               // placeholder="2024-12-20"
               disabled
               value={notice.noticeDate}
@@ -99,7 +79,13 @@ const NoticeDetail = () => {
           <s.TableTextTd>
             <s.InputStyle
               type="text"
-              style={{ width: "290px", paddingLeft: "80px" }}
+              style={{
+                width: "290px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
               // placeholder="판매상품 재고문의"
               disabled
               value={notice.noticeTitle}
@@ -128,7 +114,7 @@ const NoticeDetail = () => {
 
         <ButtonContainer>
           <s.ButtonStyle
-              // onClick={handleRegister}
+          // onClick={handleRegister}
           >
             <Link to="/noticeList">목록으로</Link>
           </s.ButtonStyle>

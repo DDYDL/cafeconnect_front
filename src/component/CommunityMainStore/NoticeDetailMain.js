@@ -1,17 +1,41 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
-// import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import { Link } from "react-router-dom";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
-const NoticeListMain = () => {
+const NoticeDetailMain = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
+  const { noticeNum } = useParams(); // URL에서 noticeNum 추출
+  const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    const fetchNoticeDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/noticeDetailMain/${noticeNum}`);
+        const noticeData = response.data;
+
+        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+        const formattedDate = new Date(noticeData.noticeDate).toLocaleDateString("ko-KR");
+
+        setNotice({
+          ...noticeData,
+          noticeDate: formattedDate, // 변환된 날짜로 업데이트
+        });
+
+        console.log("Notice:", noticeData);
+      } catch (error) {
+        console.error("Error fetching notice:", error);
+      }
+    };
+    fetchNoticeDetail();
+  }, [noticeNum]);
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
@@ -19,39 +43,12 @@ const NoticeListMain = () => {
   };
 
   const handleRegister = () => {
-    navigate("/noticeList");
+    navigate("/noticeListMain");
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    // 작성한 글을 서버로 전송
-    const newNotice = {
-      type: "주요 공지사항", // 항상 공지사항
-      title,
-      content,
-      date: new Date().toISOString(),
-    };
-
-    fetch("https://www.localhost:8080/notice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotice),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Notice added:", data);
-        // 글 작성 후 입력 필드 초기화
-        setTitle("");
-        setContent("");
-
-        // 공지사항 작성이 완료된 후, noticeList 페이지로 리디렉션
-        navigate("/community/noticeList");
-      })
-      .catch(error => console.error("Error posting notice:", error));
-  };
+  // const handleSubmit = event => {
+  //   event.preventDefault();
+  // };
 
   return (
     <ContentListDiv>
@@ -59,15 +56,23 @@ const NoticeListMain = () => {
         <Heading>공지사항 상세</Heading>
       </HeadingContainer>
 
-      <Form onSubmit={handleSubmit}>
+      <FormData
+      // onSubmit={handleSubmit}
+      >
         <s.TrStyle>
-          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd>공지 유형 *</s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
+              // type="text"
+              // style={{ width: "290px", paddingLeft: "110px" }}
+              // placeholder="상품"
+              // disabled
+
               type="text"
-              style={{ width: "290px", paddingLeft: "90px" }}
-              placeholder="직원이 불친절함"
-              disabled
+              style={{ width: "290px", paddingLeft: "110px" }}
+              // placeholder="상품"
+              value={notice.noticeType} // 받아온 값으로 input을 채웁니다
+              disabled // 수정 불가
             />
           </s.TableTextTd>
 
@@ -76,19 +81,34 @@ const NoticeListMain = () => {
             <s.InputStyle
               type="text"
               style={{ width: "290px", paddingLeft: "90px" }}
-              placeholder="2024-12-20"
+              // placeholder="2024-12-20"
               disabled
+              value={notice.noticeDate}
+            />
+          </s.TableTextTd>
+        </s.TrStyle>
+
+        <s.TrStyle>
+          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd>
+            <s.InputStyle
+              type="text"
+              style={{ width: "290px", paddingLeft: "80px" }}
+              // placeholder="판매상품 재고문의"
+              disabled
+              value={notice.noticeTitle}
             />
           </s.TableTextTd>
         </s.TrStyle>
 
         <s.TrStyle style={{ height: "200px", margin: "30px" }}>
-          <s.TableTextTd>글 내용 *</s.TableTextTd>
+          <s.TableTextTd>공지 상세 *</s.TableTextTd>
           <s.TableTextTd>
             <Textarea
-              value={content}
               onChange={e => setContent(e.target.value)}
+              // placeholder="공지 상세 작성"
               style={{ width: "680px" }}
+              value={notice.noticeContent}
             />
             {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
           </s.TableTextTd>
@@ -101,15 +121,15 @@ const NoticeListMain = () => {
         {/* <Button variant="outline"></Button> */}
 
         <ButtonContainer>
-          <s.ButtonStyle variant="outlined" bgColor="white" onClick={handleCancel}>
-            <Link to="/complain">취소</Link>
-          </s.ButtonStyle>
-          &nbsp;&nbsp;
           <s.ButtonStyle onClick={handleRegister}>
-            <Link to="/complain">등록하기</Link>
+            <Link
+            //  to="/noticeList"
+            >
+              목록으로
+            </Link>
           </s.ButtonStyle>
         </ButtonContainer>
-      </Form>
+      </FormData>
     </ContentListDiv>
   );
 };
@@ -133,7 +153,7 @@ const Navigation = styled.div`
   margin-left: 850px;
 `;
 
-const Form = styled.form`
+const FormData = styled.form`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -203,4 +223,4 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-export default NoticeListMain;
+export default NoticeDetailMain;
