@@ -44,7 +44,7 @@ const Complain = () => {
                                 <s.TableTextTd>{complain.complainNum}</s.TableTextTd>
                                 <s.TableTextTd>[{complain.storeName}]{complain.complainTitle}</s.TableTextTd>
                                 <s.TableTextTd>{complain.userName}</s.TableTextTd>
-                                <s.TableTextTd>{complain.complainDate}</s.TableTextTd>
+                                <s.TableTextTd>{complain.complainDateStr}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainStatus ? "전달완료":"전달중"}</s.TableTextTd>
                             </s.TableTextTr>
                         ))

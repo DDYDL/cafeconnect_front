@@ -3,14 +3,19 @@ import * as s from "../styles/StyledStore.tsx";
 import axios from "axios";
 import { url } from "../../config.js";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import ReactSelect from "react-select";
 
 const ComplainWrite = () => {
   const [complain, setComplain] = useState({userName:'', userPhone:'', complainTitle:'', complainContent:''});
   const [storeList, setStoreList] = useState([]);
-  // 필터링된 가맹점 리스트를 담을 변수
-  const [storeNameList, setStoreNameList] = useState([]);
+
+  const [selectedStore, setSelectedStore] = useState(null); // value
+  const [storeNameList, setStoreNameList] = useState([]); // 전체 가맹점 리스트
   const [storeName, setStoreName] = useState("");
+  const [store, setStore] = useState({
+    storeCode: "",
+    storeName: ""
+  });
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -56,7 +61,10 @@ const ComplainWrite = () => {
     .then(res=>{
       console.log(res.data);
       setStoreList([...res.data]);
-      setStoreNameList([...res.data]);
+      setStoreNameList(res.data.map(item=>({
+        value:item.storeCode,
+        label:item.storeName
+      })))
     })
     .catch(err=>{
       console.log(err);
@@ -70,7 +78,7 @@ const ComplainWrite = () => {
 
     formData.append("userName", complain.userName);
     formData.append("userPhone", complain.userPhone);
-    formData.append("storeName", storeName);
+    formData.append("storeName", store.storeName);
     formData.append("complainTitle", complain.complainTitle);
     formData.append("complainContent", complain.complainContent);
 
@@ -83,6 +91,16 @@ const ComplainWrite = () => {
         console.log(err);
     })
   }
+
+  //자동완성에서 입력한 상품명의 이름과 코드 변경 및 저장 
+  const selectStore = (selectedOption) => {
+    setSelectedStore(selectedOption);
+    setStore((prev) => ({
+      ...prev,
+      storeCode: selectedOption.value,
+      storeName: selectedOption.label,
+    }));
+  };
 
   return (
     <>
@@ -111,7 +129,16 @@ const ComplainWrite = () => {
             <s.TrStyle>
               <s.TableTextTd>가맹점명 *</s.TableTextTd>
               <s.TableTextTd>
-                <s.InputStyle type="text" name='storeName' value={storeName} onChange={(e)=>{setStoreName(e.target.value)}} autocomplete='off' required/>
+              <div className="flex gap-2 items-center">
+               <ReactSelect
+                  className="w-full"
+                  placeholder="가맹점명을 입력해주세요"
+                  value={selectedStore}
+                  options={storeNameList}
+                  onChange={selectStore}
+                />
+              </div>
+                {/* <s.InputStyle type="text" name='storeName' value={storeName} onChange={(e)=>{setStoreName(e.target.value)}} autocomplete='off' required/>
                 {storeNameList.length > 0 && storeName && ( //키워드가 존재하고,해당키워드에 맞는 이름이 있을때만 보여주기 
                   <s.AutoSearchContainer>
                   <s.AutoSearchWrap>
@@ -127,7 +154,7 @@ const ComplainWrite = () => {
                     ))}
                     </s.AutoSearchWrap>
                   </s.AutoSearchContainer>
-                )}
+                )} */}
               </s.TableTextTd>
             </s.TrStyle>
             <s.TrStyle>
