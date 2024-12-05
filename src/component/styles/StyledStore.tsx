@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface Container {
-    borderLeft:string;
+    borderleft:string;
     textAlign:string;
     bgColor:string;
     width:string;
@@ -110,7 +110,7 @@ export const MenuBarLinkDiv = styled.div<Container>`
     padding:10px 20px;
     border-color:rgba(248, 248, 248, 1);
     
-    border-left:${(props) => props.borderLeft ? props.borderLeft : "3px solid rgba(248, 248, 248, 1)"};
+    border-left:${(props) => props.borderleft ? props.borderleft : "3px solid rgba(248, 248, 248, 1)"};
     `;
 
 export const MenuBarLink = styled(NavLink)`
@@ -420,5 +420,37 @@ export const dateCheckbox = styled.input`
         background-color: rgba(234, 234, 234, 1);
         border:none;
         text:'';
+    }
+`;
+
+export const DatePickerWrap = styled.div`
+width:50px;
+text-align:center;
+box-shadow:none;
+border: none;
+
+.CustomPicker{
+    width: 50px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+        border-color: rgb(234, 234, 234);
+        border-style:solid;
+        border:1px;
+        color: rgb(0, 0, 0);
+        font-family: "Noto Sans KR";
+        letter-spacing :normal;
+        line-height: 24px;
+        box-shadow:none;
+        
+        div {
+            box-shadow:none;
+            border: none;
+        }
+        
+        input {
+            padding: 8px 12px 8px 12px;
+            text-align: start;
+        } 
     }
 `;
