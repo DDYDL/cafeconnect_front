@@ -1,6 +1,10 @@
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { ko } from "date-fns/locale/ko";
+
 import ApexCharts from "apexcharts"; // ApexCharts 임포트
 import axios from "axios";
-import { Datepicker } from "flowbite-react";
 import { useAtomValue } from "jotai/react";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -153,8 +157,9 @@ const SalesAnalysis = () => {
         <HeadingContainer1>
           <HeadingDataAndSave>
             <Option1>
+              <Label>기간</Label> {/* 기간 텍스트 추가 */}
               <Select onChange={e => setSelectedPeriod(e.target.value)} value={selectedPeriod}>
-                <option value="">기간 선택</option> {/* 기본값으로 "기간 선택"을 표시 */}
+                <option value="기간 선택">기간 선택</option> {/* 기본값으로 "기간 선택"을 표시 */}
                 <option value="연간">연간</option>
                 <option value="분기별">분기별</option>
                 <option value="월별">월별</option>
@@ -162,68 +167,58 @@ const SalesAnalysis = () => {
               </Select>
             </Option1>
 
-            <Option2>
-              <Datepicker
-                selected={startDate}
-                onChange={date => setStartDate(date)}
-                className="flowbite-datepicker"
-                dateFormat="yyyy-MM-dd"
-              />
-              ~
-              <Datepicker
-                selected={endDate}
-                onChange={date => setEndDate(date)}
-                className="flowbite-datepicker"
-                dateFormat="yyyy-MM-dd"
-              />
-            </Option2>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+              <Option2>
+                <DatePicker
+                  slotProps={{ textField: { size: "small" } }}
+                  label="연-월-일"
+                  format="yyyy-MM-dd"
+                  value={startDate}
+                  onChange={newValue => setStartDate(new Date(newValue))}
+                  disabled={
+                    selectedPeriod === "기간 선택" ||
+                    selectedPeriod === "연간" ||
+                    selectedPeriod === "분기별" ||
+                    selectedPeriod === "월별"
+                  }
+                />
+                <span style={{ margin: "0 8px" }}> ~ </span>
+                <DatePicker
+                  slotProps={{ textField: { size: "small" } }}
+                  label="연-월-일"
+                  format="yyyy-MM-dd"
+                  value={endDate}
+                  onChange={newValue => setEndDate(new Date(newValue))}
+                  disabled={
+                    selectedPeriod === "기간 선택" ||
+                    selectedPeriod === "연간" ||
+                    selectedPeriod === "분기별" ||
+                    selectedPeriod === "월별"
+                  }
+                />
+              </Option2>
+            </LocalizationProvider>
 
             <Option3>
               {/* <Title3>카테고리</Title3> */}
               <Select onChange={e => setCategory(e.target.value)} value={category}>
                 <option value="">카테고리 선택</option>
-                {/* 카테고리 옵션 리스트 */}
+                {majorCategory.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.itemCategoryName}
+                  </option>
+                ))}
               </Select>
             </Option3>
 
-            <CustomButton type="button" onClick={handleQuery} style={{ marginTop: "10px" }}>
-              조회
-            </CustomButton>
+            <CustomButtonContainer>
+              <CustomButton type="button" onClick={handleQuery}>
+                조회
+              </CustomButton>
+            </CustomButtonContainer>
           </HeadingDataAndSave>
         </HeadingContainer1>
       </Form>
-
-      {/* 매출 현황 */}
-      {/* <FirstBody>
-        <Title4>매출 현황</Title4>
-        <MetricsRow>
-          {metricsData.map((metric, index) => (
-            <MetricBox key={index}>
-              <MetricTitle>{metric.title}</MetricTitle>
-              <MetricValue>{metric.value}</MetricValue>
-              <MetricCategory>{metric.category}</MetricCategory>
-            </MetricBox>
-          ))}
-        </MetricsRow>
-      </FirstBody> */}
-
-      {/* <SalesTable>
-        <TableHeader>
-          <TableColumn>상품명</TableColumn>
-          <TableColumn>수량</TableColumn>
-          <TableColumn>매출합계</TableColumn>
-          <TableColumn>전월대비</TableColumn>
-          <TableColumn>전월대비 금액</TableColumn>
-        </TableHeader> */}
-      {/* 예시 데이터를 테이블에 렌더링 */}
-      {/* <TableRow>
-          <TableCell>예시_사이다</TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-        </TableRow>
-      </SalesTable> */}
 
       {/* 기간에 맞는 컴포넌트 렌더링 */}
       {renderPeriodComponent()}
@@ -244,6 +239,23 @@ const Form = styled.form`
   text-align: center;
   align-items: center;
   width: 100%;
+`;
+
+const CustomButtonContainer = styled.div`
+  margin-left: auto; /* 왼쪽 여백을 최대한 추가하여 오른쪽으로 정렬 */
+  display: flex;
+  align-items: center;
+  height: 100%; /* 부모 높이에 맞춤 */
+  padding-bottom: 10px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  font-size: 16px;
+  margin-left: 5px;
+  font-weight: bold;
+  margin-bottom: 8px; /* Select와 간격 조정 */
+  color: #333;
 `;
 
 const Navigation = styled.div`
@@ -271,11 +283,13 @@ const HeadingContainer1 = styled.div`
 
 const HeadingDataAndSave = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding-right: 30px;
+  padding-left: 20px;
   width: 1000px;
-  height: 150px;
+  height: 120px;
+  border-radius: 5px;
 
   background-color: #f2f2f2;
 `;
@@ -312,6 +326,14 @@ const Title4 = styled.div`
   margin-left: 20px;
 `;
 
+const Separator = styled.span`
+  margin: 0 8px; /* 왼쪽과 오른쪽 공백 추가 */
+  font-size: 16px; /* 적절한 글자 크기 설정 */
+  color: #333; /* 글자 색상 */
+  display: flex;
+  align-items: center; /* 세로 정렬 */
+`;
+
 const Select = styled.select`
   display: flex;
   justify-content: center;
@@ -319,35 +341,36 @@ const Select = styled.select`
   text-align: center;
   border-radius: 5px;
   position: relative;
-  // z-index: 10;
-  // margin-bottom: 10px;
-  height: 34px;
+  font-size: 12px;
+  height: 38px;
 `;
 
 const Option1 = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 30px;
-  margin-right: 30px;
-  width: 160px;
+  margin-right: 10px;
+  margin-bottom: 30px;
+  width: 120px;
 `;
 
 const Option2 = styled.div`
   position: relative; /* 부모 컨테이너를 상대적 위치로 설정 */
-  width: 400px;
+  width: 380px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   text-align: center;
   align-items: center;
-  margin-right: 30px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 `;
 
 const Option3 = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 50px;
-  width: 160px;
+  margin-bottom: 10px;
+  width: 130px;
 `;
 
 const FirstBody = styled.div`

@@ -126,10 +126,12 @@ function StoreItemRevenue() {
                   <TableHeaderCell>대분류</TableHeaderCell>
                   <TableHeaderCell>중분류</TableHeaderCell>
                   <TableHeaderCell>소분류</TableHeaderCell>
+
                   <TableHeaderCell>상품명</TableHeaderCell>
                   <TableHeaderCell>상품단가</TableHeaderCell>
                   <TableHeaderCell>상품수량</TableHeaderCell>
                   <TableHeaderCell>상품금액</TableHeaderCell>
+
                   <TableHeaderCell>소분류 총 수량</TableHeaderCell>
                   <TableHeaderCell>소분류 총 금액</TableHeaderCell>
                   <TableHeaderCell>중분류 총 수량</TableHeaderCell>
@@ -145,17 +147,11 @@ function StoreItemRevenue() {
                       <TableCell>{data.itemMajorCategoryName}</TableCell>
                       <TableCell>{data.itemMiddleCategoryName}</TableCell>
                       <TableCell>{data.itemSubCategoryName}</TableCell>
+
                       <TableCell>{data.itemName}</TableCell>
                       <TableCell>{data.itemStandard}</TableCell>
                       <TableCell>{data.orderCount}</TableCell>
                       <TableCell>{data.itemPrice}</TableCell>
-
-                      <TableCell>{data.subCategoryTotalQuantity}</TableCell>
-                      <TableCell>{data.subCategoryTotalAmount}</TableCell>
-
-                      <TableCell>{data.middleCategoryTotalAmount}</TableCell>
-                      <TableCell>{data.mainCategoryTotalQuantity}</TableCell>
-                      <TableCell>{data.mainCategoryTotalAmount}</TableCell>
                     </tr>
                   ))
                 ) : (
