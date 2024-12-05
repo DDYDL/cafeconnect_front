@@ -1,6 +1,6 @@
-import { Option, Select } from "@material-tailwind/react";
 import { useAtomValue } from "jotai/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Select, { components } from "react-select";
 import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms.js";
@@ -9,46 +9,31 @@ import { CustomButton, TempSaveButton } from "../styledcomponent/Button.style";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
+const Input = props => <components.Input {...props} isHidden={false} />;
 //!! 해당 페이지 접속 시, db에 MenuList요청하기
 const SalesWrite = () => {
-  const [storeCode, setStoreCode] = useState(null);
   const token = useAtomValue(tokenAtom);
   // menuList가 undefined일 경우 기본값으로 빈 배열을 설정
   const [menuList, setMenuList] = useState([]);
-  const [selMenu, setSelMenu] = useState({});
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
+  const initSaleItem = {
+    salesCount: 1,
+    salesStatus: 1,
+    menuCode: "",
+    menuName: "",
+    storeCode: 1,
+    salesAmount: 0,
+    salesDate: "",
+  };
+  const [saleItem, setSaleItem] = useState(initSaleItem);
   const [salesList, setSalesList] = useState([]);
   const [datePicker, setDatePicker] = useState({ startDate: null, endDate: null });
   const [date, setDate] = useState();
-  const initSaleItem = {
-    storeCode: 1,
-    salesDate: "",
-    menuName: "",
-    menuCode: "",
-    salesCount: 1,
-    salesStatus: 1,
-    salesAmount: 0,
-  };
-  const [saleItem, setSaleItem] = useState(initSaleItem);
+  const [isTemp, setIsTemp] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
-  // / fetchStoreCode를 useCallback으로 래핑
-  const fetchStoreCode = useCallback(async () => {
-    try {
-      if (!token) return; // 토큰 없으면 요청 생략
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
-      setStoreCode(storeCodeFromResponse);
-      console.log("StoreCode:", storeCodeFromResponse);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
-  }, [token]); // 의존성 배열에 token 추가
-
-  useEffect(() => {
-    fetchStoreCode();
-  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
+  const [value, setValue] = useState();
+  const [inputValue, setInputValue] = useState("");
+  const [options, setOptions] = useState([]);
 
   // 메뉴 데이터를 가져오는 useEffect
   useEffect(() => {
@@ -56,14 +41,15 @@ const SalesWrite = () => {
       axiosInToken(token)
         .get("menuList")
         .then(res => {
-          console.log("menuList" + res.data);
+          console.log(res.data);
+          setOptions(res.data.map(m => ({ label: m.menuName, value: m.menuCode })));
           setMenuList([...res.data]);
         })
         .catch(err => {
           console.log(err);
         });
     };
-    // if(token!=null && token!=='') fetchData();
+    //if(token!=null && token!=='') fetchData();
     fetchData();
   }, [token]);
 
@@ -74,136 +60,77 @@ const SalesWrite = () => {
 
   // 총합계 계산
   const calculateTotal = () => {
-    const total = rows.reduce((total, row) => {
-      const 매출합계 = parseFloat(row.매출합계) || 0;
-      return total + 매출합계;
+    const total = salesList.reduce((sum, s) => {
+      return +sum + +s.salesAmount;
     }, 0);
-    return total.toLocaleString();
+    return total.toLocaleString("ko-KR");
   };
 
-  // 매출 합계 수정
-  const handleSalesAmountChange = (index, value) => {
-    const updatedRows = [...rows];
-    updatedRows[index].매출합계 = value;
-    setRows(updatedRows);
-  };
-
-  const handleItemClick = item => {
-    setSelMenu(item); // 선택한 메뉴 정보를 selMenu에 업데이트
-    setSaleItem(prev => ({
-      ...prev,
-      menuCode: item.menuCode, // 선택된 메뉴의 코드
-      menuName: item.menuName, // 선택된 메뉴의 이름
-    })); // saleItem에도 선택된 메뉴 정보 반영
-    setIsDropdownOpen(false); // 드롭다운 닫기
-  };
-
-  const handleEnterKey = event => {
-    if (event.keyCode !== 13) return;
-
-    if (!selMenu.menuName) {
+  const addSaleItem = () => {
+    if (datePicker.startDate === null) {
+      alert("날짜를 선택하세요");
+      return;
+    }
+    if (value.label === undefined) {
       alert("메뉴를 선택하세요");
       return;
     }
-
     if (saleItem.salesCount === "" || saleItem.salesCount === 0) {
       alert("수량을 선택하세요");
       return;
     }
-
     if (saleItem.salesAmount === "" || saleItem.salesAmount === 0) {
       alert("매출금액을 선택하세요");
       return;
     }
-
-    // 첫 번째 항목을 rows에 추가
-    setRows(prevRows => [
-      ...prevRows,
-      {
-        순번: prevRows.length + 1,
-        상품명: saleItem.menuName,
-        수량: saleItem.salesCount,
-        매출합계: saleItem.salesAmount,
-      },
-    ]);
-    // 두 번째 항목을 위한 초기화
-    setSaleItem({
-      menuCode: "",
-      menuName: "",
-      salesCount: 1,
-      salesAmount: 0,
-    });
-
-    // 기존 salesList에 해당 menuCode와 menuName이 이미 있는지 확인하고, 있다면 해당 항목을 수정
-    setSalesList(prevSalesList => {
-      if (!saleItem.menuName || !saleItem.salesCount || !saleItem.salesAmount) {
-        console.warn("유효하지 않은 saleItem:", saleItem);
-        return prevSalesList; // saleItem이 유효하지 않으면 추가하지 않음
-      }
-
-      const updatedSalesList = prevSalesList.map(item =>
-        item.menuCode === saleItem.menuCode ? { ...item, ...saleItem } : item
-      );
-
-      if (!prevSalesList.some(item => item.menuCode === saleItem.menuCode)) {
-        updatedSalesList.push({ ...saleItem });
-      }
-      return updatedSalesList;
-    });
-
+    setSalesList([...salesList, { ...saleItem, menuCode: value.value, menuName: value.label }]);
     setSaleItem(initSaleItem);
-    setSelMenu({});
+    setValue({});
+    setInputValue("");
+    calculateTotal();
   };
 
-  useEffect(() => {
-    console.log("salesList updated", salesList);
-  }, [salesList]); // salesList가 업데이트될 때마다 로그 출력
+  const removeSaleItem = saleItem => {
+    setSalesList([...salesList.filter(s => s !== saleItem)]);
+  };
 
   const submit = flag => {
-    console.log("date", date); // 날짜 확인
-    console.log("salesList before send:", salesList); // 전송 전 salesList 확인
-    console.log("storeCode", storeCode);
-
-    // salesList의 각 항목에 대해 salesStatus를 flag로 설정
+    if (flag === 1 && isSaved) {
+      alert("등록된 매출은 임시저장할 수 없습니다");
+      return;
+    }
     const sendSalesList = salesList.map(s => {
       s.salesStatus = flag;
       s.salesDate = date;
-      s.storeCode = storeCode;
       return s;
     });
-
-    console.log("sendSalesList", sendSalesList); // 전송할 리스트 확인
-
-    // flag가 1이면 salesTemp 호출 (임시저장)
-    if (flag === 1) {
-      axiosInToken(token)
-        .post("/salesTemp", { salesList: sendSalesList })
-        .then(res => {
-          console.log(res);
-          // 기존 값 대신 서버 응답 데이터로 정확히 상태 설정
-          setSalesList(res.data);
-          alert("임시 저장 완료");
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
-    // flag가 2이면 salesWrite 호출 (저장)
-    else if (flag === 2) {
-      axiosInToken(token)
-        .post("/salesWrite", { salesList: sendSalesList })
-        .then(res => {
-          console.log(res.data);
-          alert("등록 완료");
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+    console.log(sendSalesList);
+    setSalesList([...sendSalesList]);
+    axiosInToken(token)
+      .post("salesWrite", {
+        salesDate: date,
+        storeCode: initSaleItem.storeCode,
+        salesList: sendSalesList,
+      })
+      .then(res => {
+        console.log(res.data);
+        setIsTemp(flag === 1);
+        if (flag === 1) {
+          alert(`${date}일 매출이 임시저장되었습니다`);
+        } else if (flag === 2) {
+          setIsSaved(true);
+          alert(`${date}일 매출이 등록되었습니다`);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        alert("매출 입력시 오류가 발생했습니다");
+      });
   };
 
   const changeDate = newDate => {
     setDatePicker(newDate);
+    if (newDate.startDate === null) return;
     const d = newDate.startDate;
     const year = d.getFullYear(); // 2023
     const month = (d.getMonth() + 1).toString().padStart(2, "0"); // 06
@@ -212,21 +139,38 @@ const SalesWrite = () => {
     console.log(dateString);
     setDate(dateString);
 
-    // salesDate는 dateString으로 설정하고 나머지 필드는 기본값으로 사용합니다.
+    setSalesList([]);
     axiosInToken(token)
-      .get("salesTemp", {
-        params: {
-          salesDate: dateString,
-          storeCode: storeCode, // storeCode 파라미터 전달
-        },
-      })
+      .post("salesTemp", { salesDate: dateString, storeCode: initSaleItem.storeCode })
       .then(res => {
         console.log(res);
-        setSalesList([...res.data]); // 임시저장된 데이터를 salesList에 설정
+        setSalesList([...res.data]);
+        if (res.data.length > 0 && res.data[0].salesStatus === 1) {
+          setIsTemp(true);
+        } else {
+          setIsTemp(false);
+        }
+
+        if (res.data.length > 0 && res.data[0].salesStatus === 2) {
+          setIsSaved(true);
+        } else {
+          setIsSaved(false);
+        }
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  const onInputChange = (inputValue, { action }) => {
+    if (action === "input-change") {
+      setInputValue(inputValue);
+    }
+  };
+  const onChange = option => {
+    console.log(option);
+    setValue(option);
+    setInputValue(option ? option.label : "");
   };
 
   return (
@@ -252,6 +196,7 @@ const SalesWrite = () => {
           <CustomButton style={{ borderRadius: "4px", marginTop: "3px" }} onClick={() => submit(2)}>
             등록
           </CustomButton>
+          <TempSave>{isTemp && "* 임시저장 *"}</TempSave>
         </HeadingDataAndSave>
 
         <HeadingSummary>
@@ -267,77 +212,91 @@ const SalesWrite = () => {
         <TableHeaderItem2>상품명</TableHeaderItem2>
         <TableHeaderItem3>수량</TableHeaderItem3>
         <TableHeaderItem4>매출 합계</TableHeaderItem4>
+        <TableHeaderItem5>삭제</TableHeaderItem5>
       </TableHeader>
 
       <CustomHorizontal width="basic" bg="black" />
+      <div className="App"></div>
+      {salesList.length > 0 && (
+        <>
+          {salesList.map((s, index) => (
+            <TableRow key={s.menuCode}>
+              <ProductSearchWrapper>
+                <OrderInput value={index + 1} readOnly />
+                <ProductSearchInput type="text" value={s.menuName} />
+                <QuantityInput
+                  defaultValue={s.salesCount}
+                  type="number"
+                  min={"1"}
+                  onChange={e => (s.salesCount = e.target.value)}
+                />
+                <TotalInput
+                  defaultValue={s.salesAmount}
+                  type="number"
+                  min={"0"}
+                  onChange={e => (s.salesAmount = e.target.value)}
+                />
+                <CustomButton
+                  style={{ width: "60px", borderRadius: "4px", marginLeft: "18px" }}
+                  onClick={() => removeSaleItem(s)}
+                >
+                  삭제
+                </CustomButton>
+              </ProductSearchWrapper>
+            </TableRow>
+          ))}
+        </>
+      )}
 
-      {[...salesList, saleItem].map((saleItem, index) => (
-        <TableRow key={index}>
-          {/* 순번 */}
-          <div className="w-10 text-center">{index + 1}</div>
-
-          {/* 상품명 */}
-          <div className="flex w-72 flex-col gap-6" style={{ width: "600px", paddingLeft: "40px" }}>
+      <TableRow>
+        <ProductSearchWrapper>
+          <OrderInput readOnly />
+          <div style={{ display: "inline-block", width: "530px" }}>
             <Select
-              name="상품명"
-              value={saleItem.menuName || ""}
-              onChange={value => {
-                // 선택된 메뉴 항목 찾기
-                const selectedMenu = menuList.find(menu => menu.menuName === value);
-
-                if (selectedMenu) {
-                  setSelMenu(selectedMenu); // 선택된 메뉴 저장
-                  setSaleItem(prev => ({
-                    ...prev,
-                    menuCode: selectedMenu.menuCode,
-                    menuName: selectedMenu.menuName,
-                  }));
-                  setIsDropdownOpen(false); // 드롭다운 닫기
-                }
-              }}
-              placeholder="상품명을 선택하세요"
-            >
-              {menuList && menuList.length > 0 ? (
-                menuList.map(menu => (
-                  <Option key={menu.menuCode} value={menu.menuName}>
-                    {menu.menuName}
-                  </Option>
-                ))
-              ) : (
-                <Option disabled>검색 결과 없음</Option>
+              options={options.filter(
+                o => salesList.filter(s => o.value === s.menuCode).length === 0
               )}
-            </Select>
+              isClearable={true}
+              value={value}
+              inputValue={inputValue}
+              onInputChange={onInputChange}
+              onChange={onChange}
+              controlShouldRenderValue={false}
+              components={{ Input }}
+            />
           </div>
 
-          {/* 수량, 합계 등 다른 입력 필드 */}
           <QuantityInput
             name="수량"
             type="number"
             placeholder="수량"
-            value={saleItem.salesCount || ""}
+            min={"1"}
+            value={saleItem.salesCount}
             onChange={e => setSaleItem({ ...saleItem, salesCount: e.target.value })}
           />
           <TotalInput
             name="매출합계"
             type="number"
-            value={saleItem.salesAmount || ""}
+            min={"0"}
+            value={saleItem.salesAmount}
             placeholder="매출 합계"
             onChange={e => setSaleItem({ ...saleItem, salesAmount: e.target.value })}
-            onKeyDown={event => handleEnterKey(event)}
+            onKeyDown={e => {
+              if (e.keyCode !== 13) return;
+              addSaleItem();
+            }}
           />
-        </TableRow>
-      ))}
+          <CustomButton
+            style={{ width: "60px", borderRadius: "4px", marginLeft: "18px" }}
+            onClick={addSaleItem}
+          >
+            추가
+          </CustomButton>
+        </ProductSearchWrapper>
+      </TableRow>
     </ContentListDiv>
   );
 };
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -388,34 +347,34 @@ const TableHeader = styled.div`
 const TableHeaderItem1 = styled.div`
   display: flex;
   justify-content: center;
-  text-align: left;
-  align-items: center;
-  margin-left: 50px; /* 순번의 좌측 여백 */
+  margin-left: 30px; /* 순번의 좌측 여백 */
 `;
 
 const TableHeaderItem2 = styled.div`
   display: flex;
   justify-content: center;
-  text-align: left;
-  align-items: center;
   flex-grow: 1; /* 상품명 부분의 공간 확장 */
 `;
 
 const TableHeaderItem3 = styled.div`
   display: flex;
   justify-content: center;
-  text-align: left;
-  align-items: center;
-  margin-right: 10px; /* 매출 합계와 간격 추가 */
+  //margin-right: 40px; /* 매출 합계와 간격 추가 */
 `;
 
 const TableHeaderItem4 = styled.div`
   display: flex;
   justify-content: center;
-  text-align: left;
-  align-items: center;
-  margin-right: 70px; /* 테이블 우측 여백 */
-  margin-left: 70px;
+  // margin-right: 10px; /* 매출 합계와 간격 추가 */
+  // margin-right: 70px; /* 테이블 우측 여백 */
+  margin-left: 95px;
+`;
+
+const TableHeaderItem5 = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-right: 30px; /* 테이블 우측 여백 */
+  margin-left: 100px;
 `;
 
 const TableRow = styled.div`
@@ -423,7 +382,6 @@ const TableRow = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-  padding-left: 42px;
   position: relative; /* 여기에 추가 */
 `;
 
@@ -439,6 +397,17 @@ const SelectData = styled.div`
   padding-left: 10px;
 `;
 
+const TempSave = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  width: 100px;
+  padding-left: 10px;
+  color: darkgray;
+  font-weight: bold;
+`;
+
 const SalesDate = styled.div`
   display: flex;
   width: 200px;
@@ -450,15 +419,15 @@ const SalesDateText = styled.div`
 `;
 
 const OrderInput = styled.input`
-  width: 50px;
-  height: 40px;
+  width: 30px;
+  height: 38px;
 
   justify-content: center;
   align-items: center;
   text-align: center;
   background-color: #f8f8f8;
 
-  padding-left: 13px;
+  padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 7px;
 
@@ -466,7 +435,7 @@ const OrderInput = styled.input`
   // border: 1px solid #ddd;
   border: none;
   border-radius: 5px;
-  margin-left: 30px;
+  margin-left: 20px;
   margin-right: 50px;
 `;
 
@@ -489,12 +458,12 @@ export const ProductSearchWrapper = styled.div`
 `;
 
 export const ProductSearchInput = styled.input`
-  width: 600px;
-  height: 40px;
+  width: 530px;
+  height: 38px;
 
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ddd;
+  border: 1px solid hsl(0, 0%, 80%);
   border-radius: 5px;
 
   &:focus {
@@ -531,32 +500,28 @@ export const NoResults = styled.div`
 `;
 
 const QuantityInput = styled.input`
-  width: 64px;
-  height: 40px
-  display: flex;
-  justify-content: left;
+  width: 80px;
+  height: 38px;
 
   font-size: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid hsl(0, 0%, 80%);
   border-radius: 5px;
-  // margin-left: 80px;
-  padding-top: 5px;
-  padding-bottom: 7px;
+  margin-left: 20px;
+
+  padding: 8px;
 `;
 
 const TotalInput = styled.input`
-  width: 140px;
-  height: 40px;
+  width: 150px;
+  height: 38px;
 
-  font-size: 14px;
-  border: 1px solid #ddd;
+  font-size: 12px;
+  border: 1px solid hsl(0, 0%, 80%);
   border-radius: 5px;
-  // margin-left: 20px;
+  margin-left: 20px;
   margin-right: 10px;
 
-  // padding-left: 10px;
-  padding-top: 5px;
-  padding-bottom: 7px;
+  padding: 8px;
 `;
 
 const ProductList = styled.div`
