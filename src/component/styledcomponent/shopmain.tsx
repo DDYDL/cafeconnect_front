@@ -128,9 +128,9 @@ export const ItemStorageLabelP = styled.p`
 `
     ;
 
-export const ItemStorageType = styled.span<{ storageWay?: string }>`
-     ${({ storageWay }) => 
-        storageWay === "냉동" &&
+export const ItemStorageType = styled.span<{ $storageway?: string }>`
+     ${({ $storageway }) => 
+        $storageway === "냉동" &&
     `
     background: #45b0da;
     color: #fff;
@@ -141,7 +141,7 @@ export const ItemStorageType = styled.span<{ storageWay?: string }>`
     line-height: 14px;
   `
   ||
-  storageWay != "냉동" &&
+  $storageway != "냉동" &&
     `
     background: #d26717;
     color: #fff;
