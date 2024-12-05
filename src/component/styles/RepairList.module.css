@@ -670,12 +670,15 @@
 .RepairList .cell {
   height: 60px;
   position: relative;
-  width: 224px;
+  width: 124px;
+  display: flex;
+  justify-content: center;
+  align-items: center;    
 }
 
 .RepairList .text-12 {
   height: 21px;
-  left: 82px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -685,12 +688,15 @@
 }
 
 .RepairList .cell-1 {
-  width: 229px;
+  width: 209px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-13 {
   height: 21px;
-  left: 85px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -700,12 +706,15 @@
 }
 
 .RepairList .cell-2 {
-  width: 143px;
+  width: 183px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-14 {
   height: 21px;
-  left: 40px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -715,12 +724,15 @@
 }
 
 .RepairList .cell-3 {
-  width: 130px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-15 {
   height: 21px;
-  left: 35px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -730,12 +742,15 @@
 }
 
 .RepairList .cell-4 {
-  width: 107px;
+  width: 127px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-16 {
   height: 21px;
-  left: 31px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -745,12 +760,15 @@
 }
 
 .RepairList .cell-5 {
-  width: 101px;
+  width: 141px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-17 {
   height: 21px;
-  left: 19px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -775,12 +793,15 @@
 .RepairList .data {
   height: 110px;
   position: relative;
-  width: 224px;
+  width: 124px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .a12345 {
   height: 21px;
-  left: 87px;
+  
   letter-spacing: -1.00px;
   line-height: 21px;
   position: absolute;
@@ -790,35 +811,38 @@
 }
 
 .RepairList .data-1 {
-  width: 229px;
+  width: 209px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+  
 }
 
 .RepairList .frame-89 {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  left: 74px;
-  position: relative;
-  top: 45px;
-  width: 80px;
+  
+  width: 160px;
 }
 
 .RepairList .text {
-  align-self: stretch;
+  
   letter-spacing: 0;
   line-height: 21px;
   margin-top: -1.00px;
+  width: 160px;
   position: relative;
+  text-align: center;
 }
 
 .RepairList .data-2 {
-  width: 143px;
+  width: 183px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .date {
   height: 21px;
-  left: 30px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -828,12 +852,15 @@
 }
 
 .RepairList .data-3 {
-  width: 130px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-1 {
   height: 20px;
-  left: 22px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -844,12 +871,15 @@
 }
 
 .RepairList .data-4 {
-  width: 107px;
+  width: 127px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .strong-8900 {
   height: 21px;
-  left: 31px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -859,12 +889,15 @@
 }
 
 .RepairList .data-5 {
-  width: 101px;
+  width: 141px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .RepairList .text-2 {
   height: 21px;
-  left: 28px;
+  
   letter-spacing: 0;
   line-height: 21px;
   position: absolute;
@@ -999,6 +1032,7 @@
   min-width: 1920px;
   padding: 13px 0;
   width: auto;
+  margin-top: 50px;
 }
 
 .RepairList .footer-contents {

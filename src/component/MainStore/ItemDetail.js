@@ -77,7 +77,7 @@ function ItemDetail() {
             </div>
             <div className={styles["background"]}>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
-                <div className={styles["image"]}></div>
+                
                 <div className={styles["link"]}>
                   <div
                     className={`${styles["overlap-group"]} ${styles["themewagongithubiosemanticheading-6"]}`}
@@ -253,7 +253,7 @@ function ItemDetail() {
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                     >
-                      규격(cm)
+                      가로(cm)
                     </div>
                     <div
                       className={`${styles["data-4"]} ${styles["data-5"]}`}
@@ -268,11 +268,48 @@ function ItemDetail() {
                         item.itemStandard.split("X")[0] !== undefined
                           ? item.itemStandard.split("X")[0]
                           : ""}
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles["table-body-item"]}>
+                    <div
+                      className={`${styles["data"]} ${styles["valign-text-middle"]}`}
+                    >
+                      세로(cm)
+                    </div>
+                    <div
+                      className={`${styles["data-4"]} ${styles["data-5"]}`}
+                      style={{ width: "250px" }}
+                    >
+                      <div
+                        className={`${styles["text-16"]} ${styles["valign-text-middle"]}`}
+                        style={{ width: "250px" }}
+                      >
+                        
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[1] !== "" &&
                         item.itemStandard.split("X")[1] !== undefined
                           ? " X " + item.itemStandard.split("X")[1]
                           : ""}
+                        
+                      </div>
+                    </div>
+                  </div><div className={styles["table-body-item"]}>
+                    <div
+                      className={`${styles["data"]} ${styles["valign-text-middle"]}`}
+                    >
+                      높이(cm)
+                    </div>
+                    <div
+                      className={`${styles["data-4"]} ${styles["data-5"]}`}
+                      style={{ width: "250px" }}
+                    >
+                      <div
+                        className={`${styles["text-16"]} ${styles["valign-text-middle"]}`}
+                        style={{ width: "250px" }}
+                      >
+                        
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[2] !== "" &&
                         item.itemStandard.split("X")[2] !== undefined
@@ -281,6 +318,8 @@ function ItemDetail() {
                       </div>
                     </div>
                   </div>
+                  
+                  
                   <div className={styles["table-body-item"]}>
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}

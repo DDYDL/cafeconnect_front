@@ -75,7 +75,7 @@ function MenuDetail() {
             </div>
             <div className={styles["background"]}>
               <div className={styles["flex-row"]}>
-                <div className={styles["image"]}></div>
+                
                 <div className={styles["link"]}>
                   <div
                     className={`${styles["overlap-group"]} ${styles["themewagongithubiosemanticheading-6"]}`}

@@ -43,7 +43,7 @@ function MenuList() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    fetchKeywordData(value, 0);
+    
   };
 
   const handleChangeCategory = (value) => {
@@ -285,7 +285,7 @@ function MenuList() {
                 </s.ButtonInnerDiv>
                 <div style={{ marginLeft: "508px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))}/>}
                     label="매장명 검색"
                     onChange={handleChangeKeyword}
                   />
