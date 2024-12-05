@@ -18,8 +18,7 @@ import { format } from 'date-fns';
 
 const StockManage = ({major, middle, sub})=>{
     const [add, setAdd] = useState(false);
-    const [info, setInfo] = useState(false);
-    const [stockList, setStockList] = useState([]);
+    const [stockList, setStockList] = useState({});
     const [majorCategory, setMajorCategory] = useState([]);
     const [middleCategory, setMiddleCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
@@ -28,6 +27,9 @@ const StockManage = ({major, middle, sub})=>{
     const [itemCategoryStr, setItemCategoryStr] = useState("");
     const [itemCategoryNum, setItemCategoryNum] = useState("");
     const [stock, setStock] = useState({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
+    const [upStock, setUpStock] = useState({storeCode:0, upitemCode:0, upstockExpirationDate:'', upstockReceiptDate:'', upstockCount:0});
+
+    const [info, setInfo] = useState([]);
 
     const [selectedItem, setSelectedItem] = useState(null); // value
     const [itemNameList, setItemNameList] = useState([]); // 전체 아이템 리스트
@@ -62,6 +64,7 @@ const StockManage = ({major, middle, sub})=>{
         setMember(member);
         getStockList();
         getItem();
+        setInfo(Array(itemList.length).fill(false));
     }, [])
 
     // 검색어 자동완성
@@ -85,7 +88,7 @@ const StockManage = ({major, middle, sub})=>{
         axios.get(`${url}/selectStockByStoreCode/${member.storeCode}`)
         .then(res=>{
             console.log(res.data);
-            setStockList([...res.data]);
+            setStockList(res.data);
         })
         .catch(err=>{
             console.log(err);
@@ -98,7 +101,11 @@ const StockManage = ({major, middle, sub})=>{
 
     const edit = (e)=>{
         setStock({...stock, [e.target.name]:e.target.value});
-    }    
+    }
+    
+    const updateEdit = (stockCount)=>{
+        setUpStock({...upStock, ['upstockCount']:stockCount});
+    }   
 
     const addStock = (e)=>{
         console.log(stock);
@@ -130,25 +137,23 @@ const StockManage = ({major, middle, sub})=>{
     }
 
     const updateStock = (e, stockNum)=>{
+        e.preventDefault();
         const formData = new FormData();
 
         formData.append("stockNum", stockNum);
         formData.append("storeCode", member.storeCode);
         formData.append("itemCode",  stock.itemCode);
         // 유통기한, 입고날짜, 수량만 입력
-        formData.append("stockExpirationDate", stock.stockExpirationDate);
-        formData.append("stockReceiptDate", stock.stockReceiptDate);
-        formData.append("stockCount", stock.stockCount);
-        e.preventDefault();
+        formData.append("stockExpirationDate", upStock.upstockExpirationDate);
+        formData.append("stockReceiptDate", upStock.upstockReceiptDate);
+        formData.append("stockCount", upStock.upstockCount);
         
         axios.post(`${url}/updateStock`, formData)
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("재고가 수정 되었습니다.");
-                // stockList에 추가
-                setStockList([...stockList, formData]);
-            }
+            console.log(res.data);
+            alert("재고가 수정 되었습니다.");
+            // stockList에 추가
+            setStockList(res.data);
         })
         .catch(err=>{
             console.log(err);
@@ -157,22 +162,17 @@ const StockManage = ({major, middle, sub})=>{
     }
 
     const deleteStock = (stockNum)=>{
-        axios.get(`${url}/deleteStock/${stockNum}`)
+        console.log(stockNum);
+        axios.get(`${url}/deleteStock/${stockNum}`) 
         .then(res=>{
-            if(res.data === "true") {
-                console.log(res.data);
-                alert("재고가 삭제 되었습니다.");
-                setStockList(stockList.filter(item=>item.stockNum!==stockNum));
-            }
+            console.log(res.data);
+            alert("재고가 삭제 되었습니다.");
+            setStockList(res.data);
         })
         .catch(err=>{
             console.log(err);
             alert("잠시후 다시 시도해주세요.");
         })
-    }
-
-    const stockInfo = ()=>{
-        setInfo(!info);
     }
 
     const searchCategory = (e, expirationDate, itemCateStr, itemCateNum)=>{
@@ -201,7 +201,7 @@ const StockManage = ({major, middle, sub})=>{
         axios.post(`${url}/selectStockByCategory`, formData)
         .then(res=>{
             console.log(res.data);
-            setStockList([...res.data]);
+            setStockList(res.data);
         })
         .catch(err=>{
             console.log(err);
@@ -213,7 +213,7 @@ const StockManage = ({major, middle, sub})=>{
         axios.get(`${url}/selectStockByKeyword/${member.storeCode}/${keyword}`)
         .then(res=>{
             console.log(res.data);
-            setStockList([...res.data]);
+            setStockList(res.data);
         })
         .catch(err=>{
             console.log(err);
@@ -288,6 +288,13 @@ const StockManage = ({major, middle, sub})=>{
         }));
     };
 
+    const stockInfo = (index)=>{
+        // 배열 복사 후 해당 값 바꾸기
+        const newArray = [...info];
+        newArray[index] = !info[index];
+        setInfo(newArray);
+    }
+
     return (
         <>
             <s.ContentListDiv>
@@ -327,9 +334,9 @@ const StockManage = ({major, middle, sub})=>{
                 </s.CategoryButtonGroupDiv>
 
                 <s.TableList>
-                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='160px'>카테고리</s.TableTextTh><s.TableTextTh width='100px'>규격</s.TableTextTh>
-                        <s.TableTextTh width='100px'>보관상태</s.TableTextTh><s.TableTextTh width='100px'>유통기한</s.TableTextTh><s.TableTextTh width='100px'>입고날짜</s.TableTextTh>
-                        <s.TableTextTh width='80px'>수량</s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh></s.TableListThead>
+                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='120px'>카테고리</s.TableTextTh><s.TableTextTh width='80px'>규격</s.TableTextTh>
+                        <s.TableTextTh width='90px'>보관상태</s.TableTextTh><s.TableTextTh width='140px'>유통기한</s.TableTextTh><s.TableTextTh width='140px'>입고날짜</s.TableTextTh>
+                        <s.TableTextTh width='60px'>수량</s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh></s.TableListThead>
                     <tbody>
                         <s.TableTextTr onClick={openStock}><PlusIcon style={{marginLeft:'520px', marginTop:'11px'}} className="h-6 w-6"/></s.TableTextTr>
                         {add && <s.TableTextTr>
@@ -343,27 +350,8 @@ const StockManage = ({major, middle, sub})=>{
                                     onChange={selectItem}
                                     />
                             </div>
-                            {/* <s.InputStyle width='250px' name='itemName' value={itemNameFilter} onChange={(e)=>{setItemNameFilter(e.target.value)}} autocomplete='off' required/>
-                            {itmeListFilter.length > 0 && itemNameFilter && ( //키워드가 존재하고,해당키워드에 맞는 이름이 있을때만 보여주기 
-                                <s.AutoSearchContainer top='400px' width='250px' left='505px'>
-                                <s.AutoSearchWrap>
-                                    {itmeListFilter.map((item, idx) => (
-                                    <s.AutoSearchData
-                                        key={item.itemName}
-                                        onClick={() => {
-                                            setItemNameFilter(item.itemName);
-                                            setItem(item);
-                                        }}
-                                    >
-                                    <a onClick={()=>clickKeyword(item.itemName)}>{item.itemName}</a>
-                                    </s.AutoSearchData>
-                                    ))}
-                                    </s.AutoSearchWrap>
-                                </s.AutoSearchContainer>
-                            )} */}
-                            {/* Object.keys(item).length===0 */}
                             </s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='150px' value={item.itemCode==='' ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='120px' value={item.itemCode==='' ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
                             <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : `${item.itemCapacity}*${item.itemUnitQuantity}/${item.itemUnit}`} readOnly/></s.TableTextTd>
                             <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : item.itemStorage} readOnly/></s.TableTextTd>
                             <s.TableTextTd>
@@ -408,31 +396,71 @@ const StockManage = ({major, middle, sub})=>{
                             </s.TableTextTr>}
 
                         {
-                            stockList.map(stock=>(
-                                <>
-                                    <s.TableTextTr onClick={stockInfo}>
-                                        <s.TableTextTd width='250px'><s.ImageSize src={`${url}/image/${stock.itemFileNum}`} /><s.SpanSizeDiv><s.SpanSize>{stock.itemCode}</s.SpanSize><br/><s.SpanSize>{stock.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
-                                        <s.TableTextTd width='150px'>{stock.itemMajorCategoryName}/{stock.itemMiddleCategoryName}/{stock.itemSubCategoryName}</s.TableTextTd>
-                                        <s.TableTextTd width='100px'>{stock.itemCapacity}*{stock.itemUnitQuantity}/{stock.itemUnit}</s.TableTextTd>
-                                        <s.TableTextTd width='100px'>{stock.itemStorage}</s.TableTextTd>
+                            Object.entries(stockList).map((stock, index)=>(
+                                    <>
+                                    <s.TableTextTr key={index} onClick={()=>stockInfo(index)}>
+                                        <s.TableTextTd width='250px'><s.ImageSize src={`${url}/image/${stock[1][0].itemFileNum}`}/><s.SpanSizeDiv><s.SpanSize>{stock[1][0].itemCode}</s.SpanSize><br/><s.SpanSize>{stock[1][0].itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
+                                        <s.TableTextTd width='150px'>{stock[1][0].itemMajorCategoryName}/{stock[1][0].itemMiddleCategoryName}/{stock[1][0].itemSubCategoryName}</s.TableTextTd>
+                                        <s.TableTextTd width='100px'>{stock[1][0].itemCapacity}*{stock[1][0].itemUnitQuantity}/{stock[1][0].itemUnit}</s.TableTextTd>
+                                        <s.TableTextTd width='100px'>{stock[1][0].itemStorage}</s.TableTextTd>
                                         <s.TableTextTd width='80px'>-</s.TableTextTd>
                                         <s.TableTextTd width='80px'>-</s.TableTextTd>
-                                        <s.TableTextTd width='80px'>{stock.itemAllCount}</s.TableTextTd>
+                                        <s.TableTextTd width='80px'>{stock[1][0].itemAllCount}</s.TableTextTd>
                                     </s.TableTextTr>
-                                    {info && 
-                                        stock.stockInnerList.map(stockInner=>(
-                                        <s.TableTextTr height='45px' bgColor='rgba(234, 234, 234, 1)'>
-                                            <s.TableTextTd width='600px'><s.SpanSize>{stock.itemCode}</s.SpanSize><br /></s.TableTextTd>
-                                            <s.TableTextTd width='80px'>{stock.stockExpirationDate}</s.TableTextTd>
-                                            <s.TableTextTd width='80px'>{stock.stockReceiptDate}</s.TableTextTd>
-                                            <s.TableTextTd width='80px'>{stock.stockCount}</s.TableTextTd>
-                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={updateStock(stockInner.stockNum)}>저장</Link></s.ButtonStyle></s.TableTextTd>
-                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
+
+                                    {info[index] &&
+                                    stock[1].map(stockInner=>(
+                                        <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(234, 234, 234, 1)' style={{borderBottom:'1px solid rgba(154, 154, 154, 1)'}}>
+                                            <s.TableTextTd width='600px'>{stockInner.stockNum}</s.TableTextTd>
+                                            <s.TableTextTd width='80px'></s.TableTextTd>
+                                            <s.TableTextTd width='80px'></s.TableTextTd>
+                                            <s.TableTextTd width='80px'></s.TableTextTd>
+                                            <s.TableTextTd width='150px'>
+                                            <s.DatePickerWrap>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                                                <DatePicker
+                                                    value={stockInner.stockExpirationDate}
+                                                    showDaysOutsideCurrentMonth
+                                                    onChange={(date) => setUpStock({ ...upStock, ['upstockExpirationDate']: format(date, 'yyyy-MM-dd') })}
+                                                    className="CustomPicker"
+                                                    format='yyyy-MM-dd'
+                                                />
+                                                </LocalizationProvider>
+                                            </s.DatePickerWrap>
+                                            </s.TableTextTd>
+                                            <s.TableTextTd width='150px'>
+                                            <s.DatePickerWrap>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                                                <DatePicker
+                                                    value={stockInner.stockReceiptDate}
+                                                    showDaysOutsideCurrentMonth
+                                                    onChange={(date) => setUpStock({ ...upStock, ['upstockReceiptDate']: format(date, 'yyyy-MM-dd') })}
+                                                    className="CustomPicker"
+                                                    format='yyyy-MM-dd'
+                                                />
+                                                </LocalizationProvider>
+                                            </s.DatePickerWrap>
+                                            </s.TableTextTd>
+                                            <s.TableTextTd width='50px'>
+                                            <c.QuantityControl>
+                                                <c.QuantityInput
+                                                type="number"
+                                                min="1"
+                                                max="999"
+                                                name='upstockCount' 
+                                                value={stockInner.stockCount}
+                                                onChange={(e)=>setUpStock({...upStock, ['upstockCount']:e.value})} autocomplete='off' required
+                                                />
+                                            </c.QuantityControl>
+                                            </s.TableTextTd>
+                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={(e)=>updateStock(e, stockInner.stockNum)}>저장</Link></s.ButtonStyle></s.TableTextTd>
+                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={()=>deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
                                         </s.TableTextTr>
                                     ))
-                                    }
-                                </>
-                            ))
+                                }
+                                    </>
+                                )
+                            )
                         }
                     </tbody>
                 </s.TableList>
