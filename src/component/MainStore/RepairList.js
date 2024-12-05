@@ -58,7 +58,7 @@ function RepairListCopy() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    fetchKeywordData(value, 0);
+    
   };
 
   const handleSelectMajorCategory = (value) => {
@@ -217,6 +217,7 @@ function RepairListCopy() {
       const response = await axios.get(
         `http://localhost:8080/repairListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&pageNum=${pageNum}&pageSize=10`
       );
+      console.log(response.data)
 
       setCurrentPage(response.data.pageable.pageNumber);
 
@@ -354,7 +355,7 @@ function RepairListCopy() {
 
                 <div style={{ marginLeft: "307px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))} />}
                     label="매장명 검색"
                     onChange={handleChangeKeyword}
                   />
@@ -368,7 +369,7 @@ function RepairListCopy() {
                       <div
                         className={`${styles["text-12"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-shark-16px"]}`}
                       >
-                        수리코드
+                        수리번호
                       </div>
                     </div>
                     <div className={`${styles["cell-1"]} ${styles["cell-6"]}`}>

@@ -44,37 +44,25 @@ function WishItem() {
       })
   }
 
-
-  // 카테고리 선택 한 데이터 요청 
+  // 카테고리 선택 안한 초기 데이터 요청 
   const submit = () => {
 
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
 
-    //가장 마지막 선택 값만 보낼 수 있도록 함 
-    if (selectedCategory.sub) {
-      formData.append("subNum", selectedCategory.sub);
-    } else if (selectedCategory.middle) {
-      formData.append("middleNum", selectedCategory.middle);
-    } else if (selectedCategory.major) {
-      formData.append("majorNum", selectedCategory.major);
-    }
-
     axiosInToken(token).post('wishItem', formData)
       .then(res => {
-        setWishItems([...res.data]);
-
+        setWishItems(res.data||[]);
       })
       .catch(err => {
         console.log(err);
       })
-
   }
 
   // 선택된 대분류에 해당하는 중분류 리턴함수
   const getMiddleCategories = () => {
     const majorCategory = allCategories.find(
-      category => category.itemCategoryNum.toString() === selectedCategory.major
+      category => category.itemCategoryNum === selectedCategory.major
     );
 
     return majorCategory ? majorCategory.midCategories : []; //없으면 빈배열
@@ -84,17 +72,30 @@ function WishItem() {
   const getSubCategories = () => {
     const middleCategories = getMiddleCategories();
     const middleCategory = middleCategories.find(
-      category => category.itemCategoryNum.toString() === selectedCategory.middle
+      category => category.itemCategoryNum === selectedCategory.middle
     );
-    return middleCategory ? middleCategory.subCategories : []; // 없으면 빈배열
+    return middleCategory ? middleCategory.subCategories : [] ; // 없으면 빈배열
   };
 
-  // 옵션 변경 
+  // 대,중,소분류 옵션 변경 과 동시에 조회 
   const handleCategoryChange = (level, value) => {
 
+    //전체 옵션 선택
+    if (!value) { 
+      setSelectedCategory({ major: '', middle: '', sub: '' }); // 나머지 분류 초기화 
+      const formData = new FormData();
+      formData.append("storeCode", store.storeCode);
+      axiosInToken(token).post('wishItem', formData)
+        .then(res => setWishItems([...res.data]));
+      return;
+    }
+    const formData = new FormData();
+    formData.append("storeCode", store.storeCode);
+    formData.append(level === 'major' ? 'majorNum' : level === 'middle' ? 'middleNum' : 'subNum', value);
+    
+    // 하위 카테고리 초기화 시키기 
     setSelectedCategory(prev => {
       const newCategory = { ...prev, [level]: value };
-      // 상위 카테고리가 변경되면 하위 카테고리 초기화
       if (level === 'major') {
         newCategory.middle = '';
         newCategory.sub = '';
@@ -103,9 +104,10 @@ function WishItem() {
       }
       return newCategory;
     });
-
-    // 카테고리 변경 시 자동으로 검색 실행
-    //submit();
+  
+    axiosInToken(token).post('wishItem', formData)
+      .then(res => setWishItems([...res.data])) // 데이터 받아와서 새로운 배열생성 
+      .catch(err => console.log(err));
   };
 
   //전체 선택 체크 제어하기 위한 함수 
@@ -184,8 +186,8 @@ function WishItem() {
                 onChange={(value) => handleCategoryChange('major', value)}
                 className="bg-white"
               >
-                {allCategories.map((category) => (
-                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum.toString()}>
+                {[{itemCategoryNum:'',itemCategoryName:'전체'},...allCategories].map((category) => (
+                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum}>
                     {category.itemCategoryName}
                   </Option>
                 ))}
@@ -201,7 +203,7 @@ function WishItem() {
                 className="bg-white"
               >
                 {getMiddleCategories().map((category) => (
-                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum.toString()}>
+                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum}>
                     {category.itemCategoryName}
                   </Option>
                 ))}
@@ -216,20 +218,13 @@ function WishItem() {
                 disabled={!selectedCategory.middle}
                 className="bg-white"
               >
-                {getSubCategories().map((category) => (
-                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum.toString()}>
+                {getSubCategories()?.map((category) => (
+                  <Option key={category.itemCategoryNum} value={category.itemCategoryNum}>
                     {category.itemCategoryName}
                   </Option>
                 ))}
               </Select>
             </div>
-            <StyledButton
-              onClick={submit}
-              size="md"
-              theme="brown"
-            >
-              검색
-            </StyledButton>
 
           </w.FilterWrapper>
           <w.CountWrapper>
@@ -259,7 +254,7 @@ function WishItem() {
           </w.WishtemDeleteWrapper>
 
           <w.ItemListUl>
-            {wishItems.map((item) => (
+            {wishItems?.map((item) => (
               <w.ItemListLi key={item.wishItemNum}>
                 <w.ItemListChekcWrap>
                   {/* 개별 체크박스 */}
@@ -277,7 +272,7 @@ function WishItem() {
                   <w.ItemPrice>{item.itemPrice.toLocaleString()}원</w.ItemPrice>
                   {item.itemStorage && (
                     <w.ItemStorageLabelP>
-                      <w.ItemStorageType storageWay="{item.itemStorage}">
+                      <w.ItemStorageType $storageway="{item.itemStorage}">
                         {item.itemStorage}
                       </w.ItemStorageType>
                     </w.ItemStorageLabelP>

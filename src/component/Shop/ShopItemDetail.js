@@ -112,6 +112,8 @@ const ShopItemDetail = () => {
                 </d.PdtDetailItemInfoDl>
               </d.PdtDetailItemInfoGroup>
               <d.PdtDetailItemOtherGroup>
+              {store.roles==='ROLE_STORE' &&
+                <>
                 <d.QuantityControlWrapper>
                   <d.QuantityButton onClick={handleDecrement}>
                     -
@@ -121,14 +123,15 @@ const ShopItemDetail = () => {
                     +
                   </d.QuantityButton>
                 </d.QuantityControlWrapper>
+              
                 <d.PriceWapper>
                   <span>합계</span>
                   <d.TotalPrice>{totalPrice?.toLocaleString()}원</d.TotalPrice>
                 </d.PriceWapper>
-                {store.roles==='ROLE_STORE' &&
+                
                 <d.ButtonWrapper>
                   <d.WishlistButton onClick={toggleWishlist}>
-                    <d.WishlistIcon isWished={isWished}>
+                    <d.WishlistIcon $iswished={isWished}>
                       {isWished ? <SolidHeartIcon /> : <OutlineHeartIcon />}
                     </d.WishlistIcon>
                   </d.WishlistButton>
@@ -136,6 +139,7 @@ const ShopItemDetail = () => {
                     장바구니
                   </StyledButton>
                 </d.ButtonWrapper>
+                </>
                 }
               </d.PdtDetailItemOtherGroup>
             </d.PdtDetailRight>
@@ -146,6 +150,7 @@ const ShopItemDetail = () => {
             <d.DividerLine />
           </d.PdtDetailBottom>
           <d.PdtExtraInfoTable>
+            <tbody>
             <tr>
               <d.PdtExtraInfoTableTh>카테고리</d.PdtExtraInfoTableTh>
               <d.PdtExtraInfoTableTd>
@@ -156,8 +161,14 @@ const ShopItemDetail = () => {
               <d.PdtExtraInfoTableTh>원산지</d.PdtExtraInfoTableTh>
               <d.PdtExtraInfoTableTd>{item.itemCountryOrigin}</d.PdtExtraInfoTableTd>
             </tr>
+            </tbody>
           </d.PdtExtraInfoTable>
         </d.ProductDetail>
+        <div className="flex justify-center gap-4 mt-10 mb-10">
+            <StyledButton size="md" theme="white" onClick={() => navigate(-1)}>
+              이전
+            </StyledButton>
+          </div>
       </CommonContainer>
     </CommonWrapper>
   );

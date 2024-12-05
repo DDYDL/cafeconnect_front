@@ -134,10 +134,10 @@ export const ItemStorageLabelP = styled.p`
     overflow: hidden;
     margin: 0;
 `;
-
-export const ItemStorageType = styled.span<{ storageWay?: string }>`
-${({ storageWay }) =>
-    storageWay === "냉동" &&
+// porps는 소문자로!!!
+export const ItemStorageType = styled.span<{ $storageway?: string }>`
+${({ $storageway }) =>
+    $storageway === "냉동" &&
     `
     background: #45b0da;
     color: #fff;
@@ -146,7 +146,7 @@ ${({ storageWay }) =>
     line-height: 14px;
     border-radius: 2px;
   `||
-  storageWay != "냉동" &&
+  $storageway != "냉동" &&
     `
     background: #d26717;
     color: #fff;

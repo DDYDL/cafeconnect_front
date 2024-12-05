@@ -13,7 +13,7 @@ const ICON_SIZES = {
 interface StyledButtonProps {
   size?: keyof typeof SIZES;
   theme?: keyof typeof THEMES;
-  hasIcon?: boolean;
+  $hasicon?: boolean;
 }
 
 const SIZES = {
@@ -116,8 +116,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   ${props => THEMES[props.theme || 'white'](props)}
   
  /* 아이콘만 있는 경우 너비 설정 기본은 md이 됨 */
- ${({ hasIcon, children, size = 'md' }) =>
-    hasIcon && !children && `
+ ${({ $hasicon, children, size = 'md' }) =>
+    $hasicon && !children && `
       padding: 0;
       width: ${ICON_SIZES[size] + 10}px;
   `}

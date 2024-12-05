@@ -1,16 +1,20 @@
-import { CommonContainer, CommonWrapper, ContainerTitleArea } from "../styledcomponent/common.tsx";
+import {
+  CommonWrapper,
+  CommonContainer,
+  ContainerTitleArea,
+} from "../styledcomponent/common.tsx";
 
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale/ko";
-import { useAtomValue } from "jotai/react";
-import { useEffect, useState } from "react";
-import { memberAtom, tokenAtom } from "../../atoms";
-import { axiosInToken } from "../../config.js";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
+import { useState, useEffect} from "react";
+import { axiosInToken } from '../../config.js';
+import { useAtomValue} from 'jotai/react';
+import { tokenAtom, memberAtom } from '../../atoms';
+import {ko} from 'date-fns/locale/ko';
+import {format} from'date-fns';
 
 function ExpenseListByItems() {
   const today = new Date();
@@ -22,32 +26,32 @@ function ExpenseListByItems() {
   const store = useAtomValue(memberAtom);
   const token = useAtomValue(tokenAtom);
 
+
   const [orderItemSummary, setOrderItemSummary] = useState([]);
   const [summaryByMajor, setSummaryByMajor] = useState([]);
   const [summaryByMiddle, setSummaryByMiddle] = useState([]);
   const [summaryBySub, setSummaryBySub] = useState([]);
 
   //yyyy-MM-dd형식으로 바꾸어야함!!
-  const formatDateForServer = dateString => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate()
-    ).padStart(2, "0")}`;
-  };
+  // const formatDateForServer = (dateString) => {
+  //   const date = new Date(dateString);
+  //   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  // };
+
 
   useEffect(() => {
     // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
-    if (token != null && token !== "") submit(startDate, endDate);
-  }, [token, store.storeCode]);
+    if (token != null && token !== '') 
+      submit(startDate, endDate);
+  }, [token,store.storeCode])
 
   const submit = () => {
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
-    formData.append("startDate", format(startDate, "yyyy-MM-dd")); // String으로 바꿔서 보내기
-    formData.append("endDate", format(endDate, "yyyy-MM-dd"));
+    formData.append("startDate", format(startDate,'yyyy-MM-dd'));  // String으로 바꿔서 보내기 
+    formData.append("endDate", format(endDate,'yyyy-MM-dd'));
 
-    axiosInToken(token)
-      .post("expenseList", formData)
+    axiosInToken(token).post('expenseList', formData)
       .then(res => {
         console.log(res.data);
 
@@ -58,8 +62,10 @@ function ExpenseListByItems() {
       })
       .catch(err => {
         console.log(err);
-      });
-  };
+        
+      })
+
+  }
 
   //console.log(summaryByMajor);
   //console.log(orderItemSummary);
@@ -74,40 +80,43 @@ function ExpenseListByItems() {
         </tr>
       );
     }
-
-    //데이터 반복 시작, 주문 아이템을 기준으로 반복시킴
+    
+    //데이터 반복 시작, 주문 아이템을 기준으로 반복시킴 
     return orderItemSummary.map((item, index) => {
-      // 이전 행과 비교하여 조건 판단 첫번째 항목이거나, 변경된 경우 true , 그대로 유지중이면 false반환
+      // 이전 행과 비교하여 조건 판단 첫번째 항목이거나, 변경된 경우 true , 그대로 유지중이면 false반환 
       const showMajor =
-        index === 0 || orderItemSummary[index - 1].majorCategoryNum !== item.majorCategoryNum;
+        index === 0 ||
+        orderItemSummary[index - 1].majorCategoryNum !== item.majorCategoryNum;
       const showMiddle =
-        index === 0 || orderItemSummary[index - 1].middleCategoryNum !== item.middleCategoryNum;
+        index === 0 ||
+        orderItemSummary[index - 1].middleCategoryNum !== item.middleCategoryNum;
       const showSub =
-        index === 0 || orderItemSummary[index - 1].subCategoryNum !== item.subCategoryNum;
+        index === 0 ||
+        orderItemSummary[index - 1].subCategoryNum !== item.subCategoryNum;
 
-      // 각 카테고리의 통계 데이터 찾기, 아이템의 고유 카테고리번호와 비교
-      const majorSummary = summaryByMajor.find(m => m.majorCategoryNum === item.majorCategoryNum);
+      // 각 카테고리의 통계 데이터 찾기, 아이템의 고유 카테고리번호와 비교  
+      const majorSummary = summaryByMajor.find(
+        (m) => m.majorCategoryNum === item.majorCategoryNum
+      );
 
       const middleSummary = summaryByMiddle.find(
-        m =>
-          m.majorCategoryNum === item.majorCategoryNum &&
+        (m) => m.majorCategoryNum === item.majorCategoryNum &&
           m.middleCategoryNum === item.middleCategoryNum
       );
 
       const subSummary = summaryBySub.find(
-        s =>
-          s.majorCategoryNum === item.majorCategoryNum &&
+        (s) => s.majorCategoryNum === item.majorCategoryNum &&
           s.middleCategoryNum === item.middleCategoryNum &&
           s.subCategoryNum === item.subCategoryNum
       );
 
       return (
-        // 행시작 아이템을 기준으로 반복문이 돌아감
+        // 행시작 아이템을 기준으로 반복문이 돌아감 
         <tr key={item.itemCode} className="hover:bg-gray-50">
           {/* 대분류 카테고리명 */}
           {/* ?. 옵셔닝 체인지 : undefine이거나 null인경우 오류 방지  || 1 로 대체된다.  */}
           {showMajor && (
-            <td rowSpan={majorSummary?.rowspanCount || 1} className="px-6 py-3">
+            <td rowSpan={majorSummary?.rowspanCount || 1} className="px-6 py-3"> 
               {item.majorCategoryName}
             </td>
           )}
@@ -131,7 +140,7 @@ function ExpenseListByItems() {
           <td className="px-6 py-3 border text-right">{item.itemPrice?.toLocaleString()}</td>
           <td className="px-6 py-3 border text-right">{item.totalOrderCount}</td>
           <td className="px-6 py-3 border text-right">{item.totalOrderPrice?.toLocaleString()}</td>
-
+          
           {/* 소분류 합계 */}
           {showSub && (
             <>
@@ -147,16 +156,10 @@ function ExpenseListByItems() {
           {/* 중분류 합계 */}
           {showMiddle && (
             <>
-              <td
-                className="px-6 py-3 border text-right"
-                rowSpan={middleSummary?.rowspanCount || 1}
-              >
+              <td className="px-6 py-3 border text-right" rowSpan={middleSummary?.rowspanCount || 1}>
                 {middleSummary?.totalOrderCount}
               </td>
-              <td
-                className="px-6 py-3 border text-right"
-                rowSpan={middleSummary?.rowspanCount || 1}
-              >
+              <td className="px-6 py-3 border text-right" rowSpan={middleSummary?.rowspanCount || 1}>
                 {middleSummary?.totalOrderPrice?.toLocaleString()}
               </td>
             </>
@@ -173,46 +176,51 @@ function ExpenseListByItems() {
               </td>
             </>
           )}
+
         </tr>
       );
     });
   };
 
+
   return (
+
     <CommonWrapper>
       <CommonContainer size="1500px">
-        <ContainerTitleArea>
-          <h2>지출내역</h2>
-        </ContainerTitleArea>
+        <ContainerTitleArea><h2>지출내역</h2></ContainerTitleArea>
+        
+        
+        <LocalizationProvider dateAdapter={AdapterDateFns}  adapterLocale={ko}>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
           <ol.DatePickerWrap>
-            <ol.DatePickerInputWrap>
-              <DatePicker
-                slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
-                format="yyyy-MM-dd"
-                value={startDate}
-                onChange={newValue => setStartDate(new Date(newValue))}
-              />
-              <span>~</span>
-              <DatePicker
-                slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
-                format="yyyy-MM-dd"
-                value={endDate}
-                onChange={newValue => setEndDate(new Date(newValue))}
-              />
-            </ol.DatePickerInputWrap>
-            <StyledButton size="sm" theme="brown" onClick={submit}>
-              조회
-            </StyledButton>
-          </ol.DatePickerWrap>
-        </LocalizationProvider>
+          <ol.DatePickerInputWrap>   
+     
+        <DatePicker
+          slotProps={{ textField: { size: 'small' } }}  
+          label="연-월-일"
+          format="yyyy-MM-dd" 
+          value={startDate}
+          onChange={(newValue) => setStartDate(new Date(newValue))}
+        />
+         <span>~</span>
+         <DatePicker
+          slotProps={{ textField: { size: 'small' } }}
+          label="연-월-일"
+          format="yyyy-MM-dd"
+          value={endDate}
+          onChange={(newValue) => setEndDate(new Date(newValue))}
+        />
+      </ol.DatePickerInputWrap>
+      <StyledButton size="sm" theme="brown" onClick={submit}>
+            조회
+      </StyledButton>
+      </ol.DatePickerWrap>
+    </LocalizationProvider>
 
         <>
+
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg table-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto w-max">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto w-max" >
               <thead class="text-xs text-gray-700 uppercase bg-gray-200   dark:bg-gray-700 dark:text-gray-400 table-auto">
                 <tr>
                   <th scope="col" class="px-6 py-3">
@@ -260,8 +268,9 @@ function ExpenseListByItems() {
             </table>
           </div>
         </>
+
       </CommonContainer>
-    </CommonWrapper>
-  );
+    </CommonWrapper >
+  )
 }
-export default ExpenseListByItems;
+export default ExpenseListByItems;  
