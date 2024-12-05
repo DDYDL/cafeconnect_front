@@ -1,13 +1,14 @@
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
-import {useState, useEffect} from 'react';
-import {axiosInToken} from '../../config.js'
+import {useState, useEffect } from 'react';
+import { axiosInToken } from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import { Input, Select, Option} from "@material-tailwind/react";
+import { Input, Select, Option } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
-import { ArrowRightIcon, ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import ReactSelect from "react-select";
 
 const StoreListMain = ()=>{
     const [storeList, setStoreList] = useState([]);
@@ -17,10 +18,12 @@ const StoreListMain = ()=>{
     const [keyword, setKeyword] = useState('');
     const navigate = useNavigate();
     const token = useAtomValue(tokenAtom);
+    const [regionArr, setRegionArr] = useState([]);
+    const [selectedRegion, setSelectedRegion] = useState(null);
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
-        if(token!=null && token!=='')  select(1);
+        if(token!=null && token!=='')  {select(1); makeRegionArr();}
     }, [token])
     
     const select = (page) => {
@@ -28,13 +31,17 @@ const StoreListMain = ()=>{
             .then(res=> {
                 let pageInfo = res.data.pageInfo;
                 console.log(res.data.storeList);
-                setStoreList([...res.data.storeList])
+                setStoreList([...res.data.storeList]);
                 let page = [];
                 for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
                     page.push(i);
                 }
                 setPageBtn([...page]);
+                console.log(pageBtn);
                 setPageInfo(pageInfo);
+            }).catch(err=>{
+                console.log(err.response.data);
+                alert("가맹점 조회에 실패했습니다.");
             })
     }
 
@@ -46,10 +53,12 @@ const StoreListMain = ()=>{
         navigate(`/storeDetailMain/${storeCode}`);
     }
 
-    const searchRegion = (selectedValue) => {
+    const searchRegion = (selectedOption) => {
+        setSelectedRegion(selectedOption.label);
+        console.log(selectedOption.value);
         setType("storeAddress");
-        setKeyword(selectedValue);
-        select(1);
+        setKeyword(selectedOption.value);
+        search();
       };
 
     const searchName = (e) => {
@@ -57,34 +66,48 @@ const StoreListMain = ()=>{
         setKeyword(e.target.value);
       };
 
+      
+      
+    const makeRegionArr = () => {
+        const regions = [
+            {value: '강원', label: '강원도'},
+            {value: '경기', label: '경기도'},
+            {value: '경남', label: '경상남도'},
+            {value: '경북', label: '경상북도'},
+            {value: '광주', label: '광주광역시'},
+            {value: '대구', label: '대구광역시'},
+            {value: '대전', label: '대전광역시'},
+            {value: '부산', label: '부산광역시'},
+            {value: '서울', label: '서울특별시'},
+            {value: '울산', label: '울산광역시'},
+            {value: '인천', label: '인천광역시'},
+            {value: '제주특별자치도', label: '제주도'},
+            {value: '전남', label: '전라남도'},
+            {value: '전북', label: '전라북도'},
+            {value: '충남', label: '충청남도'},
+            {value: '충북', label: '충청북도'}
+        ];
+        
+        setRegionArr(regions);
+        console.log(regionArr);
+    };
+
     return (
         <>
             <s.ContentListDiv>
                 <h.MainTitleText>가맹점 조회</h.MainTitleText>
                 <h.CategoryButtonGroupDiv>
                     <h.SearchDiv>
-                        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={search}/> } label="매장명 검색" onChange={searchName}/>
+                        <Input icon={<h.SearchIcon className="h-5 w-5" onClick={search}/> } label="매장명 검색" onChange={searchName}/>
                     </h.SearchDiv>
-                    <h.ButtonInnerDiv className='w-16'>
-                        <Select name="storeAddress" label="지역" onChange={searchRegion}>
-                            <Option value="서울">서울특별시</Option>
-                            <Option value='경기'>경기도</Option>
-                            <Option value='인천광역시'>인천광역시</Option>
-                            <Option value='대전광역시'>대전광역시</Option>
-                            <Option value='충청북도'>충청북도</Option>
-                            <Option value='충청남도'>충청남도</Option>
-                            <Option value='강원도'>강원도</Option>
-                            <Option value='경상북도'>경상북도</Option>
-                            <Option value='경상남도'>경상남도</Option>
-                            <Option value='제주도'>제주도</Option>
-                            <Option value='울산광역시'>울산광역시</Option>
-                            <Option value='부산광역시'>부산광역시</Option>
-                            <Option value='광주광역시'>광주광역시</Option>
-                            <Option value='전라북도'>전라북도</Option>
-                            <Option value='전라남도'>전라남도</Option>
-                            <Option value='대구광역시'>대구광역시</Option>
-                            <Option value='세종특별자치시'>세종특별자치시</Option>
-                        </Select>
+                    <h.ButtonInnerDiv>
+                        <ReactSelect
+                            placeholder="지역"
+                            value={selectedRegion} 
+                            options={regionArr} 
+                            onChange={searchRegion}
+                            readOnly
+                        />
                     </h.ButtonInnerDiv>
                 </h.CategoryButtonGroupDiv>
                 <s.TableList>
@@ -94,14 +117,14 @@ const StoreListMain = ()=>{
                         <h.TableTextTh width='500px'>주소</h.TableTextTh>
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
-                        {storeList.map(store=>(
+                    {storeList!=null?(storeList.map(store=>(
                         <s.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
-                            <s.TableTextTd>{store.storeRegion}</s.TableTextTd >
+                            <s.TableTextTd>{regionArr.find(region => region.value === store.storeRegion)?.label}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
                             <h.TableTextTd>{store.storeAddress}</h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >
                         </s.TableTextTr>
-                    ))}
+                    ))):"가맹점이 없습니다."}
                     </tbody>
                 </s.TableList>
                 <s.PageButtonGroupDiv>
@@ -110,7 +133,7 @@ const StoreListMain = ()=>{
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{select(page);}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
@@ -119,6 +142,6 @@ const StoreListMain = ()=>{
                 </s.PageButtonGroupDiv>
             </s.ContentListDiv>
         </>
-    )
+    );
 }
 export default StoreListMain;

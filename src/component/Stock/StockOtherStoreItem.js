@@ -45,6 +45,8 @@ const StockOrderStoreItem = () => {
     useEffect(()=>{
         if(isStore) {
             getLatLng();
+            console.log(latlngPositions);
+            setIsStore(false);
         }
     }, [isStore])
 
@@ -57,7 +59,7 @@ const StockOrderStoreItem = () => {
         .then(res=>{
             console.log(res.data);
             setStoreList([...res.data]);
-            setIsStore(!isStore);
+            setIsStore(true);
         })
         .catch(err=>{
             console.log(err);
@@ -68,6 +70,8 @@ const StockOrderStoreItem = () => {
     // 2. store address로 해당 위도, 경도로 바꾸기
     const getLatLng = ()=>{
         const newArray = [];
+        // 해당하는 가맹점 개수
+        var count = storeList.length;
         // 주소로 좌표를 검색 후 위도, 경도 저장
         storeList.forEach(function(store) {
             console.log(store);
@@ -82,13 +86,23 @@ const StockOrderStoreItem = () => {
                     var coord = { lat: coords.Ma, lng: coords.La };
                     if(dist <= 2) { // 2km 이하에 있으면 추가
                         newArray.push({"store":store, "coords":coord});
+                        console.log(count);
+                    } else {
+                        // 추가하지 않으면 카운트 줄이기
+                        count--;
+                        console.log(count);
                     }
+                    console.log(newArray);
                     console.log(store.storeCode + " : " + dist);
+
+                    // 모든 스토어의 변환이 끝났으면
+                    if(count === newArray.length) {
+                        setLatlngPositions(newArray);
+                        console.log("end");
+                    }
                 }
             });
         });
-        setIsStore(!isStore);
-        setLatlngPositions(newArray);
     }
 
     // 두 좌표 사이의 거리를 km로 계산
@@ -162,7 +176,7 @@ const StockOrderStoreItem = () => {
                     {// 4. 해당하는 store 마커로 보여주기
                         latlngPositions.map((position, index)=>(
                             <EventMarkerContainer
-                                key={`${position.store.storeCode}${index}`}
+                                key={index}
                                 position={position}
                             />
                     ))}

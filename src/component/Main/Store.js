@@ -7,12 +7,13 @@ import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import axios from "axios";
 import { url } from "../../config.js";
 
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, useMap } from "react-kakao-maps-sdk";
 
 const Store = () => {
     const [storeList, setStoreList] = useState([]);
     const [storeName, setStoreName] = useState("");
     const [isStore, setIsStore] = useState(false);
+    const newArray = [];
     
     // 지도의 중심좌표
     const [center, setCenter] = useState({
@@ -38,12 +39,16 @@ const Store = () => {
     useEffect(()=>{
         if(isStore) {
             getLatLng();
+            setIsStore(false);
         }
     }, [isStore])
 
+    useEffect(()=>{
+        console.log(latlngPositions);
+    }, [latlngPositions])
+
     // 2. store address로 해당 위도, 경도로 바꾸기
     const getLatLng = ()=>{
-        const newArray = [];
         // 주소로 좌표를 검색 후 위도, 경도 저장
         storeList.forEach(function(store) {
             console.log(store);
@@ -56,16 +61,32 @@ const Store = () => {
                     // 현재 위치와 store의 위치 사이의 거리를 구한다.
                     let dist = getDistanceFromLatLonInKm(center.lat, center.lng, coords.Ma, coords.La);
                     var coord = { lat: coords.Ma, lng: coords.La };
-                    if(dist <= 10) { // 10km 이하에 있으면 추가
-                        newArray.push({"store":store, "coords":coord});
-                    }
+                    const arr = {"store":store, "coords":coord};
+                    newArray.push({"store":store, "coords":coord});
+                    console.log(newArray);
                     console.log(store.storeCode + " : " + dist);
+
+                    // 모든 스토어의 변환이 끝났으면
+                    if(storeList.length === newArray.length) {
+                        setLatlngPositions(newArray);
+                        console.log("end");
+                    }
                 }
             });
         });
-        setIsStore(!isStore);
-        setLatlngPositions(newArray);
     }
+
+    const EventMarkerContainer = ({ position }) => {
+        const map = useMap();
+    
+        return (
+            <MapMarker // 현재 내 위치 마커 표시
+                position={position.coords} // 마커를 표시할 위치
+                clickable={true} // 마커 클릭 시 지도 클릭 이벤트 발생 안 하도록 설정
+                title={position.store.storeName} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
+            />
+        )
+      }
 
     // 두 좌표 사이의 거리를 km로 계산
     function getDistanceFromLatLonInKm(lat1,lng1,lat2,lng2) {//lat1:위도1, lng1:경도1, lat2:위도2, lat2:경도2
@@ -86,6 +107,7 @@ const Store = () => {
         .then(res=>{
             console.log(res.data);
             setStoreList([...res.data]);
+            setIsStore(true);
         })
         .catch(err=>{
             console.log(err);
@@ -155,7 +177,7 @@ const Store = () => {
                                 key={index}
                                 position={position.coords} // 마커를 표시할 위치
                                 clickable={true} // 마커 클릭 시 지도 클릭 이벤트 발생 안 하도록 설정
-                                title='내 매장 위치' // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
+                                title={position.store.storeName} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
                             />
                     ))}
                 </Map>

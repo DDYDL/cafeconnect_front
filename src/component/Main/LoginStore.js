@@ -10,7 +10,7 @@ import { alarmsAtom, fcmTokenAtom, memberAtom, tokenAtom } from '../../atoms.js'
 const LoginStore = () => {
     // 로그인 하면 storeCode 하나 가지고 오기(여러개의 store를 가지고 있으면 대표 하나만 가져오기)
     // storeHeader에서 storeCode 바꿀 수 있음
-    const [member, setMember] = useState({username:'',password:'',deptName:'',roles:'', storeCode:0})
+    const [member, setMember] = useState({username:'',password:'',deptName:'',roles:'', storeCode:0, storeName:''})
     
     // 세션 스토리지 token 설정
     const setToken = useSetAtom(tokenAtom);

@@ -142,16 +142,17 @@ function StoreItemRevenue() {
                 {item.length > 0 ? (
                   item.map((data, index) => (
                     <tr key={index} className="hover:bg-gray-100">
-                      <TableCell>{data.mainCategory}</TableCell>
-                      <TableCell>{data.subCategory}</TableCell>
-                      <TableCell>{data.subSubCategory}</TableCell>
+                      <TableCell>{data.itemMajorCategoryName}</TableCell>
+                      <TableCell>{data.itemMiddleCategoryName}</TableCell>
+                      <TableCell>{data.itemSubCategoryName}</TableCell>
                       <TableCell>{data.itemName}</TableCell>
+                      <TableCell>{data.itemStandard}</TableCell>
+                      <TableCell>{data.orderCount}</TableCell>
                       <TableCell>{data.itemPrice}</TableCell>
-                      <TableCell>{data.itemQuantity}</TableCell>
-                      <TableCell>{data.itemAmount}</TableCell>
+
                       <TableCell>{data.subCategoryTotalQuantity}</TableCell>
                       <TableCell>{data.subCategoryTotalAmount}</TableCell>
-                      <TableCell>{data.middleCategoryTotalQuantity}</TableCell>
+
                       <TableCell>{data.middleCategoryTotalAmount}</TableCell>
                       <TableCell>{data.mainCategoryTotalQuantity}</TableCell>
                       <TableCell>{data.mainCategoryTotalAmount}</TableCell>

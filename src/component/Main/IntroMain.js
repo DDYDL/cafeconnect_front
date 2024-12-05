@@ -68,7 +68,7 @@ const IntroMain = ()=>{
             {
                 signatureMenu!==undefined &&
                 <m.SignatureDiv>
-                    <m.SignatureMenuImage style={{marginTop:'37px', width:'300px', height:'360px', borderRadius:'50px'}} src={`${url}/image/${signatureMenu.menuFileNum}`}/>
+                    <m.SignatureMenuImage style={{marginTop:'37px', width:'300px', height:'360px', borderRadius:'50px'}} src={`${url}/image/${signatureMenu.menuFileNum}`} alt=''/>
                     <m.Circle></m.Circle>
                     <m.SignatureMenuDiv>
                         <m.SignatureMenuP fontSize="40px" marginTop="100px">Signature</m.SignatureMenuP>

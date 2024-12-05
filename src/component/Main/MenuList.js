@@ -66,7 +66,7 @@ const MenuList = ({menu}) => {
             <s.MenuBarDiv>
                 {
                     menuCategory.map(menu=>(
-                        <s.MenuBarLinkDiv key={menu.menuCategoryNum} borderLeft={menu.menuCategoryNum===1?"none":""}><s.MenuBarLink onClick={()=>getMenuList(menu.menuCategoryNum)}>{menu.menuCategoryName}</s.MenuBarLink></s.MenuBarLinkDiv>
+                        <s.MenuBarLinkDiv key={menu.menuCategoryNum} borderleft={menu.menuCategoryNum===1?"none":""}><s.MenuBarLink onClick={()=>getMenuList(menu.menuCategoryNum)}>{menu.menuCategoryName}</s.MenuBarLink></s.MenuBarLinkDiv>
                     ))
                 }
             </s.MenuBarDiv>

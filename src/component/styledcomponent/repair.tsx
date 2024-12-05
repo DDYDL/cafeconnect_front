@@ -71,6 +71,7 @@ export const RepaireListWrap =styled.div`
     position: relative;
     margin: 0 auto; 
     margin-top: 60px;
+    margin-bottom:20px;
 
 `;
 
@@ -193,18 +194,19 @@ export const StatusFlow = styled.div`
   margin-top: 1rem;
 `;
 
-export const StatusCircle = styled.div<{isActive:Boolean}>`
+//스타일드 컴포넌트에서만 사용하는 prop은 트랜지언트prop(접두사$사용)을 사용해야 경고가 없다
+export const StatusCircle = styled.div<{$isActive: Boolean}>`
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #E9EED9;
+  background-color: ${({ $isActive }) => $isActive ? "#CBD2A4" : "#E9EED9"};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ isActive }) => isActive ? "#FF5757" : "#333"};
-  font-weight: ${({ isActive }) => isActive ? "600" : "normal"};
+  color: #333;
+  font-weight: ${({ $isActive }) => $isActive ? "600" : "normal"};
   transition: all 0.3s ease;
-
+  
   &:hover {
     transform: scale(1.05);
   }

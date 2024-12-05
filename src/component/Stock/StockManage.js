@@ -8,6 +8,13 @@ import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { useAtom } from 'jotai/react';
 import { memberAtom } from '../../atoms.js';
+import ReactSelect from "react-select";
+import * as c from "../styledcomponent/cartlist.tsx";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import {ko} from 'date-fns/locale';
+import { format } from 'date-fns';
 
 const StockManage = ({major, middle, sub})=>{
     const [add, setAdd] = useState(false);
@@ -22,13 +29,25 @@ const StockManage = ({major, middle, sub})=>{
     const [itemCategoryNum, setItemCategoryNum] = useState("");
     const [stock, setStock] = useState({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
 
+    const [selectedItem, setSelectedItem] = useState(null); // value
+    const [itemNameList, setItemNameList] = useState([]); // 전체 아이템 리스트
+    const [item, setItem] = useState({
+        itemCode: "",
+        itemName: "",
+        itemMajorCategoryName:"",
+        itemMiddleCategoryName:"",
+        itemSubCategoryName:"",
+        itemCapacity:"",
+        itemUnitQuantity:"",
+        itemUnit:"",
+        itemStorage:""
+    });
+
     // 아이템 리스트
     const [itemList, setItemList] = useState([]);
     // 필터링된 아이템 리스트를 담을 변수
     const [itmeListFilter, setItemListFilter] = useState([]);
     const [itemNameFilter, setItemNameFilter] = useState("");
-
-    const [item, setItem] = useState({});
 
     const [selectedCategory, setSelectedCategory] = useState({'major':'', 'middle':'', 'sub':''});
     const [middleCategoryFilter, setMiddleCategoryFilter] = useState(middle);
@@ -82,6 +101,7 @@ const StockManage = ({major, middle, sub})=>{
     }    
 
     const addStock = (e)=>{
+        console.log(stock);
         const formData = new FormData();
 
         formData.append("storeCode", member.storeCode);
@@ -229,6 +249,10 @@ const StockManage = ({major, middle, sub})=>{
           console.log(res.data);
           setItemList([...res.data]);
           setItemListFilter([...res.data]);
+          setItemNameList(res.data.map(item=>({
+            value:item.itemCode,
+            label:item.itemName
+          })))
         })
         .catch(err=>{
           console.log(err);
@@ -253,6 +277,16 @@ const StockManage = ({major, middle, sub})=>{
         // 자동 완성된 검색어 클릭 시 초기화
         setItemListFilter([]);
     }
+
+    //자동완성에서 입력한 상품명의 이름과 코드 변경 및 저장 
+    const selectItem = (selectedOption) => {
+        setSelectedItem(selectedOption);
+        setItem((prev) => ({
+        ...prev,
+        itemCode: selectedOption.value,
+        itemName: selectedOption.label,
+        }));
+    };
 
     return (
         <>
@@ -299,7 +333,17 @@ const StockManage = ({major, middle, sub})=>{
                     <tbody>
                         <s.TableTextTr onClick={openStock}><PlusIcon style={{marginLeft:'520px', marginTop:'11px'}} className="h-6 w-6"/></s.TableTextTr>
                         {add && <s.TableTextTr>
-                            <s.TableTextTd><s.InputStyle width='250px' name='itemName' value={itemNameFilter} onChange={(e)=>{setItemNameFilter(e.target.value)}} autocomplete='off' required/>
+                            <s.TableTextTd>
+                            <div className="flex gap-2 items-center">
+                                <ReactSelect
+                                    className="w-full"
+                                    placeholder="상품명 입력"
+                                    value={selectedItem}
+                                    options={itemNameList}
+                                    onChange={selectItem}
+                                    />
+                            </div>
+                            {/* <s.InputStyle width='250px' name='itemName' value={itemNameFilter} onChange={(e)=>{setItemNameFilter(e.target.value)}} autocomplete='off' required/>
                             {itmeListFilter.length > 0 && itemNameFilter && ( //키워드가 존재하고,해당키워드에 맞는 이름이 있을때만 보여주기 
                                 <s.AutoSearchContainer top='400px' width='250px' left='505px'>
                                 <s.AutoSearchWrap>
@@ -316,14 +360,50 @@ const StockManage = ({major, middle, sub})=>{
                                     ))}
                                     </s.AutoSearchWrap>
                                 </s.AutoSearchContainer>
-                            )}
+                            )} */}
+                            {/* Object.keys(item).length===0 */}
                             </s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='150px' value={Object.keys(item).length===0 ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px' value={Object.keys(item).length===0 ? "" : `${item.itemCapacity}*${item.itemUnitQuantity}/${item.itemUnit}`} readOnly/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px' value={Object.keys(item).length===0 ? "" : item.itemStorage} readOnly/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px' name='stockExpirationDate' onChange={edit} autocomplete='off' required/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='50px' name='stockReceiptDate' onChange={edit} autocomplete='off' required/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='50px' name='stockCount' onChange={edit} autocomplete='off' required/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='150px' value={item.itemCode==='' ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : `${item.itemCapacity}*${item.itemUnitQuantity}/${item.itemUnit}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : item.itemStorage} readOnly/></s.TableTextTd>
+                            <s.TableTextTd>
+                            <s.DatePickerWrap>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={stock.stockExpirationDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStock({ ...stock, ['stockExpirationDate']: format(date, 'yyyy-MM-dd') })}
+                                className="CustomPicker"
+                                format='yyyy-MM-dd'
+                            />
+                            </LocalizationProvider>
+                            </s.DatePickerWrap>
+                            </s.TableTextTd>
+                            <s.TableTextTd>
+                            <s.DatePickerWrap>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={stock.stockReceiptDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setStock({ ...stock, ['stockReceiptDate']: format(date, 'yyyy-MM-dd') })}
+                                className="CustomPicker"
+                                format='yyyy-MM-dd'
+                            />
+                            </LocalizationProvider>
+                            </s.DatePickerWrap>
+                            </s.TableTextTd>
+                            <s.TableTextTd>
+                            <c.QuantityControl>
+                                <c.QuantityInput
+                                type="number"
+                                min="1"
+                                max="999"
+                                name='stockCount'
+                                value={stock.stockCount}
+                                onChange={edit} autocomplete='off' required
+                                />
+                            </c.QuantityControl>
+                            </s.TableTextTd>
                             <s.TableTextTd width='50px'><s.ButtonStyle width="50px" onClick={addStock}><Link>저장</Link></s.ButtonStyle></s.TableTextTd>
                             </s.TableTextTr>}
 
