@@ -2,48 +2,61 @@
 import {CommonWrapper, CommonContainer, ContainerTitleArea} from "../styledcomponent/common.tsx";
 import * as od from '../styledcomponent/orderdetail.tsx';
 import {StyledButton} from '../styledcomponent/button.tsx';
-
+import { tokenAtom, memberAtom } from '../../atoms';
+import { axiosInToken } from '../../config.js';  
+import { useAtomValue } from 'jotai/react';
+import { useParams,useNavigate } from "react-router-dom";
+import { useEffect,useState } from "react";
+import { ko } from "date-fns/locale/ko";
+import { format } from "date-fns";
 function OrderDetailForStore() {
-    const orderDetail = {
-        orderNumber: "Y05539532",
-        orderDate: "2024.10.02",
-        items: [{
-            itemCode: 2,
-            name: "에티오피아 코케허니 G1스페셜티",
-            price: 24800,
-            quantity: 3,
-            image: "/image/item1.jpg",
-            category: "major/middel/sub",
-            shipping: "기본배송",
-            storageType: "일반"
-        }],
-        totalCount: {
-            total: 4,
-            normal: 4,
-            cold: 0
-        },
-        payment: {
-            totalOrder: 153300,
-            totalProduct: 153300,
-            finalAmount: 133831
-        },
-        delivery: {
-            receiver: "독산점",
-            phone: "010-****-4743",
-            address: "서울시 금천구",
-            message: ""
-        },
-        orderer: {
-            name: "박*연",
-            phone: "010-****-4743"
-        },
-        paymentMethod: {
-            type: "신용카드",
-            detail: "삼성카드 / 일시불",
-            amount: 133831,
+    const [orderDetail, setOrderDetail] = useState(null);
+    const { orderCode } = useParams();
+    const store = useAtomValue(memberAtom);
+    const token = useAtomValue(tokenAtom);
+    const navigate = useNavigate();
 
-        }
+    useEffect(()=>{
+        if (token && store?.storeCode && orderCode) 
+            getOrderInfo(orderCode);
+    },[token,store?.storeCode, orderCode]);
+
+    const getOrderInfo = (code)=>{
+        const formData = new FormData();
+        formData.append("storeCode", store.storeCode);
+        formData.append("orderCode", code);
+        axiosInToken(token).post('orderDetail',formData)
+        .then(res=>{
+             console.log(res.data);
+              // 응답 데이터 가공
+          const details = res.data;
+          const processedDetail = {
+            orderCode: details[0].orderCode,
+            orderDate: details[0].orderDate,
+            orderState: details[0].orderState,
+            orderPayment: details[0].orderPayment,
+            orderDelivery: details[0].orderDelivery,
+            items: details.map(item => ({
+              itemCode: item.itemCode,
+              itemName: item.itemName,
+              orderCount: item.orderCount,
+              itemPrice: item.itemPrice,
+              totalPrice: item.orderCount * item.itemPrice
+            })),
+            totalAmount: details.reduce((sum, item) => 
+              sum + (item.itemPrice * item.orderCount), 0)
+          };
+          
+          setOrderDetail(processedDetail);
+        })
+        .catch(err=>{
+            console.error("주문 상세 조회 실패:", err);
+        });
+    
     };
+     if (!orderDetail) {
+            return <div>로딩중...</div>;
+     }
 
     return (
         <CommonWrapper>
@@ -53,11 +66,11 @@ function OrderDetailForStore() {
                 <od.OrderBasicInfo>
                         <li>
                             <strong>주문번호</strong>
-                            <em>{orderDetail.orderNumber}</em>
+                            <em>{orderDetail.orderCode}</em>
                         </li>
                         <li>
                             <strong>주문일</strong>
-                            <em>{orderDetail.orderDate}</em>
+                            <em>{format(new Date(orderDetail.orderDate), "yyyy-MM-dd")}</em>
                         </li>
                     </od.OrderBasicInfo>
 
@@ -73,7 +86,7 @@ function OrderDetailForStore() {
                         <od.OrderItemRow key={index}>
                             <od.ProductWrap>
                                 <od.ProductImage>
-                                    <img src={item.image} alt={item.name} />
+                                    <img src={item.image} alt={item.itemName} />
                                 </od.ProductImage>
                                 <od.ProductInfo>
                                     <p className="categoryformat">{item.category}</p>
@@ -96,17 +109,17 @@ function OrderDetailForStore() {
                 <od.PaymentRow isHeader >
                     <div className="payment-item">
                         <span className="label">총 주문 개수</span>
-                        <span className="value">{orderDetail.totalCount.total}개</span>
+                        {/* <span className="value">{orderDetail.totalCount.total}개</span> */}
                     </div>
                 </od.PaymentRow>
                 <od.PaymentRow>
                     <div className="payment-item">
                         <span className="label">일반 상품</span>
-                        <span className="value">{orderDetail.totalCount.normal}개</span>
+                        {/* <span className="value">{orderDetail.totalCount.normal}개</span> */}
                     </div>
                     <div className="payment-item">
                         <span className="label">냉동 상품</span>
-                        <span className="value">{orderDetail.totalCount.cold}개</span>
+                        {/* <span className="value">{orderDetail.totalCount.cold}개</span> */}
                     </div>
                 </od.PaymentRow>
             </od.PaymentColumn>
@@ -115,12 +128,12 @@ function OrderDetailForStore() {
                 <od.PaymentRow isHeader>
                     <div className="payment-item">
                         <span className="label">결제 수단</span>
-                        <span className="value">{orderDetail.paymentMethod.type}</span>
+                        {/* <span className="value">{orderDetail.paymentMethod.type}</span> */}
                     </div>
                 </od.PaymentRow>
                 <od.PaymentRow>
                     <div className="payment-item">
-                        <span className="value">{orderDetail.paymentMethod.detail}</span>
+                        {/* <span className="value">{orderDetail.paymentMethod.detail}</span> */}
                     </div>
                 </od.PaymentRow>
             </od.PaymentColumn>
@@ -130,7 +143,7 @@ function OrderDetailForStore() {
                     <div className="payment-item">
                         <span className="label">총 결제금액</span>
                         <span className="value red">
-                            {orderDetail.payment.finalAmount.toLocaleString()}원
+                            {/* {orderDetail.payment.finalAmount.toLocaleString()}원 */}
                         </span>
                     </div>
                 </od.PaymentRow>
@@ -152,15 +165,15 @@ function OrderDetailForStore() {
                         <tbody>
                             <tr>
                                 <th>주문자</th>
-                                <td>{orderDetail.delivery.receiver}</td>
+                                {/* <td>{orderDetail.delivery.receiver}</td> */}
                             </tr>
                             <tr>
                                 <th>휴대폰번호</th>
-                                <td>{orderDetail.delivery.phone}</td>
+                                {/* <td>{orderDetail.delivery.phone}</td> */}
                             </tr>
                             <tr>
                                 <th>배송지 주소</th>
-                                <td>{orderDetail.delivery.address}</td>
+                                {/* <td>{orderDetail.delivery.address}</td> */}
                             </tr>
                        
                         </tbody>
