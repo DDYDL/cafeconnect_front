@@ -7,6 +7,11 @@ import { useAtom, useSetAtom } from 'jotai/react';
 import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
 import axios from 'axios';
 import { url } from '../../config.js';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import {ko} from 'date-fns/locale';
+import { format } from 'date-fns';
 
 const MyStoreInfo = () => {
     // Jotai의 member 가져오기
@@ -58,15 +63,13 @@ const MyStoreInfo = () => {
     }
 
     const updateStore = (e)=>{
+        console.log(store);
         const formData = new FormData();
-
-        const openStr = store.storeOpenTimeStr + ":00";
-        const closeStr = store.storeCloseTimeStr + ":00";
 
         formData.append("storeCode", member.storeCode);
         formData.append("storePhone", store.storePhone);
-        formData.append("storeOpenTime", openStr);
-        formData.append("storeCloseTime", closeStr);
+        formData.append("storeOpenTime", store.storeOpenTime);
+        formData.append("storeCloseTime", store.storeCloseTime);
         formData.append("storeCloseDate", store.storeCloseDate);
 
         formData.append("username", store.username);
@@ -121,8 +124,24 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='140px' type='text' name='storeOpenTimeStr' value={store.storeOpenTimeStr} onChange={edit}/>&nbsp;~&nbsp;
-                            <s.InputStyle width='140px' type='text' name='storeCloseTimeStr' value={store.storeCloseTimeStr} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd>
+                            <m.TimePickerPeriodWrap>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                                <TimePicker
+                                    value={store.storeOpenTime}
+                                    onChange={(time) => setStore({ ...store, ['storeOpenTime']: format(time, 'HH:mm:SS') })}
+                                    className="CustomPicker"
+                                    format='HH:mm'
+                                /><div>~</div>
+                                <TimePicker
+                                    value={store.storeCloseTime}
+                                    onChange={(time) => setStore({ ...store, ['storeCloseTime']: format(time, 'HH:mm:SS') })}
+                                    className="CustomPicker"
+                                    format='HH:mm'
+                                />
+                            </LocalizationProvider>
+                            </m.TimePickerPeriodWrap>
+                            </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
