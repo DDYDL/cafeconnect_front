@@ -6,7 +6,6 @@ import {useState} from 'react';
 import {axiosInToken} from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {useNavigate} from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -26,6 +25,7 @@ const AddStoreMain = ()=>{
     const edit = (e) => {
         setStore({ ...store, [e.target.name]: e.target.value });
         console.log(store);
+        console.log(timeDate);
     }
     
     const onCompletePost = (data) => {
@@ -35,6 +35,7 @@ const AddStoreMain = ()=>{
         }
         
     const submit = () => {
+        const timeDateFormat = () => {
         if (!store.storeName) {
             alert("가맹점명을 입력하세요"); return;
           }
@@ -51,20 +52,33 @@ const AddStoreMain = ()=>{
             alert("점주 정보를 입력하세요"); return;
           }
         if (timeDate.openingDate) { 
-            setTimeDate({ ...timeDate, ['openingDate']: format(timeDate.openingDate, 'yyyyMMdd')});
+            setTimeDate({ ...timeDate, ['openingDate']: format(timeDate.openingDate, 'yyyy-MM-dd')});
           }
-        setStore({ ...store, ['contractDate']: format(timeDate.contractDate, 'yyyyMMdd'),
-            ['contractPeriodStart']: format(timeDate.contractPeriodStart, 'yyyyMMdd'),
-            ['contractPeriodEnd']: format(timeDate.contractPeriodEnd, 'yyyyMMdd'),
-            ['storeRegion']: store.storeAddress.split(" ")[0]
-        })
+        // if (timeDate.storeOpenTime) { 
+        //     setTimeDate({ ...timeDate, ['storeOpenTime']: format(timeDate.storeOpenTime, 'HH:mm')});
+        //   }
+        // if (timeDate.storeCloseTime) { 
+        //     setTimeDate({ ...timeDate, ['storeCloseTime']: format(timeDate.storeCloseTime, 'HH:mm')});
+        //   }
+        console.log("in timeDateFormat");
         console.log(timeDate);
+        setStore({ ...store, contractDate: format(timeDate.contractDate, 'yyyy-MM-dd'),
+            contractPeriodStart: format(timeDate.contractPeriodStart, 'yyyy-MM-dd'),
+            contractPeriodEnd: format(timeDate.contractPeriodEnd, 'yyyy-MM-dd'),
+            storeRegion: store.storeAddress.split(" ")[0]
+        })
+        console.log("in timeDateFormat");
         console.log(store);
+        }
+
+        timeDateFormat();
+
         axiosInToken(token).post('addStoreMain',store)
         .then(res=> {
+            console.log("come request");
             console.log(res);
             alert(`${store.storeName} 등록이 완료되었습니다.`);
-            navigate("/storeListMain");
+            navigate("/storeListMain/?page=1&type=&keyword=");
         })
         .catch(err=>{
                 console.log(store);
@@ -83,7 +97,7 @@ const AddStoreMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd textAlign="center">-</m.TableInfoTd>{/* 저장 시 자동생성 */}
+                        <m.TableInfoTd textAlign="center">-</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan for="storeName">가맹점명<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>
@@ -93,7 +107,7 @@ const AddStoreMain = ()=>{
                         <m.TableInfoTd style={{verticalAlign:'top', paddingTop:'10px'}}><m.TableTitleSpan for="storeAddress">가맹점 주소<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
                         <s.SearchDiv width='300px' marginBottom='10px' margin='0px'>
-                        <s.InputStyleSearch icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>setIsOpen(!isOpen)}/>} value={store.storeAddressNum} onChange={edit} style={{borderColor:'rgba(234, 234, 234, 1)'}} readOnly/></s.SearchDiv>
+                        <s.InputStyleSearch icon={<h.SearchIcon className="h-5 w-5" onClick={()=>setIsOpen(!isOpen)}/>} value={store.storeAddressNum} onChange={edit} style={{borderColor:'rgba(234, 234, 234, 1)'}} readOnly/></s.SearchDiv>
                         <s.InputStyle width='300px' type='text' value={store.storeAddress} onChange={edit}/>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
@@ -174,7 +188,7 @@ const AddStoreMain = ()=>{
                             <DatePicker
                                 value={timeDate.openingDate}
                                 showDaysOutsideCurrentMonth
-                                onChange={(date) => setStore({ ...store, ['openingDate']: date })}
+                                onChange={(date) => setTimeDate({ ...timeDate, ['openingDate']: date })}
                                 className="CustomPicker"
                                 format='yyyy.MM.dd'
                             />
