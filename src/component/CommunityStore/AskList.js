@@ -40,7 +40,7 @@ const AskList = () => {
   const fetchData = async () => {
     if (!token || !storeCode) return;
     try {
-      const response = await axiosInToken(token).get(`/askListStore/${storeCode}`);
+      const response = await axiosInToken(token).get(`/askList/${storeCode}`);
       const formattedData = response.data.map(ask => ({
         ...ask,
         askDate: new Date(ask.askDate).toLocaleDateString("ko-KR"),
@@ -60,16 +60,6 @@ const AskList = () => {
     fetchData();
   }, [token, storeCode]);
 
-  // 검색 버튼 클릭 핸들러
-  const onSearchClick = () => {
-    setIsSearchActive(true);
-  };
-
-  // const handleItemClick = askNum => {
-  //   setSelectedItem(selectedItem === askNum ? null : askNum); // askNum으로 비교
-  //   navigate(`/askDetailStore/${storeCode}`);
-  // };
-
   const handleItemClick = async askNum => {
     if (selectedItem === askNum) {
       // 이미 선택된 항목을 다시 클릭하면 초기화
@@ -78,6 +68,27 @@ const AskList = () => {
     } else {
       setSelectedItem(askNum);
       await fetchAnswerForSelectedItem(askNum); // 답변 가져오기
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchAsk.trim() === "") {
+      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
+      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+    } else {
+      // 검색어가 있을 경우, complain 리스트 필터링
+      const filteredAskList = ask.filter(
+        a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()) // 대소문자 구분 없이 검색
+      );
+
+      setAsk(filteredAskList); // 필터링된 complain 리스트 상태로 업데이트
+    }
+  };
+
+  // Enter 키로 검색
+  const handleKeyDown = e => {
+    if (e.key === "Enter") {
+      handleSearch(); // Enter 키가 눌렸을 때 검색 실행
     }
   };
 
@@ -105,17 +116,13 @@ const AskList = () => {
     }
   };
 
-  const onChangeAsk = e => {
-    setSearchAsk(e.target.value);
-  };
-
   const filterAsk = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
 
   // 리스트를 불러오는 함수
   const fetchAskList = async () => {
     try {
       if (!storeCode) return; // storeCode가 없는 경우 요청을 하지 않음
-      const response = await axios.get(`http://localhost:8080/askListStore/${storeCode}/`);
+      const response = await axios.get(`http://localhost:8080/askList/${storeCode}/`);
       setAsk(response.data); // ask 리스트를 상태에 저장
     } catch (err) {
       console.error("리스트 불러오기 오류:", err);
@@ -149,24 +156,14 @@ const AskList = () => {
               name="search"
               label="제목 검색"
               value={searchAsk}
-              onChange={onChangeAsk}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  onSearchClick(); // Enter 키를 누르면 onSearchClick 실행
-                }
-              }}
+              onChange={e => setSearchAsk(e.target.value)}
+              onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
             />
+            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
             <MagnifyingGlassIcon
-              onClick={onSearchClick} // 검색 버튼으로 사용
               className="h-5 w-5"
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#333",
-              }}
+              style={searchIconStyle}
+              onClick={handleSearch} // 아이콘 클릭 시 검색 함수 실행
             />
           </s.SearchDiv>
         </s.ButtonDiv>
@@ -278,6 +275,15 @@ const AskList = () => {
       </div>
     </ContentListDiv>
   );
+};
+
+const searchIconStyle = {
+  position: "absolute",
+  right: "10px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "pointer",
+  color: "#333",
 };
 
 const HeadingContainer = styled.div`

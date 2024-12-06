@@ -47,11 +47,11 @@ const AskWrite = () => {
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
-    navigate(`/askListStore/${storeCode}`);
+    navigate(`/askList/${storeCode}`);
   };
 
   const handleRegister = () => {
-    navigate(`/askListStore/${storeCode}`);
+    navigate(`/askList/${storeCode}`);
   };
 
   const handleSubmit = event => {
@@ -81,7 +81,7 @@ const AskWrite = () => {
 
         // 등록 완료 후 alert을 먼저 띄운 뒤, 일정 시간이 지나면 페이지 이동
         alert("문의가 성공적으로 등록되었습니다.");
-        navigate(`/askListStore`);
+        navigate(`/askList`);
       })
       .catch(err => {
         console.error(err);
@@ -151,7 +151,7 @@ const AskWrite = () => {
             bgColor="white"
             // onClick={handleCancel}
           >
-            <Link to="/askListStore">취소</Link>
+            <Link to="/askList">취소</Link>
           </s.ButtonStyle>
           &nbsp;&nbsp;
           <s.ButtonStyle type="submit">등록하기</s.ButtonStyle>
