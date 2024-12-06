@@ -171,7 +171,7 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>비밀번호</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' name='password' value={store.password} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd><s.InputStyle width='300px' type='password' name='password' value={store.password} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주명</m.TableTitleSpan></m.TableInfoTd>

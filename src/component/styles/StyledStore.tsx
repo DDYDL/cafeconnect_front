@@ -137,27 +137,21 @@ export const ButtonInnerDiv = styled.div<Container>`
     width:120px;
     float:left;
     margin-right:10px;
+
+    & > div {
+        width:120px;
+        min-width:120px !important;
+    }
 `;
 
 export const SelectStyle = styled(Select)`
-    width:120px!important;
-    min-width:120px!important;
+    width:120px;
+    min-width:120px;
     display:inline-block;
-    background: rgba(255, 255, 255, 1);
-
-    & > div {
-        width:120px!important;
-        min-width:120px!important;
-    }
-
-    & div {
-        width:120px!important;
-        min-width:120px!important;
-    }
-    
-    & svg {
-        width:20px;
-    }
+    background:rgba(255, 255, 255, 1);
+    border-radius:5px;
+    border-color:rgba(234, 234, 234, 1);
+    padding-bottom:3px;
 
     & > ul {
         top:0px;
@@ -406,11 +400,11 @@ export const AutoSearchData = styled.li`
 `;
 
 export const dateCheckbox = styled.input`
-    border:1px soild rgba(234, 234, 234, 1);
-    border-radius:5px;
     font-size:14px;
     height:40px;
     width:120px;
+    border-radius:5px;
+    border-color:rgba(234, 234, 234, 1);
 
     &:hover {
         background-color: rgba(234, 234, 234, 1);
@@ -419,7 +413,10 @@ export const dateCheckbox = styled.input`
     &:checked {
         background-color: rgba(234, 234, 234, 1);
         border:none;
-        text:'';
+        background-image: none;
+        background-repeat: no-repeat;
+        background-size: 0.55em 0.55em;
+        -webkit-print-color-adjust: exact;
     }
 `;
 

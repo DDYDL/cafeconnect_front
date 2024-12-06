@@ -295,6 +295,68 @@ const StockManage = ({major, middle, sub})=>{
         setInfo(newArray);
     }
 
+    const setUpStockDate = (itemCode, indexIn, date, str)=>{
+        // map 깊은 복사하기
+        let array = Object.assign({},stockList);
+        console.log(array);
+
+        // 해당하는 아이템의 리스트 가져오기
+        let arrayInner = [];
+        Object.entries(array).map((entrie, idx) => {
+            if(entrie[0] === itemCode){
+                arrayInner = entrie[1];
+            }
+        });
+        console.log(arrayInner);
+        // 해당하는 날짜 값 바꾸기
+        if(str==='ed') { arrayInner[indexIn].stockExpirationDate = format(date, 'yyyy-MM-dd'); }
+        else if(str==='rd') { arrayInner[indexIn].stockReceiptDate = format(date, 'yyyy-MM-dd'); }
+        console.log(arrayInner);
+        // 해당하는 리스트 바꾸기
+        Object.entries(array).map((entrie, idx) => {
+            if(entrie[0] === itemCode){
+                entrie[1] = arrayInner;
+            }
+        });
+        console.log(array);
+
+        setStockList(array);
+        if(str==='ed') { setUpStock({...upStock, ['upstockExpirationDate']:format(date, 'yyyy-MM-dd')}); }
+        else if(str==='rd') { setUpStock({...upStock, ['upstockReceiptDate']:format(date, 'yyyy-MM-dd')}); }
+    }
+
+    const setUpStockCount = (e, itemCode, indexIn)=>{
+        console.log(itemCode);
+        console.log(indexIn);
+
+        // map 깊은 복사하기
+        let array = Object.assign({},stockList);
+        console.log(array);
+
+        // 해당하는 아이템의 리스트 가져오기
+        let arrayInner = [];
+        Object.entries(array).map((entrie, idx) => {
+            if(entrie[0] === itemCode){
+                arrayInner = entrie[1];
+            }
+        });
+        console.log(arrayInner);
+
+        // 해당하는 재고 값 바꾸기
+        arrayInner[indexIn].stockCount = e.target.value;
+        console.log(arrayInner);
+        // 해당하는 리스트 바꾸기
+        Object.entries(array).map((entrie, idx) => {
+            if(entrie[0] === itemCode){
+                entrie[1] = arrayInner;
+            }
+        });
+        console.log(array);
+
+        setStockList(array);
+        setUpStock({...upStock, ['upstockCount']:e.target.value});
+    }
+
     return (
         <>
             <s.ContentListDiv>
@@ -409,7 +471,7 @@ const StockManage = ({major, middle, sub})=>{
                                     </s.TableTextTr>
 
                                     {info[index] &&
-                                    stock[1].map(stockInner=>(
+                                    stock[1].map((stockInner, indexIn)=>(
                                         <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(234, 234, 234, 1)' style={{borderBottom:'1px solid rgba(154, 154, 154, 1)'}}>
                                             <s.TableTextTd width='600px'>{stockInner.stockNum}</s.TableTextTd>
                                             <s.TableTextTd width='80px'></s.TableTextTd>
@@ -421,7 +483,8 @@ const StockManage = ({major, middle, sub})=>{
                                                 <DatePicker
                                                     value={stockInner.stockExpirationDate}
                                                     showDaysOutsideCurrentMonth
-                                                    onChange={(date) => setUpStock({ ...upStock, ['upstockExpirationDate']: format(date, 'yyyy-MM-dd') })}
+                                                    name='stockExpirationDate' 
+                                                    onChange={(date) => setUpStockDate(stockInner.itemCode, indexIn, date, 'ed')}
                                                     className="CustomPicker"
                                                     format='yyyy-MM-dd'
                                                 />
@@ -434,7 +497,8 @@ const StockManage = ({major, middle, sub})=>{
                                                 <DatePicker
                                                     value={stockInner.stockReceiptDate}
                                                     showDaysOutsideCurrentMonth
-                                                    onChange={(date) => setUpStock({ ...upStock, ['upstockReceiptDate']: format(date, 'yyyy-MM-dd') })}
+                                                    name='stockReceiptDate' 
+                                                    onChange={(date) => setUpStockDate(stockInner.itemCode, indexIn, date, 'rd')}
                                                     className="CustomPicker"
                                                     format='yyyy-MM-dd'
                                                 />
@@ -447,9 +511,9 @@ const StockManage = ({major, middle, sub})=>{
                                                 type="number"
                                                 min="1"
                                                 max="999"
-                                                name='upstockCount' 
+                                                name='stockCount' 
                                                 value={stockInner.stockCount}
-                                                onChange={(e)=>setUpStock({...upStock, ['upstockCount']:e.value})} autocomplete='off' required
+                                                onChange={(e)=>setUpStockCount(e, stockInner.itemCode, indexIn)} autocomplete='off' required
                                                 />
                                             </c.QuantityControl>
                                             </s.TableTextTd>
