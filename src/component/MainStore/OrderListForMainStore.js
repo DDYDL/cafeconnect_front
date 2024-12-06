@@ -1,40 +1,55 @@
 import { Input, Option, Select } from "@material-tailwind/react";
-import { Datepicker } from "flowbite-react";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ko } from "date-fns/locale/ko";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInToken } from "../../config.js";
+import { useAtomValue } from "jotai/react";
+import { tokenAtom, memberAtom } from "../../atoms";
 import { StyledButton } from "../styledcomponent/button.tsx";
+import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import { CommonContainer, CommonWrapper, ContainerTitleArea } from "../styledcomponent/common.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
 
 function OrderListForMainStore() {
+  const store = useAtomValue(memberAtom);
+  const token = useAtomValue(tokenAtom);
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const today = new Date();
+  const monthAgo = new Date(today);
+  monthAgo.setMonth(today.getMonth() - 1);
+  const [startDate, setStartDate] = useState(monthAgo);
+  const [endDate, setEndDate] = useState(today);
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedStatus, setSelectedStatus] = useState({});
+  const [orderList, setOrderList] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [status, setStatus] = useState("");
+  const [orders,setOrders] =useState([]);
+  
+  const submit = () => {
+    const formData = new FormData();
+    formData.append("storeCode", store.storeCode);
+    formData.append("startDate", format(startDate, "yyyy-MM-dd"));
+    formData.append("endDate", format(endDate, "yyyy-MM-dd"));
+    if (status) formData.append("orderState", status);
 
-  const [orders, setOrders] = useState([
-    {
-      orderDate: "2024-10-21",
-      orderNumber: "20241021-0000240",
-      productInfo:
-        "과테말라 코반 스페셜티/에티오피아 코케허니 G1스페셜티/케냐AA드립백세트(6개입/1box)/에티오피아 코케허니 G1스페셜티 ",
-      category: "가공식품/캔류/디카페인",
-      quantity: 1,
-      price: 8900,
-      status: "주문확인중",
-    },
-    {
-      orderDate: "2024-10-21",
-      orderNumber: "20241021-0000240",
-      productInfo: "과테말라 코반 스페셜티...",
-      category: "가공식품/캔류/디카페인",
-      quantity: 1,
-      price: 8900,
-      status: "배송완료",
-    },
-  ]);
+    axiosInToken(token)
+      .post("orderListForStore", formData)
+      .then((res) => {
+        console.log(res.data);
+        setOrderList(res.data.orderList || []);
+        setTotalCount(res.data.totalCount || 0);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
 
   const handleStatusChange = (orderNumber, newStatus) => {
     setOrders(prevOrders =>
@@ -44,6 +59,13 @@ function OrderListForMainStore() {
     );
   };
 
+  const search=()=>{
+     
+    if(!searchType) {
+        alert("필수 항목을 모두 입력해주세요");
+      }
+      submit();
+  }
   return (
     <CommonWrapper>
       <CommonContainer size="1000px">
@@ -51,53 +73,51 @@ function OrderListForMainStore() {
           <h2>주문접수 관리</h2>
         </ContainerTitleArea>
 
-        <ol.DatePickerWrap>
-          <ol.DatePickerInputWrap>
-            <Datepicker
-              value={startDate}
-              onChange={date => setStartDate(date)}
-              className="flowbite-datepicker"
-              showTodayButton={true}
-              showClearButton={true}
-              dateFormat="yyyy-MM-dd"
-            />
-            <span>~</span>
-            <Datepicker
-              value={endDate}
-              onChange={date => setEndDate(date)}
-              className="flowbite-datepicker"
-              showTodayButton={true}
-              showClearButton={true}
-              dateFormat="yyyy-MM-dd"
-            />
-          </ol.DatePickerInputWrap>
-          <StyledButton size="sm" theme="brown">
-            조회
-          </StyledButton>
-        </ol.DatePickerWrap>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+          <ol.DatePickerWrap>
+            <ol.DatePickerInputWrap>
+              <DatePicker
+                slotProps={{ textField: { size: "small" } }}
+                label="연-월-일"
+                format="yyyy-MM-dd"
+                value={startDate}
+                onChange={(newValue) => setStartDate(new Date(newValue))}
+              />
+              <span>~</span>
+              <DatePicker
+                slotProps={{ textField: { size: "small" } }}
+                label="연-월-일"
+                format="yyyy-MM-dd"
+                value={endDate}
+                onChange={(newValue) => setEndDate(new Date(newValue))}
+              />
+            </ol.DatePickerInputWrap>
+            <StyledButton size="sm" theme="brown" onClick={submit}>
+              조회
+            </StyledButton>
+          </ol.DatePickerWrap>
+        </LocalizationProvider>
         <ol.OrderListWrap>
           <ol.FilterWrapForMainStore>
             <div className="total-count">
               총 <strong>2</strong>건
             </div>
             <form>
-              <div className="select-wrap">
-                <Select value={searchType} onChange={val => setSearchType(val)} label="검색구분">
+            <div className="select-wrap">
+                <Select
+                  value={searchType}
+                  onChange={(val) => setSearchType(val)}
+                  label="검색구분"
+                >
                   <Option value="">전체</Option>
-                  <Option value="status">주문상태</Option>
-                  <Option value="store">가맹점</Option>
+                  <Option value="name">상품명</Option>
+                  <Option value="status">처리상태</Option>
+                  <Option value="kind">수리항목</Option>
                 </Select>
               </div>
               <div className="input-wrap">
-                <Input
-                  value={searchKeyword}
-                  onChange={e => setSearchKeyword(e.target.value)}
-                  label="검색어를 입력하세요"
-                />
+              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={search}/> } label="검색어를 입력하세요"  onChange={(e) => setSearchKeyword(e.target.value)}/>
               </div>
-              <StyledButton size="sm" theme="brown">
-                검색
-              </StyledButton>
             </form>
           </ol.FilterWrapForMainStore>
 
