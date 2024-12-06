@@ -57,7 +57,20 @@ function OrderListForStore() {
       });
   };
 
-  const cancelOrder = () => {};
+  const cancelOrder = (code) => {
+    //경고창 주문 취소 물어보기 (즉시 취소)
+    axiosInToken(token).get(`cancelItemOrder?storeCode=${store.storeCode}&orderCode=${code}`)
+    .then(res=>{
+      if(res.data === true) {
+        alert("주문 취소 완료되었습니다");
+        submit();
+      }
+    }).catch(err=>{
+      console.log(err);
+      alert("취소 불가 본사 문의");
+    })
+
+  };
 
   return (
     <CommonWrapper>
@@ -98,7 +111,7 @@ function OrderListForStore() {
             <div className="status-option">
               <Select value={status}  onChange={handleStatusChange}>
                 <Option value="">전체</Option>
-                <Option value="상품준비중">주문접수</Option>
+                <Option value="주문접수">주문접수</Option>
                 <Option value="배송중">배송중</Option>
                 <Option value="배송완료">배송완료</Option>
                 <Option value="주문취소">주문취소</Option>
@@ -134,8 +147,9 @@ function OrderListForStore() {
           <StyledButton
             size="sm"
             theme="white"
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={(e) => 
+              {e.stopPropagation();
+              cancelOrder(order.orderCode);
             }}
           >
             취소
@@ -145,7 +159,7 @@ function OrderListForStore() {
     </ol.OrderItem>
   ))
 ) : (
-  <div>주문 내역이 없습니다.</div>
+    <div className="mt-7 flex justify-center">주문 내역이 없습니다.</div>
 )}
         </ol.OrderListWrap>
       </CommonContainer>

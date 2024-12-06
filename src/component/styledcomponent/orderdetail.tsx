@@ -26,15 +26,15 @@ export const OrderBasicInfo = styled.ul`
       font-style: normal;
     }
   }
-`;
+`; 
 export const OrderItemHeader = styled(BaseGridHeader)`
-  grid-template-columns: minmax(400px, 1fr) 100px 150px 120px 120px;
-  gap: 10px;
+  grid-template-columns: minmax(400px, 1fr) 100px  120px 120px;
+  gap: 30px;
 `;
 
 export const OrderItemRow = styled(BaseGridItem)`
-  grid-template-columns: minmax(400px, 1fr) 100px 150px 120px 120px;
-  gap: 10px;
+  grid-template-columns: minmax(400px, 1fr) 100px  120px 120px;
+  gap: 30px;
 `;
 
 export const ProductWrap = styled.div`
@@ -71,6 +71,7 @@ export const ProductInfo = styled.div`
     color: #333;
     margin-bottom: 8px;
     font-weight: 500;
+    text-align: left;
   }
 
   .storage-type {
@@ -79,6 +80,34 @@ export const ProductInfo = styled.div`
     color: #333;
   }
 `;
+
+export const ItemStorageType = styled.span<{ $storageway?: string }>`
+     ${({ $storageway }) => 
+        $storageway === "냉동" &&
+    `
+    background: #45b0da;
+    color: #fff;
+    width: auto;
+    padding: 2px 6px;
+    text-indent: initial;
+    font-size: 11px;
+    line-height: 14px;
+  `
+  ||
+  $storageway != "냉동" &&
+    `
+    background: #d26717;
+    color: #fff;
+    padding: 4px 6px;
+    font-size: 10px;
+    line-height: 14px;
+    border-radius: 2px;
+  `}
+  
+
+`;
+
+
 
 
 export const SectionTitle = styled.div`
@@ -107,13 +136,13 @@ export const PaymentColumn = styled.div`
   }
 `;
 
-export const PaymentRow = styled.div<{ isHeader?: boolean }>`
+export const PaymentRow = styled.div<{ $isheader?: boolean }>`
 
   display: grid;
   grid-template-columns: 1fr;
   padding: 15px 20px;
  
-  ${props => props.isHeader && `
+  ${props => props.$isheader && `
     border-bottom: 1px solid #e8e8e8;
      background-color: white;
   `}
@@ -135,7 +164,7 @@ export const PaymentRow = styled.div<{ isHeader?: boolean }>`
 
     .value {
       color: #333;
-      font-weight: ${props => props.isHeader ? '600' : '400'};
+      font-weight: ${props => props.$isheader ? '600' : '400'};
       &.red {
         color: #ff3b3b;
       }

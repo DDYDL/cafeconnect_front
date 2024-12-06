@@ -17,7 +17,6 @@ function Order() {
   const navigate = useNavigate();
   const token = useAtomValue(tokenAtom);
   const store = useAtomValue(memberAtom);
-  const [orderCode,setOrderCode] = useState(''); // 결제 전 검증 절차 후 주문번호 받아옴 
   const [orderItem,setOrderItem] = useState([]);
   const [storeInfo,setStoreInfo] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState('');

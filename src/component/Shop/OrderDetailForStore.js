@@ -7,7 +7,7 @@ import { axiosInToken } from '../../config.js';
 import { useAtomValue } from 'jotai/react';
 import { useParams,useNavigate } from "react-router-dom";
 import { useEffect,useState } from "react";
-import { ko } from "date-fns/locale/ko";
+import { url } from '../../config.js';
 import { format } from "date-fns";
 function OrderDetailForStore() {
     const [orderDetail, setOrderDetail] = useState(null);
@@ -35,16 +35,33 @@ function OrderDetailForStore() {
             orderDate: details[0].orderDate,
             orderState: details[0].orderState,
             orderPayment: details[0].orderPayment,
-            orderDelivery: details[0].orderDelivery,
+            storeName:details[0].storeName,
+            storeAddressNum:details[0].storeAddressNum,
+            storeAddress:details[0].storeAddress,
+            storePhone:details[0].storePhone,
+            ownerName:details[0].ownerName,
             items: details.map(item => ({
               itemCode: item.itemCode,
               itemName: item.itemName,
+              orderState:item.orderState,
+              itemStorage:item.itemStorage,
+              itemCategroy: `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName || "-"}`,
+              itemMajorCategoryName:item.itemMajorCategoryName,
+              itemMiddleCategoryName:item.itemMiddleCategoryName,
+              itemSubCategoryName:item.itemSubCategoryName,
               orderCount: item.orderCount,
+              orderDelivery: item.orderDelivery,
               itemPrice: item.itemPrice,
               totalPrice: item.orderCount * item.itemPrice
             })),
             totalAmount: details.reduce((sum, item) => 
-              sum + (item.itemPrice * item.orderCount), 0)
+              sum + (item.itemPrice * item.orderCount), 0) ,
+            totalCount : details.reduce((count,item)=>
+                count+item.orderCount,0 ),    
+            normalCount: details.reduce((count,item)=>
+                item.itemStorage !=="냉동"? count + item.orderCount : count, 0),
+            iceCount: details.reduce((count,item)=>
+                item.itemStorage ==="냉동"? count + item.orderCount : count, 0)   
           };
           
           setOrderDetail(processedDetail);
@@ -79,25 +96,25 @@ function OrderDetailForStore() {
                         <div>수량</div>
                         <div>총 상품 금액</div>
                         <div>배송</div>
-                        <div>진행상황</div>
+                        {/* <div>진행상황</div> */}
                     </od.OrderItemHeader>
 
                     {orderDetail.items.map((item, index) => (
                         <od.OrderItemRow key={index}>
                             <od.ProductWrap>
                                 <od.ProductImage>
-                                    <img src={item.image} alt={item.itemName} />
+                                    <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} />
                                 </od.ProductImage>
                                 <od.ProductInfo>
-                                    <p className="categoryformat">{item.category}</p>
-                                    <p className="name">{item.name}</p>
-                                    <p className="storage-type">{item.storageType}</p>
+                                    <p className="categoryformat">{item.itemCategroy}</p>
+                                    <p className="name">{item.itemName}</p>
+                                    <p className="storage-type"><od.ItemStorageType $storageway={item.itemStorage}>{item.itemStorage}</od.ItemStorageType></p>
                                 </od.ProductInfo>
                             </od.ProductWrap>
-                            <div>{item.quantity}</div>
-                            <div>{(item.price * item.quantity).toLocaleString()}원</div>
-                            <div>{item.shipping}</div>
-                            <div>배송완료</div>
+                            <div>{item.orderCount}</div>
+                            <div>{(item.itemPrice * item.orderCount).toLocaleString()}원</div>
+                            <div>{item.orderDelivery}</div>
+                            {/* <div>{item.orderState}</div> */}
                         </od.OrderItemRow>
                     ))}
                     <od.SectionTitle>
@@ -106,29 +123,29 @@ function OrderDetailForStore() {
 
                     <od.PaymentInfoGrid>
             <od.PaymentColumn>
-                <od.PaymentRow isHeader >
+                <od.PaymentRow $isheader >
                     <div className="payment-item">
                         <span className="label">총 주문 개수</span>
-                        {/* <span className="value">{orderDetail.totalCount.total}개</span> */}
+                        <span className="value">{orderDetail.totalCount}개</span>
                     </div>
                 </od.PaymentRow>
                 <od.PaymentRow>
                     <div className="payment-item">
                         <span className="label">일반 상품</span>
-                        {/* <span className="value">{orderDetail.totalCount.normal}개</span> */}
+                        <span className="value">{orderDetail.normalCount}개</span>
                     </div>
                     <div className="payment-item">
                         <span className="label">냉동 상품</span>
-                        {/* <span className="value">{orderDetail.totalCount.cold}개</span> */}
+                        <span className="value">{orderDetail.iceCount}개</span>
                     </div>
                 </od.PaymentRow>
             </od.PaymentColumn>
 
             <od.PaymentColumn>
-                <od.PaymentRow isHeader>
+                <od.PaymentRow $isheader>
                     <div className="payment-item">
                         <span className="label">결제 수단</span>
-                        {/* <span className="value">{orderDetail.paymentMethod.type}</span> */}
+                        <span className="value">{orderDetail.orderPayment}</span>
                     </div>
                 </od.PaymentRow>
                 <od.PaymentRow>
@@ -139,11 +156,11 @@ function OrderDetailForStore() {
             </od.PaymentColumn>
 
             <od.PaymentColumn>
-                <od.PaymentRow isHeader>
+                <od.PaymentRow $isheader>
                     <div className="payment-item">
                         <span className="label">총 결제금액</span>
                         <span className="value red">
-                            {/* {orderDetail.payment.finalAmount.toLocaleString()}원 */}
+                            {orderDetail.totalAmount.toLocaleString()}원
                         </span>
                     </div>
                 </od.PaymentRow>
@@ -164,23 +181,27 @@ function OrderDetailForStore() {
                     <od.InfoTable>
                         <tbody>
                             <tr>
-                                <th>주문자</th>
-                                {/* <td>{orderDetail.delivery.receiver}</td> */}
+                                <th>가맹점명</th>
+                                <td>{orderDetail.storeName}</td>
                             </tr>
                             <tr>
-                                <th>휴대폰번호</th>
-                                {/* <td>{orderDetail.delivery.phone}</td> */}
+                                <th>주문자</th>
+                                <td>{orderDetail.ownerName||"-"}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{orderDetail.storePhone||"-"}</td>
                             </tr>
                             <tr>
                                 <th>배송지 주소</th>
-                                {/* <td>{orderDetail.delivery.address}</td> */}
+                                <td>({orderDetail.storeAddressNum||"-"}){orderDetail.storeAddress||"-"}</td>
                             </tr>
                        
                         </tbody>
                     </od.InfoTable>
 
                     <od.ButtonWrapper>
-                        <StyledButton size="md" theme="brown">목록</StyledButton>
+                        <StyledButton size="md" theme="brown" onClick={()=>navigate('/orderList')}>목록</StyledButton>
                     </od.ButtonWrapper>
                 </od.OrderDetailWrap>
             </CommonContainer>
