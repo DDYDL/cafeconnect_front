@@ -36,6 +36,8 @@ const ComplainList = () => {
     fetchStoreCode();
   }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
+  useEffect(() => {}, []);
+
   const fetchData = useCallback(async () => {
     if (!token || !storeCode) return; // 토큰 또는 storeCode가 없는 경우 요청 생략
     try {
@@ -54,6 +56,27 @@ const ComplainList = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]); // fetchData를 의존성 배열에 추가
+
+  const handleSearch = () => {
+    if (searchComplain.trim() === "") {
+      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
+      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+    } else {
+      // 검색어가 있을 경우, complain 리스트 필터링
+      const filteredComplains = complain.filter(
+        c => c.complainTitle.toLowerCase().includes(searchComplain.toLowerCase()) // 대소문자 구분 없이 검색
+      );
+
+      setComplain(filteredComplains); // 필터링된 complain 리스트 상태로 업데이트
+    }
+  };
+
+  // Enter 키로 검색
+  const handleKeyDown = e => {
+    if (e.key === "Enter") {
+      handleSearch(); // Enter 키가 눌렸을 때 검색 실행
+    }
+  };
 
   // 기간 필터링
   const filterComplainsByPeriod = period => {
@@ -78,8 +101,8 @@ const ComplainList = () => {
   };
 
   // 검색 필터링
-  const filterComplainsBySearch = searchText =>
-    complain.filter(c => c.complainTitle.toLowerCase().includes(searchText.toLowerCase()));
+  // const filterComplainsBySearch = searchText =>
+  //   complain.filter(c => c.complainTitle.toLowerCase().includes(searchText.toLowerCase()));
 
   // 전체 필터링
   const getFilteredComplains = () => {
@@ -88,9 +111,9 @@ const ComplainList = () => {
     if (selectedButton !== null) {
       filtered = filterComplainsByPeriod(buttonLabels[selectedButton]);
     }
-    if (searchComplain) {
-      filtered = filterComplainsBySearch(searchComplain);
-    }
+    // if (searchComplain) {
+    //   filtered = filterComplainsBySearch(searchComplain);
+    // }
 
     return filtered;
   };
@@ -133,8 +156,14 @@ const ComplainList = () => {
               label="제목 검색"
               value={searchComplain}
               onChange={e => setSearchComplain(e.target.value)}
+              onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
             />
-            <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} />
+            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
+            <MagnifyingGlassIcon
+              className="h-5 w-5"
+              style={searchIconStyle}
+              onClick={handleSearch} // 아이콘 클릭 시 검색 함수 실행
+            />
           </s.SearchDiv>
         </s.ButtonDiv>
       </HeadingContainer1>

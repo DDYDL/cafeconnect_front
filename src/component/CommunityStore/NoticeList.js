@@ -12,6 +12,7 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 // 공지사항 리스트(가맹점)
 const NoticeList = () => {
+  const [storeCode, setStoreCode] = useState(null);
   const [notice, setNotice] = useState([]);
   const token = useAtomValue(tokenAtom);
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
@@ -19,21 +20,35 @@ const NoticeList = () => {
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchNotice, setSearchNotice] = useState("");
 
-  // 공지사항 데이터를 가져오는 useEffect
+  // useCallback 제거된 fetchStoreCode
+  const fetchStoreCode = async () => {
+    try {
+      if (!token) return;
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode;
+      setStoreCode(storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  };
+
+  const fetchData = async () => {
+    if (!token || !storeCode) return;
+    try {
+      const response = await axiosInToken(token).get(`/noticeList/${storeCode}`);
+      const formattedData = response.data.map(notice => ({
+        ...notice,
+        noticeDate: new Date(notice.noticeDate).toLocaleDateString("ko-KR"),
+      }));
+      setNotice(formattedData);
+    } catch (err) {
+      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+    }
+  };
+
+  // useEffect는 그대로 유지
   useEffect(() => {
-    const fetchData = () => {
-      axiosInToken(token)
-        .get("noticeList")
-        .then(res => {
-          console.log(res.data);
-          setNotice([...res.data]);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    };
-    if (token != null && token !== "") fetchData();
-    fetchData();
+    fetchStoreCode();
   }, [token]);
 
   const handleItemClick = noticeNum => {
@@ -41,13 +56,25 @@ const NoticeList = () => {
     navigate(`/noticeDetail/${noticeNum}`);
   };
 
-  // 검색 버튼 클릭 핸들러
-  const onSearchClick = () => {
-    setIsSearchActive(true);
+  const handleSearch = () => {
+    if (searchNotice.trim() === "") {
+      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
+      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+    } else {
+      // 검색어가 있을 경우, complain 리스트 필터링
+      const filteredNoticeList = notice.filter(
+        a => a.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase()) // 대소문자 구분 없이 검색
+      );
+
+      setNotice(filteredNoticeList); // 필터링된 complain 리스트 상태로 업데이트
+    }
   };
 
-  const onChangeNotice = e => {
-    setSearchNotice(e.target.value);
+  // Enter 키로 검색
+  const handleKeyDown = e => {
+    if (e.key === "Enter") {
+      handleSearch(); // Enter 키가 눌렸을 때 검색 실행
+    }
   };
 
   const filterNotice = notice.filter(n =>
@@ -72,24 +99,14 @@ const NoticeList = () => {
               name="search"
               label="제목 검색"
               value={searchNotice}
-              onChange={onChangeNotice}
-              onKeyDown={e => {
-                if (e.key === "Enter") {
-                  onSearchClick(); // Enter 키를 누르면 onSearchClick 실행
-                }
-              }}
+              onChange={e => setSearchNotice(e.target.value)}
+              onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
             />
+            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
             <MagnifyingGlassIcon
-              onClick={onSearchClick} // 검색 버튼으로 사용
               className="h-5 w-5"
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#333",
-              }}
+              style={searchIconStyle}
+              onClick={handleSearch} // 아이콘 클릭 시 검색 함수 실행
             />
           </s.SearchDiv>
         </s.ButtonDiv>
@@ -133,6 +150,15 @@ const NoticeList = () => {
       <CustomHorizontal width="basic" bg="grey" />
     </ContentListDiv>
   );
+};
+
+const searchIconStyle = {
+  position: "absolute",
+  right: "10px",
+  top: "50%",
+  transform: "translateY(-50%)",
+  cursor: "pointer",
+  color: "#333",
 };
 
 const HeadingContainer = styled.div`
