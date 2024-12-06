@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { Menu, MenuItem, MenuList } from '@material-tailwind/react';
+import { Menu, MenuItem, MenuList, Select } from '@material-tailwind/react';
 
 interface Container {
     marginRight:string;
@@ -12,6 +12,38 @@ export const Div = styled.div`
     width:100%;
     top:0px;
     position:absolute;
+`;
+
+export const SelectDivTop = styled.div`
+    width:100px;
+    height:25px;
+    text-align:left;
+`;
+
+export const SelectInnerDivTop = styled.div`
+    width:100px;
+    height:25px;
+
+    & > div {
+        width:100px;
+        height:25px;
+        min-height:20px !important;
+        min-width:100px !important;
+        padding-top:0px;
+    }
+
+    & label {
+        top: -15px;
+    }
+`;
+
+export const SelectBoxTop = styled(Select)`
+    width:100px;
+    height:25px;
+    border-radius:5px;
+    border-color:rgba(234, 234, 234, 1);
+    padding-top:2px;
+    padding-bottom:3px;
 `;
 
 export const DivLogo = styled.div`
@@ -26,11 +58,11 @@ export const DivLogo = styled.div`
 
 export const DivSide = styled.div`
     width:200px;
-    height:20px;
+    height:30px;
     display:inline-block;
     text-align:right;
-    vertical-align:bottom;
-    margin-top:45px;
+    vertical-align:middle;
+    margin-top:35px;
     right:30px;
     font-size:12px;
     position:absolute;

@@ -3,7 +3,7 @@ import * as h from '../styles/StyledHeader.tsx';
 import * as m from '../styles/StyledMypage.tsx';
 
 import {useEffect, useState} from "react";
-import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody } from "@material-tailwind/react";
+import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody, Option } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';
 import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
@@ -28,6 +28,14 @@ const StoreHeader = ({alarms})=>{
   // Jotai에 있는 알람 가져오기
   const setAlarms = useSetAtom(alarmsAtom);
 
+  const [storeList, setStoreList] = useState([]);
+  const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
+
+
+  useEffect(()=>{
+    selectStoreList();
+  }, [])
+
   // 알람 체크박스 클릭 시 alarmStatus 바꾸기
   const alarmConfirm = (alarmNum)=>{
     axios.get(`${url}/alarmConfirm/${alarmNum}`)
@@ -43,6 +51,32 @@ const StoreHeader = ({alarms})=>{
         })
   }
 
+  // 모든 가맹점 조회
+  const selectStoreList = ()=>{
+    axios.get(`${url}/selectStoreList/${member.username}`)
+    .then(res=>{
+        console.log(res.data);
+        setStoreList([...res.data]);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+  }
+
+  //가맹점 바꾸면 알람 다시 가져오기
+  const getAlarmList = ()=>{
+    axios.post(`${url}/alarms`,{storeCode:member.storeCode})
+      .then(res=> {
+      console.log(res.data)
+      if(res.data.length!==0) {
+        setAlarms([...alarms,...res.data]);
+      }
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+  }
+
   // 로그아웃
   const logout = ()=>{
     setOpenMenu(false);
@@ -54,16 +88,32 @@ const StoreHeader = ({alarms})=>{
 
     navigate("/loginStore");
   }
+  
+  // 가맹점 바꾸기
+  const changeStore = (value)=>{
+    setMember({...member, ['storeCode']:value})
+    console.log(value);
+    getAlarmList();
+  }
 
   return(
       <div>
         <h.Div className="navbar">
           <h.DivLogo>
-            <NavLink to="/shopMain"><h.Logo src="/logo.svg" /></NavLink>
+            <NavLink to="/shopMain"><h.Logo src="/logo.svg"/></NavLink>
           </h.DivLogo>
 
           <h.DivSide>
-            <h.NavLinkSide to="/changeStore">독산역점</h.NavLinkSide>
+            {/* <h.NavLinkSide to="/changeStore">독산역점</h.NavLinkSide> */}
+            <h.SelectDivTop>
+              <h.SelectInnerDivTop>
+                <h.SelectBoxTop label="store" onChange={(e)=>changeStore(e)}>
+                  {storeList.map(store=>(
+                    <Option value={store.storeCode}>{store.storeName}</Option>
+                  ))}
+                </h.SelectBoxTop>
+              </h.SelectInnerDivTop>
+            </h.SelectDivTop>
             <h.VerticalLine/>
             <h.NavLinkSide to="/logout" onClick={logout}>로그아웃</h.NavLinkSide>
           </h.DivSide>
