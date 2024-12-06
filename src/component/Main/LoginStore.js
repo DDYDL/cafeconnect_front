@@ -45,6 +45,7 @@ const LoginStore = () => {
             const token = res.headers.authorization;
             // 세션 스토리지에 토큰 설정
             setToken(token);
+            console.log(token);
             
             // token을 가지고 다시 사용자 정보 요청
             axiosInToken(token).get("store")
@@ -52,6 +53,7 @@ const LoginStore = () => {
                 // 성공 시 세션 스토리지에 사용자 정보 저장
                 setSessionMember(res.data);
                 console.log(res.data);
+                console.log(fcmToken);
 
                 // 사용자 정보 저장 후 fcm token 요청
                 axios.post(`${url}/fcmToken`,{username:member.username, fcmToken:fcmToken})
