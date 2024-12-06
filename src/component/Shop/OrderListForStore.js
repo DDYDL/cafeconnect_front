@@ -1,79 +1,108 @@
-import {CommonWrapper,CommonContainer,ContainerTitleArea,} from "../styledcomponent/common.tsx";
-import * as ol from '../styledcomponent/orderlist.tsx';
-import {StyledButton} from '../styledcomponent/button.tsx';
-import { Datepicker } from 'flowbite-react';
+import {
+  CommonWrapper,
+  CommonContainer,
+  ContainerTitleArea,
+} from "../styledcomponent/common.tsx";
+import * as ol from "../styledcomponent/orderlist.tsx";
+import { StyledButton } from "../styledcomponent/button.tsx";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ko } from "date-fns/locale/ko";
+import { format } from "date-fns";
 import { Select, Option } from "@material-tailwind/react";
-import {useState} from 'react'
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInToken } from "../../config.js";
+import { useAtomValue } from "jotai/react";
+import { tokenAtom, memberAtom } from "../../atoms";
 function OrderListForStore() {
-    const navigate= useNavigate();
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [status, setStatus] = useState("");
-    const orders = [
-        {
-          orderDate: '2024-10-21',
-          orderNumber: '20241021-0000240',
-          productInfo: "과테말라 코반 스페셜티/에티오피아 코케허니 G1스페셜티/케냐AA드립백세트(6개입/1box)/에티오피아 코케허니 G1스페셜티 ",
-          category: '가공식품/캔류/디카페인',
-          quantity: 1,
-          price: 8900,
-          status: '상품준비중'
-        },
-        {
-          orderDate: '2024-10-21',
-          orderNumber: '20241021-0000240',
-          productInfo: '과테말라 코반 스페셜티...',
-          category: '가공식품/캔류/디카페인',
-          quantity: 1,
-          price: 8900,
-          status: '주문확인중'
-        }
-      ];
-    const cancelOrder=()=>{
-      
-    }
-    return(
+  const today = new Date();
+  const monthAgo = new Date(today);
+  monthAgo.setMonth(today.getMonth() - 1);
+  const [startDate, setStartDate] = useState(monthAgo);
+  const [endDate, setEndDate] = useState(today);
+  const [status, setStatus] = useState("");
+  const [orderList, setOrderList] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const store = useAtomValue(memberAtom);
+  const token = useAtomValue(tokenAtom);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token != null && token !== "") submit();
+  }, [token, store.storeCode]);
+
+  const handleStatusChange=(val)=>{
+    setStatus(val);
+    submit();
+  }
+
+  const submit = () => {
+    const formData = new FormData();
+    formData.append("storeCode", store.storeCode);
+    formData.append("startDate", format(startDate, "yyyy-MM-dd"));
+    formData.append("endDate", format(endDate, "yyyy-MM-dd"));
+    if (status) formData.append("orderState", status);
+
+    axiosInToken(token)
+      .post("orderListForStore", formData)
+      .then((res) => {
+        console.log(res.data);
+        setOrderList(res.data.orderList || []);
+        setTotalCount(res.data.totalCount || 0);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const cancelOrder = () => {};
+
+  return (
     <CommonWrapper>
-        <CommonContainer size="1000px">
-            <ContainerTitleArea><h2>주문내역</h2></ContainerTitleArea>
-            <ol.DatePickerWrap>
+      <CommonContainer size="1000px">
+        <ContainerTitleArea>
+          <h2>주문내역</h2>
+        </ContainerTitleArea>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+          <ol.DatePickerWrap>
             <ol.DatePickerInputWrap>
-            <Datepicker
-              value={startDate}
-              onChange={(date) => setStartDate(date)}
-              className="flowbite-datepicker"
-              showTodayButton={true}
-              showClearButton={true}
-              dateFormat="yyyy-MM-dd"
-            />
-            <span>~</span>
-            <Datepicker
-              value={endDate}
-              onChange={(date) => setEndDate(date)}
-              className="flowbite-datepicker"
-              showTodayButton={true}
-              showClearButton={true}
-              dateFormat="yyyy-MM-dd"
-            />
-          </ol.DatePickerInputWrap>
-          <StyledButton size="sm" theme="brown">조회</StyledButton>
-        </ol.DatePickerWrap>
+              <DatePicker
+                slotProps={{ textField: { size: "small" } }}
+                label="연-월-일"
+                format="yyyy-MM-dd"
+                value={startDate}
+                onChange={(newValue) => setStartDate(new Date(newValue))}
+              />
+              <span>~</span>
+              <DatePicker
+                slotProps={{ textField: { size: "small" } }}
+                label="연-월-일"
+                format="yyyy-MM-dd"
+                value={endDate}
+                onChange={(newValue) => setEndDate(new Date(newValue))}
+              />
+            </ol.DatePickerInputWrap>
+            <StyledButton size="sm" theme="brown" onClick={submit}>
+              조회
+            </StyledButton>
+          </ol.DatePickerWrap>
+        </LocalizationProvider>
+
         <ol.OrderListWrap>
-        <ol.FilterWrapForStore>
+          <ol.FilterWrapForStore>
             <div className="total-count">
-              총 <strong>2</strong>건
+              총 <strong>{totalCount}</strong>건
             </div>
             <div className="status-option">
-            <Select
-              value={status}
-              onChange={(val) => setStatus(val)}  
-            >
-              <Option value="">전체</Option>
-              <Option value="preparing">상품준비중</Option>
-              <Option value="shipping">배송중</Option>
-              <Option value="completed">배송완료</Option>
-            </Select>
+              <Select value={status}  onChange={handleStatusChange}>
+                <Option value="">전체</Option>
+                <Option value="상품준비중">주문접수</Option>
+                <Option value="배송중">배송중</Option>
+                <Option value="배송완료">배송완료</Option>
+                <Option value="주문취소">주문취소</Option>
+              </Select>
             </div>
           </ol.FilterWrapForStore>
 
@@ -86,37 +115,41 @@ function OrderListForStore() {
             <div>주문처리상태</div>
             <div>취소신청</div>
           </ol.OrderHeader>
-
-          {orders.map((order, index) => (
-            <ol.OrderItem key={index} onClick={()=>navigate("/orderDetail")}>
-              <div>{order.orderDate}</div>
-              <div>{order.orderNumber}</div>
-              <div>{order.productInfo}</div>
-              <div>{order.quantity}</div>
-              <div>{order.price.toLocaleString()}원</div>
-              <div>{order.status}</div>
-              <div>
-                {order.status != '상품준비중' ? (
-                  <span>취소불가</span>
-                ) : (
-                  <StyledButton 
-                    size="sm" 
-                    theme="white"
-                    disabled={order.status === '배송중'}
-                    onClick={(e) => {
-                      e.stopPropagation(); // 버튼 클릭시에 디테일 안넘어가게함
-                      cancelOrder(); 
-                    }}
-                  >
-                    취소
-                  </StyledButton>
-                )}
-              </div>
-            </ol.OrderItem>
-          ))}
+          {orderList && orderList.length > 0 ? (
+  orderList.map((order, index) => (
+    <ol.OrderItem
+      key={index}
+      onClick={() => navigate(`/orderDetail/${order.orderCode}`)}
+    >
+      <div>{format(new Date(order.orderDate), "yyyy-MM-dd")}</div>
+      <div>{order.orderCode}</div>
+      <div>{order.orderItems.map(item => item.itemName).join(", ")}</div>
+      <div>{order.orderItems.reduce((sum, item) => sum + item.orderCount, 0)}</div>
+      <div>{order.totalAmount.toLocaleString()}원</div>
+      <div>{order.orderState}</div>
+      <div>
+        {order.orderState !== "주문접수" ? (
+          <span>취소불가</span>
+        ) : (
+          <StyledButton
+            size="sm"
+            theme="white"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            취소
+          </StyledButton>
+        )}
+      </div>
+    </ol.OrderItem>
+  ))
+) : (
+  <div>주문 내역이 없습니다.</div>
+)}
         </ol.OrderListWrap>
-        </CommonContainer>
+      </CommonContainer>
     </CommonWrapper>
-    )
+  );
 }
 export default OrderListForStore;

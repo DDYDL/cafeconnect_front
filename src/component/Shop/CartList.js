@@ -124,6 +124,10 @@ const formatCategory = (item) => {
 //주문하기 -장바구니 전체 주문 
 const handleOrder = () => {
   const cartNums = cartItems.map(item => item.cartNum);
+  if(cartNums.length===0){
+    alert('주문 상품이 존재하지 않습니다.');
+    return;
+  }
   navigate('/order', { state: { cartNums } }); //주문처리는 url에 남지 않도록 state에 담음.
  };
 
