@@ -10,8 +10,9 @@ import { url } from '../../config.js';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import {ko} from 'date-fns/locale';
-import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { format, parse } from 'date-fns';
+import ReactSelect from "react-select";
 
 const MyStoreInfo = () => {
     // Jotai의 member 가져오기
@@ -23,20 +24,68 @@ const MyStoreInfo = () => {
     // Jotai에 있는 알람 가져오기
     const setAlarms = useSetAtom(alarmsAtom);
 
+    
     const [store, setStore] = useState(
-    {
-        storeCode:0, storeName:'', storeAddress:'', storeAddressNum:0, storePhone:'',
-        storeOpenTime:'', storeCloseTime:'', storeCloseDate:'', storeOpenTimeStr:'', storeCloseTimeStr:'',
-        contractDate:'', contractPeriodStart:'', contractPeriodEnd:'', openingDate:'',
-        username:member.username, password:'********',
-        ownerName:'', ownerPhone:'', managerName:'', managerPhone:''
+        {
+            storeCode:0, storeName:'', storeAddress:'', storeAddressNum:0, storePhone:'',
+            storeOpenTime:'', storeCloseTime:'', storeCloseDate:'', storeOpenTimeStr:'', storeCloseTimeStr:'',
+            contractDate:'', contractPeriodStart:'', contractPeriodEnd:'', openingDate:'',
+            username:member.username, password:'********',
+            ownerName:'', ownerPhone:'', managerName:'', managerPhone:''
+        });
+
+    // 기본 날짜, 시간 설정
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [timeDate, setTimeDate] = useState({
+        contractDate: new Date(2020,0,1,0,0,0),
+        openingDate: new Date(2020,0,1,0,0,0),
+        contractPeriodStart: new Date(2020,0,1,0,0,0),
+        contractPeriodEnd: new Date(2020,0,1,0,0,0),
+        storeOpenTime: new Date(2000,0,1,0,0,0),
+        storeCloseTime: new Date(2000,0,1,0,0,0)      
     });
+
+    // DB용 날짜, 시간 변환
+    useEffect(()=> {
+        setStore({ ...store, ['contractDate']: format(timeDate.contractDate, 'yyyy-MM-dd')});
+    }, [timeDate.contractDate])
+    useEffect(()=> {
+        setStore({ ...store, ['openingDate']: format(timeDate.openingDate, 'yyyy-MM-dd')});
+    }, [timeDate.openingDate])
+    useEffect(()=> {
+        setStore({ ...store, ['contractPeriodStart']: format(timeDate.contractPeriodStart, 'yyyy-MM-dd')});
+    }, [timeDate.contractPeriodStart])
+    useEffect(()=> {
+        setStore({ ...store, ['contractPeriodEnd']: format(timeDate.contractPeriodEnd, 'yyyy-MM-dd')});
+    }, [timeDate.contractPeriodEnd])
+    useEffect(()=> {
+        setStore({ ...store, ['storeOpenTime']: format(timeDate.storeOpenTime, 'HH:mm:SS') });
+    }, [timeDate.storeOpenTime])
+    useEffect(()=> {
+        setStore({ ...store, ['storeCloseTime']: format(timeDate.storeCloseTime, 'HH:mm:SS') });
+    }, [timeDate.storeCloseTime])
+
 
     useEffect(()=>{
         setStore({});
         setMember(member);
         getStore();
     }, [])
+
+    // DB에서 가져온 날짜, 시간 변환
+    const setDefaultTimeDate = (data)=>{
+        console.log(data.storeOpenTime);
+        setTimeDate({
+            contractDate: new Date(data.contractDate),
+            contractPeriodStart: new Date(data.contractPeriodStart),
+            contractPeriodEnd: new Date(data.contractPeriodEnd),
+            openingDate: data.openingDate? new Date(data.openingDate):new Date(2000,0,1,0,0,0) ,
+            storeOpenTime: data.storeOpenTime? parse("2000-01-01T"+data.storeOpenTime,"yyyy-MM-dd'T'HH:mm:ss", new Date()):new Date(2000,0,1,0,0,0),
+            storeCloseTime: data.storeCloseTime? parse("2000-01-01T"+data.storeCloseTime,"yyyy-MM-dd'T'HH:mm:ss", new Date()):new Date(2000,0,1,0,0,0),
+        });
+        console.log(timeDate.storeOpenTime);
+        setSelectedDay({value:data.storeCloseDate, label:data.storeCloseDate==''? "연중무휴":data.storeCloseDate});
+    }
 
     const edit = (e)=>{
         setStore({...store, [e.target.name]:e.target.value});
@@ -47,6 +96,7 @@ const MyStoreInfo = () => {
         .then(res=>{
             console.log(res.data);
             setStore(res.data);
+            setDefaultTimeDate(res.data);
         })
         .catch(err=>{
             console.log(err);
@@ -98,6 +148,22 @@ const MyStoreInfo = () => {
         })
     }
 
+    const selectDay = (selectedOption) => {
+        setSelectedDay(selectedOption);
+        setStore({...store, ['storeCloseDate']: selectedOption.value})
+    };
+
+    const dayOfweekArr = [
+        {value: '', label: '연중무휴'},
+        {value: '월', label: '월'},
+        {value: '화', label: '화'},
+        {value: '수', label: '수'},
+        {value: '목', label: '목'},
+        {value: '금', label: '금'},
+        {value: '토', label: '토'},
+        {value: '일', label: '일'}
+    ];
+
     return (
         <>
             <s.ContentListDiv>
@@ -116,7 +182,7 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 주소</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>({store.storeAddressNum}){store.storeAddress}</m.TableInfoTd>
+                        <m.TableInfoTd>({store.storeAddressNum})&nbsp;{store.storeAddress}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점/HP</m.TableTitleSpan></m.TableInfoTd>
@@ -128,14 +194,14 @@ const MyStoreInfo = () => {
                             <m.TimePickerPeriodWrap>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                                 <TimePicker
-                                    value={store.storeOpenTime}
-                                    onChange={(time) => setStore({store, ['storeOpenTime']: format(time, 'HH:mm:SS') })}
+                                    value={timeDate.storeOpenTime}
+                                    onChange={(time) => setStore({timeDate, ['storeOpenTime']: time })}
                                     className="CustomPicker"
                                     format='HH:mm'
                                 /><div>~</div>
                                 <TimePicker
-                                    value={store.storeCloseTime}
-                                    onChange={(time) => setStore({store, ['storeCloseTime']: format(time, 'HH:mm:SS') })}
+                                    value={timeDate.storeCloseTime}
+                                    onChange={(time) => setStore({timeDate, ['storeCloseTime']: time })}
                                     className="CustomPicker"
                                     format='HH:mm'
                                 />
@@ -145,15 +211,55 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' name='storeCloseDate' value={store.storeCloseDate} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd>
+                            <m.ReactSelectDiv>
+                                <ReactSelect
+                                    isSearchable={false}
+                                    value={selectedDay} 
+                                    options={dayOfweekArr} 
+                                    onChange={selectDay}
+                                />
+                            </m.ReactSelectDiv>
+                        </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>계약채결일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractDate}</m.TableInfoTd>
+                    <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
+                        <m.TableInfoTd> 
+                        <m.DatePickerWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={timeDate.contractDate}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setTimeDate({ ...timeDate, ['contractDate']: date })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </m.DatePickerWrap></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractPeriodStart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
+                    <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
+                    <m.TableInfoTd> 
+                    <m.DatePickerPeriodWrap>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+                            <DatePicker
+                                value={timeDate.contractPeriodStart}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodStart']: date })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                            <div>~</div>
+                            <DatePicker
+                                value={timeDate.contractPeriodEnd}
+                                showDaysOutsideCurrentMonth
+                                onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodEnd']: date })}
+                                className="CustomPicker"
+                                format='yyyy.MM.dd'
+                            />
+                        </LocalizationProvider>
+                        </m.DatePickerPeriodWrap>
+                        </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>
