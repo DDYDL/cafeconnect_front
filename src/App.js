@@ -81,6 +81,7 @@ import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 import { url } from "./config.js";
 import { firebaseReqPermission, registerServiceWorker } from "./firebaseconfig.js";
+import SocialLogin from "./component/Main/SocialLogin.js";
 
 function App() {
   const [path, setPath] = useState(false);
@@ -169,6 +170,8 @@ function App() {
         <Route exect path="/logout" element={<IntroMain />} />
         <Route exect path="/joinStore" element={<JoinStore />} />
 
+        <Route exect path="/socialLogin" element={<SocialLogin/>} />
+
         {/* 가맹점 페이지 링크 */}
 
         {/* <Route exect path="/changeStore" element={<Store/>} /> */}
@@ -195,7 +198,7 @@ function App() {
           }
         />
         <Route exect path="/orderList" element={<OrderListForStore />} />
-        <Route exect path="/orderDetail" element={<OrderDetailForStore />} />
+        <Route exect path="/orderDetail/:orderCode" element={<OrderDetailForStore />} />
 
         <Route exect path="/repairRequestList" element={<RepairRequestList />} />
         <Route exect path="/repairRequest" element={<RepairRequestForm />} />

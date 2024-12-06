@@ -6,20 +6,32 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { url } from '../../config.js';
+import { Pagination, PaginationItem, PaginationLink } from '@mui/material';
 
 const Complain = () => {
     const [complainList, setComplainList] = useState([]);
+    const [pageBtn, setPageBtn] = useState([]);
+    const [pageInfo, setPageInfo] = useState({});
 
     useEffect(()=>{
         setComplainList([]);
-        getComplainList();
+        // 처음 가져오므로 1페이지
+        getComplainList(1);
     }, [])
 
-    const getComplainList = ()=>{
-        axios.get(`${url}/complainList`)
+    const getComplainList = (page)=>{
+        axios.get(`${url}/complainList/${page}`)
         .then(res=>{
             console.log(res.data);
-            setComplainList([...res.data]);
+            let pageInfo = res.data.pageInfo;
+            let page = [];
+
+            setComplainList([...res.data.complainList]);
+            for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+                page.push(i);
+            }
+            setPageBtn([...page]);
+            setPageInfo(pageInfo);
         })
         .catch(err=>{
             console.log(err);
@@ -52,16 +64,14 @@ const Complain = () => {
                 </tbody>
             </s.TableList>
 
-                <s.PageButtonGroupDiv>
-                    <s.ButtonGroupStyle variant="outlined">
+            <s.PageButtonGroupDiv>
+                <s.ButtonGroupStyle variant="outlined">
                     <s.IconButtonStyle>
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                     </s.IconButtonStyle>
-                    <s.IconButtonStyle>1</s.IconButtonStyle>
-                    <s.IconButtonStyle>2</s.IconButtonStyle>
-                    <s.IconButtonStyle>3</s.IconButtonStyle>
-                    <s.IconButtonStyle>4</s.IconButtonStyle>
-                    <s.IconButtonStyle>5</s.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <s.IconButtonStyle key={page} onClick={()=>{getComplainList(page)}}>{page}</s.IconButtonStyle>
+                    ))}
                     <s.IconButtonStyle>
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                     </s.IconButtonStyle>

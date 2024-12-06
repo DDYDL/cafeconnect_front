@@ -129,13 +129,13 @@ const MyStoreInfo = () => {
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                                 <TimePicker
                                     value={store.storeOpenTime}
-                                    onChange={(time) => setStore({ ...store, ['storeOpenTime']: format(time, 'HH:mm:SS') })}
+                                    onChange={(time) => setStore({store, ['storeOpenTime']: format(time, 'HH:mm:SS') })}
                                     className="CustomPicker"
                                     format='HH:mm'
                                 /><div>~</div>
                                 <TimePicker
                                     value={store.storeCloseTime}
-                                    onChange={(time) => setStore({ ...store, ['storeCloseTime']: format(time, 'HH:mm:SS') })}
+                                    onChange={(time) => setStore({store, ['storeCloseTime']: format(time, 'HH:mm:SS') })}
                                     className="CustomPicker"
                                     format='HH:mm'
                                 />

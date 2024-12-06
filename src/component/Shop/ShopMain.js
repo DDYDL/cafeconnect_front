@@ -3,9 +3,10 @@ import { useState ,useEffect} from 'react';
 import { Carousel } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import * as s from '../styledcomponent/shopmain.tsx'
-import { useAtomValue } from 'jotai/react';
-import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { tokenAtom, memberAtom, fcmTokenAtom, alarmsAtom } from '../../atoms';
+import { axiosInToken, url } from '../../config.js';
+import axios from 'axios';
 
 function ShopMain() {
   
@@ -14,8 +15,16 @@ function ShopMain() {
   const [items,setItems] = useState({});
   const [quantity, setQuantity] = useState({});
 
+  // fcm token value 가져오기
+  const [fcmToken, setFcmToken] = useAtom(fcmTokenAtom);
+  // 세션 스토리지 member 설정
+  const [member, setMember] = useAtom(memberAtom);
+  // 알람 리스트 가져오기
+  const [alarms, setAlarms] = useAtom(alarmsAtom);
+
   useEffect(()=>{
-    getMajorItems();
+    if(token!==null && token!=='') getMajorItems();
+    getFcmToken();
   },[token]);
 
   const getMajorItems=()=>{
@@ -24,6 +33,30 @@ function ShopMain() {
       setItems(res.data.allCategory)
     })
     
+  }
+
+  const getFcmToken = ()=>{
+    // 사용자 정보 저장 후 fcm token 요청
+    axios.post(`${url}/fcmToken`,{username:member.username, fcmToken:fcmToken})
+    .then(res=> {
+        if(res.data!==null) {
+            console.log(res.data);
+            // 토큰 저장에 성공 시 알람 리스트 요청
+            axios.post(`${url}/alarms`,{storeCode:res.data})
+                .then(res=> {
+                    console.log(res.data)
+                    if(res.data.length!==0) {
+                        setAlarms([...alarms,...res.data]);
+                    }
+                })
+                .catch(err=>{
+                    console.log(err);
+                })
+        }
+    })
+    .catch(err=>{
+        console.log(err)
+    })
   }
 
 

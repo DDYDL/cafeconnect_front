@@ -4,11 +4,11 @@ import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import axios from "axios";
-import { useAtomValue } from "jotai/react";
+import { useAtom, useAtomValue } from "jotai/react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { tokenAtom } from "../../atoms.js";
-import { axiosInToken } from "../../config.js";
+import { memberAtom, tokenAtom } from "../../atoms.js";
+import { axiosInToken, url } from "../../config.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
@@ -21,6 +21,7 @@ const NoticeWriteMain = () => {
   const [notice, setNotice] = useState([]);
   const { noticeNum } = useParams(); // URL에서 noticeNum 추출
   const [storeCode, setStoreCode] = useState(null);
+  const [member, setMemeber] = useAtom(memberAtom);
 
   // / fetchStoreCode를 useCallback으로 래핑
   const fetchStoreCode = useCallback(async () => {
@@ -63,12 +64,12 @@ const NoticeWriteMain = () => {
       noticeTitle: title,
       noticeContent: content,
       noticeDate: new Date().toISOString(),
-      mainStoreId: storeCode,
+      mainStoreId: member.memberNum,
     };
     console.log("notice 객체:", notice);
 
     const res = axios
-      .post("http://localhost:8080/noticeWriteMain", notice, {
+      .post(`${url}/noticeWriteMain`, notice, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -424,14 +424,15 @@ export const dateCheckbox = styled.input`
 `;
 
 export const DatePickerWrap = styled.div`
-width:50px;
+width:120px;
+height: 30px;
 text-align:center;
 box-shadow:none;
 border: none;
 
 .CustomPicker{
-    width: 50px;
-    height: 40px;
+    width: 120px;
+    height: 30px;
     border-radius: 5px;
     background-color: rgb(255, 255, 255);
         border-color: rgb(234, 234, 234);
@@ -449,8 +450,9 @@ border: none;
         }
         
         input {
-            padding: 8px 12px 8px 12px;
+            padding: 8px 10px 8px 10px;
             text-align: start;
+            font-size:9px;
         } 
     }
 `;

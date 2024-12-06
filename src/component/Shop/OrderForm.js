@@ -156,10 +156,13 @@ function Order() {
                       paymentMethod: pay_method === 'card' ? '카드결제' : '계좌이체',
                       status: status
                   };
-
-                  await axiosInToken(token).post('paymentComplete', paymentData);
-                  alert('결제가 완료되었습니다.');
-                  navigate("/orderList");
+                  console.log(paymentData);
+                  const res = await axiosInToken(token).post('paymentComplete', paymentData);
+                  if(res.data) {
+                    alert('결제가 완료되었습니다.');
+                    navigate('/orderList');
+                  }
+                                    
               } catch (error) {
                   console.error('주문 처리 실패:', error);
                   alert('주문 처리 중 오류가 발생했습니다.');
@@ -259,6 +262,11 @@ function Order() {
             </o.PaymentSummary>
           </o.OrderFinalRight>
         </o.OrderWrap>
+        <div className="flex justify-center gap-4 mt-24 mb-10">
+            <StyledButton size="md" theme="brown" onClick={() => navigate(-1)}>
+              결제 취소
+            </StyledButton>
+          </div>
       </CommonContainer>
     </CommonWrapper>
   );
