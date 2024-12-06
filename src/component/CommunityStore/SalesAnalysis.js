@@ -1,12 +1,11 @@
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { ko } from "date-fns/locale/ko";
-
 import ApexCharts from "apexcharts"; // ApexCharts 임포트
 import axios from "axios";
+import { ko } from "date-fns/locale/ko";
 import { useAtomValue } from "jotai/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms";
 import { axiosInToken, url } from "../../config.js";
@@ -18,84 +17,55 @@ import Quarterly from "./Quarterly.js";
 import Yearly from "./Yearly.js";
 
 const SalesAnalysis = () => {
-  const [title, setTitle] = useState(""); // 제목 상태
-  const [content, setContent] = useState(""); // 내용 상태
-  const [selectedPeriod, setSelectedPeriod] = useState(); // 선택된 기간
-  const [startDate, setStartDate] = useState(""); // 시작일
-  const [endDate, setEndDate] = useState(""); // 종료일
-  const [category, setCategory] = useState(""); // 선택된 카테고리
-  const [metricsData, setMetricsData] = useState([]); // 지표 데이터
-  const [majorCategory, setMajorCategory] = useState([]);
-  const [middleCategory, setMiddleCategory] = useState([]);
-  const [subCategory, setSubCategory] = useState([]);
-  const [analysis, setAnalysis] = useState([]);
-  const [salesData, setSalesData] = useState("");
-
-  const [value, setValue] = useState({
-    startDate: null,
-    endDate: null,
-  }); // 날짜 범위 상태
+  const [periodType, setPeriodType] = useState(""); // 선택된 기간
+  const [startDate, setStartDate] = useState(null); // 시작일
+  const [endDate, setEndDate] = useState(null); // 종료일
+  const [menuCategoryNum, setMenuCategoryNum] = useState(""); // 선택된 카테고리
+  const [analysisData, setAnalysisData] = useState([]);
   const chartRef = useRef(null); // 차트 참조용 useRef
   const [storeCode, setStoreCode] = useState(null);
   const [chartOptions, setChartOptions] = useState(options); // 차트 옵션 상태
   const token = useAtomValue(tokenAtom);
+  const [renderedComponent, setRenderedComponent] = useState(null);
+  const [majorCategory, setMajorCategory] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useCallback 제거된 fetchStoreCode
-  const fetchStoreCode = async () => {
+  // 최초 카테고리 리스트 가져오기
+  const getItemCategory = () => {
+    axios
+      .get(`${url}/selectCategory`)
+      .then(res => {
+        if (res.data && res.data.major) {
+          setMajorCategory(res.data.major);
+        }
+      })
+      .catch(err => {
+        console.error("카테고리 데이터 오류:", err);
+      });
+  };
+
+  const fetchStoreCode = useCallback(async () => {
+    if (!token) return;
     try {
-      if (!token) return;
       const response = await axiosInToken(token).get("/store");
       const storeCodeFromResponse = response.data?.storeCode;
       setStoreCode(storeCodeFromResponse);
     } catch (err) {
       console.error("storeCode 요청 중 오류 발생:", err);
     }
-  };
-
-  // useCallback 제거된 fetchData
-  const fetchData = async () => {
-    if (!token || !storeCode) return;
-    try {
-      const response = await axiosInToken(token).get(`/itemRevenue`);
-      const formattedData = response.data.map(ask => ({
-        ...ask,
-        askDate: new Date(ask.askDate).toLocaleDateString("ko-KR"),
-      }));
-      setAnalysis(formattedData);
-    } catch (err) {
-      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
-    }
-  };
-
-  // useEffect는 그대로 유지
-  useEffect(() => {
-    fetchStoreCode();
   }, [token]);
 
   useEffect(() => {
-    fetchData();
-  }, [token, storeCode]);
-
-  //최초 카테고리 리스트 가져오기
-  const getItemCategory = () => {
-    axios
-      .get(`${url}/selectCategory`)
-      .then(res => {
-        console.log("Category Data:", res.data);
-        if (res.data && res.data.major) {
-          setMajorCategory(res.data.major);
-        } else {
-          console.log("카테고리 데이터가 없습니다.");
-        }
-      })
-      .catch(err => {
-        console.log("데이터 오류:", err);
-      });
-  };
+    console.log("storeCode 랜더링 됨: ", storeCode);
+  }, [storeCode]);
 
   useEffect(() => {
-    getItemCategory(); // 컴포넌트가 처음 렌더링될 때 한 번만 호출
-  }, []); // 빈 배열을 두 번째 인자로 전달하여 한 번만 호출되도록 설정
+    fetchStoreCode();
+  }, [fetchStoreCode]);
+
+  useEffect(() => {
+    getItemCategory(); // 카테고리 데이터 가져오기
+  }, []);
 
   // 차트 렌더링
   useEffect(() => {
@@ -110,42 +80,35 @@ const SalesAnalysis = () => {
     }
   }, [chartOptions]);
 
-  // 데이터 가져오는 함수 (API 요청 예시)
-  const fetchMetricsData = async () => {
-    try {
-      // API 요청 (필터 파라미터로 데이터를 가져옴)
-      const response = await axios.post("/api/salesData", {
-        selectedPeriod,
-        startDate,
-        endDate,
-        category,
-      });
-      setMetricsData(response.data); // 받아온 데이터를 metricsData에 저장
-    } catch (error) {
-      console.error("데이터 요청 중 오류 발생:", error);
-    }
-  };
-
-  // 데이터 조회 버튼 클릭 시 호출되는 함수
   const handleQuery = () => {
-    fetchMetricsData(); // 선택한 필터에 맞는 데이터를 가져옴
+    setIsLoading(true); // 조회 버튼 클릭 시 로딩 상태로 설정
+    setAnalysisData([]); // 예시: analysisData 초기화
+
+    const component = renderPeriodComponent();
+    setRenderedComponent(component); // 상태에 저장하여 렌더링
+
+    // 여기서 데이터를 가져오는 비동기 작업을 실행하고, 끝난 후에 버튼 초기화
+    // 예시로 setTimeout을 사용하여 데이터 로딩 완료 후 버튼 초기화
+    setTimeout(() => {
+      setIsLoading(false); // 조회 완료 후 버튼 초기화
+    }, 2000); // 예시로 2초 후에 완료 처리
   };
 
+  // 기간별 컴포넌트 렌더링
   const renderPeriodComponent = () => {
-    switch (selectedPeriod) {
-      case "연간":
-        return <Yearly />;
-      case "월별":
-        return <Monthly />;
-      case "분기별":
-        return <Quarterly />;
-      case "사용자 지정":
-        return <Customize />;
+    switch (periodType) {
+      case "1":
+        return <Yearly storeCode={storeCode} />;
+      case "2":
+        return <Quarterly storeCode={storeCode} />;
+      case "3":
+        return <Monthly storeCode={storeCode} />;
+      case "4":
+        return <Customize storeCode={storeCode} startDate={startDate} endDate={endDate} />;
       default:
+        return null;
     }
   };
-
-  useEffect(() => {}, [selectedPeriod]);
 
   return (
     <ContentListDiv>
@@ -157,13 +120,13 @@ const SalesAnalysis = () => {
         <HeadingContainer1>
           <HeadingDataAndSave>
             <Option1>
-              <Label>기간</Label> {/* 기간 텍스트 추가 */}
-              <Select onChange={e => setSelectedPeriod(e.target.value)} value={selectedPeriod}>
-                <option value="기간 선택">기간 선택</option> {/* 기본값으로 "기간 선택"을 표시 */}
-                <option value="연간">연간</option>
-                <option value="분기별">분기별</option>
-                <option value="월별">월별</option>
-                <option value="사용자 지정">사용자 지정</option>
+              <Label>기간</Label>
+              <Select onChange={e => setPeriodType(e.target.value)} value={periodType}>
+                <option value="">기간 선택</option>
+                <option value="1">연간</option>
+                <option value="2">분기별</option>
+                <option value="3">월별</option>
+                <option value="4">사용자 지정</option>
               </Select>
             </Option1>
 
@@ -175,12 +138,7 @@ const SalesAnalysis = () => {
                   format="yyyy-MM-dd"
                   value={startDate}
                   onChange={newValue => setStartDate(new Date(newValue))}
-                  disabled={
-                    selectedPeriod === "기간 선택" ||
-                    selectedPeriod === "연간" ||
-                    selectedPeriod === "분기별" ||
-                    selectedPeriod === "월별"
-                  }
+                  disabled={periodType !== "4"}
                 />
                 <span style={{ margin: "0 8px" }}> ~ </span>
                 <DatePicker
@@ -189,47 +147,39 @@ const SalesAnalysis = () => {
                   format="yyyy-MM-dd"
                   value={endDate}
                   onChange={newValue => setEndDate(new Date(newValue))}
-                  disabled={
-                    selectedPeriod === "기간 선택" ||
-                    selectedPeriod === "연간" ||
-                    selectedPeriod === "분기별" ||
-                    selectedPeriod === "월별"
-                  }
+                  disabled={periodType !== "4"}
                 />
               </Option2>
             </LocalizationProvider>
 
-            <Option3>
-              {/* <Title3>카테고리</Title3> */}
-              <Select onChange={e => setCategory(e.target.value)} value={category}>
-                <option value="">카테고리 선택</option>
-                {majorCategory.map((category, index) => (
-                  <option key={index} value={category.id}>
-                    {category.itemCategoryName}
-                  </option>
-                ))}
-              </Select>
-            </Option3>
-
             <CustomButtonContainer>
-              <CustomButton type="button" onClick={handleQuery}>
-                조회
+              <CustomButton
+                type="button"
+                onClick={handleQuery}
+                disabled={isLoading} // 로딩 중이면 버튼 비활성화
+              >
+                {isLoading ? "로딩 중..." : "조회"}
               </CustomButton>
             </CustomButtonContainer>
           </HeadingDataAndSave>
         </HeadingContainer1>
       </Form>
 
-      {/* 기간에 맞는 컴포넌트 렌더링 */}
-      {renderPeriodComponent()}
-
-      {/* 차트 */}
-      <GraphContainer>
+      {/* 렌더링된 컴포넌트 */}
+      {renderedComponent}
+      {/* <GraphContainer>
         <div id="line-chart" ref={chartRef}></div>
-      </GraphContainer>
+      </GraphContainer> */}
     </ContentListDiv>
   );
 };
+
+const NoDataMessage = styled.div`
+  font-size: 20px;
+  color: #333;
+  text-align: center;
+  margin-top: 50px;
+`;
 
 const Form = styled.form`
   // height: 669px;
