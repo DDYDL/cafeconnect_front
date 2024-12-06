@@ -198,7 +198,7 @@ function App() {
           }
         />
         <Route exect path="/orderList" element={<OrderListForStore />} />
-        <Route exect path="/orderDetail" element={<OrderDetailForStore />} />
+        <Route exect path="/orderDetail/:orderCode" element={<OrderDetailForStore />} />
 
         <Route exect path="/repairRequestList" element={<RepairRequestList />} />
         <Route exect path="/repairRequest" element={<RepairRequestForm />} />
