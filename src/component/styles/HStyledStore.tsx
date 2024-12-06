@@ -361,6 +361,8 @@ text-align:center;
 
 export const ButtonInnerDiv = styled.div<Container>`
 margin-right:140px;
+`;
+export const ReactSelectDiv = styled.div<Container>`
 width:200px;
 `;
 

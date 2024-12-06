@@ -5,7 +5,7 @@ import {useState, useEffect } from 'react';
 import { axiosInToken } from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import { Input, Select, Option } from "@material-tailwind/react";
+import { Input } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import ReactSelect from "react-select";
@@ -23,8 +23,12 @@ const StoreListMain = ()=>{
 
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
-        if(token!=null && token!=='')  {select(1); makeRegionArr();}
+        if(token!=null && token!=='')  { makeRegionArr(); select(1); }
     }, [token])
+
+    useEffect(()=> {
+        select(1);
+    }, [keyword])
     
     const select = (page) => {
         axiosInToken(token).get(`storeListMain?page=${page}&type=${type}&keyword=${keyword}`)
@@ -32,12 +36,12 @@ const StoreListMain = ()=>{
                 let pageInfo = res.data.pageInfo;
                 console.log(res.data.storeList);
                 setStoreList([...res.data.storeList]);
+
                 let page = [];
                 for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
                     page.push(i);
                 }
                 setPageBtn([...page]);
-                console.log(pageBtn);
                 setPageInfo(pageInfo);
             }).catch(err=>{
                 console.log(err.response.data);
@@ -54,11 +58,9 @@ const StoreListMain = ()=>{
     }
 
     const searchRegion = (selectedOption) => {
-        setSelectedRegion(selectedOption.label);
-        console.log(selectedOption.value);
+        setSelectedRegion(selectedOption);
         setType("storeAddress");
         setKeyword(selectedOption.value);
-        search();
       };
 
     const searchName = (e) => {
@@ -70,6 +72,7 @@ const StoreListMain = ()=>{
       
     const makeRegionArr = () => {
         const regions = [
+            {value: '', label: '지역 전체'},
             {value: '강원', label: '강원도'},
             {value: '경기', label: '경기도'},
             {value: '경남', label: '경상남도'},
@@ -100,15 +103,16 @@ const StoreListMain = ()=>{
                     <h.SearchDiv>
                         <Input icon={<h.SearchIcon className="h-5 w-5" onClick={search}/> } label="매장명 검색" onChange={searchName}/>
                     </h.SearchDiv>
-                    <h.ButtonInnerDiv>
+                    <h.ReactSelectDiv>
                         <ReactSelect
-                            placeholder="지역"
+                            isSearchable={false}
+                            className="w-full"
+                            placeholder="지역 전체"
                             value={selectedRegion} 
                             options={regionArr} 
                             onChange={searchRegion}
-                            readOnly
                         />
-                    </h.ButtonInnerDiv>
+                    </h.ReactSelectDiv>
                 </h.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>
@@ -133,7 +137,7 @@ const StoreListMain = ()=>{
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page} onClick={()=>{select(page);}}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{select(page)}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>

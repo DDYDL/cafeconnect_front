@@ -27,13 +27,13 @@ const StoreDetailMain = ()=>{
                 console.log(res.data)
                 let resStore = res.data.store;
                 const resStoreOpenTime = new Date();
-                // resStoreOpenTime.setHours(resStore.storeOpenTime.split(':')[0], resStore.storeOpenTime.split(':')[1], 0, 0);
-                // const formattedOpenTime = resStoreOpenTime.toTimeString().slice(0, 8);
+                resStoreOpenTime.setHours(resStore.storeOpenTime.split(':')[0], resStore.storeOpenTime.split(':')[1], 0, 0);
+                const formattedOpenTime = resStoreOpenTime.toTimeString().slice(0, 5);
                 
-                // const resStoreCloseTime = new Date();
-                // resStoreCloseTime.setHours(resStore.storeCloseTime.split(':')[0], resStore.storeCloseTime.split(':')[1], 0, 0);
-                // const formattedCloseTime = resStoreCloseTime.toTimeString().slice(0, 8);
-                // setStore({...resStore, ['storeOpenTime']: formattedOpenTime, ['storeCloseTime']: formattedCloseTime});
+                const resStoreCloseTime = new Date();
+                resStoreCloseTime.setHours(resStore.storeCloseTime.split(':')[0], resStore.storeCloseTime.split(':')[1], 0, 0);
+                const formattedCloseTime = resStoreCloseTime.toTimeString().slice(0, 5);
+                setStore({...resStore, ['storeOpenTime']: formattedOpenTime, ['storeCloseTime']: formattedCloseTime});
             })
     }
 
@@ -61,7 +61,7 @@ const StoreDetailMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 주소</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storeAddress}</m.TableInfoTd>
+                        <m.TableInfoTd>({store.storeAddressNum})&nbsp;{store.storeAddress}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점/HP</m.TableTitleSpan></m.TableInfoTd>

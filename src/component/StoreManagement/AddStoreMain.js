@@ -2,77 +2,91 @@ import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
-import {useState} from 'react';
-import {axiosInToken} from '../../config.js'
+import { useState, useEffect } from 'react';
+import { axiosInToken } from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { Dialog, DialogBody} from "@material-tailwind/react";
-import {ko} from 'date-fns/locale';
-import {format} from 'date-fns';
+import { Dialog, DialogBody } from "@material-tailwind/react";
+import ReactSelect from "react-select";
+import { ko } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 const AddStoreMain = ()=>{
     const token = useAtomValue(tokenAtom);
     const [isOpen, setIsOpen] = useState(false);
-    const [store, setStore] = useState({});
-    const [timeDate, setTimeDate] = useState({});
+    const [store, setStore] = useState({
+            storeName:'', storeAddress:'', storeAddressNum:'', storePhone:'',
+            storeCloseDate:'', ownerName:'', ownerPhone:'', managerName:'', managerPhone:''
+        });
+    const [timeDate, setTimeDate] = useState({
+        contractDate: new Date(2020,0,1,0,0,0),
+        openingDate: new Date(2020,0,1,0,0,0),
+        contractPeriodStart: new Date(2020,0,1,0,0,0),
+        contractPeriodEnd: new Date(2020,0,1,0,0,0),
+        storeOpenTime: new Date(2000,0,1,0,0,0),
+        storeCloseTime: new Date(2000,0,1,0,0,0)      
+    });
+    const [selectedDay, setSelectedDay] = useState(null);
     const navigate = useNavigate();
     
+    useEffect(()=> {
+        setStore({ ...store, ['contractDate']: format(timeDate.contractDate, 'yyyy-MM-dd')});
+    }, [timeDate.contractDate])
+    useEffect(()=> {
+        setStore({ ...store, ['openingDate']: format(timeDate.openingDate, 'yyyy-MM-dd')});
+    }, [timeDate.openingDate])
+    useEffect(()=> {
+        setStore({ ...store, ['contractPeriodStart']: format(timeDate.contractPeriodStart, 'yyyy-MM-dd')});
+    }, [timeDate.contractPeriodStart])
+    useEffect(()=> {
+        setStore({ ...store, ['contractPeriodEnd']: format(timeDate.contractPeriodEnd, 'yyyy-MM-dd')});
+    }, [timeDate.contractPeriodEnd])
+    useEffect(()=> {
+        setStore({ ...store, ['storeOpenTime']: format(timeDate.storeOpenTime, 'HH:mm:SS') });
+    }, [timeDate.storeOpenTime])
+    useEffect(()=> {
+        setStore({ ...store, ['storeCloseTime']: format(timeDate.storeCloseTime, 'HH:mm:SS') });
+    }, [timeDate.storeCloseTime])
+
     const edit = (e) => {
         setStore({ ...store, [e.target.name]: e.target.value });
-        console.log(store);
-        console.log(timeDate);
     }
-    
+
     const onCompletePost = (data) => {
         console.log(data);
         const {address, zonecode, bname, buildingName} = data;
-        setStore({...store, storeAddressNum:zonecode, storeAddress:address +(', '+bname + buildingName!==' '&& ', '+buildingName)});
+        setStore({...store, storeAddressNum:zonecode, storeAddress:address +(', '+bname + buildingName!==', '&& ', '+buildingName), storeRegion: address.split(" ")[0]});
         }
         
-    const submit = () => {
-        const timeDateFormat = () => {
+    const submit = (e) => {
+        const requirevalid = () => {
         if (!store.storeName) {
             alert("가맹점명을 입력하세요"); return;
           }
         if (!store.storeAddress) {
             alert("주소를 입력하세요"); return;
           }
-        if (!timeDate.contractDate) {
+        if (!store.contractDate) {
             alert("가맹계약 체결일을 입력하세요"); return;
           }
-        if (!timeDate.contractPeriodStart||!timeDate.contractPeriodEnd) {
+        if (!store.contractPeriodStart||!store.contractPeriodEnd) {
             alert("계약기간을 입력하세요"); return;
           }
         if (!store.ownerName||!store.ownerPhone) {
             alert("점주 정보를 입력하세요"); return;
           }
-        if (timeDate.openingDate) { 
-            setTimeDate({ ...timeDate, ['openingDate']: format(timeDate.openingDate, 'yyyy-MM-dd')});
-          }
-        // if (timeDate.storeOpenTime) { 
-        //     setTimeDate({ ...timeDate, ['storeOpenTime']: format(timeDate.storeOpenTime, 'HH:mm')});
-        //   }
-        // if (timeDate.storeCloseTime) { 
-        //     setTimeDate({ ...timeDate, ['storeCloseTime']: format(timeDate.storeCloseTime, 'HH:mm')});
-        //   }
-        console.log("in timeDateFormat");
-        console.log(timeDate);
-        setStore({ ...store, contractDate: format(timeDate.contractDate, 'yyyy-MM-dd'),
-            contractPeriodStart: format(timeDate.contractPeriodStart, 'yyyy-MM-dd'),
-            contractPeriodEnd: format(timeDate.contractPeriodEnd, 'yyyy-MM-dd'),
-            storeRegion: store.storeAddress.split(" ")[0]
-        })
-        console.log("in timeDateFormat");
-        console.log(store);
         }
+    
+        requirevalid();
 
-        timeDateFormat();
-
+        console.log(store);
+    
+        console.log(store);
         axiosInToken(token).post('addStoreMain',store)
         .then(res=> {
             console.log("come request");
@@ -85,7 +99,24 @@ const AddStoreMain = ()=>{
                 console.log(err.response.data);
                 alert("가맹점 등록에 실패했습니다.");
             })
-    }
+    
+        }
+
+        const dayOfweekArr = [
+            {value: '', label: '연중무휴'},
+            {value: '월', label: '월'},
+            {value: '화', label: '화'},
+            {value: '수', label: '수'},
+            {value: '목', label: '목'},
+            {value: '금', label: '금'},
+            {value: '토', label: '토'},
+            {value: '일', label: '일'}
+        ];
+
+        const selectDay = (selectedOption) => {
+            setSelectedDay(selectedOption);
+            setStore({...store, ['storeCloseDate']: selectedOption.value})
+        };
         
         return (
             <>
@@ -107,7 +138,7 @@ const AddStoreMain = ()=>{
                         <m.TableInfoTd style={{verticalAlign:'top', paddingTop:'10px'}}><m.TableTitleSpan for="storeAddress">가맹점 주소<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
                         <s.SearchDiv width='300px' marginBottom='10px' margin='0px'>
-                        <s.InputStyleSearch icon={<h.SearchIcon className="h-5 w-5" onClick={()=>setIsOpen(!isOpen)}/>} value={store.storeAddressNum} onChange={edit} style={{borderColor:'rgba(234, 234, 234, 1)'}} readOnly/></s.SearchDiv>
+                        <s.InputStyleSearch icon={<h.SearchIcon className="h-5 w-5" onClick={()=>setIsOpen(!isOpen)}/>} value={store.storeAddressNum} onChange={edit} style={{borderColor:'rgba(234, 234, 234, 1)'}}/></s.SearchDiv>
                         <s.InputStyle width='300px' type='text' value={store.storeAddress} onChange={edit}/>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
@@ -121,14 +152,14 @@ const AddStoreMain = ()=>{
                         <h.TimePickerPeriodWrap>
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                             <TimePicker
-                                value={store.storeOpenTime}
-                                onChange={(time) => setStore({ ...store, ['storeOpenTime']: time })}
+                                value={timeDate.storeOpenTime}
+                                onChange={(time) => setTimeDate({ ...timeDate, ['storeOpenTime']: time})}
                                 className="CustomPicker"
                                 format='HH:mm'
                             /><div>~</div>
                             <TimePicker
-                                value={store.storeCloseTime}
-                                onChange={(time) => setStore({ ...store, ['storeCloseTime']: time })}
+                                value={timeDate.storeCloseTime}
+                                onChange={(time) => setTimeDate({ ...timeDate, ['storeCloseTime']: time})}
                                 className="CustomPicker"
                                 format='HH:mm'
                             />
@@ -138,7 +169,17 @@ const AddStoreMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='text' name="storeCloseDate" value={store.storeCloseDate} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd>
+                            <h.ReactSelectDiv>
+                                <ReactSelect
+                                    isSearchable={false}
+                                    placeholder="휴무일을 선택하세요"
+                                    value={selectedDay} 
+                                    options={dayOfweekArr} 
+                                    onChange={selectDay}
+                                />
+                            </h.ReactSelectDiv>
+                        </m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약체결일<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>

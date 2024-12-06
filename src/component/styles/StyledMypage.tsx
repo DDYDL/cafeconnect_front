@@ -127,6 +127,73 @@ export const ModalDialog = styled.div`
 `;
 
 export const TimePickerPeriodWrap = styled.div`
+width:300px;
+display: flex;
+flex-direction:row;
+justify-content: space-around;
+align-items:center;
+text-align:center;
+box-shadow:none;
+border: none;
+
+.CustomPicker{
+    width: 140px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    border-color: rgb(234, 234, 234);
+    border-style:solid;
+    border:1px;
+    color: rgb(0, 0, 0);
+    font-family: "Noto Sans KR";
+    letter-spacing :normal;
+    line-height: 24px;
+    box-shadow:none;
+    
+    input {
+        padding: 8px 12px 8px 12px;
+        text-align: start;
+    } 
+}
+`;
+
+export const ReactSelectDiv = styled.div<Container>`
+    width:200px;
+`;
+
+export const DatePickerWrap = styled.div<Container>`
+    width:300px;
+    text-align:center;
+    box-shadow:none;
+    border: none;
+
+    .CustomPicker{
+        width: 300px;
+        height: 40px;
+        border-radius: 5px;
+        background-color: rgb(255, 255, 255);
+            border-color: rgb(234, 234, 234);
+            border-style:solid;
+            border:1px;
+            color: rgb(0, 0, 0);
+            font-family: "Noto Sans KR";
+            letter-spacing :normal;
+            line-height: 24px;
+            box-shadow:none;
+            
+            div {
+                box-shadow:none;
+                border: none;
+            }
+            
+            input {
+                padding: 8px 12px 8px 12px;
+                text-align: start;
+            } 
+        }
+`;
+
+export const DatePickerPeriodWrap = styled.div`
     width:300px;
     display: flex;
     flex-direction:row;
@@ -137,6 +204,15 @@ export const TimePickerPeriodWrap = styled.div`
     border: none;
     
     .CustomPicker{
+        > div > div {
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+            }
+        > div > div > div {
+            display:inline-block;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+        }
         width: 140px;
         height: 40px;
         border-radius: 5px;
@@ -149,10 +225,20 @@ export const TimePickerPeriodWrap = styled.div`
         letter-spacing :normal;
         line-height: 24px;
         box-shadow:none;
+
+        svg { display:none; }
         
+        button {
+            display:flex;
+            border-radius: 5px;
+            width:25px;
+            height:37px;
+            background-color: rgb(234, 234, 234);
+            }
         input {
-        padding: 8px 12px 8px 12px;
+        padding: 8px 0 8px 12px;
+        margin: 0 0 0 0;
         text-align: start;
-      } 
+        } 
     }
 `;
