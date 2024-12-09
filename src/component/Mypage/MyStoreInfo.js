@@ -68,7 +68,6 @@ const MyStoreInfo = () => {
 
     useEffect(()=>{
         setStore({});
-        setMember(member);
         getStore();
     }, [])
 
@@ -141,6 +140,7 @@ const MyStoreInfo = () => {
                 console.log(res.data);
                 alert("수정이 완료되었습니다.");
                 setStore(store);
+                setMember(res.data);
             }
         })
         .catch(err=>{
@@ -224,42 +224,11 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                     <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd> 
-                        <m.DatePickerWrap>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-                            <DatePicker
-                                value={timeDate.contractDate}
-                                showDaysOutsideCurrentMonth
-                                onChange={(date) => setTimeDate({ ...timeDate, ['contractDate']: date })}
-                                className="CustomPicker"
-                                format='yyyy.MM.dd'
-                            />
-                        </LocalizationProvider>
-                        </m.DatePickerWrap></m.TableInfoTd>
+                    <m.TableInfoTd>{store.contractDate}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                     <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                    <m.TableInfoTd> 
-                    <m.DatePickerPeriodWrap>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-                            <DatePicker
-                                value={timeDate.contractPeriodStart}
-                                showDaysOutsideCurrentMonth
-                                onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodStart']: date })}
-                                className="CustomPicker"
-                                format='yyyy.MM.dd'
-                            />
-                            <div>~</div>
-                            <DatePicker
-                                value={timeDate.contractPeriodEnd}
-                                showDaysOutsideCurrentMonth
-                                onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodEnd']: date })}
-                                className="CustomPicker"
-                                format='yyyy.MM.dd'
-                            />
-                        </LocalizationProvider>
-                        </m.DatePickerPeriodWrap>
-                        </m.TableInfoTd>
+                        <m.TableInfoTd>{store.contractPeriodStart}&nbsp;~&nbsp;{store.contractPeriodEnd}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>

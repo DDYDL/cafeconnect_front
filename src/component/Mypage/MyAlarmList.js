@@ -4,7 +4,7 @@ import * as h from '../styles/StyledHeader.tsx';
 
 import { Select, Option } from "@material-tailwind/react";
 import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { alarmsAtom, memberAtom } from '../../atoms.js';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { url } from '../../config.js';
@@ -15,10 +15,10 @@ const MyAlarmList = ()=>{
 
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
+    const [alarms, setAlarms] = useAtom(alarmsAtom);
 
     useEffect(()=>{
         setAlarmList([]);
-        setMember(member);
         getAlarmList();
     }, [])
 
@@ -42,6 +42,7 @@ const MyAlarmList = ()=>{
 
             // 체크한 알람 상태 변경하기(변경되면 리렌더링 된다)
             setAlarmList(alarmList.map(alarm=>(alarm.alarmNum===alarmNum ? {...alarm, alarmStatus:!alarm.alarmStatus} : alarm)));
+            setAlarms(alarms.filter(item=>item.alarmNum!==alarmNum));
         })
         .catch(err=>{
             console.log(err);
@@ -49,6 +50,10 @@ const MyAlarmList = ()=>{
     }
     
     const selectAlarmType = (alarmType)=>{
+        if(alarmType==='전체') {
+            getAlarmList();
+            return;
+        }
         axios.get(`${url}/selectAlarmType/${member.storeCode}/${alarmType}`)
         .then(res=>{
             console.log(res.data);
@@ -67,6 +72,7 @@ const MyAlarmList = ()=>{
                 <m.SelectDiv>
                     <m.SelectInnerDiv>
                         <m.SelectBox label="종류" onChange={(e)=>selectAlarmType(e)}>
+                            <Option value='전체'>전체</Option>
                             <Option value='유통기한'>유통기한</Option>
                             <Option value='재고'>재고</Option>
                             <Option value='주요공지사항'>주요공지사항</Option>

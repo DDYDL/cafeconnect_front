@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody, Option } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';
-import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
+import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from '../../atoms.js';
 import { useSetAtom } from 'jotai/react';
 import axios from 'axios';
 import { url } from '../../config.js';
@@ -57,6 +57,7 @@ const StoreHeader = ({alarms})=>{
     .then(res=>{
         console.log(res.data);
         setStoreList([...res.data]);
+        setStore(res.data.find(store=>store.storeCode===member.storeCode));
     })
     .catch(err=>{
         console.log(err);
@@ -64,12 +65,12 @@ const StoreHeader = ({alarms})=>{
   }
 
   //가맹점 바꾸면 알람 다시 가져오기
-  const getAlarmList = ()=>{
-    axios.post(`${url}/alarms`,{storeCode:member.storeCode})
+  const getAlarmList = (storeCode)=>{
+    axios.post(`${url}/alarms`,{storeCode:storeCode})
       .then(res=> {
       console.log(res.data)
       if(res.data.length!==0) {
-        setAlarms([...alarms,...res.data]);
+        setAlarms(res.data);
       }
       })
       .catch(err=>{
@@ -93,7 +94,8 @@ const StoreHeader = ({alarms})=>{
   const changeStore = (value)=>{
     setMember({...member, ['storeCode']:value})
     console.log(value);
-    getAlarmList();
+    getAlarmList(value);
+    setStore(storeList.find(store=>store.storeCode===member.storeCode));
   }
 
   return(
@@ -104,10 +106,9 @@ const StoreHeader = ({alarms})=>{
           </h.DivLogo>
 
           <h.DivSide>
-            {/* <h.NavLinkSide to="/changeStore">독산역점</h.NavLinkSide> */}
             <h.SelectDivTop>
               <h.SelectInnerDivTop>
-                <h.SelectBoxTop label="store" onChange={(e)=>changeStore(e)}>
+                <h.SelectBoxTop label={store.storeName} onChange={(e)=>changeStore(e)}>
                   {storeList.map(store=>(
                     <Option value={store.storeCode}>{store.storeName}</Option>
                   ))}
@@ -168,7 +169,9 @@ const StoreHeader = ({alarms})=>{
             <h.NavLinkIcon>
               <h.Icon src="/alarm.png" onClick={handleOpen}/>
               {/* 알람 개수 표시 */}
+              <h.AlarmIconDiv>
               <span>{alarms.length!==0 && alarms.length}</span>
+              </h.AlarmIconDiv>
             </h.NavLinkIcon>
             <h.NavLinkIcon to="/repairRequestList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
             <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png"/></h.NavLinkIcon>

@@ -21,7 +21,6 @@ const StockOrderItemAdd = () => {
     useEffect(()=>{
         setOrderList([]);
         setOrderNumList([]);
-        setMember(member);
         getOrderList();
     }, [])
 
@@ -91,7 +90,7 @@ const StockOrderItemAdd = () => {
                                 <s.TableTextTd><input type='checkbox' onChange={(e)=>orderConfirm(e.target.checked, order.orderNum)}/></s.TableTextTd>
                                 <s.TableTextTd>{order.orderCode}</s.TableTextTd>
                                 <s.TableTextTd>{order.orderDateStr}</s.TableTextTd>
-                                <s.TableTextTd><s.ImageSize src={`${url}/image/${order.itemFileNum}`}/><span>{order.itemCode}</span><br/><span>{order.itemName}</span></s.TableTextTd>
+                                <s.TableTextTd><s.ImageSize src={`${url}/image/${order.itemFileNum}`}/><s.SpanSizeDiv><s.SpanSize>{order.itemCode}</s.SpanSize><br/><s.SpanSize>{order.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                 <s.TableTextTd>{order.itemMajorCategoryName}/{order.itemMiddleCategoryName}/{order.itemSubCategoryName}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemCapacity}*{order.itemUnitQuantity}/{order.itemUnit}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemUnit}</s.TableTextTd>

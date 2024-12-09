@@ -1,4 +1,4 @@
-import {atomWithStorage,createJSONStorage} from 'jotai/utils';
+import {atomWithRefresh, atomWithStorage,createJSONStorage} from 'jotai/utils';
 
 export const initMember = {
     // member가 store를 하나는 꼭 가지고 있기 때문에(회원가입 시 store있어야 함) storeCode 하나씩 가지고 있기
@@ -13,6 +13,13 @@ export const memberAtom = atomWithStorage(
     "member",
     initMember,
     createJSONStorage(()=>sessionStorage)
+);
+
+// 로컬 스토리지에 member 저장
+export const memberLocalAtom = atomWithStorage(
+    "memberLocal",
+    initMember,
+    createJSONStorage(()=>localStorage)
 );
 
 // 세션 스토리지에 로그인 token 저장
