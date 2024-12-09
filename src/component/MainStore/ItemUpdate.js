@@ -205,9 +205,26 @@ function ItemInsert() {
       navigate("/mainItemList");
     }
   };
+  const checkProperties = () =>{
+    if(item.itemName !== '' && item.itemPrice !== '' && item.itemCapacity !== '' &&  item.itemUnitQuantity !== '' &&  item.itemStandard !== null &&  
+      item.itemStorage  !== '' && item.itemCountryOrigin !== '' &&  item.itemMajorCategory !== ''
+    ){
+      return true;
+    }
+    return false;
+      
+  }
   const handleUpload = async () => {
     const formData = new FormData();
+    if(!file){
+      alert('이미지를 등록하세요')
+      return;
+    }
     formData.append("file", file);
+    if(!checkProperties()){
+      alert('등록되지 않은 항목이 존재합니다');
+      return;
+    }
     const itemSaveForm = {
       itemName: item.itemName,
       itemPrice: item.itemPrice,
@@ -221,19 +238,7 @@ function ItemInsert() {
       itemCategoryMiddleName: item.itemMiddleCategoryName,
       itemCategorySubName: item.itemSubCategoryName,
     };
-    console.log({
-      itemName: item.itemName,
-      itemPrice: item.itemPrice,
-      itemCapacity: item.itemCapacity,
-      itemUnitQuantity: item.itemUnitQuantity,
-      itemUnit: item.itemUnit,
-      itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
-      itemStorage: item.itemStorage,
-      itemCountryOrigin: item.itemCountryOrigin,
-      itemCategoryMajorName: item.itemMajorCategoryName,
-      itemCategoryMiddleName: item.itemMiddleCategoryName,
-      itemCategorySubName: item.itemSubCategoryName,
-    });
+    
     const json = JSON.stringify(itemSaveForm);
     const blob = new Blob([json], {
       type: "application/json",
@@ -392,6 +397,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
+                            <div className="select-wrap" style={{ width: "440px" }}>
                             <Select
                               label="대분류"
                               onChange={handleItemMajorCategorySelectBox}
@@ -405,6 +411,7 @@ function ItemInsert() {
                                 </Option>
                               ))}
                             </Select>
+                            </div>
                           </s.ButtonInnerDiv>
                         </div>
                         <div
@@ -415,6 +422,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
+                            <div className="select-wrap" style={{ width: "440px" }}>
                             <Select
                               label="중분류"
                               onChange={handleItemMiddleCategorySelectBox}
@@ -428,6 +436,7 @@ function ItemInsert() {
                                 </Option>
                               ))}
                             </Select>
+                            </div>
                           </s.ButtonInnerDiv>
                         </div>
                         <div className="select-wrap" style={{ width: "440px" }}>
@@ -435,6 +444,7 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
+                            <div className="select-wrap" style={{ width: "440px" }}>
                             <Select
                               label="소분류"
                               onChange={handleItemSubCategorySelectBox}
@@ -448,6 +458,7 @@ function ItemInsert() {
                                 </Option>
                               ))}
                             </Select>
+                            </div>
                           </s.ButtonInnerDiv>
                         </div>
                       </div>
@@ -481,7 +492,7 @@ function ItemInsert() {
                     <div className="select-wrap" style={{ width: "440px" }}>
                       <Select
                         label="단위구분"
-                        value={item.itemUnit}
+                        
                         onChange={handleItemUnitSelectbox}
                       >
                         <Option value="">단위를 선택하세요</Option>
@@ -499,7 +510,7 @@ function ItemInsert() {
                     <div className="select-wrap" style={{ width: "440px" }}>
                       <Select
                         label="보관상태"
-                        value={item.itemStorage}
+                        
                         onChange={handleItemStorageSelectbox}
                       >
                         <Option value="">보관상태를 선택하세요</Option>

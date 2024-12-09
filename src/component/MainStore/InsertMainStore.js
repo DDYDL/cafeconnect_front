@@ -4,9 +4,13 @@ import React from 'react'
 import { useRef, useState } from 'react';
 import axios from 'axios';
 import {  useNavigate } from 'react-router';
+import { useAtom } from 'jotai/react';
+import { initMember, memberAtom, tokenAtom } from '../../atoms.js';
+import { useSetAtom } from 'jotai/react';
 
 function InsertMainStore() {
-
+    const [member, setMember] = useAtom(memberAtom);
+    const setToken = useSetAtom(tokenAtom);
     const pwdRef = useRef();
     const pwdCheckRef = useRef();
     const [existId, setExistId] = useState(false)
@@ -91,6 +95,11 @@ function InsertMainStore() {
         return keys.every( (key) => obj[key] != null && obj[key] != '');
     };
     const requiredKeys = ["username", "password", "deptName"];
+    const logout = ()=>{
+        setMember({...initMember});
+        setToken('');
+        navigate("/loginStore");
+    }
     const joinMember = async () => {
         try {
           if(!hasAllProperties(form, requiredKeys)){
@@ -99,7 +108,8 @@ function InsertMainStore() {
           }
           const response = await axios.post(`http://localhost:8080/main/insert`,form); 
           alert('회원가입 성공')
-          navigate('/loginStore');
+          
+          logout();
           
         } catch (error) {
           console.log('error!')

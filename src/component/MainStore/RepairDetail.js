@@ -184,6 +184,42 @@ function RepairDetail() {
                 <div
                   className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-black-16px"]}`}
                 >
+                  수리제목 *
+                </div>
+              </div>
+              <div className={styles["frame-1"]}>
+                <div className={styles["frame-118"]}>
+                  <div
+                    className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-black-16px"]}`}
+                  >
+                    {repair.repairTitle}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles["frame-12"]}>
+              <div className={styles["frame-117"]}>
+                <div
+                  className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-black-16px"]}`}
+                >
+                  수리내용 *
+                </div>
+              </div>
+              <div className={styles["frame-1"]}>
+                <div className={styles["frame-118"]}>
+                  <div
+                    className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-black-16px"]}`}
+                  >
+                    {repair.repairContent}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles["frame-12"]}>
+              <div className={styles["frame-117"]}>
+                <div
+                  className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-black-16px"]}`}
+                >
                   상품코드 *
                 </div>
               </div>
@@ -213,6 +249,24 @@ function RepairDetail() {
                     className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-black-16px"]}`}
                   >
                     {formatDate(new Date(repair.repairDate))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles["frame-12"]}>
+              <div className={styles["frame-117"]}>
+                <div
+                  className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-black-16px"]}`}
+                >
+                  답변날짜*
+                </div>
+              </div>
+              <div className={styles["frame-1"]}>
+                <div className={styles["frame-118"]}>
+                  <div
+                    className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-black-16px"]}`}
+                  >
+                    {formatDate(new Date(repair.repairAnswerDate))}
                   </div>
                 </div>
               </div>
