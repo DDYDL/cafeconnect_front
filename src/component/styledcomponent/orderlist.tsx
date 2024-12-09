@@ -151,18 +151,19 @@ export const FilterWrapForMainStore = styled.div`
 
 // MainStore용 새로운 스타일 추가
 export const MainStoreOrderHeader = styled(BaseGridHeader)`
- grid-template-columns: 120px 160px minmax(300px, 1fr) 90px 120px minmax(120px, 1fr);
+grid-template-columns: 120px 160px 140px minmax(250px, 1fr) 90px 120px 220px;
   //grid-template-columns: 140px 180px minmax(400px, 1fr) 120px 140px minmax(240px, 1fr);
   
 `;
 
 export const MainStoreOrderItem = styled(BaseGridItem)`
-    grid-template-columns: 120px 160px minmax(300px, 1fr) 90px 120px minmax(120px, 1fr);
-  //grid-template-columns: 140px 180px minmax(400px, 1fr) 120px 140px minmax(240px, 1fr);
+    grid-template-columns: 120px 160px 140px minmax(250px, 1fr) 90px 120px 220px;
     min-height: 90px;
+    //grid-template-columns: 140px 180px minmax(400px, 1fr) 120px 140px minmax(240px, 1fr);
+    //min-height: 90px;
 
   // 상품정보 컬럼만 왼쪽 정렬
-  > div:nth-child(3) {
+  > div:nth-child(4) {
     justify-content: flex-start;
     text-align: left;
     white-space: normal;
@@ -184,11 +185,13 @@ export const StatusAreaWrapper = styled.div`
   align-items: center;
   gap: 5px;
   justify-content: center;
+  width: 100%;  // 전체 너비 사용
 
   > div:first-child { // 셀렉트 박스 div에 적용 
-    min-width: 36px;
-    
+    flex: 1;  // 남은 공간 차지
+    min-width: 140px;  // 최소 너비 설정
   }
+ 
 
   div, input, span, li, p {
       font-family: 'Noto Sans KR' !important;

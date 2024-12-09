@@ -59,6 +59,11 @@ function OrderListForStore() {
 
   const cancelOrder = (code) => {
     //경고창 주문 취소 물어보기 (즉시 취소)
+
+    const confirm = window.confirm("주문을 취소하시겠습니까?");
+    if(!confirm) return; //false면 돌아감 
+
+
     axiosInToken(token).get(`cancelItemOrder?storeCode=${store.storeCode}&orderCode=${code}`)
     .then(res=>{
       if(res.data === true) {
@@ -141,9 +146,10 @@ function OrderListForStore() {
       <div>{order.totalAmount.toLocaleString()}원</div>
       <div>{order.orderState}</div>
       <div>
-        {order.orderState !== "주문접수" ? (
-          <span>취소불가</span>
-        ) : (
+        {order.orderState === "주문취소"?(
+           <span className="text-red-500">{order.orderState}</span>
+        ):
+        order.orderState === "주문접수" ? (
           <StyledButton
             size="sm"
             theme="white"
@@ -154,6 +160,8 @@ function OrderListForStore() {
           >
             취소
           </StyledButton>
+        ):(
+          <span>취소불가</span>
         )}
       </div>
     </ol.OrderItem>
