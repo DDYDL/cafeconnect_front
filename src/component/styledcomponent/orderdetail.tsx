@@ -165,8 +165,19 @@ export const PaymentRow = styled.div<{ $isheader?: boolean }>`
     .value {
       color: #333;
       font-weight: ${props => props.$isheader ? '600' : '400'};
+      
+      &.canceled {
+        text-decoration: line-through;
+        color: #999;
+      }
+      
       &.red {
         color: #ff3b3b;
+      }
+
+      &.cancel-amount {
+        color: #ff3b3b;
+        font-weight: 600;
       }
     }
   }

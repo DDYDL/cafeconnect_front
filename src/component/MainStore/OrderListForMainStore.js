@@ -4,7 +4,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ko } from "date-fns/locale/ko";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInToken } from "../../config.js";
 import { useAtomValue } from "jotai/react";
@@ -31,17 +31,25 @@ function OrderListForMainStore() {
   const [status, setStatus] = useState("");
   const [orders,setOrders] =useState([]);
   
+
+
+  useEffect(() => {
+    if (token != null && token !== "") submit();
+  }, [token]);
+
+
   const submit = () => {
     const formData = new FormData();
-    formData.append("storeCode", store.storeCode);
     formData.append("startDate", format(startDate, "yyyy-MM-dd"));
     formData.append("endDate", format(endDate, "yyyy-MM-dd"));
-    if (status) formData.append("orderState", status);
+    if (searchType && searchKeyword) {
+      formData.append("searchType", searchType);
+      formData.append("keyword", searchKeyword);
+    }
 
     axiosInToken(token)
-      .post("orderListForStore", formData)
+      .post("/mainStoreOrderList", formData)
       .then((res) => {
-        console.log(res.data);
         setOrderList(res.data.orderList || []);
         setTotalCount(res.data.totalCount || 0);
       })
@@ -50,25 +58,46 @@ function OrderListForMainStore() {
       });
   };
 
-
-  const handleStatusChange = (orderNumber, newStatus) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.orderNumber === orderNumber ? { ...order, status: newStatus } : order
-      )
-    );
+  //각 객체에 선택된 상태 저장 
+  const handleSelectChange = (orderCode, newStatus) => {
+    setSelectedStatus(prev => ({
+      ...prev,
+      [orderCode]: newStatus
+    }));
   };
+  
 
-  const search=()=>{
-     
-    if(!searchType) {
-        alert("필수 항목을 모두 입력해주세요");
+  // 버튼 클릭 시에만 서버로 상태 변경 요청
+const handleStatusSubmit = (orderCode) => {
+  const newStatus = selectedStatus[orderCode];
+  if (!newStatus) return; // 상태가 선택되지 않은 경우 리턴
+
+  const formData = new FormData();
+  formData.append("orderCode", orderCode);
+  formData.append("orderState", newStatus);
+  
+  axiosInToken(token)
+    .post("/updateOrderStatus", formData)
+    .then((res) => {
+      if (res.data.success) {
+        alert("주문 상태가 변경되었습니다.");
+        submit(); // 목록 새로고침
+        setSelectedStatus(prev => {
+          const next = { ...prev };
+          delete next[orderCode]; // 성공 후 선택 상태 초기화
+          return next;
+        });
       }
-      submit();
-  }
+    })
+    .catch((err) => {
+      console.log(err);
+      alert("상태 변경 실패");
+    });
+};
+  
   return (
     <CommonWrapper>
-      <CommonContainer size="1000px">
+      <CommonContainer size="1200px">
         <ContainerTitleArea>
           <h2>주문접수 관리</h2>
         </ContainerTitleArea>
@@ -100,7 +129,7 @@ function OrderListForMainStore() {
         <ol.OrderListWrap>
           <ol.FilterWrapForMainStore>
             <div className="total-count">
-              총 <strong>2</strong>건
+            총 <strong>{totalCount}</strong>건
             </div>
             <form>
             <div className="select-wrap">
@@ -110,13 +139,16 @@ function OrderListForMainStore() {
                   label="검색구분"
                 >
                   <Option value="">전체</Option>
-                  <Option value="name">상품명</Option>
-                  <Option value="status">처리상태</Option>
-                  <Option value="kind">수리항목</Option>
+                  <Option value="storeName">상품명</Option>
+                  <Option value="orderState">주문상태</Option>
+                  <Option value="itemName">상품명</Option>
                 </Select>
               </div>
               <div className="input-wrap">
-              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={search}/> } label="검색어를 입력하세요"  onChange={(e) => setSearchKeyword(e.target.value)}/>
+              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={submit}/> } 
+               label="검색어를 입력하세요" 
+               value={searchKeyword}
+               onChange={(e) => setSearchKeyword(e.target.value)}/>
               </div>
             </form>
           </ol.FilterWrapForMainStore>
@@ -124,37 +156,47 @@ function OrderListForMainStore() {
           <ol.MainStoreOrderHeader>
             <div>주문일자</div>
             <div>주문번호</div>
+            <div>가맹점명</div>
             <div>상품정보</div>
             <div>수량</div>
             <div>상품구매금액</div>
             <div>주문처리</div>
           </ol.MainStoreOrderHeader>
-          {orders.map(order => (
+          
+          {orderList.map((order, index) => (
             <ol.MainStoreOrderItem
               key={order.orderNumber}
-              onClick={() => navigate("/mainStoreOrderDetail")}
+              onClick={() => navigate(`/mainStoreOrderDetail/${order.orderCode}`)}
             >
-              <div>{order.orderDate}</div>
-              <div>{order.orderNumber}</div>
-              <div>{order.productInfo}</div>
-              <div>{order.quantity}</div>
-              <div>{order.price.toLocaleString()}원</div>
-              <ol.StatusAreaWrapper>
-                <Select label="선택" value={order.status} disabled={order.status === "배송완료"}>
+              <div>{format(new Date(order.orderDate), "yyyy-MM-dd")}</div>
+              <div>{order.orderCode}</div>
+              <div>{order.storeName}</div>
+              <div>{order.orderItems.map(item => item.itemName).join(", ")}</div>
+              <div>{order.totalCount}</div>
+              <div>{order.totalAmount.toLocaleString()}원</div>
+              <ol.StatusAreaWrapper onClick={(e) => e.stopPropagation()}>
+                <Select label="선택" 
+                 value={selectedStatus[order.orderCode] || order.orderState} 
+                 onChange={(val) => handleSelectChange(order.orderCode, val)}
+                 disabled={order.status === "배송완료"||order.orderState === "주문취소"}>
                   <Option value="">주문처리상태</Option>
-                  <Option value="주문확인중">주문확인중</Option>
-                  <Option value="결제완료">결제완료</Option>
-                  <Option value="배송준비">배송준비</Option>
+                  <Option value="주문접수">주문접수</Option>
+                  <Option value="주문확인">주문확인</Option>
                   <Option value="배송중">배송중</Option>
                   <Option value="배송완료">배송완료</Option>
                 </Select>
                 <StyledButton
                   size="sm"
                   theme="white"
-                  disabled={order.status === "배송완료"}
+                  disabled={
+                    order.orderState === "배송완료" || 
+                    order.orderState === "주문취소" ||
+                    !selectedStatus[order.orderCode] ||
+                    selectedStatus[order.orderCode] === order.orderState
+                  }
                   onClick={e => {
                     e.stopPropagation();
-                    handleStatusChange(order.orderNumber, selectedStatus[order.orderNumber]);
+                    handleStatusSubmit(order.orderCode);
                   }}
                 >
                   변경
