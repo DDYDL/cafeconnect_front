@@ -84,9 +84,27 @@ function MenuInsert() {
       navigate("/mainItemList");
     }
   };
+  const checkProperties = () =>{
+    if(menu.menuName !== '' && menu.menuPrice !== '' && menu.menuCapacity !== '' &&  menu.caffeine !== '' &&  menu.calories !== '' &&  
+      menu.carbohydrate  !== '' && menu.sugar !== '' &&  menu.natrium !== '' !== '' && 
+      menu.fat !== '' && menu.protein !== '' && menu.menuStatus !== '' &&  menu.menuCategoryName !== '' 
+    ){
+      return true;
+    }
+    return false;
+      
+  }
   const handleUpload = async () => {
     const formData = new FormData();
+    if(!file){
+      alert('이미지를 등록하세요')
+      return;
+    }
     formData.append("file", file);
+    if(!checkProperties()){
+      alert('등록되지 않은 항목이 존재합니다')
+      return;
+    }
     const itemSaveForm = {
       menuName: menu.menuName,
       menuPrice: menu.menuPrice,
@@ -381,9 +399,9 @@ function MenuInsert() {
                         
                         onChange={handleMenuStatusSelectbox}
                       >
-                        <Option value="">상태</Option>
-                        <Option value="상태1">상태1</Option>
-                        <Option value="상태2">상태2</Option>
+                        <Option value="normal">일반</Option>
+                        <Option value="signature">시그니처</Option>
+                        <Option value="best">베스트</Option>
                       </Select>
                     </div>
                   </div>

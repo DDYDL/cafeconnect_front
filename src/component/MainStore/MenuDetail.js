@@ -375,7 +375,7 @@ function MenuDetail() {
                           className={`${styles["x20mg"]} ${styles["valign-text-middle"]}`}
                           style={{ width: "250px" }}
                         >
-                          {menu.menuStatus}
+                          {menu.menuStatus === 'normal' ? '일반' : menu.menuStatus === 'signature' ? '시그니쳐' : '베스트'}
                         </div>
                       </div>
                     </div>

@@ -32,6 +32,7 @@ import ItemInsert from "./component/MainStore/ItemInsert.js";
 import MainStore_ItemList from "./component/MainStore/ItemList.js";
 import ItemUpdate from "./component/MainStore/ItemUpdate.js";
 import MainStore_MenuDetail from "./component/MainStore/MenuDetail.js";
+import MenuCategory from "./component/MainStore/MenuCategory.js";
 import MenuInsert from "./component/MainStore/MenuInsert.js";
 import MainStore_MenuList from "./component/MainStore/MenuList.js";
 import MenuUpdate from "./component/MainStore/MenuUpdate.js";
@@ -241,6 +242,7 @@ function App() {
         <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore />} />
 
         <Route path="/category" element={<ItemCategory />} />
+        <Route path="/menuCategory" element={<MenuCategory />} />
         <Route path="/insertMainStore" element={<InsertMainStore />} />
         <Route path="/mainItemDetail/:itemCode" element={<MainStore_ItemDetail />} />
         <Route path="/mainMenuDetail/:menuCode" element={<MainStore_MenuDetail />} />
