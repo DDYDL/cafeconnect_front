@@ -195,8 +195,8 @@ function OrderDetailForStore() {
                   <od.PaymentRow>
                     <div className="payment-item">
                       <span className="value">
-                        {orderDetail.paymentDetail.cardName}(
-                        {orderDetail.paymentDetail.cardNumber})
+                        {orderDetail.paymentDetail?.cardName}(
+                        {orderDetail.paymentDetail?.cardNumber})
                       </span>
                     </div>
                   </od.PaymentRow>
@@ -207,7 +207,7 @@ function OrderDetailForStore() {
                   <od.PaymentRow>
                     <div className="payment-item">
                       <span className="value">
-                        {orderDetail.paymentDetail.bankName}
+                        {orderDetail.paymentDetail?.bankName}
                       </span>
                     </div>
                   </od.PaymentRow>
@@ -218,12 +218,14 @@ function OrderDetailForStore() {
                   <span className="label">결제 상태</span>
                   <span
                     className={`value payment-status ${
-                      orderDetail.paymentDetail.paymentStatus === "paid"
+                      orderDetail.orderState !== "주문취소"
                         ? "paid"
                         : "cancelled"
                     }`}
                   >
-                    {orderDetail.paymentDetail.paymentStatus === "paid"
+                    {/* api 결제 상태로 해야하지만, 밤 11시 이후 status가 cancelled 바뀜  
+                    {orderDetail.paymentDetail.paymentStatus === "paid" */}
+                    {orderDetail.orderState !== "주문취소"
                       ? "결제완료"
                       : "결제취소"}
                   </span>
@@ -233,7 +235,7 @@ function OrderDetailForStore() {
               <od.PaymentRow>
                 <div className="payment-item">
                   <a
-                    href={orderDetail.paymentDetail.receiptUrl}
+                    href={orderDetail.paymentDetail?.receiptUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
@@ -259,7 +261,7 @@ function OrderDetailForStore() {
                     <div className="payment-item">
                       <span className="label">취소 금액</span>
                       <span className="value cancel-amount red">
-                        {orderDetail.paymentDetail.cancelAmount.toLocaleString()}
+                        {orderDetail.paymentDetail?.cancelAmount.toLocaleString()}
                         원
                       </span>
                     </div>
@@ -268,7 +270,7 @@ function OrderDetailForStore() {
                     <div className="payment-item">
                       <span className="label">취소 사유</span>
                       <span className="value">
-                        {orderDetail.paymentDetail.cancelReason ||
+                        {orderDetail.paymentDetail?.cancelReason ||
                           "가맹점 주문 취소"}
                       </span>
                     </div>
