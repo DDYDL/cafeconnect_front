@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
 import { useAtomValue } from "jotai/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -18,6 +18,23 @@ const ComplainList = () => {
   const navigate = useNavigate();
   const token = useAtomValue(tokenAtom);
   const buttonLabels = ["1주일", "1개월", "3개월"];
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
+
+  const pageCount = Math.ceil(complain.length / itemsPerPage); // 총 페이지 수
+  const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1); // 이전 페이지로 이동
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pageCount) {
+      setCurrentPage(currentPage + 1); // 다음 페이지로 이동
+    }
+  };
 
   // / fetchStoreCode를 useCallback으로 래핑
   const fetchStoreCode = useCallback(async () => {
@@ -100,22 +117,30 @@ const ComplainList = () => {
     return complain.filter(c => new Date(c.complainDate) >= periodStartDate);
   };
 
-  // 검색 필터링
-  // const filterComplainsBySearch = searchText =>
-  //   complain.filter(c => c.complainTitle.toLowerCase().includes(searchText.toLowerCase()));
-
-  // 전체 필터링
+  // 검색 및 기간 필터링을 적용한 컴플레인 리스트를 반환
   const getFilteredComplains = () => {
     let filtered = complain;
 
+    // 검색 필터링
+    if (searchComplain.trim() !== "") {
+      filtered = filtered.filter(c =>
+        c.complainTitle.toLowerCase().includes(searchComplain.toLowerCase())
+      );
+    }
+
+    // 기간 필터링
     if (selectedButton !== null) {
       filtered = filterComplainsByPeriod(buttonLabels[selectedButton]);
     }
-    // if (searchComplain) {
-    //   filtered = filterComplainsBySearch(searchComplain);
-    // }
 
-    return filtered;
+    // 페이지네이션 적용
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filtered.slice(indexOfFirstItem, indexOfLastItem);
+  };
+
+  const handlePageChange = pageNumber => {
+    setCurrentPage(pageNumber);
   };
 
   const handleButtonClick = index => {
@@ -130,11 +155,6 @@ const ComplainList = () => {
     <ContentListDiv>
       <HeadingContainer>
         <Heading>컴플레인 공지</Heading>
-        <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>컴플레인 공지</BoldText>
-        </Navigation>
       </HeadingContainer>
 
       <HeadingContainer1>
@@ -180,7 +200,10 @@ const ComplainList = () => {
         {getFilteredComplains().length > 0 ? (
           getFilteredComplains().map((c, index) => (
             <TableInfoList onClick={() => handleItemClick(c.complainNum)} key={c.complainNum}>
-              <div>{index + 1}</div>
+              {/* <div>{index + 1}</div> */}
+              <div style={{ paddingLeft: "30px" }}>
+                {(currentPage - 1) * itemsPerPage + index + 1}
+              </div>{" "}
               <div style={{ paddingLeft: "20px" }}>{c.complainTitle}</div>
               <div style={{ paddingRight: "20px" }}>{c.complainDate}</div>
             </TableInfoList>
@@ -188,18 +211,65 @@ const ComplainList = () => {
         ) : (
           <div
             style={{
-              display: "flex", // flexbox 사용
-              justifyContent: "center", // 수평 가운데 정렬
-              alignItems: "center", // 수직 가운데 정렬
-              height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
-              fontSize: "16px", // 텍스트 크기 설정
-              color: "#555", // 텍스트 색상 설정
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "200px",
+              fontSize: "16px",
+              color: "#555",
             }}
           >
             검색 결과가 없습니다.
           </div>
+          // ) : (
+          //   <div
+          //     style={{
+          //       display: "flex", // flexbox 사용
+          //       justifyContent: "center", // 수평 가운데 정렬
+          //       alignItems: "center", // 수직 가운데 정렬
+          //       height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
+          //       fontSize: "16px", // 텍스트 크기 설정
+          //       color: "#555", // 텍스트 색상 설정
+          //     }}
+          //   >
+          //     검색 결과가 없습니다.
+          //   </div>
         )}
       </div>
+
+      <CustomHorizontal width="basic" bg="grey" />
+
+      <s.ButtonGroupStyle variant="outlined" style={{ paddingTop: "40px", paddingLeft: "380px" }}>
+        <s.IconButtonStyle
+          onClick={handlePrevPage}
+          style={{
+            backgroundColor: "transparent",
+            color: "black",
+          }}
+        >
+          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+        </s.IconButtonStyle>
+
+        {pageBtn.map(page => (
+          <s.IconButtonStyle
+            key={page}
+            onClick={() => handlePageChange(page)}
+            style={{
+              color: "black",
+              backgroundColor: page === currentPage ? "white" : "transparent",
+            }}
+          >
+            {page}
+          </s.IconButtonStyle>
+        ))}
+
+        <s.IconButtonStyle
+          onClick={handleNextPage}
+          style={{ backgroundColor: "transparent", color: "black" }}
+        >
+          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+        </s.IconButtonStyle>
+      </s.ButtonGroupStyle>
     </ContentListDiv>
   );
 };
@@ -309,9 +379,10 @@ const TableHeader = styled.div`
   align-items: center;
 
   height: 50px;
-  // font-weight: bold;
+  font-weight: bold;
   margin-top: 5px;
   margin-bottom: 5px;
+  padding-left: 28px;
 
   & > div:first-child {
     margin-left: 30px;

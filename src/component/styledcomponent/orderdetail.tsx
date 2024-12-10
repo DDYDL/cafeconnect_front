@@ -94,7 +94,7 @@ export const ItemStorageType = styled.span<{ $storageway?: string }>`
     line-height: 14px;
   `
   ||
-  $storageway != "냉동" &&
+  $storageway != "냉동" && $storageway != null &&
     `
     background: #d26717;
     color: #fff;
@@ -102,12 +102,11 @@ export const ItemStorageType = styled.span<{ $storageway?: string }>`
     font-size: 10px;
     line-height: 14px;
     border-radius: 2px;
-  `}
-  
+
+    `
+}
 
 `;
-
-
 
 
 export const SectionTitle = styled.div`
@@ -165,8 +164,19 @@ export const PaymentRow = styled.div<{ $isheader?: boolean }>`
     .value {
       color: #333;
       font-weight: ${props => props.$isheader ? '600' : '400'};
+      
+      &.canceled {
+        text-decoration: line-through;
+        color: #999;
+      }
+      
       &.red {
         color: #ff3b3b;
+      }
+
+      &.cancel-amount {
+        color: #ff3b3b;
+        font-weight: 600;
       }
     }
   }

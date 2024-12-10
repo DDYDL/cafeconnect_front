@@ -10,7 +10,7 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Select, Option } from "@material-tailwind/react";
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';
+import { axiosInToken ,url} from '../../config.js';
 import { useNavigate } from "react-router";
 
 function WishItem() {
@@ -265,7 +265,7 @@ function WishItem() {
                   />
                 </w.ItemListChekcWrap>
                 <w.ItemListImg>
-                  <img src='/image/item3.jpg' alt={item.itemFileNum} />
+                  <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} />
                 </w.ItemListImg>
                 <w.ItemListTextBox>
                   <w.ItemTitle>{item.itemName}</w.ItemTitle>

@@ -23,7 +23,6 @@ const MyStoreManage = () => {
     useEffect(()=>{
         setStore({});
         setStoreList([]);
-        setMember(member);
         getStoreList();
     }, [])
 
@@ -104,7 +103,7 @@ const MyStoreManage = () => {
                 }
             </s.ContentListDiv>
 
-            <Dialog size="s" open={open} handler={handleOpen} className="p-4">
+            <s.DialogDiv open={open} handler={handleOpen} className="p-4">
                 <DialogHeader className="relative m-0 block">
                     가맹점 추가
                     <IconButton
@@ -126,6 +125,7 @@ const MyStoreManage = () => {
                             color="gray"
                             size="lg"
                             name="storeCode"
+                            style={{padding:'15px'}}
                             className="placeholder:opacity-100 focus:!border-t-gray-900"
                             containerProps={{
                                 className: "!min-w-full",
@@ -147,6 +147,7 @@ const MyStoreManage = () => {
                             color="gray"
                             size="lg"
                             name="number"
+                            style={{padding:'15px'}}
                             className="placeholder:opacity-100 focus:!border-t-gray-900"
                             containerProps={{
                                 className: "!min-w-full",
@@ -161,7 +162,7 @@ const MyStoreManage = () => {
                 <DialogFooter>
                     <s.ButtonStyle width='60px' className="ml-auto" onClick={addStore}>추가</s.ButtonStyle>
                 </DialogFooter>
-            </Dialog>
+            </s.DialogDiv>
         </>
     )
 }

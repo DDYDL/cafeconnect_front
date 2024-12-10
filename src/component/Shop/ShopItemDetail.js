@@ -3,10 +3,11 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import { CommonWrapper, CommonContainer } from "../styledcomponent/common.tsx";
 import { useState ,useEffect} from "react";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import {useNavigate,useParams} from 'react-router-dom';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';  
+import { axiosInToken,url} from '../../config.js';  
 import { useAtomValue } from 'jotai/react';
 
 const ShopItemDetail = () => {
@@ -17,9 +18,10 @@ const ShopItemDetail = () => {
   const store = useAtomValue(memberAtom); //store.roles = ROLE_MAINSTORE 이면 버튼 비활성화 
   const [quantity, setQuantity] = useState(1);
   const {itemCode} = useParams();
+  const [pageBtn, setPageBtn] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
 
-  // 처음엔 카테고리와 카테고리 선택 안한 전체 데이터 가져오기 
-  
+  // 처음엔 카테고리와 카테고리 선택 안한 전체 데이터 가져오기   
   useEffect(() => {
     if (token != null && token !== '')
     getItemInfo(itemCode);
@@ -92,7 +94,7 @@ const ShopItemDetail = () => {
             <d.PdtDetailLeft>
               <d.PdtDetailItemImg>
                 <d.PdtDetailItemImgArea>
-                <img src='/image/item3.jpg' alt={item.itemFileNum} />
+                <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemFileName} />
                 </d.PdtDetailItemImgArea>
               </d.PdtDetailItemImg>
             </d.PdtDetailLeft>

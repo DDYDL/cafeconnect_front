@@ -77,12 +77,13 @@ import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
 
 import axios from "axios";
 import { useAtom, useSetAtom } from "jotai/react";
-import { alarmsAtom, fcmTokenAtom, memberAtom } from "./atoms.js";
+import { alarmsAtom, fcmTokenAtom, memberAtom, memberLocalAtom } from "./atoms.js";
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
 import { url } from "./config.js";
 import { firebaseReqPermission, registerServiceWorker } from "./firebaseconfig.js";
 import SocialLogin from "./component/Main/SocialLogin.js";
+import FindPassword from "./component/Main/FindPassword.js";
 
 function App() {
   const [path, setPath] = useState(false);
@@ -172,6 +173,7 @@ function App() {
         <Route exect path="/joinStore" element={<JoinStore />} />
 
         <Route exect path="/socialLogin" element={<SocialLogin/>} />
+        <Route exect path="/findPassword" element={<FindPassword/>} />
 
         {/* 가맹점 페이지 링크 */}
 
@@ -239,7 +241,7 @@ function App() {
         <Route exect path="/storeItemRevenue" element={<StoreItemRevenue />} />
 
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore />} />
-        <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore />} />
+        <Route exect path="/mainStoreOrderDetail/:orderCode" element={<OrderDetailForMainStore />} />
 
         <Route path="/category" element={<ItemCategory />} />
         <Route path="/menuCategory" element={<MenuCategory />} />

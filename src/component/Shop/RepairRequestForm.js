@@ -16,7 +16,7 @@ import ReactSelect from "react-select";
 function RepairRequsetForm() {
   const token = useAtomValue(tokenAtom);
   const store = useAtomValue(memberAtom);
-  const [storeInfo, setStoreInfo] = useState({ storeName: "" }); //session에 담아줄 수 있을까..?
+  const [storeInfo, setStoreInfo] = useState({}); //session에 담아줄 수 있을까..?
   const [machines, setMachines] = useState([]); // 전체 머신 가져오기[]
 
   const [selectedMachine, setSelectedMachine] = useState(null); //ReactSelect의 value속성에 활용 {value:string,label:string}형태 {}

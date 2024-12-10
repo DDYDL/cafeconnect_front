@@ -12,7 +12,7 @@ import { useState,useEffect} from "react";
 import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import {useNavigate} from 'react-router-dom';
 import { tokenAtom, memberAtom } from "../../atoms";
-import { axiosInToken } from "../../config.js";
+import { axiosInToken,url } from "../../config.js";
 import { useAtomValue } from "jotai/react";
 import { format } from 'date-fns';
 
@@ -53,6 +53,7 @@ function RepairRequestList() {
     axiosInToken(token).post('repairRequestList',formData)
     .then (res=>{
         let pageInfo = res.data.pageInfo;
+        console.log(pageInfo);
         let page = [];
           for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
               page.push(i);
@@ -111,7 +112,7 @@ function RepairRequestList() {
       <r.StyledDialogBody divider>
         <r.DetailSection>
           <r.ProductInfo>
-            <img src={repairData?.imageUrl || "/image/machine.jpg"} alt="기계" />
+            <img src={repairData?.imageUrl ||`${url}/image/${repairData.itemFileNum}`} alt={repairData.itemFileName} />
             <div>
               <r.InfoLabel>상품명</r.InfoLabel>
               <r.InfoValue>{repairData?.itemName}</r.InfoValue>
@@ -205,7 +206,7 @@ function RepairRequestList() {
           {repairList && repairList.map((item) => (
             <r.RepairItem key={item.repairNum} onClick={() => handleOpenModal(item)}> 
               <div className="flex items-center gap-4">
-                <img src="/image/machine.jpg" alt="상품" className="w-20 h-20" />
+                <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemFileName}  className="w-20 h-20" />
                 <div>
                   <div className="text-sm text-gray-500">{formatCategory(item)}</div>
                   <div>{item.itemName}</div>
@@ -231,7 +232,7 @@ function RepairRequestList() {
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
-                </s.PageButtonGroupDiv> 
+       </s.PageButtonGroupDiv> 
         {/* 모달컴포넌트 */}
         <RepairDetailModal
           open={isModalOpen}

@@ -61,7 +61,6 @@ const StockManage = ({major, middle, sub})=>{
     useEffect(()=>{
         categorySetting();
         setStockList([]);
-        setMember(member);
         getStockList();
         getItem();
         setInfo(Array(itemList.length).fill(false));
@@ -114,8 +113,8 @@ const StockManage = ({major, middle, sub})=>{
         formData.append("storeCode", member.storeCode);
         formData.append("itemCode", item.itemCode);
         // 유통기한, 입고날짜, 수량만 입력
-        formData.append("stockExpirationDate", stock.stockExpirationDate);
-        formData.append("stockReceiptDate", stock.stockReceiptDate);
+        formData.append("stockExpirationDate", format(stock.stockExpirationDate, 'yyyy-MM-dd'));
+        formData.append("stockReceiptDate", format(stock.stockReceiptDate, 'yyyy-MM-dd'));
         formData.append("stockCount", stock.stockCount);
         e.preventDefault();
         
@@ -124,10 +123,11 @@ const StockManage = ({major, middle, sub})=>{
             console.log(res.data);
             alert("재고가 추가 되었습니다.");
             // stockList에 추가
-            setStockList([...stockList, formData]);
+            getStockList();
             setItem({});
             setItemNameFilter("");
             setItemListFilter([]);
+            setStock({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
             setAdd(false);
         })
         .catch(err=>{
@@ -144,8 +144,12 @@ const StockManage = ({major, middle, sub})=>{
         formData.append("storeCode", member.storeCode);
         formData.append("itemCode",  stock.itemCode);
         // 유통기한, 입고날짜, 수량만 입력
-        formData.append("stockExpirationDate", upStock.upstockExpirationDate);
-        formData.append("stockReceiptDate", upStock.upstockReceiptDate);
+        if(upStock.upstockExpirationDate!=='') {
+            formData.append("stockExpirationDate", format(upStock.upstockExpirationDate, 'yyyy-MM-dd'));
+        }
+        if(upStock.upstockReceiptDate!=='') {
+            formData.append("stockReceiptDate", format(upStock.upstockReceiptDate, 'yyyy-MM-dd'));
+        }
         formData.append("stockCount", upStock.upstockCount);
         
         axios.post(`${url}/updateStock`, formData)
@@ -154,6 +158,7 @@ const StockManage = ({major, middle, sub})=>{
             alert("재고가 수정 되었습니다.");
             // stockList에 추가
             setStockList(res.data);
+            setUpStock({storeCode:0, upitemCode:0, upstockExpirationDate:'', upstockReceiptDate:'', upstockCount:0});
         })
         .catch(err=>{
             console.log(err);
@@ -309,8 +314,8 @@ const StockManage = ({major, middle, sub})=>{
         });
         console.log(arrayInner);
         // 해당하는 날짜 값 바꾸기
-        if(str==='ed') { arrayInner[indexIn].stockExpirationDate = format(date, 'yyyy-MM-dd'); }
-        else if(str==='rd') { arrayInner[indexIn].stockReceiptDate = format(date, 'yyyy-MM-dd'); }
+        if(str==='ed') { arrayInner[indexIn].stockExpirationDate = date; }
+        else if(str==='rd') { arrayInner[indexIn].stockReceiptDate = date; }
         console.log(arrayInner);
         // 해당하는 리스트 바꾸기
         Object.entries(array).map((entrie, idx) => {
@@ -321,8 +326,8 @@ const StockManage = ({major, middle, sub})=>{
         console.log(array);
 
         setStockList(array);
-        if(str==='ed') { setUpStock({...upStock, ['upstockExpirationDate']:format(date, 'yyyy-MM-dd')}); }
-        else if(str==='rd') { setUpStock({...upStock, ['upstockReceiptDate']:format(date, 'yyyy-MM-dd')}); }
+        if(str==='ed') { setUpStock({...upStock, ['upstockExpirationDate']:date}); }
+        else if(str==='rd') { setUpStock({...upStock, ['upstockReceiptDate']:date}); }
     }
 
     const setUpStockCount = (e, itemCode, indexIn)=>{
@@ -364,10 +369,12 @@ const StockManage = ({major, middle, sub})=>{
                 <s.CategoryButtonGroupDiv>
                 <s.ButtonDiv>
                     <s.ButtonInnerDiv>
-                        <s.dateCheckbox type='checkbox' value='유통기한' checked={expirationDate} onClick={(e)=>searchCategory(e, !expirationDate, itemCategoryStr, itemCategoryNum)}/>
+                        <s.CheckboxLabel for='expirationDate'>유통기한</s.CheckboxLabel>
+                        <s.dateCheckbox type='checkbox' id='expirationDate' value='유통기한' checked={expirationDate} onClick={(e)=>searchCategory(e, !expirationDate, itemCategoryStr, itemCategoryNum)}/>
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv>
-                    <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
+                        <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
+                        <Option key='all' value='all' onClick={(e)=>searchCategory(e, expirationDate, '', 0)}>전체</Option>
                         {majorCategory.map(major=>(
                             <Option key={major.itemCategoryNum} value={major.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'major', major.itemCategoryNum)}>{major.itemCategoryName}</Option>
                         ))}
@@ -396,8 +403,8 @@ const StockManage = ({major, middle, sub})=>{
                 </s.CategoryButtonGroupDiv>
 
                 <s.TableList>
-                    <s.TableListThead><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='120px'>카테고리</s.TableTextTh><s.TableTextTh width='80px'>규격</s.TableTextTh>
-                        <s.TableTextTh width='90px'>보관상태</s.TableTextTh><s.TableTextTh width='140px'>유통기한</s.TableTextTh><s.TableTextTh width='140px'>입고날짜</s.TableTextTh>
+                    <s.TableListThead><s.TableTextTh width='270px'>상품정보</s.TableTextTh><s.TableTextTh width='110px'>카테고리</s.TableTextTh><s.TableTextTh width='80px'>규격</s.TableTextTh>
+                        <s.TableTextTh width='70px'>보관상태</s.TableTextTh><s.TableTextTh width='120px'>유통기한</s.TableTextTh><s.TableTextTh width='120px'>입고날짜</s.TableTextTh>
                         <s.TableTextTh width='60px'>수량</s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh><s.TableTextTh width='50px'></s.TableTextTh></s.TableListThead>
                     <tbody>
                         <s.TableTextTr onClick={openStock}><PlusIcon style={{marginLeft:'520px', marginTop:'11px'}} className="h-6 w-6"/></s.TableTextTr>
@@ -413,16 +420,19 @@ const StockManage = ({major, middle, sub})=>{
                                     />
                             </div>
                             </s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='120px' value={item.itemCode==='' ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
+                            <s.TableTextTd></s.TableTextTd>
+                            <s.TableTextTd></s.TableTextTd>
+                            <s.TableTextTd></s.TableTextTd>
+                            {/* <s.TableTextTd><s.InputStyle width='120px' value={item.itemCode==='' ? "" : `${item.itemMajorCategoryName}/${item.itemMiddleCategoryName}/${item.itemSubCategoryName}`} readOnly/></s.TableTextTd>
                             <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : `${item.itemCapacity}*${item.itemUnitQuantity}/${item.itemUnit}`} readOnly/></s.TableTextTd>
-                            <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : item.itemStorage} readOnly/></s.TableTextTd>
+                            <s.TableTextTd><s.InputStyle width='80px' value={item.itemCode==='' ? "" : item.itemStorage} readOnly/></s.TableTextTd> */}
                             <s.TableTextTd>
                             <s.DatePickerWrap>
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                             <DatePicker
                                 value={stock.stockExpirationDate}
                                 showDaysOutsideCurrentMonth
-                                onChange={(date) => setStock({ ...stock, ['stockExpirationDate']: format(date, 'yyyy-MM-dd') })}
+                                onChange={(date) => setStock({ ...stock, ['stockExpirationDate']: date})}
                                 className="CustomPicker"
                                 format='yyyy-MM-dd'
                             />
@@ -435,7 +445,7 @@ const StockManage = ({major, middle, sub})=>{
                             <DatePicker
                                 value={stock.stockReceiptDate}
                                 showDaysOutsideCurrentMonth
-                                onChange={(date) => setStock({ ...stock, ['stockReceiptDate']: format(date, 'yyyy-MM-dd') })}
+                                onChange={(date) => setStock({ ...stock, ['stockReceiptDate']: date})}
                                 className="CustomPicker"
                                 format='yyyy-MM-dd'
                             />
@@ -473,11 +483,11 @@ const StockManage = ({major, middle, sub})=>{
                                     {info[index] &&
                                     stock[1].map((stockInner, indexIn)=>(
                                         <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(234, 234, 234, 1)' style={{borderBottom:'1px solid rgba(154, 154, 154, 1)'}}>
-                                            <s.TableTextTd width='600px'>{stockInner.stockNum}</s.TableTextTd>
-                                            <s.TableTextTd width='80px'></s.TableTextTd>
-                                            <s.TableTextTd width='80px'></s.TableTextTd>
-                                            <s.TableTextTd width='80px'></s.TableTextTd>
-                                            <s.TableTextTd width='150px'>
+                                            <s.TableTextTd width='400px'>{stockInner.stockNum}</s.TableTextTd>
+                                            <s.TableTextTd width='10px'></s.TableTextTd>
+                                            <s.TableTextTd width='10px'></s.TableTextTd>
+                                            <s.TableTextTd width='10px'></s.TableTextTd>
+                                            <s.TableTextTd width='120px'>
                                             <s.DatePickerWrap>
                                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                                                 <DatePicker
@@ -491,7 +501,7 @@ const StockManage = ({major, middle, sub})=>{
                                                 </LocalizationProvider>
                                             </s.DatePickerWrap>
                                             </s.TableTextTd>
-                                            <s.TableTextTd width='150px'>
+                                            <s.TableTextTd width='120px'>
                                             <s.DatePickerWrap>
                                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
                                                 <DatePicker
@@ -517,8 +527,8 @@ const StockManage = ({major, middle, sub})=>{
                                                 />
                                             </c.QuantityControl>
                                             </s.TableTextTd>
-                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={(e)=>updateStock(e, stockInner.stockNum)}>저장</Link></s.ButtonStyle></s.TableTextTd>
-                                            <s.TableTextTd width='50px'><s.ButtonStyle width="50px"><Link onClick={()=>deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
+                                            <s.TableTextTd width='70px'><s.ButtonStyle width="50px"><Link onClick={(e)=>updateStock(e, stockInner.stockNum)}>저장</Link></s.ButtonStyle></s.TableTextTd>
+                                            <s.TableTextTd width='70px' style={{marginRight:'5px'}}><s.ButtonStyle width="50px"><Link onClick={()=>deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
                                         </s.TableTextTr>
                                     ))
                                 }

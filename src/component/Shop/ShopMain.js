@@ -46,7 +46,7 @@ function ShopMain() {
                 .then(res=> {
                     console.log(res.data)
                     if(res.data.length!==0) {
-                        setAlarms([...alarms,...res.data]);
+                        setAlarms(res.data);
                     }
                 })
                 .catch(err=>{
@@ -95,7 +95,7 @@ function ShopMain() {
           <s.ItemListLi key={item.itemCode}>
             <s.ItemListImg>
               {/* 이미지 경로대로 업데이트하기 */}
-              <img src='/image/item3.jpg' alt={item.itemNum} /> 
+              <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} /> 
               {store.roles==='ROLE_STORE' &&
               <s.HoverControls className="hover-controls">
                 <s.QuantityControl>
