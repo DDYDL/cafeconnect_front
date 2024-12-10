@@ -334,6 +334,7 @@ function RepairListCopy() {
                   className="w-16 p-r-2"
                   style={{ width: "200px" }}
                 >
+                  <div className="select-wrap" style={{ width: "200px" }}>
                   <Select label="대분류" onChange={handleSelectMajorCategory}>
                     {majorCategoryList.map((majorCategory, index) => (
                       <Option value={majorCategory.categoryValue} key={index}>
@@ -341,9 +342,11 @@ function RepairListCopy() {
                       </Option>
                     ))}
                   </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
+                <div className="select-wrap" style={{ width: "200px" }}>
                   <Select label="중분류" onChange={handleSelectMiddleCategory}>
                     {middleCategoryList.map((middleCategory, index) => (
                       <Option value={middleCategory.categoryValue} key={index}>
@@ -351,6 +354,7 @@ function RepairListCopy() {
                       </Option>
                     ))}
                   </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "307px" }}>

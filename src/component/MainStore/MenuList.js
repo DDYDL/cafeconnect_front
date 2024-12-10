@@ -275,6 +275,7 @@ function MenuList() {
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
+                <div className="select-wrap" style={{ width: "200px" }}>
                   <Select label="분류" onChange={handleChangeCategory}>
                     {categoryList.map((category, index) => (
                       <Option value={category.categoryValue}>
@@ -282,6 +283,7 @@ function MenuList() {
                       </Option>
                     ))}
                   </Select>
+                  </div>
                 </s.ButtonInnerDiv>
                 <div style={{ marginLeft: "508px" }}>
                   <Input

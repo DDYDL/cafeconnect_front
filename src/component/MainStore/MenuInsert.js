@@ -8,7 +8,7 @@ import { Option, Select } from "@material-tailwind/react";
 import { useNavigate } from "react-router";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
-
+import logo from '../assets/img/logo.svg'
 function MenuInsert() {
   const [menu, setMenu] = useState({
     menuName: "",
@@ -24,7 +24,7 @@ function MenuInsert() {
     menuStatus: "",
     menuCategoryName: "",
   });
-
+  const [capacityUnit,setCapacityUnit] = useState('')
   const [categoryList, setCategoryList] = useState([]);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -93,7 +93,7 @@ function MenuInsert() {
     const itemSaveForm = {
       menuName: menu.menuName,
       menuPrice: menu.menuPrice,
-      menuCapacity: menu.menuCapacity,
+      menuCapacity: menu.menuCapacity+capacityUnit,
       caffeine: menu.caffeine,
       calories: menu.calories,
       carbohydrate: menu.carbohydrate,
@@ -165,12 +165,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        가격
+                        가격(원)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="가격을 입력하세요"
+                        placeholder="가격을 입력하세요(단위 생략)"
                         name="menuPrice"
                         value={menu.menuPrice}
                         onChange={handleInput}
@@ -182,25 +182,40 @@ function MenuInsert() {
                       >
                         용량
                       </div>
+                      <div style={{display:"flex",gap:"20px"}}>
                       <s.InputStyle
-                        width="440px"
+                        width="220px"
                         type="text"
                         placeholder="용량을 입력하세요"
                         name="menuCapacity"
                         value={menu.menuCapacity}
                         onChange={handleInput}
                       />
+                      <div className="select-wrap" style={{ width: "100px" }}>
+                      <Select
+                        label="용량단위"
+                        onChange={(e)=>(setCapacityUnit(e))}
+                      >
+                        <Option value="">용량 단위를 선택하세요</Option>
+                        <Option value="kg">kg</Option>
+                        <Option value="g">g</Option>
+                        <Option value="ml">ml</Option>
+                        <Option value="L">L</Option>
+                        
+                      </Select>
+                    </div>
+                      </div>
                     </div>
                     <div className={styles["container"]}>
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        카페인 함유량
+                        카페인 함유량(mg)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="카페인 함유량을 입력하세요"
+                        placeholder="카페인 함유량을 입력하세요(단위 생략)"
                         name="caffeine"
                         value={menu.caffeine}
                         onChange={handleInput}
@@ -210,12 +225,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        지방 함유량
+                        지방 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="지방 함유량을 입력하세요"
+                        placeholder="지방 함유량을 입력하세요(단위 생략)"
                         name="fat"
                         value={menu.fat}
                         onChange={handleInput}
@@ -253,7 +268,7 @@ function MenuInsert() {
                       </div>
                       <img
                         className={styles["product-thumb-1bfdce747webp"]}
-                        src={imageUrl === null ? thumb : imageUrl}
+                        src={imageUrl === null ? logo : imageUrl}
                         alt="image"
                       ></img>
                     </div>
@@ -301,12 +316,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        열량
+                        열량(kcal)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="열량을 입력하세요"
+                        placeholder="열량을 입력하세요(단위 생략)"
                         name="calories"
                         value={menu.calories}
                         onChange={handleInput}
@@ -316,12 +331,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        탄수화물 함유량
+                        탄수화물 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="탄수화물 함유량을 입력하세요"
+                        placeholder="탄수화물 함유량을 입력하세요(단위 생략)"
                         name="carbohydrate"
                         value={menu.carbohydrate}
                         onChange={handleInput}
@@ -331,12 +346,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        나트륨 함유량
+                        나트륨 함유량(mg)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="나트륨 함유량을 입력하세요"
+                        placeholder="나트륨 함유량을 입력하세요(단위 생략)"
                         name="natrium"
                         value={menu.natrium}
                         onChange={handleInput}
@@ -346,12 +361,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        단백질 함유량
+                        단백질 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="단백질 함유량을 입력하세요"
+                        placeholder="단백질 함유량을 입력하세요(단위 생략)"
                         name="protein"
                         value={menu.protein}
                         onChange={handleInput}
@@ -361,12 +376,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        당류&nbsp;&nbsp;함유량
+                        당류&nbsp;&nbsp;함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="당류 함유량을 입력하세요"
+                        placeholder="당류 함유량을 입력하세요(단위 생략)"
                         name="sugar"
                         value={menu.sugar}
                         onChange={handleInput}
@@ -383,11 +398,11 @@ function MenuInsert() {
                         style={{ width: "440px", marginBottom: "20px" }}
                       >
                         <Select
-                          label="상태"
+                          label="메뉴 상태"
                           
                           onChange={handleMenuStatusSelectbox}
                         >
-                          <Option value="">상태</Option>
+                          <Option value="">메뉴 상태를 입력하세요</Option>
                           <Option value="normal">일반</Option>
                           <Option value="signature">시그니처</Option>
                           <Option value="best">베스트</Option>
