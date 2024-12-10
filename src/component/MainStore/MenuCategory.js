@@ -30,28 +30,51 @@ function MenuCategory() {
 
   const handleClick = (index) => () => {
     const target = categoryList[index];
-    setActiveCategoryName(target.categoryName);
-    setActiveCategoryNum(target.categoryNum);
-    setActiveUpdateInput({
-      name: target.categoryName,
-      state: false,
-    });
-    setUpdateText(target.categoryName);
+
+    if (target.categoryName === activeUpdateInput.name) {
+      setActiveCategoryName(null);
+      setActiveCategoryNum(null);
+      setUpdateText("");
+      setActiveUpdateInput({
+        name: "",
+        state: false,
+      });
+    } else {
+      setActiveCategoryName(target.categoryName);
+      setActiveCategoryNum(target.categoryNum);
+      setUpdateText(target.categoryName);
+      setActiveUpdateInput({
+        name: target.categoryName,
+        state: false,
+      });
+    }
   };
   const handlePlusButton = () => {
+    if (activeUpdateInput.name !== "" && activeUpdateInput.state === true) {
+      alert("이미 수정중이니 수정폼을 없앤 후 버튼을 눌러주세요");
+      return;
+    }
     setActiveInput(!activeInput);
     setSaveState(true);
     setUpdateState(false);
+    setUpdateText("");
   };
   const handleMinusButton = () => {
     deleteData();
   };
   const handleUpdate = () => {
+    if (activeInput === true) {
+      alert(
+        "이미 새로운 카테고리를 등록중이니 등록 폼을 없앤 후 버튼을 수정 버튼을 눌러주세요"
+      );
+      return;
+    }
     setActiveUpdateInput({
       name: activeCategoryName,
       state: true,
     });
     setSaveState(false);
+    setSaveText("");
     setUpdateState(true);
   };
   const fetchData = async () => {
@@ -254,11 +277,6 @@ function MenuCategory() {
                               {category.categoryName}
                             </div>
                           </div>
-                          <img
-                            className={styles["frame-300"]}
-                            src={frame_300}
-                            alt="Frame 300"
-                          />
                         </div>
                       </>
                     );

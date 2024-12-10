@@ -516,7 +516,7 @@
   background-color: #f8f8f8;
   display: flex;
   flex-direction: column;
-  height: 1505px;
+  height: 100%;
   margin-top: 15px;
   overflow: hidden;
   width: 1000px;
@@ -635,7 +635,7 @@
 }
 
 .MenuList .overlap-group2 {
-  height: 1160px;
+  min-height: 500px;
   margin-top: 8px;
   position: relative;
   width: 1000px;
@@ -1172,7 +1172,7 @@
 .MenuList .small-btn_brown {
   align-items: flex-start;
   background-color: #54473f;
-  border-radius: 2px;
+  border-radius: 5px;
   display: flex;
   height: 53px;
   left: 0;

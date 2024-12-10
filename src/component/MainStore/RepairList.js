@@ -58,7 +58,6 @@ function RepairListCopy() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
   };
 
   const handleSelectMajorCategory = (value) => {
@@ -95,6 +94,7 @@ function RepairListCopy() {
       },
       0
     );
+    fetchMiddleData(value);
   };
 
   const fetchMajorData = async () => {
@@ -108,10 +108,10 @@ function RepairListCopy() {
       console.log(error);
     }
   };
-  const fetchMiddleData = async () => {
+  const fetchMiddleData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategoryCopy2`
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -217,7 +217,7 @@ function RepairListCopy() {
       const response = await axios.get(
         `http://localhost:8080/repairListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&pageNum=${pageNum}&pageSize=10`
       );
-      console.log(response.data)
+      console.log(response.data);
 
       setCurrentPage(response.data.pageable.pageNumber);
 
@@ -309,7 +309,6 @@ function RepairListCopy() {
   useEffect(() => {
     fetchKeywordData("", 0);
     fetchMajorData();
-    fetchMiddleData();
   }, []);
 
   return (
@@ -335,32 +334,43 @@ function RepairListCopy() {
                   style={{ width: "200px" }}
                 >
                   <div className="select-wrap" style={{ width: "200px" }}>
-                  <Select label="대분류" onChange={handleSelectMajorCategory}>
-                    {majorCategoryList.map((majorCategory, index) => (
-                      <Option value={majorCategory.categoryValue} key={index}>
-                        {majorCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                    <Select label="대분류" onChange={handleSelectMajorCategory}>
+                      {majorCategoryList.map((majorCategory, index) => (
+                        <Option value={majorCategory.categoryValue} key={index}>
+                          {majorCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
                   </div>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                <div className="select-wrap" style={{ width: "200px" }}>
-                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
-                    {middleCategoryList.map((middleCategory, index) => (
-                      <Option value={middleCategory.categoryValue} key={index}>
-                        {middleCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select
+                      label="중분류"
+                      onChange={handleSelectMiddleCategory}
+                    >
+                      {middleCategoryList.map((middleCategory, index) => (
+                        <Option
+                          value={middleCategory.categoryValue}
+                          key={index}
+                        >
+                          {middleCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
                   </div>
                 </s.ButtonInnerDiv>
 
-                <div style={{ marginLeft: "307px" }}>
+                <div style={{ marginLeft: "380px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))} />}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        onClick={() => fetchKeywordData(keyWord, 0)}
+                      />
+                    }
+                    label="가맹점 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>

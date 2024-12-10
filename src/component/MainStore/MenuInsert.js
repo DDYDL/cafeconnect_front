@@ -8,7 +8,7 @@ import { Option, Select } from "@material-tailwind/react";
 import { useNavigate } from "react-router";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
-import logo from '../assets/img/logo.svg'
+import logo from "../assets/img/logo.svg";
 function MenuInsert() {
   const [menu, setMenu] = useState({
     menuName: "",
@@ -24,7 +24,7 @@ function MenuInsert() {
     menuStatus: "",
     menuCategoryName: "",
   });
-  const [capacityUnit,setCapacityUnit] = useState('')
+  const [capacityUnit, setCapacityUnit] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -69,31 +69,40 @@ function MenuInsert() {
       console.log(error);
     }
   };
-  const checkProperties = () =>{
-    if(menu.menuName !== '' && menu.menuPrice !== '' && menu.menuCapacity !== '' &&  menu.caffeine !== '' &&  menu.calories !== '' &&  
-      menu.carbohydrate  !== '' && menu.sugar !== '' &&  menu.natrium !== '' !== '' && 
-      menu.fat !== '' && menu.protein !== '' && menu.menuStatus !== '' &&  menu.menuCategoryName !== '' 
-    ){
+  const checkProperties = () => {
+    if (
+      menu.menuName !== "" &&
+      menu.menuPrice !== "" &&
+      menu.menuCapacity !== "" &&
+      menu.caffeine !== "" &&
+      menu.calories !== "" &&
+      menu.carbohydrate !== "" &&
+      menu.sugar !== "" &&
+      (menu.natrium !== "") !== "" &&
+      menu.fat !== "" &&
+      menu.protein !== "" &&
+      menu.menuStatus !== "" &&
+      menu.menuCategoryName !== ""
+    ) {
       return true;
     }
     return false;
-      
-  }
+  };
   const handleUpload = async () => {
     const formData = new FormData();
-    if(!file){
-      alert('이미지를 등록하세요')
+    if (!file) {
+      alert("이미지를 등록하세요");
       return;
     }
     formData.append("file", file);
-    if(!checkProperties()){
-      alert('등록되지 않은 항목이 존재합니다')
+    if (!checkProperties()) {
+      alert("등록되지 않은 항목이 존재합니다");
       return;
     }
     const itemSaveForm = {
       menuName: menu.menuName,
       menuPrice: menu.menuPrice,
-      menuCapacity: menu.menuCapacity+capacityUnit,
+      menuCapacity: menu.menuCapacity + capacityUnit,
       caffeine: menu.caffeine,
       calories: menu.calories,
       carbohydrate: menu.carbohydrate,
@@ -182,28 +191,27 @@ function MenuInsert() {
                       >
                         용량
                       </div>
-                      <div style={{display:"flex",gap:"20px"}}>
-                      <s.InputStyle
-                        width="220px"
-                        type="text"
-                        placeholder="용량을 입력하세요"
-                        name="menuCapacity"
-                        value={menu.menuCapacity}
-                        onChange={handleInput}
-                      />
-                      <div className="select-wrap" style={{ width: "100px" }}>
-                      <Select
-                        label="용량단위"
-                        onChange={(e)=>(setCapacityUnit(e))}
-                      >
-                        <Option value="">용량 단위를 선택하세요</Option>
-                        <Option value="kg">kg</Option>
-                        <Option value="g">g</Option>
-                        <Option value="ml">ml</Option>
-                        <Option value="L">L</Option>
-                        
-                      </Select>
-                    </div>
+                      <div style={{ display: "flex", gap: "20px" }}>
+                        <s.InputStyle
+                          width="220px"
+                          type="text"
+                          placeholder="용량을 입력하세요"
+                          name="menuCapacity"
+                          value={menu.menuCapacity}
+                          onChange={handleInput}
+                        />
+                        <div className="select-wrap" style={{ width: "100px" }}>
+                          <Select
+                            label="용량단위"
+                            onChange={(e) => setCapacityUnit(e)}
+                          >
+                            <Option value="">용량 단위를 선택하세요</Option>
+                            <Option value="kg">kg</Option>
+                            <Option value="g">g</Option>
+                            <Option value="ml">ml</Option>
+                            <Option value="L">L</Option>
+                          </Select>
+                        </div>
                       </div>
                     </div>
                     <div className={styles["container"]}>
@@ -249,28 +257,36 @@ function MenuInsert() {
                         onClick={handleUploadImage}
                       >
                         <img
-                          className={styles["upload-files4ee86225svg"]}
-                          src={upload_file}
-                          alt="upload-files.4ee86225.svg"
-                        />
-                        <div
-                          className={`${styles["text-19"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticitem"]}`}
-                        >
-                          <span>
-                            <span className={styles["span0"]}>
-                              <br />
-                            </span>
-                            <span className={styles["span1-1"]}>
-                              이미지 선택
-                            </span>
-                          </span>
-                        </div>
+                          className={styles["product-thumb-1bfdce747webp"]}
+                          src={imageUrl === null ? logo : imageUrl}
+                          style={{
+                            width: "224px",
+                            height: "204px",
+                            marginRight: "100px",
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                          alt="image"
+                        ></img>
                       </div>
-                      <img
+                      <div
                         className={styles["product-thumb-1bfdce747webp"]}
-                        src={imageUrl === null ? logo : imageUrl}
+                        style={{
+                          marginRight: "10px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          backgroundColor: "#54473f",
+                          marginTop: "10px",
+                          borderRadius: "5px",
+                          color: "white",
+                        }}
                         alt="image"
-                      ></img>
+                        onClick={handleUploadImage}
+                      >
+                        업로드
+                      </div>
                     </div>
                     <input
                       type="file"
@@ -294,20 +310,23 @@ function MenuInsert() {
                           className="w-16"
                           style={{ width: "440px", marginBottom: "20px" }}
                         >
-                          <div className="select-wrap" style={{ width: "440px" }}>
-                          <Select
-                            label="대분류"
-                            onChange={handleCategoryeSelectbox}
+                          <div
+                            className="select-wrap"
+                            style={{ width: "440px" }}
                           >
-                            {categoryList.map((category, index) => (
-                              <Option
-                                key={index}
-                                value={category.categoryValue}
-                              >
-                                {category.categoryName}
-                              </Option>
-                            ))}
-                          </Select>
+                            <Select
+                              label="대분류"
+                              onChange={handleCategoryeSelectbox}
+                            >
+                              {categoryList.map((category, index) => (
+                                <Option
+                                  key={index}
+                                  value={category.categoryValue}
+                                >
+                                  {category.categoryName}
+                                </Option>
+                              ))}
+                            </Select>
                           </div>
                         </s.ButtonInnerDiv>
                       </div>
@@ -399,7 +418,6 @@ function MenuInsert() {
                       >
                         <Select
                           label="메뉴 상태"
-                          
                           onChange={handleMenuStatusSelectbox}
                         >
                           <Option value="">메뉴 상태를 입력하세요</Option>

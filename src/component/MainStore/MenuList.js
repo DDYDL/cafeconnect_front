@@ -43,7 +43,6 @@ function MenuList() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
   };
 
   const handleChangeCategory = (value) => {
@@ -70,7 +69,7 @@ function MenuList() {
       const response = await axios.get(
         `http://localhost:8080/menuListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
-
+      console.log(response.data);
       setCurrentPage(response.data.pageable.pageNumber);
 
       setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
@@ -150,6 +149,16 @@ function MenuList() {
       setPageList(response.data.content);
       setEmpty(response.data.empty);
       console.log(response.data);
+      if (response.data.first === true) {
+        hasPrevious(false);
+      } else {
+        hasPrevious(true);
+      }
+      if (response.data.last === true) {
+        setHasNext(false);
+      } else {
+        setHasNext(true);
+      }
     } catch (error) {
       setError(error);
     } finally {
@@ -275,20 +284,26 @@ function MenuList() {
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                <div className="select-wrap" style={{ width: "200px" }}>
-                  <Select label="분류" onChange={handleChangeCategory}>
-                    {categoryList.map((category, index) => (
-                      <Option value={category.categoryValue}>
-                        {category.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="분류" onChange={handleChangeCategory}>
+                      {categoryList.map((category, index) => (
+                        <Option value={category.categoryValue}>
+                          {category.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
                   </div>
                 </s.ButtonInnerDiv>
-                <div style={{ marginLeft: "508px" }}>
+                <div style={{ marginLeft: "580px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))}/>}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        onClick={() => fetchKeywordData(keyWord, 0)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    }
+                    label="메뉴명 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>
@@ -432,7 +447,7 @@ function MenuList() {
                       </div>
                     ))}
 
-                  {!empty &&
+                  {/* {!empty &&
                     emptyList.map((page, index) => (
                       <div className={styles["frame"]}>
                         <div className={styles["data"]}>
@@ -496,7 +511,7 @@ function MenuList() {
                           ></div>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div
