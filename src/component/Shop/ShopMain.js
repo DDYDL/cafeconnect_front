@@ -46,7 +46,7 @@ function ShopMain() {
                 .then(res=> {
                     console.log(res.data)
                     if(res.data.length!==0) {
-                        setAlarms([...alarms,...res.data]);
+                        setAlarms(res.data);
                     }
                 })
                 .catch(err=>{

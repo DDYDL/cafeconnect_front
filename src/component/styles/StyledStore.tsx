@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, IconButton, Input, Select } from "@material-tailwind/react";
+import { Button, ButtonGroup, Dialog, IconButton, Input, Select } from "@material-tailwind/react";
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -16,6 +16,7 @@ interface Container {
     height:string;
     top:string;
     left:string;
+    paddingLeft:string;
 }
 
 export const ContentDiv = styled.div`
@@ -133,6 +134,21 @@ export const ButtonDiv = styled.div<Container>`
     float:${(props) => props.float ? props.float : "left"};
 `;
 
+export const ButtonDivLogin = styled.div<Container>`
+    width:90px;
+    height:100px;
+    text-align:${(props) => props.textAlign ? props.textAlign :"center"};
+`;
+
+export const ButtonStyleLogin = styled(Button)<Container>`
+    width:70px;
+    height:86px;
+    margin-top:22px;
+    border-radius:3px;
+    padding:0px;
+    background-color:${(props) => props.bgColor ? props.bgColor : "rgba(84, 71, 63, 1)"};
+`;
+
 export const ButtonInnerDiv = styled.div<Container>`
     width:120px;
     float:left;
@@ -170,7 +186,7 @@ export const SearchButtonDiv = styled.div<Container>`
 export const ButtonStyle = styled(Button)<Container>`
     display:inline-block;
     width:${(props) => props.width ? props.width : "100px"};
-    height:30px;
+    height:${(props) => props.height ? props.height : "30px"};
     padding-top:7px;
     border-radius:3px;
     padding:0px;
@@ -197,7 +213,7 @@ export const TableTextTh = styled.th<Container>`
     width:${(props) => props.width ? props.width : "100px"};
     font-size:16px;
     font-weight:bold;
-    padding-left:20px;
+    padding-left:0px;
     padding-right:0px;
     vertical-align:middle;
 `;
@@ -206,7 +222,7 @@ export const TableTextTd = styled.td<Container>`
     width:${(props) => props.width ? props.width : "100px"};
     height:60px;
     font-size:14px;
-    padding-left:20px;
+    padding-left:${(props) => props.paddingLeft ? props.paddingLeft : "2px"};
     padding-right:0px;
     vertical-align:middle;
 `;
@@ -258,8 +274,9 @@ export const TextareaStyle = styled.textarea`
 
 export const LoginAlign = styled.div`
     width:100%;
-    display: flex;
-    justify-content: center;
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
 `;
 
 export const LoginAlignLeft = styled.div<Container>`
@@ -345,8 +362,8 @@ export const ImageSize = styled.img`
     vertical-align:middle;
 `;
 
-export const SpanSizeDiv = styled.div`
-    width:190px;
+export const SpanSizeDiv = styled.div<Container>`
+    width:${(props) => props.width ? props.width : "190px"};
     height:45px;
     text-align:left;
     margin-top:18px;
@@ -399,9 +416,21 @@ export const AutoSearchData = styled.li`
     position: relative;
 `;
 
+export const CheckboxLabel = styled.label`
+    font-size:14px;
+    color:rgba(38, 38, 38, 1);
+    position:absolute;
+    height:40px;
+    width:80px;
+    top:12px;
+    left:20px;
+    z-index:2;
+`;
+
 export const dateCheckbox = styled.input`
     font-size:14px;
     height:40px;
+    position:relative;
     width:120px;
     border-radius:5px;
     border-color:rgba(234, 234, 234, 1);
@@ -422,10 +451,10 @@ export const dateCheckbox = styled.input`
 
 export const DatePickerWrap = styled.div`
 width:120px;
-height: 30px;
+height:30px;
 text-align:center;
 box-shadow:none;
-border: none;
+border:none;
 
 .CustomPicker{
     width: 120px;
@@ -452,4 +481,9 @@ border: none;
             font-size:9px;
         } 
     }
+`;
+
+export const DialogDiv = styled(Dialog)`
+    width:475px;
+    min-width:475px;
 `;

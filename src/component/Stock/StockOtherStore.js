@@ -58,13 +58,13 @@ const StockOrderStore = () => {
                 </s.SearchButtonDiv>
 
                 <s.TableList>
-                    <s.TableListThead><tr><s.TableTextTh width='280px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
+                    <s.TableListThead><tr><s.TableTextTh width='300px'>상품정보</s.TableTextTh><s.TableTextTh width='150px'>카테고리</s.TableTextTh><s.TableTextTh>규격</s.TableTextTh>
                         <s.TableTextTh>보관상태</s.TableTextTh><s.TableTextTh>공급가</s.TableTextTh></tr></s.TableListThead>
                     <tbody>
                         {
                             itemList.map(item=>(
                                 <s.TableTextTr key={item.itemCode} onClick={()=>selectItem(item.itemCode, item.itemName)}>
-                                    <s.TableTextTd><s.ImageSize src={`${url}/image/${item.itemFileNum}`}/><span style={{verticalAlign:'middle'}}>{item.itemCode}</span><br/><span style={{paddingTop:'20px'}}>{item.itemName}</span></s.TableTextTd>
+                                    <s.TableTextTd paddingLeft='20px'><s.ImageSize src={`${url}/image/${item.itemFileNum}`}/><s.SpanSizeDiv width='300px'><s.SpanSize>{item.itemCode}</s.SpanSize><br/><s.SpanSize>{item.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                     <s.TableTextTd>{item.itemMajorCategoryName}/{item.itemMiddleCategoryName}/{item.itemSubCategoryName}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemCapacity}*{item.itemUnitQuantity}/{item.itemUnit}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemStorage}</s.TableTextTd>

@@ -9,12 +9,15 @@ interface Container {
 }
 
 export const Div = styled.div`
-    width:100%;
+    width:1910px;
+    scrollbar-gutter:stable;
     top:0px;
     position:absolute;
 `;
 
 export const SelectDivTop = styled.div`
+    display:inline-block;
+    margin-right:20px;
     width:100px;
     height:25px;
     text-align:left;
@@ -34,6 +37,21 @@ export const SelectInnerDivTop = styled.div`
 
     & label {
         top: -15px;
+        display:none;
+    }
+
+    & label::before {
+        display:none;
+    }
+    & label::text {
+        display:none;
+    }
+    & label::after {
+        display:none;
+    }
+
+    & span {
+        font-size:12px;
     }
 `;
 
@@ -57,13 +75,13 @@ export const DivLogo = styled.div`
 `;
 
 export const DivSide = styled.div`
-    width:200px;
+    width:250px;
     height:30px;
     display:inline-block;
     text-align:right;
     vertical-align:middle;
     margin-top:35px;
-    right:30px;
+    right:70px;
     font-size:12px;
     position:absolute;
 `;
@@ -89,7 +107,7 @@ export const DivMenuInside = styled.div`
 
 export const DivIcon = styled.div`
     position:absolute;
-    width:200px;
+    width:250px;
     height:40px;
     top:65px;
     font-size:14px;
@@ -102,6 +120,7 @@ export const Logo = styled.img`
 export const Icon = styled.img`
     width:23px;
     height:23px;
+    display:inline;
 `;
 
 export const VerticalLine = styled.div<Container>`
@@ -138,6 +157,7 @@ export const MenuListDiv = styled.div<Container>`
 `;
 
 export const NavLinkSide = styled(NavLink)`
+    width:70px;
     text-decoration:none;
     color:rgba(38, 38, 38, 1);
     margin-right:23px;
@@ -151,4 +171,16 @@ export const NavLinkIcon = styled(NavLink)`
     top:10px;
     margin-right:25px;
     float:left;
+`;
+
+export const AlarmIconDiv = styled.div`
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    border-radius:50%;
+    width:15px;
+    height:15px;
+    background-color:rgba(242, 135, 135, 1);
+    font-size:13px;
+    font-weight:bold;
 `;
