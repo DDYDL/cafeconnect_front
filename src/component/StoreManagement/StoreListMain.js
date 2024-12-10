@@ -45,7 +45,7 @@ const StoreListMain = ()=>{
                 setPageInfo(pageInfo);
             }).catch(err=>{
                 console.log(err.response.data);
-                alert("가맹점 조회에 실패했습니다.");
+                // alert("가맹점 조회에 실패했습니다.");
             })
     }
 
@@ -65,15 +65,14 @@ const StoreListMain = ()=>{
 
     const searchName = (e) => {
         setType("storeName");
+        setSelectedRegion("");
         setKeyword(e.target.value);
-      };
-
-      
+    };
       
     const makeRegionArr = () => {
         const regions = [
             {value: '', label: '지역 전체'},
-            {value: '강원', label: '강원도'},
+            {value: '강원특별자치도', label: '강원도'},
             {value: '경기', label: '경기도'},
             {value: '경남', label: '경상남도'},
             {value: '경북', label: '경상북도'},
@@ -86,7 +85,7 @@ const StoreListMain = ()=>{
             {value: '인천', label: '인천광역시'},
             {value: '제주특별자치도', label: '제주도'},
             {value: '전남', label: '전라남도'},
-            {value: '전북', label: '전라북도'},
+            {value: '전북특별자치도', label: '전라북도'},
             {value: '충남', label: '충청남도'},
             {value: '충북', label: '충청북도'}
         ];
@@ -106,7 +105,7 @@ const StoreListMain = ()=>{
                     <h.ReactSelectDiv>
                         <ReactSelect
                             isSearchable={false}
-                            className="w-full"
+                            className="w-full CustomSelect"
                             placeholder="지역 전체"
                             value={selectedRegion} 
                             options={regionArr} 
@@ -122,12 +121,12 @@ const StoreListMain = ()=>{
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
                     {storeList!=null?(storeList.map(store=>(
-                        <s.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
+                        <h.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
                             <s.TableTextTd>{regionArr.find(region => region.value === store.storeRegion)?.label}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
-                            <h.TableTextTd>{store.storeAddress}</h.TableTextTd >
+                            <h.TableTextTd style={{cursor:'pointer'}}>{store.storeAddress}</h.TableTextTd >
                             <h.TableTextTd>{store.storePhone}</h.TableTextTd >
-                        </s.TableTextTr>
+                        </h.TableTextTr>
                     ))):"가맹점이 없습니다."}
                     </tbody>
                 </s.TableList>

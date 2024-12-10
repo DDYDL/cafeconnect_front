@@ -2,13 +2,13 @@ import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
 // 로그인 토큰
-import {axiosInToken} from '../../config.js'
+import { axiosInToken } from '../../config.js'
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
-import {useParams} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const StoreDetailMain = ()=>{
     const [store, setStore] = useState({});
@@ -43,7 +43,7 @@ const StoreDetailMain = ()=>{
                 console.log(res.data)
                 let resStore = res.data.store;
                 setStore({...resStore});
-                navigate("/restoreStoreMain");
+                navigate("/storeListMain");
             })
     }
 
@@ -73,7 +73,7 @@ const StoreDetailMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storeCloseDate}</m.TableInfoTd>
+                        <m.TableInfoTd>{store.storeCloseDate!==''||"연중무휴"}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
