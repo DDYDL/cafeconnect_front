@@ -9,8 +9,7 @@ import {useNavigate,useLocation} from 'react-router-dom';
 import {useState,useEffect}from 'react';
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';
-import axios from "axios";
+import { axiosInToken,url } from '../../config.js';
 
 function Order() {
   const location = useLocation();
@@ -195,7 +194,7 @@ function Order() {
                   {items.map((item) => (
                     <o.OrderItemList key={item.itemCode}>
                       <div>
-                        <o.OrderItemImage src={item.image} alt={item.name} />
+                        <o.OrderItemImage src={`${url}/image/{item.itemFileNum}`} alt={item.name} />
                       </div>
                       <o.OrderItemInfo>
                         <o.OrderItemCategory>{item.category}</o.OrderItemCategory>

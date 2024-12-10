@@ -7,7 +7,7 @@ import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@he
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import {useNavigate,useParams} from 'react-router-dom';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';  
+import { axiosInToken,url} from '../../config.js';  
 import { useAtomValue } from 'jotai/react';
 
 const ShopItemDetail = () => {
@@ -94,7 +94,7 @@ const ShopItemDetail = () => {
             <d.PdtDetailLeft>
               <d.PdtDetailItemImg>
                 <d.PdtDetailItemImgArea>
-                <img src='/image/item3.jpg' alt={item.itemFileNum} />
+                <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemFileName} />
                 </d.PdtDetailItemImgArea>
               </d.PdtDetailItemImg>
             </d.PdtDetailLeft>

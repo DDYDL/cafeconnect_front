@@ -58,19 +58,31 @@ function OrderListForMainStore() {
       });
   };
 
-  //각 객체에 선택된 상태 저장 
-  const handleSelectChange = (orderCode, newStatus) => {
+
+  const orderStateMap ={
+    "주문접수":"1",
+    "주문확인":"2",
+    "배송중":"3",
+    "배송완료":"4"
+  };
+
+   //각 객체에 선택된 상태 저장 
+  const handleSelectChange = (orderCode, newStatus) => {  
     setSelectedStatus(prev => ({
-      ...prev,
-      [orderCode]: newStatus
+      ...prev,[orderCode]: newStatus
     }));
   };
   
 
   // 버튼 클릭 시에만 서버로 상태 변경 요청
 const handleStatusSubmit = (orderCode) => {
+
   const newStatus = selectedStatus[orderCode];
   if (!newStatus) return; // 상태가 선택되지 않은 경우 리턴
+
+  //경고창 주문 취소 물어보기 (즉시 취소)
+  const confirm = window.confirm("주문 상태를 변경하시겠습니까?");
+  if(!confirm) return; //false면 돌아감 
 
   const formData = new FormData();
   formData.append("orderCode", orderCode);
@@ -79,13 +91,15 @@ const handleStatusSubmit = (orderCode) => {
   axiosInToken(token)
     .post("/updateOrderStatus", formData)
     .then((res) => {
-      if (res.data.success) {
+      if (res.data ===true) {
         alert("주문 상태가 변경되었습니다.");
         submit(); // 목록 새로고침
+        
         setSelectedStatus(prev => {
           const next = { ...prev };
           delete next[orderCode]; // 성공 후 선택 상태 초기화
           return next;
+       
         });
       }
     })
@@ -175,15 +189,25 @@ const handleStatusSubmit = (orderCode) => {
               <div>{order.totalCount}</div>
               <div>{order.totalAmount.toLocaleString()}원</div>
               <ol.StatusAreaWrapper onClick={(e) => e.stopPropagation()}>
-                <Select label="선택" 
-                 value={selectedStatus[order.orderCode] || order.orderState} 
+              {order.orderState === "주문취소" ? (  
+              <span className="text-red-500">{order.orderState}</span>
+              ): 
+              order.orderState === "배송완료" ? (  
+                <span className="text-black-500">{order.orderState}</span>
+              ):
+              (
+                <>
+                <Select label="주문처리상태"                 
+                 value={selectedStatus[order.orderCode]?selectedStatus[order.orderCode]: order.orderState} 
                  onChange={(val) => handleSelectChange(order.orderCode, val)}
-                 disabled={order.status === "배송완료"||order.orderState === "주문취소"}>
-                  <Option value="">주문처리상태</Option>
-                  <Option value="주문접수">주문접수</Option>
-                  <Option value="주문확인">주문확인</Option>
-                  <Option value="배송중">배송중</Option>
-                  <Option value="배송완료">배송완료</Option>
+                 > 
+                 {Object.keys(orderStateMap).map((status)=>(
+                       <Option key={status}
+                       value={status}
+                       disabled= {orderStateMap[status]<orderStateMap[order.orderState]}
+                       >{status}</Option>
+                 ))         
+              }
                 </Select>
                 <StyledButton
                   size="sm"
@@ -201,6 +225,8 @@ const handleStatusSubmit = (orderCode) => {
                 >
                   변경
                 </StyledButton>
+                </>
+                )}
               </ol.StatusAreaWrapper>
             </ol.MainStoreOrderItem>
           ))}
