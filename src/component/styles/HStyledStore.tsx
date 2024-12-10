@@ -180,28 +180,10 @@ ${OneImgAndPDiv}:hover &{
         vertical-align:middle;
         `;
         
-        export const TableTextTd = styled.td`
-        width:100px;
-        height:60px;
-        font-size:14px;
-        padding-left:20px;
-        padding-right:20px;
-        vertical-align:middle;
-        text-align:center;
-        `;
-        
         export const TableTdDiv = styled.div`
         padding-left:50px;
         padding-right:50px;
         justify-content:center;
-        `;
-        
-        export const TableTextTr = styled.tr<Container>`
-        width:${(props) => props.width ? props.width : "100px"};
-        background-color:${(props) => props.bgColor ? props.bgColor : ""};
-        height:${(props) => props.height ? props.height : "45px"};
-        max-height:45px;
-        border-bottom:1px solid rgba(234, 234, 234, 1);
         `;
         
         export const DateSelectDiv = styled.div`
@@ -322,27 +304,34 @@ ${OneImgAndPDiv}:hover &{
         left: 15px;
     }
     `;
-    
-    export const ImageSize = styled.img`
-    width:60px;
-    height:60px;
-    float:left;
-    margin-right:10px;
-    vertical-align:middle;
-    `;
-    
-    export const SpanSizeDiv = styled.div`
-    width:190px;
-    height:45px;
-    text-align:left;
-    margin-top:18px;
-    overflow:hidden;
-    white-space:nowrap;
+
+    export const TableTitleSpan = styled.span`
+    font-size:16px;
+    font-weight:bold;
 `;
 
-export const SpanSize = styled.span`
-    overflow:hidden;
-    white-space:nowrap;
+    export const TableTextTr = styled.tr<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
+    background-color:${(props) => props.bgColor ? props.bgColor : ""};
+    height:${(props) => props.height ? props.height : "45px"};
+    max-height:45px;
+    border-bottom:1px solid rgba(234, 234, 234, 1);
+
+    &:hover{
+        cursor:pointer;
+        background-color:rgba(234, 234, 234, 1);
+    }
+`;
+
+export const TableTextTd = styled.td`
+width:100px;
+height:60px;
+font-size:14px;
+padding-left:20px;
+padding-right:20px;
+vertical-align:middle;
+text-align:center;
+
 `;
 
 export const InputStyleSearch = styled(Input)`
@@ -362,8 +351,33 @@ text-align:center;
 export const ButtonInnerDiv = styled.div<Container>`
 margin-right:140px;
 `;
+
+export const NoticeSelectDiv = styled.div<Container>`
+    width:200px;
+    margin-right:10px;
+        > div > div {
+            border-radius:5px;
+            background-color:rgb(255, 255, 255);
+            border-color:rgb(234, 234, 234);
+            border-style: solid;
+            border-width:1px;
+            font-size: 14px;
+            color:rgb(69, 90, 100);
+            }
+`;
+
 export const ReactSelectDiv = styled.div<Container>`
-width:200px;
+    width:200px;
+    margin-right:10px;
+        > div > div {
+            border-radius:5px;
+            background-color:rgb(248, 248, 248);
+            border-color:rgb(176, 190, 197);
+            border-style: solid;
+            border-width:1px;
+            font-size: 14px;
+            color:rgb(69, 90, 100);
+            }
 `;
 
 export const SearchDiv = styled.div<Container>`
