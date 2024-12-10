@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import PreviousOrderItemsModal from "./PreviousOrderItemModal.js";
 import { useAtomValue } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { axiosInToken } from "../../config.js";
+import { axiosInToken,url } from "../../config.js";
 
 function CartList() {
   const navigate = useNavigate();
@@ -37,6 +37,7 @@ function CartList() {
     axiosInToken(token)
       .get(`cartList?storeCode=${store.storeCode}`)
       .then((res) => {
+        console.log(res.data);
         setCartItems(res.data);
         setTempQuantity(res.data.item.cartItemCount); // 재 조회 시 임시 수량도 저장
       })
@@ -178,8 +179,8 @@ const handleOrder = () => {
             <c.CartItem key={item.cartNum}>
               <div>
                 <c.ProductImage
-                  src="/image/item3.jpg"
-                  alt={item.item.itemFileNum}
+                  src={`${url}/image/${item.item.itemFileNum}`}
+                  alt={item.item.itemName}
                 />
               </div>
               <c.ProductInfo>

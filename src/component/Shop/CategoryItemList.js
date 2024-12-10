@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchButtonDiv, SearchDiv } from '../styles/StyledStore.tsx';
 import { Input } from "@material-tailwind/react";
-import { MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, ShoppingCartIcon,XMarkIcon,ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import {
   CommonWrapper,
   CommonContainer,
   ContainerTitleArea,
 } from "../styledcomponent/common.tsx";
 import * as s from "../styledcomponent/shopmain.tsx";
+import * as ss from '../styles/StyledStore.tsx';
 import FixedCategorySidebar from './FixedCategorySideBar.js';
 import { useAtomValue } from 'jotai/react';
 import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken } from '../../config.js';
+import { axiosInToken,url} from '../../config.js';
+import { SpanSize } from '../styles/HStyledStore.tsx';
 
 const CategoryItemList = ({ categories }) => {
   const [searchParams] = useSearchParams();
@@ -21,6 +23,8 @@ const CategoryItemList = ({ categories }) => {
   const [items, setItems] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [quantities, setQuantities] = useState({});
+  const [pageBtn, setPageBtn] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
   
 
   // 사이드바로부터 파라미터 받아오기 
@@ -29,13 +33,13 @@ const CategoryItemList = ({ categories }) => {
   const subNum = searchParams.get('subNum');
 
   useEffect(() => {
-    submit();
+    submit(1);
   }, [majorNum, middleNum, subNum]);
 
   // 병렬 처리를 위해 async await 사용
-  const submit = async () => {
+  const submit = async (page) => {
     const formData = new FormData();
-    
+    formData.append("page",page);
     // 가장 마지막 선택 값만 전송
     if (subNum) {
       formData.append("subNum", subNum);
@@ -46,11 +50,21 @@ const CategoryItemList = ({ categories }) => {
     }
     try {
       const response = await axiosInToken(token).post('categoryItemList', formData);
-      setItems(response.data);
+      
+      let pageInfo = response.data.pageInfo;
+      console.log(pageInfo);
+      let page = [];
+        for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+            page.push(i);
+        }
+
+      setPageBtn([...page]);
+      setPageInfo(pageInfo);
+      setItems(response.data.items);
       
       //카테고리 재 선택 시 수량 초기화
       const newQuantities = {};
-      response.data.forEach(item => {
+      response.data.items.forEach(item => {
         newQuantities[item.itemCode] = 1;
       });
       setQuantities(newQuantities);
@@ -58,6 +72,7 @@ const CategoryItemList = ({ categories }) => {
       console.log(err);
     }
   };
+
   //상품명으로 검색 
   const handleSearch = () => {
     if (!searchKeyword.trim()) return;
@@ -67,7 +82,17 @@ const CategoryItemList = ({ categories }) => {
     
     axiosInToken(token).post('categoryItemSearch', formData)
       .then(res => {
-        setItems(res.data);
+        let pageInfo = res.data.pageInfo;
+        console.log(pageInfo);
+        let page = [];
+          for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+              page.push(i);
+          }
+  
+        setPageBtn([...page]);
+        setPageInfo(pageInfo);
+
+        setItems(res.data.items);
       }).catch(err => {
         console.log(err);
       });
@@ -135,7 +160,7 @@ const CategoryItemList = ({ categories }) => {
                   {items.map((item) => (
                     <s.CategoryItemListLi key={item.itemCode}>
                       <s.ItemListImg>
-                        <img src='/image/item3.jpg' alt={item.itemFileNum} />
+                        <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} />
                         {store.roles==='ROLE_STORE' &&
                         <s.HoverControls className="hover-controls">
                           <s.QuantityControl>
@@ -167,7 +192,7 @@ const CategoryItemList = ({ categories }) => {
                           <s.ItemPrice>{item.itemPrice.toLocaleString()}원</s.ItemPrice>
                           {item.itemStorage && (
                             <s.ItemStorageLabelP>
-                              <s.ItemStorageType storageWay={item.itemStorage}>
+                              <s.ItemStorageType $storageway={item.itemStorage}>
                                 {item.itemStorage}
                               </s.ItemStorageType>
                             </s.ItemStorageLabelP>
@@ -179,8 +204,24 @@ const CategoryItemList = ({ categories }) => {
                 </s.CategoryItemListUl>
               </s.ShopMainItemList>
             </s.ItemCategoryListWrapper>
+            <ss.PageButtonGroupDiv>
+                  <ss.ButtonGroupStyle variant="outlined">
+                    <ss.IconButtonStyle>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    </ss.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <ss.IconButtonStyle key={page}>{page}</ss.IconButtonStyle>
+                    ))}
+                    <ss.IconButtonStyle>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    </ss.IconButtonStyle>
+                  </ss.ButtonGroupStyle>
+       </ss.PageButtonGroupDiv> 
           </div>
         </div>
+      
+
+
       </CommonContainer>
     </CommonWrapper>
   );

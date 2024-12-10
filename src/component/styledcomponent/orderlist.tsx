@@ -196,6 +196,6 @@ export const StatusAreaWrapper = styled.div`
   div, input, span, li, p {
       font-family: 'Noto Sans KR' !important;
       font-size: 16px !important;
-      color: #333 !important;
+      
     }
 `;

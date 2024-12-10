@@ -239,7 +239,7 @@ function App() {
         <Route exect path="/storeItemRevenue" element={<StoreItemRevenue />} />
 
         <Route exect path="/mainStoreOrderList" element={<OrderListForMainStore />} />
-        <Route exect path="/mainStoreOrderDetail" element={<OrderDetailForMainStore />} />
+        <Route exect path="/mainStoreOrderDetail/:orderCode" element={<OrderDetailForMainStore />} />
 
         <Route path="/category" element={<ItemCategory />} />
         <Route path="/menuCategory" element={<MenuCategory />} />

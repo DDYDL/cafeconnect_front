@@ -147,8 +147,8 @@ function OrderDetailForMainStore() {
               <tr>
                 <th>주문일</th>
                 <td>{format(new Date(orderDetail.orderDate), "yyyy-MM-dd")}</td>
-                {/* <th>결제일</th>
-                <td>{orderDetail.orderDate}</td> */}
+                <th>결제일</th>
+                <td>{orderDetail?.paymentDetail?.paidAt && format(new Date(orderDetail?.paymentDetail?.paidAt), "yyyy-MM-dd")}</td>
               </tr>
             </tbody>
           </od.InfoTable>
@@ -192,7 +192,7 @@ function OrderDetailForMainStore() {
 
           <od.PaymentInfoGrid>
             <od.PaymentColumn>
-              <od.PaymentRow isHeader>
+              <od.PaymentRow $isheader>
                 <div className="payment-item">
                   <span className="label">총 주문 개수</span>
                   <span className="value">{orderDetail.totalCount}개</span>
@@ -213,7 +213,7 @@ function OrderDetailForMainStore() {
             </od.PaymentColumn>
 
             <od.PaymentColumn>
-              <od.PaymentRow isHeader>
+              <od.PaymentRow $isheader>
                 <div className="payment-item">
                   <span className="label">결제 수단</span>
                   <span className="value">{orderDetail.orderPayment}</span>
@@ -225,8 +225,8 @@ function OrderDetailForMainStore() {
                   <od.PaymentRow>
                     <div className="payment-item">
                       <span className="value">
-                        {orderDetail.paymentDetail.cardName}(
-                        {orderDetail.paymentDetail.cardNumber})
+                        {orderDetail.paymentDetail?.cardName}(
+                        {orderDetail.paymentDetail?.cardNumber})
                       </span>
                     </div>
                   </od.PaymentRow>
@@ -248,28 +248,17 @@ function OrderDetailForMainStore() {
                   <span className="label">결제 상태</span>
                   <span
                     className={`value payment-status ${
-                      orderDetail.paymentDetail.paymentStatus === "paid"
+                      orderDetail.orderState !== "주문취소"
                         ? "paid"
                         : "cancelled"
                     }`}
                   >
-                    {orderDetail.paymentDetail.paymentStatus === "paid"
+                    {/* api 결제 상태로 해야하지만, 밤 11시 이후 status가 cancelled 바뀜  
+                    {orderDetail.paymentDetail.paymentStatus === "paid" */}
+                    {orderDetail.orderState !== "주문취소"
                       ? "결제완료"
                       : "결제취소"}
                   </span>
-                </div>
-              </od.PaymentRow>
-
-              <od.PaymentRow>
-                <div className="payment-item">
-                  <a
-                    href={orderDetail.paymentDetail.receiptUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    영수증 보기
-                  </a>
                 </div>
               </od.PaymentRow>
             </od.PaymentColumn>
@@ -292,7 +281,7 @@ function OrderDetailForMainStore() {
                     <div className="payment-item">
                       <span className="label">취소 금액</span>
                       <span className="value cancel-amount red">
-                        {orderDetail.paymentDetail.cancelAmount.toLocaleString()}
+                        {orderDetail.paymentDetail?.cancelAmount.toLocaleString()}
                         원
                       </span>
                     </div>
@@ -301,7 +290,7 @@ function OrderDetailForMainStore() {
                     <div className="payment-item">
                       <span className="label">취소 사유</span>
                       <span className="value">
-                        {orderDetail.paymentDetail.cancelReason ||
+                        {orderDetail.paymentDetail?.cancelReason ||
                           "가맹점 주문 취소"}
                       </span>
                     </div>
