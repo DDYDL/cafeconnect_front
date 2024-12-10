@@ -93,55 +93,150 @@ function Category() {
 
   const handleMajorClick = (index) => () => {
     const target = majorCategoryList[index];
-    fetchTotalCategoryStringData(target.categoryNum);
-    setActiveMajorCategoryName(target.categoryName);
-    setActiveMajorCategoryNum(target.categoryNum);
-    setActiveMajorUpdateInput({
-      name: target.categoryName,
+
+    if (target.categoryName === activeMajorUpdateInput.name) {
+      setActiveMajorCategoryName(null);
+      setActiveMajorCategoryNum(null);
+      setActiveMajorUpdateInput({
+        name: "",
+        state: false,
+      });
+      setMajorUpdateText("");
+      setMiddleCategoryForm(false);
+      setSubCategoryForm(false);
+      console.log("여기");
+    } else {
+      setActiveMajorCategoryName(target.categoryName);
+      setActiveMajorCategoryNum(target.categoryNum);
+      setActiveMajorUpdateInput({
+        name: target.categoryName,
+        state: false,
+      });
+      setMajorUpdateText(target.categoryName);
+      fetchTotalCategoryStringData(target.categoryNum);
+      fetchMiddleData(target.categoryName);
+      setMiddleCategoryForm(true);
+      setSubCategoryForm(false);
+    }
+
+    setActiveMiddleCategoryName(null);
+    setActiveMiddleCategoryNum(null);
+    setActiveMiddleUpdateInput({
+      name: "",
       state: false,
     });
+    setActiveMiddleInput(false);
+    setMiddleSaveState(false);
+    setMiddleUpdateState(false);
+    setMiddleSaveText("");
+    setMiddleUpdateText("");
 
-    setMajorUpdateText(target.categoryName);
-    fetchMiddleData(target.categoryName);
-    setMiddleCategoryForm(true);
-    setSubCategoryForm(false);
+    setActiveSubCategoryName(null);
+    setActiveSubCategoryNum(null);
+    setActiveSubUpdateInput({
+      name: "",
+      state: false,
+    });
+    setActiveSubInput(false);
+    setSubSaveState(false);
+    setSubUpdateState(false);
+    setSubSaveText("");
+    setSubUpdateText("");
   };
   const handleMiddleClick = (index) => () => {
     const target = middleCategoryList[index];
-    setActiveMiddleCategoryName(target.categoryName);
-    setActiveMiddleCategoryNum(target.categoryNum);
-    setActiveMiddleUpdateInput({
-      name: target.categoryName,
+    if (target.categoryName === activeMiddleUpdateInput.name) {
+      setActiveMiddleCategoryName(null);
+      setActiveMiddleCategoryNum(null);
+      setActiveMiddleUpdateInput({
+        name: "",
+        state: false,
+      });
+
+      setMiddleUpdateText("");
+
+      setMiddleCategoryForm(true);
+      setSubCategoryForm(false);
+    } else {
+      setActiveMiddleCategoryName(target.categoryName);
+      setActiveMiddleCategoryNum(target.categoryNum);
+      setActiveMiddleUpdateInput({
+        name: target.categoryName,
+        state: false,
+      });
+
+      setMiddleUpdateText(target.categoryName);
+      fetchSubData(target.categoryName);
+      setMiddleCategoryForm(true);
+      setSubCategoryForm(true);
+    }
+
+    setActiveSubCategoryName(null);
+    setActiveSubCategoryNum(null);
+    setActiveSubUpdateInput({
+      name: "",
       state: false,
     });
-
-    setMiddleUpdateText(target.categoryName);
-    fetchSubData(target.categoryName);
-    setMiddleCategoryForm(true);
-    setSubCategoryForm(true);
+    setActiveSubInput(false);
+    setSubSaveState(false);
+    setSubUpdateState(false);
+    setSubSaveText("");
+    setSubUpdateText("");
   };
   const handleSubClick = (index) => () => {
     const target = subCategoryList[index];
-    setActiveSubCategoryName(target.categoryName);
-    setActiveSubCategoryNum(target.categoryNum);
-    setActiveSubUpdateInput({
-      name: target.categoryName,
-      state: false,
-    });
+    if (target.categoryName === activeSubUpdateInput.name) {
+      setActiveSubCategoryName(null);
+      setActiveSubCategoryNum(null);
+      setActiveSubUpdateInput({
+        name: "",
+        state: false,
+      });
 
-    setSubUpdateText(target.categoryName);
+      setSubUpdateText("");
+    } else {
+      setActiveSubCategoryName(target.categoryName);
+      setActiveSubCategoryNum(target.categoryNum);
+      setActiveSubUpdateInput({
+        name: target.categoryName,
+        state: false,
+      });
+
+      setSubUpdateText(target.categoryName);
+    }
   };
   const handleMajorPlusButton = () => {
+    if (
+      activeMajorUpdateInput.name !== "" &&
+      activeMajorUpdateInput.state === true
+    ) {
+      alert("이미 수정중이니 대분류 수정폼을 없앤 후 버튼을 눌러주세요");
+      return;
+    }
     setActiveMajorInput(!activeMajorInput);
     setMajorSaveState(true);
     setMajorUpdateState(false);
   };
   const handleMiddlePlusButton = () => {
+    if (
+      activeMiddleUpdateInput.name !== "" &&
+      activeMiddleUpdateInput.state === true
+    ) {
+      alert("이미 수정중이니 중분류 수정폼을 없앤 후 버튼을 눌러주세요");
+      return;
+    }
     setActiveMiddleInput(!activeMiddleInput);
     setMiddleSaveState(true);
     setMiddleUpdateState(false);
   };
   const handleSubPlusButton = () => {
+    if (
+      activeSubUpdateInput.name !== "" &&
+      activeSubUpdateInput.state === true
+    ) {
+      alert("이미 수정중이니 소분류 수정폼을 없앤 후 버튼을 눌러주세요");
+      return;
+    }
     setActiveSubInput(!activeSubInput);
     setSubSaveState(true);
     setSubUpdateState(false);
@@ -156,6 +251,12 @@ function Category() {
     deleteSubData();
   };
   const handleMajorUpdate = () => {
+    if (activeMajorInput === true) {
+      alert(
+        "이미 대분류 카테고리를 등록중이니 등록 폼을 없앤 후 버튼을 수정 버튼을 눌러주세요"
+      );
+      return;
+    }
     setActiveMajorUpdateInput({
       name: activeMajorCategoryName,
       state: true,
@@ -164,6 +265,12 @@ function Category() {
     setMajorUpdateState(true);
   };
   const handleMiddleUpdate = () => {
+    if (activeMiddleInput === true) {
+      alert(
+        "이미 중분류 카테고리를 등록중이니 등록 폼을 없앤 후 버튼을 수정 버튼을 눌러주세요"
+      );
+      return;
+    }
     setActiveMiddleUpdateInput({
       name: activeMiddleCategoryName,
       state: true,
@@ -172,6 +279,12 @@ function Category() {
     setMiddleUpdateState(true);
   };
   const handleSubUpdate = () => {
+    if (activeSubInput === true) {
+      alert(
+        "이미 소분류 카테고리를 등록중이니 등록 폼을 없앤 후 버튼을 수정 버튼을 눌러주세요"
+      );
+      return;
+    }
     setActiveSubUpdateInput({
       name: activeSubCategoryName,
       state: true,
@@ -324,6 +437,18 @@ function Category() {
     }
   };
   const handleMajorAddSubmit = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/checkMajorCategory?categoryName=${majorSaveText}`
+      );
+      if (response.data.code === "success") {
+        alert("이미 동일한 카테고리명이 존재합니다");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      alert("통신 오류");
+    }
     const formData = new FormData();
     const payload = {
       itemCategoryName: majorSaveText,
@@ -357,6 +482,18 @@ function Category() {
     }
   };
   const handleMiddleAddSubmit = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/checkMiddleCategory?categoryName=${middleSaveText}`
+      );
+      if (response.data.code === "success") {
+        alert("이미 동일한 카테고리명이 존재합니다");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      alert("통신 오류");
+    }
     const formData = new FormData();
     const payload = {
       itemCategoryName: middleSaveText,
@@ -392,6 +529,18 @@ function Category() {
     }
   };
   const handleSubAddSubmit = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/checkSubCategory?categoryName=${subSaveText}`
+      );
+      if (response.data.code === "success") {
+        alert("이미 동일한 카테고리명이 존재합니다");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      alert("통신 오류");
+    }
     const formData = new FormData();
     const payload = {
       itemCategoryName: subSaveText,

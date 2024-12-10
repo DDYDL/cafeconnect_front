@@ -149,16 +149,6 @@ function MenuList() {
       setPageList(response.data.content);
       setEmpty(response.data.empty);
       console.log(response.data);
-      if (response.data.first === true) {
-        hasPrevious(false);
-      } else {
-        hasPrevious(true);
-      }
-      if (response.data.last === true) {
-        setHasNext(false);
-      } else {
-        setHasNext(true);
-      }
     } catch (error) {
       setError(error);
     } finally {
@@ -520,10 +510,19 @@ function MenuList() {
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      {!empty && hasPrevious && (
+                      {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
                             fetchKeywordData(keyWord, startPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasPrevious && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchCategoryData(category, startPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
@@ -695,12 +694,16 @@ function MenuList() {
                         </s.IconButtonStyle>
                       )}
 
-                      {!empty && hasNext && (
+                      {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(
-                            keyWord,
-                            5 * (Math.floor(fetchKeywordData / 5) + 1)
-                          )}
+                          onClick={fetchKeywordData(keyWord, startPage + 5)}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasNext && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={fetchCategoryData(category, startPage + 5)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

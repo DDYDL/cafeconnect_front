@@ -112,6 +112,19 @@ function MenuCategory() {
     }
   };
   const handleAddSubmit = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/checkMiddleCategory?categoryName=${saveText}`
+      );
+      if (response.data.code === "success") {
+        alert("이미 동일한 카테고리명이 존재합니다");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      alert("통신 오류");
+    }
+
     const formData = new FormData();
 
     const addMenuCategoryForm = {

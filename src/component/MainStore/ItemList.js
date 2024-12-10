@@ -746,6 +746,7 @@ function ItmListCopy() {
                           {value + 1}
                         </s.IconButtonStyle>
                       ))}
+
                     {usingCategory &&
                       !empty &&
                       !hasNext &&
@@ -768,12 +769,17 @@ function ItmListCopy() {
                       </s.IconButtonStyle>
                     )}
 
-                    {!empty && hasNext && (
+                    {!empty && hasNext && usingKeyword && (
                       <s.IconButtonStyle
-                        onClick={fetchKeywordData(
-                          keyWord,
-                          5 * (Math.floor(fetchKeywordData / 5) + 1)
-                        )}
+                        onClick={fetchKeywordData(keyWord, startPage + 5)}
+                      >
+                        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                      </s.IconButtonStyle>
+                    )}
+
+                    {!empty && hasNext && usingCategory && (
+                      <s.IconButtonStyle
+                        onClick={fetchCategoryData(category, startPage + 5)}
                       >
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>

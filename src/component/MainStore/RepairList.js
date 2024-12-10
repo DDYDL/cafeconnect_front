@@ -485,7 +485,7 @@ function RepairListCopy() {
                       </div>
                     ))}
 
-                  {!empty &&
+                  {/* {!empty &&
                     emptyList.map((page, index) => (
                       <div className={styles["frame"]}>
                         <div className={styles["data"]}>
@@ -531,17 +531,26 @@ function RepairListCopy() {
                           ></div>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      {!empty && hasPrevious && (
+                      {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
                             fetchKeywordData(keyWord, startPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasPrevious && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchCategoryData(category, startPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
@@ -713,12 +722,16 @@ function RepairListCopy() {
                         </s.IconButtonStyle>
                       )}
 
-                      {!empty && hasNext && (
+                      {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(
-                            keyWord,
-                            5 * (Math.floor(fetchKeywordData / 5) + 1)
-                          )}
+                          onClick={fetchKeywordData(keyWord, startPage + 5)}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasNext && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={fetchCategoryData(category, startPage + 5)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
