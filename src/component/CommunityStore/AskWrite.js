@@ -57,6 +57,20 @@ const AskWrite = () => {
   const handleSubmit = event => {
     event.preventDefault();
 
+    // 필수 필드 검증
+    if (!ask.askType) {
+      alert("요구사항 유형을 선택해주세요");
+      return;
+    }
+    if (!ask.askTitle) {
+      alert("제목을 입력해주세요");
+      return;
+    }
+    if (!ask.askContent) {
+      alert("내용을 입력해주세요");
+      return;
+    }
+
     const newAsk = {
       ...ask,
       askType: ask.askType,
