@@ -60,7 +60,11 @@ const AddStoreMain = ()=>{
     const onCompletePost = (data) => {
         console.log(data);
         const {address, zonecode, bname, buildingName} = data;
-        setStore({...store, storeAddressNum:zonecode, storeAddress:address +(', '+bname + buildingName!==', '&& ', '+buildingName), storeRegion: address.split(" ")[0]});
+        let result = bname && buildingName ? ` (${bname},${buildingName})` :
+                     bname ? ` (${bname})` :
+                     buildingName ? ` (${buildingName})` : '';
+        
+        setStore({...store, storeAddressNum:zonecode, storeAddress:address + result, storeRegion: address.split(" ")[0]});
         }
         
     const submit = (e) => {

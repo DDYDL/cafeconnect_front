@@ -1,3 +1,5 @@
+import * as h from '../styles/HStyledStore.tsx';
+
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -12,6 +14,7 @@ import { axiosInToken, url } from "../../config.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
+import ReactSelect from "react-select";
 
 const NoticeWriteMain = () => {
   const token = useAtomValue(tokenAtom);
@@ -19,6 +22,7 @@ const NoticeWriteMain = () => {
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const [notice, setNotice] = useState([]);
+  const [selectedNoticeType, setSelectedNoticeType] = useState([{value:'일반', label:'공지사항'}]);
   const { noticeNum } = useParams(); // URL에서 noticeNum 추출
   const [storeCode, setStoreCode] = useState(null);
   const [member, setMemeber] = useAtom(memberAtom);
@@ -90,6 +94,9 @@ const NoticeWriteMain = () => {
         console.log(err);
       });
   };
+
+  const noticeType = [{value:'일반', label:'공지사항'}, {value:'주요', label:'주요 공지사항'}]
+
   return (
     <ContentListDiv>
       <HeadingContainer>
@@ -98,19 +105,22 @@ const NoticeWriteMain = () => {
 
       <Form>
         <s.TrStyle>
-          <s.TableTextTd>공지유형 *</s.TableTextTd>
+          <s.TableTextTd><h.TableTitleSpan>공지유형<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
           <s.TableTextTd>
-            <s.InputStyle
-              type="text"
-              style={{ width: "300px", paddingLeft: "90px" }}
-              placeholder="주요 공지사항"
-              disabled
-            />
+            <h.NoticeSelectDiv>
+              <ReactSelect
+                  isSearchable={false}
+                  className="w-full CustomSelect"
+                  value={selectedNoticeType} 
+                  options={noticeType}
+                  onChange={(val)=>{setSelectedNoticeType(val)}}
+              />
+            </h.NoticeSelectDiv>
           </s.TableTextTd>
         </s.TrStyle>
 
         <s.TrStyle>
-          <s.TableTextTd>제목 *</s.TableTextTd>
+          <s.TableTextTd><h.TableTitleSpan>제목<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
               type="text"
@@ -122,7 +132,7 @@ const NoticeWriteMain = () => {
         </s.TrStyle>
 
         <s.TrStyle style={{ height: "200px", margin: "30px" }}>
-          <s.TableTextTd>내용 *</s.TableTextTd>
+          <s.TableTextTd><h.TableTitleSpan>내용<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
           <s.TableTextTd>
             <Textarea
               value={content}
