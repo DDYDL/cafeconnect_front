@@ -74,13 +74,13 @@ function MenuInsert() {
       menu.menuName !== "" &&
       menu.menuPrice !== "" &&
       menu.menuCapacity !== "" &&
-      menu.caffeine !== "" &&
-      menu.calories !== "" &&
-      menu.carbohydrate !== "" &&
-      menu.sugar !== "" &&
-      (menu.natrium !== "") !== "" &&
-      menu.fat !== "" &&
-      menu.protein !== "" &&
+      // menu.caffeine !== "" &&
+      // menu.calories !== "" &&
+      // menu.carbohydrate !== "" &&
+      // menu.sugar !== "" &&
+      // menu.natrium !== "" !== "" &&
+      // menu.fat !== "" &&
+      // menu.protein !== "" &&
       menu.menuStatus !== "" &&
       menu.menuCategoryName !== ""
     ) {
