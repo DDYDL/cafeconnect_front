@@ -487,3 +487,12 @@ export const DialogDiv = styled(Dialog)`
     width:475px;
     min-width:475px;
 `;
+
+export const FindSpan = styled.span`
+    font-size:14px;
+    font-weight:bold;
+`;
+
+export const FindDiv = styled.div`
+    margin-top:20px;
+`;

@@ -9,7 +9,7 @@ import { useAtom } from 'jotai/react';
 import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from '../../atoms.js';
 import { useSetAtom } from 'jotai/react';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 
 const StoreHeader = ({alarms})=>{
   // 메뉴 모달을 위한 state 변수
@@ -24,23 +24,26 @@ const StoreHeader = ({alarms})=>{
   // Jotai에 있는 member 가져오기
   const [member, setMember] = useAtom(memberAtom);
   // Jotai에 있는 로그인 token 가져오기
-  const setToken = useSetAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   // Jotai에 있는 알람 가져오기
   const setAlarms = useSetAtom(alarmsAtom);
 
   const [storeList, setStoreList] = useState([]);
   const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
 
-
   useEffect(()=>{
     selectStoreList();
+    console.log(store);
   }, [])
 
   // 알람 체크박스 클릭 시 alarmStatus 바꾸기
   const alarmConfirm = (alarmNum)=>{
-    axios.get(`${url}/alarmConfirm/${alarmNum}`)
+    axiosInToken(token).get(`${url}/alarmConfirm/${alarmNum}`)
         .then(res=>{
           if(res.data===true) {
+            if(res.headers.authorization!=null) {
+              setToken(res.headers.authorization);
+            }
             // 알람 확인 시 확인한 알람은 제외하기
             setAlarms(alarms.filter(item=>item.alarmNum!==alarmNum));
           }
@@ -53,8 +56,11 @@ const StoreHeader = ({alarms})=>{
 
   // 모든 가맹점 조회
   const selectStoreList = ()=>{
-    axios.get(`${url}/selectStoreList/${member.username}`)
+    axiosInToken(token).get(`${url}/selectStoreList/${member.username}`)
     .then(res=>{
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization);
+      }
         console.log(res.data);
         setStoreList([...res.data]);
         setStore(res.data.find(store=>store.storeCode===member.storeCode));
@@ -66,12 +72,15 @@ const StoreHeader = ({alarms})=>{
 
   //가맹점 바꾸면 알람 다시 가져오기
   const getAlarmList = (storeCode)=>{
-    axios.post(`${url}/alarms`,{storeCode:storeCode})
+    axiosInToken(token).post(`${url}/alarms`,{storeCode:storeCode})
       .then(res=> {
-      console.log(res.data)
-      if(res.data.length!==0) {
-        setAlarms(res.data);
-      }
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization);
+        }
+        console.log(res.data)
+        if(res.data.length!==0) {
+          setAlarms(res.data);
+        }
       })
       .catch(err=>{
         console.log(err);
@@ -108,7 +117,7 @@ const StoreHeader = ({alarms})=>{
           <h.DivSide>
             <h.SelectDivTop>
               <h.SelectInnerDivTop>
-                <h.SelectBoxTop label={store.storeName} onChange={(e)=>changeStore(e)}>
+                <h.SelectBoxTop label={member.storeCode === 0 ? '': member.storeCode} onChange={(e)=>changeStore(e)}>
                   {storeList.map(store=>(
                     <Option value={store.storeCode}>{store.storeName}</Option>
                   ))}

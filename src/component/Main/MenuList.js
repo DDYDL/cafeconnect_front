@@ -98,7 +98,7 @@ const MenuList = ({menu}) => {
                     <s.ImgDiv>
                         <s.ImgStyle 
                             className="object-center"
-                            src={`${url}/image/${menu.menuFileNum}`}
+                            src={`${url}/image/${menu.menuFileName}`}
                             alt="이미지 로딩 실패"
                         />
                     <s.TitleText>{menu.menuName}</s.TitleText>

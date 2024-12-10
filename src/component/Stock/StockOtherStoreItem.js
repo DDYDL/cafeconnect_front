@@ -3,11 +3,11 @@ import * as s from '../styles/StyledStore.tsx';
 import { Input } from "@material-tailwind/react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 
 import { CustomOverlayMap, Map, MapMarker, Polyline, useMap } from "react-kakao-maps-sdk";
-import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { memberAtom, tokenAtom } from '../../atoms.js';
 
 const StockOrderStoreItem = () => {
     // 이전 페이지에서 navigate로 넘겨준 itemCode 받아오기
@@ -16,6 +16,7 @@ const StockOrderStoreItem = () => {
     const itemName = location.state.itemName;
     const [storeList, setStoreList] = useState([]);
     const [isStore, setIsStore] = useState(false);
+    const [token, setToken] = useAtom(tokenAtom);
 
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
@@ -55,8 +56,11 @@ const StockOrderStoreItem = () => {
     }, [latlngPositions])
 
     const getStoreList = ()=>{
-        axios.get(`${url}/selectStoreByItemCode/${itemCode}`)
+        axiosInToken(token).get(`${url}/selectStoreByItemCode/${itemCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStoreList([...res.data]);
             setIsStore(true);

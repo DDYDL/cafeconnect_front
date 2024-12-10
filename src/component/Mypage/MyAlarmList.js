@@ -3,15 +3,16 @@ import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/StyledHeader.tsx';
 
 import { Select, Option } from "@material-tailwind/react";
-import { useAtom } from 'jotai/react';
-import { alarmsAtom, memberAtom } from '../../atoms.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { alarmsAtom, memberAtom, tokenAtom } from '../../atoms.js';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 import styled from 'styled-components';
 
 const MyAlarmList = ()=>{
     const [alarmList, setAlarmList] = useState([]);
+    const [token, setToken] = useAtom(tokenAtom);
 
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
@@ -23,8 +24,11 @@ const MyAlarmList = ()=>{
     }, [])
 
     const getAlarmList = ()=>{
-        axios.get(`${url}/selectAlarmList/${member.storeCode}`)
+        axiosInToken(token).get(`${url}/selectAlarmList/${member.storeCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setAlarmList([...res.data]);
         })
@@ -34,8 +38,11 @@ const MyAlarmList = ()=>{
     }
 
     const checkAlarmConfirm = (e, alarmNum)=>{
-        axios.get(`${url}/checkAlarmConfirm/${alarmNum}`)
+        axiosInToken(token).get(`${url}/checkAlarmConfirm/${alarmNum}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             console.log(alarmNum);
             console.log(alarmList);
@@ -54,8 +61,11 @@ const MyAlarmList = ()=>{
             getAlarmList();
             return;
         }
-        axios.get(`${url}/selectAlarmType/${member.storeCode}/${alarmType}`)
+        axiosInToken(token).get(`${url}/selectAlarmType/${member.storeCode}/${alarmType}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setAlarmList([...res.data]);
         })

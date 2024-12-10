@@ -6,13 +6,14 @@ import { useEffect, useState } from 'react';
 import { Input, Button, Dialog, IconButton, Typography, DialogBody, DialogHeader, DialogFooter } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
-import { url } from '../../config.js';
-import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { axiosInToken, url } from '../../config.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { memberAtom, tokenAtom } from '../../atoms.js';
 
 const MyStoreManage = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(!open);
+    const [token, setToken] = useAtom(tokenAtom);
 
     const [storeList, setStoreList] = useState([]);
     const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
@@ -27,8 +28,11 @@ const MyStoreManage = () => {
     }, [])
 
     const getStoreList = ()=>{
-        axios.get(`${url}/selectStoreList/${member.username}`)
+        axiosInToken(token).get(`${url}/selectStoreList/${member.username}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStoreList([...res.data]);
         })
@@ -39,8 +43,11 @@ const MyStoreManage = () => {
 
     // 가맹점 추가 전 가맹점 조회
     const selectStore = (storeCode)=>{
-        axios.get(`${url}/selectStore/${storeCode}`)
+        axiosInToken(token).get(`${url}/selectStore/${storeCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStore(res.data);
         })
@@ -55,8 +62,11 @@ const MyStoreManage = () => {
 
     const addStore = (e)=>{
         setOpen(false);
-        axios.get(`${url}/addStore/${store.storeCode}/${member.username}`)
+        axiosInToken(token).get(`${url}/addStore/${store.storeCode}/${member.username}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             alert("가맹점이 추가 되었습니다.");
             setStoreList([...storeList, res.data]);
@@ -68,9 +78,12 @@ const MyStoreManage = () => {
     }
 
     const deleteStore = (storeCode)=>{
-        axios.get(`${url}/deleteStore/${storeCode}`)
+        axiosInToken(token).get(`${url}/deleteStore/${storeCode}`)
         .then(res=>{
             console.log(res.data);
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             alert("가맹점 삭제신청이 되었습니다.");
             // 삭제 신청된 가맹점은 삭제 버튼 없애기
             setStoreList(storeList.map(store=>(store.storeCode===storeCode ? {...store, storeStatus:"request"} : store)));

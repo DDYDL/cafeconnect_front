@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
 
 import { Link, useNavigate } from 'react-router-dom';
-import { useAtom, useSetAtom } from 'jotai/react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai/react';
 import { alarmsAtom, initMember, memberAtom, tokenAtom } from '../../atoms.js';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
@@ -17,13 +17,13 @@ import ReactSelect from "react-select";
 const MyStoreInfo = () => {
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
+    // Jotai에 있는 로그인 token 가져오기
+    const [token, setToken] = useAtom(tokenAtom);
 
     const navigate = useNavigate();
-    // Jotai에 있는 로그인 token 가져오기
-    const setToken = useSetAtom(tokenAtom);
     // Jotai에 있는 알람 가져오기
     const setAlarms = useSetAtom(alarmsAtom);
-
+    const inputRef = useRef();
     
     const [store, setStore] = useState(
         {
@@ -87,12 +87,23 @@ const MyStoreInfo = () => {
     }
 
     const edit = (e)=>{
+        console.log(e);
+        
         setStore({...store, [e.target.name]:e.target.value});
     }
 
+    const passwordEdit = (e)=>{
+        if(e.target.value === '********') {
+            inputRef.current.value = '';
+        }
+    }
+
     const getStore = ()=>{
-        axios.get(`${url}/selectStore/${member.storeCode}`)
+        axiosInToken(token).get(`${url}/selectStore/${member.storeCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStore(res.data);
             setDefaultTimeDate(res.data);
@@ -130,8 +141,11 @@ const MyStoreInfo = () => {
         console.log(store.ownerName);
         e.preventDefault();
 
-        axios.post(`${url}/updateStore`, formData)
+        axiosInToken(token).post(`${url}/updateStore`, formData)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             if(res.data === 'changePassword') {
                 alert("수정이 완료되었습니다. 다시 로그인해주세요.");
@@ -246,7 +260,7 @@ const MyStoreInfo = () => {
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>비밀번호</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd><s.InputStyle width='300px' type='password' name='password' value={store.password} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd><s.InputStyle ref={inputRef} width='300px' type='password' name='password' value={store.password} onClick={(e)=>passwordEdit(e)} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주명</m.TableTitleSpan></m.TableInfoTd>

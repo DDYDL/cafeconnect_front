@@ -42,9 +42,15 @@ function ShopMain() {
         if(res.data!==null) {
             console.log(res.data);
             // 토큰 저장에 성공 시 알람 리스트 요청
-            axios.post(`${url}/alarms`,{storeCode:res.data})
+
+            // 가맹점이 없으면 알림
+            if(member.storeCode === null) {
+              alert('가맹점을 추가해주세요');
+            }
+
+            axiosInToken(token).post(`${url}/alarms`,{storeCode:res.data})
                 .then(res=> {
-                    console.log(res.data)
+                    console.log(res.data);
                     if(res.data.length!==0) {
                         setAlarms(res.data);
                     }
