@@ -43,7 +43,6 @@ function MenuList() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
   };
 
   const handleChangeCategory = (value) => {
@@ -70,7 +69,7 @@ function MenuList() {
       const response = await axios.get(
         `http://localhost:8080/menuListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
-
+      console.log(response.data);
       setCurrentPage(response.data.pageable.pageNumber);
 
       setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
@@ -275,18 +274,26 @@ function MenuList() {
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <Select label="분류" onChange={handleChangeCategory}>
-                    {categoryList.map((category, index) => (
-                      <Option value={category.categoryValue}>
-                        {category.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="분류" onChange={handleChangeCategory}>
+                      {categoryList.map((category, index) => (
+                        <Option value={category.categoryValue}>
+                          {category.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
-                <div style={{ marginLeft: "508px" }}>
+                <div style={{ marginLeft: "580px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))}/>}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        onClick={() => fetchKeywordData(keyWord, 0)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    }
+                    label="메뉴명 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>
@@ -430,7 +437,7 @@ function MenuList() {
                       </div>
                     ))}
 
-                  {!empty &&
+                  {/* {!empty &&
                     emptyList.map((page, index) => (
                       <div className={styles["frame"]}>
                         <div className={styles["data"]}>
@@ -494,7 +501,7 @@ function MenuList() {
                           ></div>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div
@@ -503,10 +510,19 @@ function MenuList() {
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      {!empty && hasPrevious && (
+                      {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
                             fetchKeywordData(keyWord, startPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasPrevious && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchCategoryData(category, startPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
@@ -678,12 +694,16 @@ function MenuList() {
                         </s.IconButtonStyle>
                       )}
 
-                      {!empty && hasNext && (
+                      {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(
-                            keyWord,
-                            5 * (Math.floor(fetchKeywordData / 5) + 1)
-                          )}
+                          onClick={fetchKeywordData(keyWord, startPage + 5)}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasNext && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={fetchCategoryData(category, startPage + 5)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

@@ -571,7 +571,7 @@
 .MenuDetail .small-btn_brown {
   align-items: flex-start;
   background-color: #54473f;
-  border-radius: 2px;
+  border-radius: 5px;
   display: flex;
   height: 53px;
   left: 0;
@@ -687,14 +687,14 @@
   line-height: normal;
   position: absolute;
   top: 3px;
-  width: 69px;
+  width: 100px;
 }
 
 .MenuDetail .data-4 {
   align-items: flex-end;
   display: flex;
   height: 21px;
-  left: 125px;
+  left: 200px;
   min-width: 232px;
   position: absolute;
   top: 5px;
@@ -712,7 +712,7 @@
   align-items: flex-start;
   display: flex;
   height: 21px;
-  left: 125px;
+  left: 200px;
   min-width: 232px;
   position: absolute;
   top: 5px;
@@ -749,14 +749,14 @@
   line-height: normal;
   position: absolute;
   top: 3px;
-  width: 100px;
+  width: 130px;
 }
 
 .MenuDetail .data-3 {
   align-items: flex-start;
   display: flex;
   height: 21px;
-  left: 125px;
+  left: 200px;
   min-width: 232px;
   position: absolute;
   top: 16px;
@@ -777,7 +777,7 @@
   line-height: normal;
   position: absolute;
   top: 3px;
-  width: 116px;
+  width: 130px;
 }
 
 .MenuDetail .data-6 {

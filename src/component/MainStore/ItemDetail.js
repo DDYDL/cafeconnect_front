@@ -25,7 +25,7 @@ function ItemDetail() {
     itemSubCategoryName: "",
     imageUrl: "",
   });
-
+  
   const { itemCode } = useParams();
   const navigate = useNavigate();
   const fetchData = async () => {
@@ -191,7 +191,7 @@ function ItemDetail() {
                         className={`${styles["text-14"]} ${styles["valign-text-middle"]}`}
                         style={{ width: "250px" }}
                       >
-                        {item.itemPrice}
+                        {item.itemPrice}원
                       </div>
                     </div>
                   </div>
@@ -290,7 +290,7 @@ function ItemDetail() {
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[1] !== "" &&
                         item.itemStandard.split("X")[1] !== undefined
-                          ? " X " + item.itemStandard.split("X")[1]
+                          ? item.itemStandard.split("X")[1]
                           : ""}
                         
                       </div>
@@ -313,7 +313,7 @@ function ItemDetail() {
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[2] !== "" &&
                         item.itemStandard.split("X")[2] !== undefined
-                          ? " X " + item.itemStandard.split("X")[2]
+                          ? item.itemStandard.split("X")[2]
                           : ""}
                       </div>
                     </div>
@@ -324,7 +324,7 @@ function ItemDetail() {
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                     >
-                      단위수량
+                      단위수량(개수)
                     </div>
                     <div
                       className={`${styles["data-1"]} ${styles["data-5"]}`}

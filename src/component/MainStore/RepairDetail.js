@@ -22,6 +22,9 @@ function RepairDetail() {
     itemCategoryMiddleName: "",
     itemCategorySubName: "",
   });
+  const [activeIng, setActiveIng] = useState(false);
+  const [activeComplete, setActiveComplete] = useState(false);
+
   const handleRepairAnswer = (e) => {
     setRepair({
       ...repair,
@@ -48,6 +51,12 @@ function RepairDetail() {
       );
       setRepair(response.data);
       console.log(response.data);
+      if (response.data.repairStatus === "접수") {
+        activeIng(true);
+      }
+      if (response.data.repairStatus === "수리중") {
+        activeComplete(true);
+      }
     } catch (error) {
       alert("해당하는 수리내용이 없습니다");
       navigate("/repairList");
@@ -56,11 +65,11 @@ function RepairDetail() {
   useEffect(() => {
     fetchData();
   }, []);
-  const changeState1 = async () => {
+  const handleActiveIng = async () => {
     const formData = new FormData();
     const itemSaveForm = {
       repairAnswer: repair.repairAnswer,
-      repairStatus: "state1",
+      repairStatus: "수리중",
     };
     const json = JSON.stringify(itemSaveForm);
     const blob = new Blob([json], {
@@ -81,11 +90,11 @@ function RepairDetail() {
       navigate("/repairList");
     }
   };
-  const changeState2 = async () => {
+  const handleActiveComplete = async () => {
     const formData = new FormData();
     const itemSaveForm = {
       repairAnswer: repair.repairAnswer,
-      repairStatus: "status2",
+      repairStatus: "수리완료",
     };
     const json = JSON.stringify(itemSaveForm);
     const blob = new Blob([json], {
@@ -106,34 +115,7 @@ function RepairDetail() {
       navigate("/repairList");
     }
   };
-  const changeState3 = async () => {
-    const formData = new FormData();
-    const itemSaveForm = {
-      repairAnswer: repair.repairAnswer,
-      repairStatus: "status2",
-    };
-    const json = JSON.stringify(itemSaveForm);
-    const blob = new Blob([json], {
-      type: "application/json",
-    });
-    formData.append("repairUpdateForm", blob);
 
-    try {
-      await axios.post(
-        `http://localhost:8080/updateStateRepair/${repairNum}`,
-        formData
-      );
-      alert("수정 성공");
-      navigate(`/repairList`);
-    } catch (error) {
-      console.log(error);
-      alert("수정 실패");
-      navigate("/repairList");
-    }
-  };
-  const handleUpdateRepair = () => {
-    changeState1();
-  };
   return (
     <>
       <m.CarouselDiv>
@@ -317,23 +299,39 @@ function RepairDetail() {
                 >
                   수리중 변경
                 </div>
+
                 <div className={styles["overlap-group"]}>
                   <div
                     className={`${styles["text-12"]} ${styles["valign-text-middle"]}`}
                   >
                     메뉴 등록
                   </div>
-                  <div
-                    className={styles["small-btn_brown"]}
-                    style={{ cursor: "pointer" }}
-                    onClick={handleUpdateRepair}
-                  >
+                  {activeIng && (
                     <div
-                      className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                      className={styles["small-btn_brown"]}
+                      style={{ cursor: "pointer" }}
+                      onClick={handleActiveIng}
                     >
-                      수리중 변경
+                      <div
+                        className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                      >
+                        수리중 변경
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  {activeComplete && (
+                    <div
+                      className={styles["small-btn_brown"]}
+                      style={{ cursor: "pointer" }}
+                      onClick={handleActiveComplete}
+                    >
+                      <div
+                        className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                      >
+                        수리완료 변경
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

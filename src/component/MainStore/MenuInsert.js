@@ -8,7 +8,7 @@ import { Option, Select } from "@material-tailwind/react";
 import { useNavigate } from "react-router";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
-
+import logo from "../assets/img/logo.svg";
 function MenuInsert() {
   const [menu, setMenu] = useState({
     menuName: "",
@@ -24,7 +24,7 @@ function MenuInsert() {
     menuStatus: "",
     menuCategoryName: "",
   });
-
+  const [capacityUnit, setCapacityUnit] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -69,31 +69,40 @@ function MenuInsert() {
       console.log(error);
     }
   };
-  const checkProperties = () =>{
-    if(menu.menuName !== '' && menu.menuPrice !== '' && menu.menuCapacity !== '' &&  menu.caffeine !== '' &&  menu.calories !== '' &&  
-      menu.carbohydrate  !== '' && menu.sugar !== '' &&  menu.natrium !== '' !== '' && 
-      menu.fat !== '' && menu.protein !== '' && menu.menuStatus !== '' &&  menu.menuCategoryName !== '' 
-    ){
+  const checkProperties = () => {
+    if (
+      menu.menuName !== "" &&
+      menu.menuPrice !== "" &&
+      menu.menuCapacity !== "" &&
+      // menu.caffeine !== "" &&
+      // menu.calories !== "" &&
+      // menu.carbohydrate !== "" &&
+      // menu.sugar !== "" &&
+      // menu.natrium !== "" !== "" &&
+      // menu.fat !== "" &&
+      // menu.protein !== "" &&
+      menu.menuStatus !== "" &&
+      menu.menuCategoryName !== ""
+    ) {
       return true;
     }
     return false;
-      
-  }
+  };
   const handleUpload = async () => {
     const formData = new FormData();
-    if(!file){
-      alert('이미지를 등록하세요')
+    if (!file) {
+      alert("이미지를 등록하세요");
       return;
     }
     formData.append("file", file);
-    if(!checkProperties()){
-      alert('등록되지 않은 항목이 존재합니다')
+    if (!checkProperties()) {
+      alert("등록되지 않은 항목이 존재합니다");
       return;
     }
     const itemSaveForm = {
       menuName: menu.menuName,
       menuPrice: menu.menuPrice,
-      menuCapacity: menu.menuCapacity,
+      menuCapacity: menu.menuCapacity + capacityUnit,
       caffeine: menu.caffeine,
       calories: menu.calories,
       carbohydrate: menu.carbohydrate,
@@ -165,12 +174,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        가격
+                        가격(원)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="가격을 입력하세요"
+                        placeholder="가격을 입력하세요(단위 생략)"
                         name="menuPrice"
                         value={menu.menuPrice}
                         onChange={handleInput}
@@ -182,25 +191,39 @@ function MenuInsert() {
                       >
                         용량
                       </div>
-                      <s.InputStyle
-                        width="440px"
-                        type="text"
-                        placeholder="용량을 입력하세요"
-                        name="menuCapacity"
-                        value={menu.menuCapacity}
-                        onChange={handleInput}
-                      />
+                      <div style={{ display: "flex", gap: "20px" }}>
+                        <s.InputStyle
+                          width="220px"
+                          type="text"
+                          placeholder="용량을 입력하세요"
+                          name="menuCapacity"
+                          value={menu.menuCapacity}
+                          onChange={handleInput}
+                        />
+                        <div className="select-wrap" style={{ width: "100px" }}>
+                          <Select
+                            label="용량단위"
+                            onChange={(e) => setCapacityUnit(e)}
+                          >
+                            <Option value="">용량 단위를 선택하세요</Option>
+                            <Option value="kg">kg</Option>
+                            <Option value="g">g</Option>
+                            <Option value="ml">ml</Option>
+                            <Option value="L">L</Option>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
                     <div className={styles["container"]}>
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        카페인 함유량
+                        카페인 함유량(mg)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="카페인 함유량을 입력하세요"
+                        placeholder="카페인 함유량을 입력하세요(단위 생략)"
                         name="caffeine"
                         value={menu.caffeine}
                         onChange={handleInput}
@@ -210,12 +233,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        지방 함유량
+                        지방 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="지방 함유량을 입력하세요"
+                        placeholder="지방 함유량을 입력하세요(단위 생략)"
                         name="fat"
                         value={menu.fat}
                         onChange={handleInput}
@@ -234,28 +257,36 @@ function MenuInsert() {
                         onClick={handleUploadImage}
                       >
                         <img
-                          className={styles["upload-files4ee86225svg"]}
-                          src={upload_file}
-                          alt="upload-files.4ee86225.svg"
-                        />
-                        <div
-                          className={`${styles["text-19"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticitem"]}`}
-                        >
-                          <span>
-                            <span className={styles["span0"]}>
-                              <br />
-                            </span>
-                            <span className={styles["span1-1"]}>
-                              이미지 선택
-                            </span>
-                          </span>
-                        </div>
+                          className={styles["product-thumb-1bfdce747webp"]}
+                          src={imageUrl === null ? logo : imageUrl}
+                          style={{
+                            width: "224px",
+                            height: "204px",
+                            marginRight: "100px",
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                          alt="image"
+                        ></img>
                       </div>
-                      <img
+                      <div
                         className={styles["product-thumb-1bfdce747webp"]}
-                        src={imageUrl === null ? thumb : imageUrl}
+                        style={{
+                          marginRight: "10px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          backgroundColor: "#54473f",
+                          marginTop: "10px",
+                          borderRadius: "5px",
+                          color: "white",
+                        }}
                         alt="image"
-                      ></img>
+                        onClick={handleUploadImage}
+                      >
+                        업로드
+                      </div>
                     </div>
                     <input
                       type="file"
@@ -279,20 +310,23 @@ function MenuInsert() {
                           className="w-16"
                           style={{ width: "440px", marginBottom: "20px" }}
                         >
-                          <div className="select-wrap" style={{ width: "440px" }}>
-                          <Select
-                            label="대분류"
-                            onChange={handleCategoryeSelectbox}
+                          <div
+                            className="select-wrap"
+                            style={{ width: "440px" }}
                           >
-                            {categoryList.map((category, index) => (
-                              <Option
-                                key={index}
-                                value={category.categoryValue}
-                              >
-                                {category.categoryName}
-                              </Option>
-                            ))}
-                          </Select>
+                            <Select
+                              label="대분류"
+                              onChange={handleCategoryeSelectbox}
+                            >
+                              {categoryList.map((category, index) => (
+                                <Option
+                                  key={index}
+                                  value={category.categoryValue}
+                                >
+                                  {category.categoryName}
+                                </Option>
+                              ))}
+                            </Select>
                           </div>
                         </s.ButtonInnerDiv>
                       </div>
@@ -301,12 +335,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        열량
+                        열량(kcal)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="열량을 입력하세요"
+                        placeholder="열량을 입력하세요(단위 생략)"
                         name="calories"
                         value={menu.calories}
                         onChange={handleInput}
@@ -316,12 +350,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        탄수화물 함유량
+                        탄수화물 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="탄수화물 함유량을 입력하세요"
+                        placeholder="탄수화물 함유량을 입력하세요(단위 생략)"
                         name="carbohydrate"
                         value={menu.carbohydrate}
                         onChange={handleInput}
@@ -331,12 +365,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        나트륨 함유량
+                        나트륨 함유량(mg)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="나트륨 함유량을 입력하세요"
+                        placeholder="나트륨 함유량을 입력하세요(단위 생략)"
                         name="natrium"
                         value={menu.natrium}
                         onChange={handleInput}
@@ -346,12 +380,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        단백질 함유량
+                        단백질 함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="단백질 함유량을 입력하세요"
+                        placeholder="단백질 함유량을 입력하세요(단위 생략)"
                         name="protein"
                         value={menu.protein}
                         onChange={handleInput}
@@ -361,12 +395,12 @@ function MenuInsert() {
                       <div
                         className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                       >
-                        당류&nbsp;&nbsp;함유량
+                        당류&nbsp;&nbsp;함유량(g)
                       </div>
                       <s.InputStyle
                         width="440px"
                         type="text"
-                        placeholder="당류 함유량을 입력하세요"
+                        placeholder="당류 함유량을 입력하세요(단위 생략)"
                         name="sugar"
                         value={menu.sugar}
                         onChange={handleInput}
@@ -383,11 +417,10 @@ function MenuInsert() {
                         style={{ width: "440px", marginBottom: "20px" }}
                       >
                         <Select
-                          label="상태"
-                          
+                          label="메뉴 상태"
                           onChange={handleMenuStatusSelectbox}
                         >
-                          <Option value="">상태</Option>
+                          <Option value="">메뉴 상태를 입력하세요</Option>
                           <Option value="normal">일반</Option>
                           <Option value="signature">시그니처</Option>
                           <Option value="best">베스트</Option>

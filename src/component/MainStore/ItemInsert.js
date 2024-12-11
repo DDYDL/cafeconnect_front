@@ -8,7 +8,7 @@ import * as s from "../styles/StyledStore.tsx";
 import { Option, Select } from "@material-tailwind/react";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
-import zIndex from "@mui/material/styles/zIndex";
+import logo from '../assets/img/logo.svg'
 function ItemInsert() {
   const [item, setItem] = useState({
     itemName: "",
@@ -34,6 +34,7 @@ function ItemInsert() {
   const [activeSub, setActiveSub] = useState(false);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [capacityUnit, setCapacityUnit] = useState('');
   const imageInput = useRef();
   const navigate = useNavigate();
   const handleInput = (e) => {
@@ -129,8 +130,7 @@ function ItemInsert() {
     }
   };
   const checkProperties = () =>{
-    if(item.itemName !== '' && item.itemPrice !== '' && item.itemCapacity !== '' &&  item.itemUnitQuantity !== '' &&  item.itemStandard.itemX !== '' &&  
-      item.itemStandard.itemY  !== '' && item.itemStandard.itemZ  !== '' && 
+    if(item.itemName !== '' && item.itemPrice !== '' && item.itemCapacity !== '' &&  item.itemUnitQuantity !== '' &&    
       item.itemStorage  !== '' && item.itemCountryOrigin !== '' &&  item.itemMajorCategory !== ''
     ){
       return true;
@@ -152,7 +152,7 @@ function ItemInsert() {
     const itemSaveForm = {
       itemName: item.itemName,
       itemPrice: item.itemPrice,
-      itemCapacity: item.itemCapacity,
+      itemCapacity: item.itemCapacity+capacityUnit,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
       itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
@@ -173,7 +173,7 @@ function ItemInsert() {
         "http://localhost:8080/addItem",
         formData
       );
-      alert("업로드 성공: " + response.data);
+      alert("업로드 성공");
       navigate(`/mainItemDetail/${response.data.code}`);
     } catch (error) {
       console.error("업로드 실패:", error);
@@ -221,13 +221,13 @@ function ItemInsert() {
                     <div
                       className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                     >
-                      공급가
+                      공급가(원)
                     </div>
                     <s.InputStyle
                       name="itemPrice"
                       width="440px"
                       type="text"
-                      placeholder="공급가를 입력하세요"
+                      placeholder="공급가를 입력하세요(단위생략)"
                       onChange={handleInput}
                     />
                   </div>
@@ -237,14 +237,29 @@ function ItemInsert() {
                     >
                       용량
                     </div>
-
+                    <div style={{display:"flex",gap:"20px"}}>
                     <s.InputStyle
                       name="itemCapacity"
-                      width="440px"
+                      width="220px"
                       type="text"
                       placeholder="용량을 입력하세요"
                       onChange={handleInput}
                     />
+                    <div className="select-wrap" style={{ width: "100px" }}>
+                      <Select
+                        label="용량단위"
+                        onChange={(e)=>(setCapacityUnit(e))}  
+                      >
+                        <Option value="">용량 단위를 선택하세요</Option>
+                        <Option value="kg">kg</Option>
+                        <Option value="g">g</Option>
+                        <Option value="ml">ml</Option>
+                        <Option value="L">L</Option>
+                        
+                      </Select>
+                    </div>
+                    </div>
+                    
                   </div>
                   <div className={styles["container-3"]}>
                     <div className={`${styles["flex-col"]} ${styles["flex"]}`}>
@@ -262,6 +277,10 @@ function ItemInsert() {
                         onChange={handleStandardInput}
                       />
                     </div>
+                    <div
+                    style={{width:"40px",textAlign:"center",marginBottom:"22px"}}>
+                      X
+                    </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
                       <s.InputStyle
                         name="itemY"
@@ -271,6 +290,10 @@ function ItemInsert() {
                         value={item.itemStandard.itemY}
                         onChange={handleStandardInput}
                       />
+                    </div>
+                    <div
+                    style={{width:"40px",textAlign:"center",marginBottom:"22px"}}>
+                      X
                     </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
                       <s.InputStyle
@@ -401,8 +424,11 @@ function ItemInsert() {
                         onChange={handleItemUnitSelectbox}
                       >
                         <Option value="">단위를 선택하세요</Option>
-                        <Option value="단위1">단위1</Option>
-                        <Option value="단위2">단위2</Option>
+                        <Option value="BOX">BOX</Option>
+                        <Option value="EA">EA</Option>
+                        <Option value="PK">PK</Option>
+                        <Option value="CAN">CAN</Option>
+                        <Option value="BTL">BTL</Option>
                       </Select>
                     </div>
                   </div>
@@ -429,13 +455,13 @@ function ItemInsert() {
                     <div
                       className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                     >
-                      단위 수량
+                      단위 수량(개수)
                     </div>
                     <s.InputStyle
                       name="itemUnitQuantity"
                       width="440px"
                       type="text"
-                      placeholder="단위수량을 입력하세요"
+                      placeholder="단위수량을 입력하세요(개수 생략)"
                       onChange={handleInput}
                     />
                   </div>
@@ -447,28 +473,21 @@ function ItemInsert() {
                     </div>
                     <div
                       className={styles["border-1"]}
-                      onClick={handleUploadImage}
+                      
                     >
                       <img
-                        className={styles["upload-files4ee86225svg"]}
-                        src={upload_file}
-                        alt="upload-files.4ee86225.svg"
-                      />
-                      <div
-                        className={`${styles["text-11"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticitem"]}`}
-                      >
-                        <span>
-                          <span className={styles["span0"]}>
-                            <br />
-                          </span>
-                          <span className={styles["span1-1"]}>이미지 선택</span>
-                        </span>
-                      </div>
-                    </div>
-                    <img
                       className={styles["product-thumb-1bfdce747webp"]}
-                      src={imageUrl === null ? thumb : imageUrl}
+                      style={{width:"224px" ,height:"204px",marginRight:"100px", marginTop:"10px",marginBottom:"10px"}}
+                      src={imageUrl === null ? logo : imageUrl}
                     ></img>
+                      
+                    </div>
+                    <div
+                      className={styles["product-thumb-1bfdce747webp"]}
+                      style={{marginRight:"10px",display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",marginTop:"10px",borderRadius:"5px",color:"white"}}
+                      onClick={handleUploadImage}
+                      
+                    >업로드</div>
                   </div>
                   <input
                     style={{ display: "none" }}
