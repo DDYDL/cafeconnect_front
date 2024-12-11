@@ -81,8 +81,8 @@ function MenuList() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -93,13 +93,13 @@ function MenuList() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -123,7 +123,7 @@ function MenuList() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -140,15 +140,23 @@ function MenuList() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
       }
-
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
+      }
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      console.log(response.data);
+      setUsingKeyword(true)
+      setUsingCategory(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -174,8 +182,8 @@ function MenuList() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -186,13 +194,13 @@ function MenuList() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -216,7 +224,7 @@ function MenuList() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -235,14 +243,28 @@ function MenuList() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(false)
+      setUsingCategory(true)
     } catch (error) {
       setError(error);
     } finally {
@@ -413,7 +435,7 @@ function MenuList() {
                           <div
                             className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.carbohydrate ? page.carbohydrate : "-"}
+                            {page.carbohydrate ? page.carbohydrate+'g' : "-"}
                           </div>
                         </div>
                         <div
@@ -422,7 +444,7 @@ function MenuList() {
                           <div
                             className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.sugar ? page.sugar : "-"}
+                            {page.sugar ? page.sugar+'g' : "-"}
                           </div>
                         </div>
                         <div
@@ -431,7 +453,7 @@ function MenuList() {
                           <div
                             className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.natrium ? page.natrium : "-"}
+                            {page.natrium ? page.natrium +'mg': "-"}
                           </div>
                         </div>
                       </div>
@@ -513,7 +535,7 @@ function MenuList() {
                       {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
-                            fetchKeywordData(keyWord, startPage - 1)
+                            fetchKeywordData(keyWord, currentPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
@@ -522,13 +544,14 @@ function MenuList() {
                       {!empty && hasPrevious && usingCategory && (
                         <s.IconButtonStyle
                           onClick={() =>
-                            fetchCategoryData(category, startPage - 1)
+                            fetchCategoryData(category, currentPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
-                      {usingKeyword && !empty && hasNext && (
+
+                      {/* {usingKeyword && !empty && hasNext && (
                         <>
                           <s.IconButtonStyle
                             style={
@@ -653,11 +676,11 @@ function MenuList() {
                             {startPage + 5}
                           </s.IconButtonStyle>
                         </>
-                      )}
+                      )} */}
 
                       {usingKeyword &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -672,7 +695,7 @@ function MenuList() {
                         ))}
                       {usingCategory &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -696,14 +719,14 @@ function MenuList() {
 
                       {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(keyWord, startPage + 5)}
+                          onClick={() => fetchKeywordData(keyWord, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
                       {!empty && hasNext && usingCategory && (
                         <s.IconButtonStyle
-                          onClick={fetchCategoryData(category, startPage + 5)}
+                          onClick={()=>fetchCategoryData(category, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

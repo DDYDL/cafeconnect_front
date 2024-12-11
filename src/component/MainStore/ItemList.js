@@ -15,8 +15,8 @@ function ItmListCopy() {
   const [startPage, setStartPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPageNumber, setTotalPageNumber] = useState(0);
-  const [hasNext, setHasNext] = useState(null);
-  const [hasPrevious, setHasPrevious] = useState(null);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
   const [empty, setEmpty] = useState(null);
   const [usingKeyword, setUsingKeyword] = useState(true);
   const [usingCategory, setUsingCategory] = useState(false);
@@ -140,6 +140,7 @@ function ItmListCopy() {
 
   const fetchKeywordData = async (keyword, pageNum) => {
     try {
+      
       setLoading(true);
       const response = await axios.get(
         `http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
@@ -152,12 +153,13 @@ function ItmListCopy() {
       setTotalElements(response.data.totalElements);
       setTotalPageNumber(response.data.totalPages);
       //넘어가는 부분이 있음
+      
       if (
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true)
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -168,13 +170,13 @@ function ItmListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -198,7 +200,7 @@ function ItmListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -215,14 +217,30 @@ function ItmListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      
+      // if (response.data.pageable.pageNumber > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      console.log(response.data)
+      if(response.data.first === true){
+        
         setHasPrevious(false);
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        
+        setHasNext(true)
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(true);
+      setUsingCategory(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -236,6 +254,7 @@ function ItmListCopy() {
       const response = await axios.get(
         `http://localhost:8080/itemListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&ItemCategorySubName=${category.ItemCategorySubName}&pageNum=${pageNum}&pageSize=10`
       );
+      
 
       setCurrentPage(response.data.pageable.pageNumber);
 
@@ -248,7 +267,7 @@ function ItmListCopy() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
+        // setHasNext(true);
         setEmptyList([]);
         setPageNumList(
           Array.from(
@@ -260,13 +279,13 @@ function ItmListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -290,7 +309,7 @@ function ItmListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -309,14 +328,29 @@ function ItmListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingCategory(true)
+      setUsingKeyword(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -325,6 +359,7 @@ function ItmListCopy() {
   };
 
   useEffect(() => {
+    
     fetchKeywordData("", 0);
     fetchMajorData();
   }, []);
@@ -592,7 +627,7 @@ function ItmListCopy() {
                   <s.ButtonGroupStyle variant="outlined">
                     {!empty && hasPrevious && usingKeyword && (
                       <s.IconButtonStyle
-                        onClick={() => fetchKeywordData(keyWord, startPage - 1)}
+                        onClick={() => fetchKeywordData(keyWord, currentPage - 1)}
                       >
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>
@@ -606,7 +641,8 @@ function ItmListCopy() {
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>
                     )}
-                    {usingKeyword && !empty && hasNext && (
+                    
+                    {/* {usingKeyword && !empty && hasNext && (
                       <>
                         <s.IconButtonStyle
                           style={
@@ -668,6 +704,7 @@ function ItmListCopy() {
                         </s.IconButtonStyle>
                       </>
                     )}
+
                     {usingCategory && !empty && hasNext && (
                       <>
                         <s.IconButtonStyle
@@ -729,11 +766,11 @@ function ItmListCopy() {
                           {startPage + 5}
                         </s.IconButtonStyle>
                       </>
-                    )}
+                    )} */}
 
                     {usingKeyword &&
                       !empty &&
-                      !hasNext &&
+                      
                       pageNumList.map((value, index) => (
                         <s.IconButtonStyle
                           style={
@@ -749,7 +786,7 @@ function ItmListCopy() {
 
                     {usingCategory &&
                       !empty &&
-                      !hasNext &&
+                      
                       pageNumList.map((value, index) => (
                         <s.IconButtonStyle
                           style={
@@ -771,7 +808,7 @@ function ItmListCopy() {
 
                     {!empty && hasNext && usingKeyword && (
                       <s.IconButtonStyle
-                        onClick={fetchKeywordData(keyWord, startPage + 5)}
+                        onClick={()=>fetchKeywordData(keyWord, currentPage + 1)}
                       >
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>
@@ -779,7 +816,7 @@ function ItmListCopy() {
 
                     {!empty && hasNext && usingCategory && (
                       <s.IconButtonStyle
-                        onClick={fetchCategoryData(category, startPage + 5)}
+                        onClick={()=>fetchCategoryData(category, currentPage + 1)}
                       >
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>

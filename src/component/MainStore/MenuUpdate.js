@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import logo from "../assets/img/logo.svg";
+
 function MenuInsert() {
   const navigate = useNavigate();
   const imageInput = useRef();
@@ -68,6 +69,9 @@ function MenuInsert() {
     imageInput.current.click();
   };
   const handleImageInput = (e) => {
+    if(!e.target.files[0]){
+      return;
+    }
     setFile(e.target.files[0]);
     setMenu({
       ...menu,
@@ -313,7 +317,7 @@ function MenuInsert() {
                     </div>
                     <div
                       className={styles["border-1"]}
-                      onClick={handleUploadImage}
+                      
                     >
                       <img
                         className={styles["product-thumb-1bfdce747webp"]}

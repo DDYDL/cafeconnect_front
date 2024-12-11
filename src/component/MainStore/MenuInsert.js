@@ -43,6 +43,9 @@ function MenuInsert() {
   };
 
   const handleImageInput = (e) => {
+    if(!e.target.files[0]){
+      return;
+    }
     setFile(e.target.files[0]);
     setImageUrl(URL.createObjectURL(e.target.files[0]));
   };
@@ -254,7 +257,7 @@ function MenuInsert() {
                       </div>
                       <div
                         className={styles["border-1"]}
-                        onClick={handleUploadImage}
+                        
                       >
                         <img
                           className={styles["product-thumb-1bfdce747webp"]}
