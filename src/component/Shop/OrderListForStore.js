@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInToken } from "../../config.js";
 import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 
 function OrderListForStore() {
   const today = new Date();
@@ -93,7 +93,7 @@ function OrderListForStore() {
     }
       if(res.data === true) {
         alert("주문 취소 완료되었습니다");
-        submit();
+        submit(1);
       }
     }).catch(err=>{
       console.log(err);
@@ -195,7 +195,9 @@ function OrderListForStore() {
     <div className="mt-7 flex justify-center">주문 내역이 없습니다.</div>
 )}
 
-      <s.PageButtonGroupDiv>
+
+        </ol.OrderListWrap>
+        <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
                     <s.IconButtonStyle>
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
@@ -208,7 +210,6 @@ function OrderListForStore() {
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
        </s.PageButtonGroupDiv> 
-        </ol.OrderListWrap>
       </CommonContainer>
     </CommonWrapper>
   );

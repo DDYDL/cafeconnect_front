@@ -7,9 +7,10 @@ import * as o from "../styledcomponent/order.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import {useNavigate,useLocation} from 'react-router-dom';
 import {useState,useEffect}from 'react';
-import { useAtomValue,useAtom } from "jotai/react";
-import { tokenAtom, memberAtom } from '../../atoms';
+import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
+import { tokenAtom, memberAtom,cartCountAtom } from '../../atoms';
 import { axiosInToken,url } from '../../config.js';
+import axios from 'axios';
 
 function Order() {
   const location = useLocation();
@@ -19,7 +20,7 @@ function Order() {
   const [orderItem,setOrderItem] = useState([]);
   const [storeInfo,setStoreInfo] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState('');
-  
+  const setCartCount = useSetAtom(cartCountAtom);
 
     useEffect(()=>{
     const cartNums = location.state?.cartNums; // cartList에서 받아옴 
@@ -41,6 +42,7 @@ function Order() {
         quantity: cart.cartItemCount,
         itemCode: cart.item.itemCode,
         name: cart.item.itemName,
+        filename:cart.item.itemFileName,
         price: cart.item.itemPrice,
         storage: cart.item.itemStorage,
         category: `${cart.item.itemMajorCategoryName}/${cart.item.itemMiddleCategoryName}/${cart.item.itemSubCategoryName || "-"}`
@@ -171,6 +173,15 @@ function Order() {
                 }
                   if(res.data) {
                     alert('결제가 완료되었습니다.');
+                    // cartCount를 업데이트
+                    axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+                    .then(response => {
+                      
+                      if(response.headers.authorization!=null) {
+                        setToken(res.headers.authorization)
+                    }
+                      setCartCount(response.data);   //jotai 값 세팅
+                    });    
                     navigate('/orderList');
                   }
                                     
@@ -207,7 +218,7 @@ function Order() {
                   {items.map((item) => (
                     <o.OrderItemList key={item.itemCode}>
                       <div>
-                        <o.OrderItemImage src={`${url}/image/{item.itemFileName}`} alt={item.name} />
+                        <o.OrderItemImage src={`${url}/image/${item.filename}`} alt={item.name} />
                       </div>
                       <o.OrderItemInfo>
                         <o.OrderItemCategory>{item.category}</o.OrderItemCategory>

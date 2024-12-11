@@ -13,7 +13,7 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import { CommonContainer, CommonWrapper, ContainerTitleArea } from "../styledcomponent/common.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
-
+import * as s from '../styles/StyledStore.tsx';
 function OrderListForMainStore() {
   const store = useAtomValue(memberAtom);
   const [token,setToken] = useAtom(tokenAtom);
@@ -30,18 +30,19 @@ function OrderListForMainStore() {
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState("");
   const [orders,setOrders] =useState([]);
-  
-
+  const [pageBtn, setPageBtn] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
 
   useEffect(() => {
-    if (token != null && token !== "") submit();
+    if (token != null && token !== "") submit(1);
   }, [token]);
 
 
-  const submit = () => {
+  const submit = (page) => {
     const formData = new FormData();
     formData.append("startDate", format(startDate, "yyyy-MM-dd"));
     formData.append("endDate", format(endDate, "yyyy-MM-dd"));
+    formData.append("page",page);
     if (searchType && searchKeyword) {
       formData.append("searchType", searchType);
       formData.append("keyword", searchKeyword);
@@ -54,6 +55,14 @@ function OrderListForMainStore() {
         if(res.headers.authorization!=null) {
           setToken(res.headers.authorization)
       }
+      let pageInfo = res.data.pageInfo;
+      console.log(pageInfo);
+      let page = [];
+        for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+            page.push(i);
+        }
+        setPageBtn([...page]);
+        setPageInfo(pageInfo);
         setOrderList(res.data.orderList || []);
         setTotalCount(res.data.totalCount || 0);
       })
@@ -99,9 +108,9 @@ const handleStatusSubmit = (orderCode) => {
       if(res.headers.authorization!=null) {
         setToken(res.headers.authorization)
     }
-      if (res.data ===true) {
+      if (res.data === true) {
         alert("주문 상태가 변경되었습니다.");
-        submit(); // 목록 새로고침
+        submit(1); // 목록 새로고침
         
         setSelectedStatus(prev => {
           const next = { ...prev };
@@ -183,7 +192,7 @@ const handleStatusSubmit = (orderCode) => {
             <div>주문처리</div>
           </ol.MainStoreOrderHeader>
           
-          {orderList.map((order, index) => (
+          {orderList?.map((order, index) => (
             <ol.MainStoreOrderItem
               key={order.orderNumber}
               onClick={() => navigate(`/mainStoreOrderDetail/${order.orderCode}`)}
@@ -191,7 +200,7 @@ const handleStatusSubmit = (orderCode) => {
               <div>{format(new Date(order.orderDate), "yyyy-MM-dd")}</div>
               <div>{order.orderCode}</div>
               <div>{order.storeName}</div>
-              <div>{order.orderItems.map(item => item.itemName).join(", ")}</div>
+              <div>{order.itemNames?.join(", ")}</div>
               <div>{order.totalCount}</div>
               <div>{order.totalAmount.toLocaleString()}원</div>
               <ol.StatusAreaWrapper onClick={(e) => e.stopPropagation()}>
@@ -236,7 +245,21 @@ const handleStatusSubmit = (orderCode) => {
               </ol.StatusAreaWrapper>
             </ol.MainStoreOrderItem>
           ))}
+
         </ol.OrderListWrap>
+        <s.PageButtonGroupDiv>
+                  <s.ButtonGroupStyle variant="outlined">
+                    <s.IconButtonStyle>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    </s.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    ))}
+                    <s.IconButtonStyle>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    </s.IconButtonStyle>
+                  </s.ButtonGroupStyle>
+       </s.PageButtonGroupDiv> 
       </CommonContainer>
     </CommonWrapper>
   );
