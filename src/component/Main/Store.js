@@ -119,6 +119,7 @@ const Store = () => {
         .then(res=>{
             console.log(res.data);
             setStoreList([...res.data]);
+            setIsStore(true);
         })
         .catch(err=>{
             console.log(err);

@@ -13,6 +13,7 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { ko } from 'date-fns/locale';
 import { format, parse } from 'date-fns';
 import ReactSelect from "react-select";
+import Error from '../../Error.js';
 
 const MyStoreInfo = () => {
     // Jotai의 member 가져오기
@@ -24,6 +25,8 @@ const MyStoreInfo = () => {
     // Jotai에 있는 알람 가져오기
     const setAlarms = useSetAtom(alarmsAtom);
     const inputRef = useRef();
+
+    let childRef = useRef();
     
     const [store, setStore] = useState(
         {
@@ -64,7 +67,6 @@ const MyStoreInfo = () => {
     useEffect(()=> {
         setStore({ ...store, ['storeCloseTime']: format(timeDate.storeCloseTime, 'HH:mm:SS') });
     }, [timeDate.storeCloseTime])
-
 
     useEffect(()=>{
         setStore({});
@@ -110,6 +112,7 @@ const MyStoreInfo = () => {
         })
         .catch(err=>{
             console.log(err);
+            childRef.current.logoutError(err);
         })
     }
 
@@ -159,6 +162,7 @@ const MyStoreInfo = () => {
         })
         .catch(err=>{
             console.log(err);
+            childRef.current.logoutError(err);
         })
     }
 
@@ -180,6 +184,7 @@ const MyStoreInfo = () => {
 
     return (
         <>
+            <Error ref={childRef}/>
             <s.ContentListDiv>
             <s.MainTitleText>가맹점 정보 수정하기</s.MainTitleText>
 

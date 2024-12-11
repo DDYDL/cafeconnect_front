@@ -5,10 +5,11 @@ import * as h from '../styles/StyledHeader.tsx';
 import { Select, Option } from "@material-tailwind/react";
 import { useAtom, useAtomValue } from 'jotai/react';
 import { alarmsAtom, memberAtom, tokenAtom } from '../../atoms.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { axiosInToken, url } from '../../config.js';
 import styled from 'styled-components';
+import Error, { logoutError } from '../../Error.js';
 
 const MyAlarmList = ()=>{
     const [alarmList, setAlarmList] = useState([]);
@@ -17,6 +18,8 @@ const MyAlarmList = ()=>{
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
     const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+    let childRef = useRef();
 
     useEffect(()=>{
         setAlarmList([]);
@@ -34,6 +37,7 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
+            childRef.current.logoutError(err);
         })
     }
 
@@ -53,6 +57,7 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
+            childRef.current.logoutError(err);
         })
     }
     
@@ -71,11 +76,13 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
+            childRef.current.logoutError(err);
         })
     }
 
     return (
         <>
+            <Error ref={childRef}/>
             <s.ContentListDiv width='800px' marginLeft='580px'>
                 <s.MainTitleText>알림 모아보기</s.MainTitleText>
 

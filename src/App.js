@@ -76,11 +76,11 @@ import NoticeListMain from "./component/CommunityMainStore/NoticeListMain.js";
 import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
 
 import axios, { AxiosError } from "axios";
-import { useAtom, useSetAtom } from "jotai/react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
 import { alarmsAtom, fcmTokenAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from "./atoms.js";
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
-import { url } from "./config.js";
+import { axiosInToken, url } from "./config.js";
 import { firebaseReqPermission, registerServiceWorker } from "./firebaseconfig.js";
 import SocialLogin from "./component/Main/SocialLogin.js";
 import FindPassword from "./component/Main/FindPassword.js";
@@ -91,6 +91,7 @@ function App() {
   const location = useLocation();
   const {pathname} = useLocation();
   const [member, setMember] = useAtom(memberAtom);
+  const token = useAtomValue(tokenAtom);
 
   const navigate = useNavigate();
   // Jotai에 있는 로그인 token 가져오기
@@ -102,6 +103,28 @@ function App() {
   const setFcmToken = useSetAtom(fcmTokenAtom);
   // 알람 리스트 가져오기
   const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+  // axios.defaults.withCredentials = true;
+
+  // // refresh token 만료시 에러잡고 로그아웃
+  // axios.interceptors.response.use(  
+  //     response => {
+  //     console.log(response);
+  //     return response;
+  //   },
+  //   async error => {
+  //     console.log(error);
+  //     if (error.response.status === 401) {
+  //       // Handle unauthorized access
+  //       console.log(error);
+  //       alert("로그인 시간 만료");
+  //     } else {
+  //       // Handle other errors
+  //       console.log(error);
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );  
 
   useEffect(async () => {
     // app 실행하자마자 service Worker부터 받아오기
@@ -120,32 +143,6 @@ function App() {
     getItemCategory();
     getMenuCategory();
   }, []);
-
-  // 로그아웃
-  const logout = ()=>{
-    setMember({...initMember});
-    setToken('');
-    setAlarms([]);
-
-    navigate("/loginStore");
-  }
-
-  // refresh token 만료시 에러잡고 로그아웃
-  axios.interceptors.response.use(
-    response => response,
-    error => {
-      if (error.response.status === 401) {
-        // Handle unauthorized access
-        console.log(error);
-        alert("로그인 시간 만료");
-        logout();
-      } else {
-        // Handle other errors
-        console.log(error);
-      }
-      return Promise.reject(error);
-    }
-  );
 
   useEffect(()=>{
     // route 경로가 바뀔때마다 변경

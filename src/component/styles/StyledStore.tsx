@@ -39,12 +39,6 @@ export const SearchDiv = styled.div<Container>`
     margin-bottom:${(props) => props.marginBottom ? props.marginBottom : "20px"};
 `;
 
-export const ImgDiv = styled.div`
-    width:300px;
-    height:400px;
-    margin-bottom:50px;
-`;
-
 export const OneImgAndPDiv = styled.div`
     position:relative;
     width:300px;
@@ -52,11 +46,11 @@ export const OneImgAndPDiv = styled.div`
     margin-bottom:50px;
 `;
 
-export const ImgStyle = styled.img`
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    overflow:hidden;
+export const ImgDiv = styled.div`
+    width:300px;
+    height:400px;
+    margin-bottom:50px;
+    background-color:rgba(255, 255, 255, 1);
 
     opacity:1;
 	-webkit-transition: .3s ease-in-out;
@@ -66,6 +60,13 @@ export const ImgStyle = styled.img`
         opacity: .8;
         filter: brightness(0.3);
     }
+`;
+
+export const ImgStyle = styled.img`
+    width:330px;
+    height:100%;
+    object-fit:contain;
+    overflow:hidden;
 `;
 
 export const ImgHoverText = styled.p`

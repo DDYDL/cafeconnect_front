@@ -32,7 +32,9 @@ function ShopMain() {
     .then(res=>{
       setItems(res.data.allCategory)
     })
-    
+    .catch(err=>{
+      console.log(err);
+    })
   }
 
   const getFcmToken = ()=>{
