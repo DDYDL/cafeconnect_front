@@ -19,8 +19,6 @@ const MyAlarmList = ()=>{
     const [member, setMember] = useAtom(memberAtom);
     const [alarms, setAlarms] = useAtom(alarmsAtom);
 
-    let childRef = useRef();
-
     useEffect(()=>{
         setAlarmList([]);
         getAlarmList();
@@ -37,7 +35,6 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
-            childRef.current.logoutError(err);
         })
     }
 
@@ -57,7 +54,6 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
-            childRef.current.logoutError(err);
         })
     }
     
@@ -76,13 +72,11 @@ const MyAlarmList = ()=>{
         })
         .catch(err=>{
             console.log(err);
-            childRef.current.logoutError(err);
         })
     }
 
     return (
         <>
-            <Error ref={childRef}/>
             <s.ContentListDiv width='800px' marginLeft='580px'>
                 <s.MainTitleText>알림 모아보기</s.MainTitleText>
 

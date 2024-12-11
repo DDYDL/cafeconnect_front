@@ -104,28 +104,6 @@ function App() {
   // 알람 리스트 가져오기
   const [alarms, setAlarms] = useAtom(alarmsAtom);
 
-  // axios.defaults.withCredentials = true;
-
-  // // refresh token 만료시 에러잡고 로그아웃
-  // axios.interceptors.response.use(  
-  //     response => {
-  //     console.log(response);
-  //     return response;
-  //   },
-  //   async error => {
-  //     console.log(error);
-  //     if (error.response.status === 401) {
-  //       // Handle unauthorized access
-  //       console.log(error);
-  //       alert("로그인 시간 만료");
-  //     } else {
-  //       // Handle other errors
-  //       console.log(error);
-  //     }
-  //     return Promise.reject(error);
-  //   }
-  // );  
-
   useEffect(async () => {
     // app 실행하자마자 service Worker부터 받아오기
     registerServiceWorker();

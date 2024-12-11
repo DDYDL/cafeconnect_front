@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { url, axiosInToken } from '../../config.js';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai/react';
-import { alarmsAtom, fcmTokenAtom, memberAtom, memberLocalAtom, tokenAtom } from '../../atoms.js';
+import { alarmsAtom, fcmTokenAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from '../../atoms.js';
 
 const LoginStore = () => {
     // 로그인 하면 storeCode 하나 가지고 오기(여러개의 store를 가지고 있으면 대표 하나만 가져오기)
@@ -27,6 +27,13 @@ const LoginStore = () => {
     // 소셜 로그인 url
     const kakaoAuthUrl = `${url}/oauth2/authorization/kakao`;
     const naverAuthUrl = `${url}/oauth2/authorization/naver`;
+
+    useEffect(()=>{
+        setMember({...initMember});
+        console.log(member);
+        setToken('');
+        setAlarms([]);
+    }, [])
     
     // state 변수인 member 바뀔 때마다 설정
     const edit = (e)=>{
