@@ -6,7 +6,7 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import {useState, useEffect} from 'react';
 
 import {axiosInToken} from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import ReactSelect from "react-select";
 
@@ -16,7 +16,7 @@ const RestoreStoreMain = ()=>{
     const [pageInfo, setPageInfo] = useState({});
     const [type, setType] = useState('');
     const [keyword, setKeyword] = useState('');
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const [regionArr, setRegionArr] = useState([]);
     const [selectedRegion, setSelectedRegion] = useState(null);
 
@@ -32,6 +32,7 @@ const RestoreStoreMain = ()=>{
     const select = (page) => {
         axiosInToken(token).get(`selectDeleteList?page=${page}&type=${type}&keyword=${keyword}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 let pageInfo = res.data.pageInfo;
                 console.log(res.data.storeList)
                 setStoreList([...res.data.storeList])
@@ -48,6 +49,7 @@ const RestoreStoreMain = ()=>{
     const restore = (storeCode) => {
         axiosInToken(token).post(`restoreStoreMain/${storeCode}`)
                     .then(res=> {
+                       if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                        console.log(res);
                        select(1);
                     })

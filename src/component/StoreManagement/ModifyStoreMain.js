@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import DaumPostcode from 'react-daum-postcode';
 import { axiosInToken } from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
@@ -20,7 +20,7 @@ import { format, parse } from 'date-fns';
 const ModifyStoreMain = ()=>{
     const {storeCode} = useParams();
     const navigate = useNavigate();
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const [isOpen, setIsOpen] = useState(false);
     const [store, setStore] = useState({});
     const [timeDate, setTimeDate] = useState({
@@ -74,6 +74,7 @@ const ModifyStoreMain = ()=>{
         console.log(token)
         axiosInToken(token).get(`storeDetailMain/${storeCode}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res.data)
                 let resStore = res.data.store;
                 console.log(resStore.storeOpenTime);
@@ -100,6 +101,7 @@ const ModifyStoreMain = ()=>{
     const modify = () => {
         axiosInToken(token).post('modifyStoreMain',store)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res);
                 alert('정보 수정이 완료되었습니다.');
                 navigate(`/storeDetailMain/${store.storeCode}`);

@@ -4,7 +4,7 @@ import * as h from '../styles/HStyledStore.tsx';
 
 import { useState, useEffect } from 'react';
 import { axiosInToken } from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
@@ -17,7 +17,7 @@ import { ko } from 'date-fns/locale';
 import { format } from 'date-fns';
 
 const AddStoreMain = ()=>{
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const [isOpen, setIsOpen] = useState(false);
     const [store, setStore] = useState({
             storeName:'', storeAddress:'', storeAddressNum:'', storePhone:'',
@@ -93,6 +93,11 @@ const AddStoreMain = ()=>{
         console.log(store);
         axiosInToken(token).post('addStoreMain',store)
         .then(res=> {
+
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization)
+            }
+
             console.log("come request");
             console.log(res);
             alert(`${store.storeName} 등록이 완료되었습니다.`);
