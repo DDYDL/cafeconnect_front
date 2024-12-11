@@ -13,9 +13,10 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PreviousOrderItemsModal from "./PreviousOrderItemModal.js";
-import { useAtomValue,useAtom } from "jotai/react";
-import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
+import { tokenAtom, memberAtom,cartCountAtom } from "../../atoms";
 import { axiosInToken,url } from "../../config.js";
+import axios from 'axios';
 
 function CartList() {
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ function CartList() {
   }
 
   //삭제
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleDelete = (cartNum) => {
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
@@ -77,6 +79,16 @@ function CartList() {
         if (res.data === true) {
           alert('장바구니에서 삭제됐습니다.');
           getCartList();
+            // cartCount를 업데이트
+            axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            .then(response => {
+              
+              if(response.headers.authorization!=null) {
+                setToken(res.headers.authorization)
+            }
+              setCartCount(response.data);   //jotai 값 세팅
+            });   
+
         }
       })
       .catch(err => {

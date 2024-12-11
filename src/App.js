@@ -142,6 +142,7 @@ function App() {
 
     getItemCategory();
     getMenuCategory();
+    
   }, []);
 
   useEffect(()=>{
@@ -194,10 +195,11 @@ function App() {
       });
   };
 
+
   return (
     <div>
       {member.roles === "" && (path === true ? <Header /> : null)}
-      {member.roles === "ROLE_STORE" && <StoreHeader alarms={alarms} />}
+      {member.roles === "ROLE_STORE" && <StoreHeader alarms={alarms}/>}
       {member.roles === "ROLE_MAINSTORE" && <MainStoreHeader />}
 
       <Routes>

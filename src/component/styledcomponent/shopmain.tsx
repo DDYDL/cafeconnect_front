@@ -130,24 +130,24 @@ export const ItemStorageLabelP = styled.p`
 
 export const ItemStorageType = styled.span<{ $storageway?: string }>`
      ${({ $storageway }) => 
-        $storageway === "냉동" &&
+        ($storageway === "냉동"||$storageway === "냉장") &&
     `
     background: #45b0da;
     color: #fff;
     width: auto;
-    padding: 2px 6px;
+    padding: 2px 4px;
     text-indent: initial;
-    font-size: 11px;
-    line-height: 14px;
+    font-size: 10px;
+    line-height: 20px;
   `
   ||
   $storageway != "냉동" &&
     `
     background: #d26717;
     color: #fff;
-    padding: 4px 6px;
+    padding: 2px 4px;
     font-size: 10px;
-    line-height: 14px;
+    line-height: 20px;
     border-radius: 2px;
   `}
 

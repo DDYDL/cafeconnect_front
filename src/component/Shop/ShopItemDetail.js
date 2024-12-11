@@ -6,9 +6,10 @@ import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import {useNavigate,useParams} from 'react-router-dom';
-import { tokenAtom, memberAtom } from '../../atoms';
+import { tokenAtom, memberAtom,cartCountAtom } from '../../atoms';
 import { axiosInToken,url} from '../../config.js';  
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
+import axios from 'axios';
 
 const ShopItemDetail = () => {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ const ShopItemDetail = () => {
         console.log(err);
       })
   };
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleAddToCart = () => {
     axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${quantity}`)
       .then(res => {
@@ -89,9 +91,20 @@ const ShopItemDetail = () => {
         if(res.headers.authorization!=null) {
           setToken(res.headers.authorization)
       }
-        if (res.data != null) {
-          alert('장바구니에 등록되었습니다.');
-        }
+            if (res.data != null) {
+              alert('장바구니에 등록되었습니다.');
+
+                // cartCount를 업데이트
+          axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+          .then(response => {
+            
+            if(response.headers.authorization!=null) {
+              setToken(res.headers.authorization)
+          }
+            setCartCount(response.data);   //jotai 값 세팅
+          });
+
+            }
       })
       .catch(err => {
         console.log(err);

@@ -18,9 +18,12 @@ function OrderDetailForStore() {
   const store = useAtomValue(memberAtom);
   const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
-  const isPaymentCanceled =
-    orderDetail?.paymentDetail?.paymentStatus !== "paid";
+  // const isPaymentCanceled =
+  //   orderDetail?.paymentDetail?.paymentStatus !== "paid";
 
+  const isPaymentCanceled =
+  orderDetail?.orderState === "주문취소";
+  
   useEffect(() => {
     if (token && store?.storeCode && orderCode) getOrderInfo(orderCode);
   }, [token, store?.storeCode, orderCode]);
@@ -63,6 +66,7 @@ function OrderDetailForStore() {
             itemMajorCategoryName: item.itemMajorCategoryName,
             itemMiddleCategoryName: item.itemMiddleCategoryName,
             itemSubCategoryName: item.itemSubCategoryName,
+            itemFileName:item.itemFileName,
             orderCount: item.orderCount,
             orderDelivery: item.orderDelivery,
             itemPrice: item.itemPrice,

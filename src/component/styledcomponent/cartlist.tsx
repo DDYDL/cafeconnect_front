@@ -38,16 +38,19 @@ export const ProductImage = styled.img`
 `;
 
 export const ProductInfo = styled.div`
-  text-align: left !important;  // 상품정보는 좌측 정렬우선되도록 함
-  justify-content: flex-start !important; // 왼쪽 우선 
+  text-align: left;
   padding: 0 20px;
-  display: flex;
+  display: flex !important;  // 부모의 grid를 override
   flex-direction: column;
+  align-items: flex-start !important;  // 부모의 center를 override
+  justify-content: flex-start !important;
 
-  div{
+  div {
     display: flex;
-    justify-content: flex-start; 
-    
+    width: 100%;
+    justify-content: flex-start !important;  // 부모의 center를 override
+    align-items: flex-start !important;  // 부모의 center를 override
+    padding: 0 !important;  // 부모의 padding override
   }
 `;
 
