@@ -151,6 +151,9 @@ function ItemInsert() {
   };
 
   const handleImageInput = (e) => {
+    if(!e.target.files[0]){
+      return;
+    }
     setFile(e.target.files[0]);
     setItem({
       ...item,
@@ -489,6 +492,11 @@ function ItemInsert() {
                                   </Option>
                                 ))}
                               </Select>
+                              {/* <select value={item.itemMajorCategoryName} onChange={handleItemMajorCategorySelectBox} label="대분류" style={{borderRadius:"7px",width:"440px",height:"40px",backgroundColor:"#f8f8f8"}}>
+                                {majorCategoryList.map((majorCategory,index)=>(
+                                  <option value={majorCategory.categoryName}>{majorCategory.categoryName}</option>
+                                ))}
+                              </select> */}
                             </div>
                           </s.ButtonInnerDiv>
                         </div>

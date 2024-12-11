@@ -104,7 +104,7 @@ function Category() {
       setMajorUpdateText("");
       setMiddleCategoryForm(false);
       setSubCategoryForm(false);
-      console.log("여기");
+      setTotalCategoryString([]);
     } else {
       setActiveMajorCategoryName(target.categoryName);
       setActiveMajorCategoryNum(target.categoryNum);

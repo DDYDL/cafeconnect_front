@@ -95,6 +95,9 @@ function ItemInsert() {
   };
 
   const handleImageInput = (e) => {
+    if(!e.target.files[0]){
+      return;
+    }
     setFile(e.target.files[0]);
     setImageUrl(URL.createObjectURL(e.target.files[0]));
   };
