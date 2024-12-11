@@ -7,16 +7,14 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { axiosInToken} from '../../config.js'
 import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
 import { tokenAtom } from '../../atoms';
 import { format } from "date-fns";
-import { ko } from "date-fns/locale/ko";
 
 const ComplainDetailMain = ()=>{
     // Jotai의 member 가져오기
     const [token,setToken] = useAtom(tokenAtom);
     const {complainNum} = useParams();
-    const [complain, setComplain] = useState({});
+    const [complain, setComplain] = useState({complainDate:new Date()});
     const navigate = useNavigate();
     
     useEffect(()=> {
@@ -74,7 +72,7 @@ const ComplainDetailMain = ()=>{
                         <m.TableInfoTd><m.TableTitleSpan>작성자</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>{complain.userName}</m.TableInfoTd>
                         <m.TableInfoTd><m.TableTitleSpan>작성일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{complain.complainDate}</m.TableInfoTd>
+                        <m.TableInfoTd>{format(new Date(complain.complainDate),"yyyy.MM.dd")}</m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </h.TableInfo>
@@ -85,7 +83,7 @@ const ComplainDetailMain = ()=>{
                         <m.TableInfoTd><m.TableTitleSpan>내용</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                 <m.TableInfoTr>
-                        <m.TableInfoTd><m.TableInfoTd>{complain.complainContent}</m.TableInfoTd></m.TableInfoTd>
+                        <m.TableInfoTd><m.TableInfoTd style={{lineHeight:'30px'}}>{complain.complainContent}</m.TableInfoTd></m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </h.TableInfo>
