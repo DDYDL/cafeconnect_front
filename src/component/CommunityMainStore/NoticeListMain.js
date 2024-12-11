@@ -75,40 +75,9 @@ const NoticeListMain = () => {
     navigate(`/noticeDetailMain/${noticeNum}`);
   };
 
-  // const handleItemClick = async askNum => {
-  //   if (selectedItem === askNum) {
-  //     // 이미 선택된 항목을 다시 클릭하면 초기화
-  //     setSelectedItem(null);
-  //     setSelectedAnswer(null);
-  //   } else {
-  //     setSelectedItem(askNum);
-  //     await fetchAnswerForSelectedItem(askNum); // 답변 가져오기
-  //   }
-  // };
-
   const noticeWrite = () => {
     navigate("/noticeWriteMain");
   };
-
-  // const fetchAnswerForSelectedItem = async askNum => {
-  //   try {
-  //     if (!storeCode) return;
-  //     const response = await axios.get(
-  //       `http://localhost:8080/askDetailStore/${storeCode}/getAnswer/${askNum}`
-  //     );
-  //     console.log("response data:", response.data); // 응답 데이터 확인
-
-  //     const answer = response.data.askAnswer; // 서버에서 받은 답변
-  //     setAnswers(prev => {
-  //       console.log("Previous answers:", prev); // 상태 업데이트 전 로그
-  //       const updatedAnswers = { ...prev, [askNum]: answer };
-  //       console.log("Updated answers:", updatedAnswers); // 업데이트된 상태 로그
-  //       return updatedAnswers;
-  //     });
-  //   } catch (err) {
-  //     console.error("답변 요청 중 오류 발생:", err);
-  //   }
-  // };
 
   const onChangeNotice = e => {
     setSearchNotice(e.target.value);
@@ -140,11 +109,6 @@ const NoticeListMain = () => {
     <ContentListDiv>
       <HeadingContainer>
         <Heading>공지사항</Heading>
-        <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>공지사항</BoldText>
-        </Navigation>
       </HeadingContainer>
 
       <HeadingContainer1>
@@ -198,8 +162,18 @@ const NoticeListMain = () => {
               <React.Fragment key={a.noticeNum}>
                 <TableInfoList onClick={() => handleItemClick(a.noticeNum)}>
                   <div>{index + 1}</div>
-                  <div style={{ paddingLeft: "20px" }}>
-                    <span style={{ color: "red" }}>[{a.noticeType}]</span> {a.noticeTitle}
+                  <div
+                    style={{
+                      paddingLeft: "100px",
+                      display: "flex",
+                      justifyContent: "left",
+                      width: "440px",
+                    }}
+                  >
+                    <span style={{ color: a.noticeType === "주요 공지사항" ? "red" : "black" }}>
+                      [{a.noticeType}]
+                    </span>{" "}
+                    {a.noticeTitle}
                   </div>
                   <div style={{ paddingRight: "20px" }}>
                     {new Date(a.noticeDate).toLocaleDateString()}

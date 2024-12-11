@@ -1,4 +1,4 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { useAtomValue } from "jotai/react";
@@ -9,6 +9,7 @@ import { tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
+import * as h from "../styles/HStyledStore.tsx";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
@@ -18,11 +19,44 @@ const AskList = () => {
   const [storeCode, setStoreCode] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
   const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는 상태
+  const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는
+  const [filteredAsk, setFilteredAsk] = useState([]); // 필터링된 데이터 상태 추가상태
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const token = useAtomValue(tokenAtom);
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchAsk, setSearchAsk] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
+
+  const pageCount = Math.ceil(ask.length / itemsPerPage); // 총 페이지 수
+  const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1); // 이전 페이지로 이동
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pageCount) {
+      setCurrentPage(currentPage + 1); // 다음 페이지로 이동
+    }
+  };
+  // const getFilteredAsk = () => {
+  //   // 이 함수에서 바로 필터링이 아닌, handleSearch에서 필터링된 ask를 반환하도록 변경
+  //   const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+  //   // 페이지에 맞는 데이터만 필터링
+  //   const indexOfLastItem = currentPage * itemsPerPage;
+  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  //   return filtered.slice(indexOfFirstItem, indexOfLastItem);
+  // };
+
+  const getFilteredAsk = () => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredAsk.slice(indexOfFirstItem, indexOfLastItem);
+  };
 
   // useCallback 제거된 fetchStoreCode
   const fetchStoreCode = async () => {
@@ -71,17 +105,24 @@ const AskList = () => {
     }
   };
 
+  // const handleSearch = () => {
+  //   // 검색어가 비어 있지 않을 경우에만 필터링
+  //   if (searchAsk.trim() !== "") {
+  //     const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+  //     setFilteredAsk(filtered); // 필터링된 데이터 상태 업데이트
+  //   } else {
+  //     setFilteredAsk(ask); // 검색어가 비어 있으면 원래 데이터로 되돌리기
+  //   }
+  // };
   const handleSearch = () => {
-    if (searchAsk.trim() === "") {
-      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
-      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+    // 검색어가 비어 있지 않을 경우에만 필터링
+    if (searchAsk.trim() !== "") {
+      const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+      setFilteredAsk(filtered); // 필터링된 데이터 상태 업데이트
+      setCurrentPage(1); // 검색 후 페이지를 1로 초기화
     } else {
-      // 검색어가 있을 경우, complain 리스트 필터링
-      const filteredAskList = ask.filter(
-        a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()) // 대소문자 구분 없이 검색
-      );
-
-      setAsk(filteredAskList); // 필터링된 complain 리스트 상태로 업데이트
+      setFilteredAsk(ask); // 검색어가 비어 있으면 원래 데이터로 되돌리기
+      setCurrentPage(1); // 검색 후 페이지를 1로 초기화
     }
   };
 
@@ -94,6 +135,10 @@ const AskList = () => {
 
   const askWrite = () => {
     navigate("/askWrite");
+  };
+
+  const onChangeAsk = e => {
+    setSearchAsk(e.target.value);
   };
 
   const fetchAnswerForSelectedItem = async askNum => {
@@ -116,7 +161,17 @@ const AskList = () => {
     }
   };
 
-  const filterAsk = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+  // 검색 버튼 클릭 핸들러
+  const onSearchClick = () => {
+    // setIsSearchActive(true);
+    handleSearch();
+  };
+
+  // 데이터 fetching 함수들 (생략)
+  useEffect(() => {
+    // fetchData() 호출해서 ask 데이터를 가져올 때 필터링된 상태를 초기화
+    setFilteredAsk(ask); // 초기 데이터를 filteredAsk에 저장
+  }, [ask]);
 
   // 리스트를 불러오는 함수
   const fetchAskList = async () => {
@@ -133,16 +188,14 @@ const AskList = () => {
     fetchAskList(); // 컴포넌트가 처음 렌더링될 때 ask 리스트를 불러옴
   }, [storeCode]);
 
+  const handlePageChange = pageNumber => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    // <Wrapper>
     <ContentListDiv>
       <HeadingContainer>
         <Heading>1:1 문의</Heading>
-        <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>1:1 문의</BoldText>
-        </Navigation>
       </HeadingContainer>
 
       <HeadingContainer1>
@@ -153,17 +206,14 @@ const AskList = () => {
         <s.ButtonDiv width="200px" float="right">
           <s.SearchDiv width="200px">
             <Input
-              name="search"
-              label="제목 검색"
               value={searchAsk}
-              onChange={e => setSearchAsk(e.target.value)}
-              onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
+              onChange={e => setSearchAsk(e.target.value)} // 검색어 입력시 상태 업데이트
+              onKeyDown={handleKeyDown}
             />
-            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
             <MagnifyingGlassIcon
               className="h-5 w-5"
               style={searchIconStyle}
-              onClick={handleSearch} // 아이콘 클릭 시 검색 함수 실행
+              onClick={onSearchClick} // 아이콘 클릭 시 검색 실행
             />
           </s.SearchDiv>
         </s.ButtonDiv>
@@ -175,27 +225,69 @@ const AskList = () => {
         <div>번호</div>
         <div>제목</div>
         <div>작성일</div>
+        <div>답변 상태</div>
       </TableHeader>
 
       <CustomHorizontal width="basic" bg="black" />
 
       {/* 조건부 렌더링 */}
       <div>
-        {(isSearchActive ? filterAsk : ask).length > 0 ? (
-          (isSearchActive ? filterAsk : ask).map((a, index) => (
+        {getFilteredAsk().length > 0 ? (
+          getFilteredAsk().map((a, index) => (
             <React.Fragment key={a.askNum}>
-              <TableInfoList onClick={() => handleItemClick(a.askNum)}>
-                <div>{index + 1}</div>
-                <div style={{ paddingLeft: "20px" }}>
+              <TableInfoList onClick={() => handleItemClick(a.askNum)} key={a.askNum}>
+                <div>{(currentPage - 1) * itemsPerPage + index + 1}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "left",
+                    width: "440px",
+                    marginLeft: "80px",
+                    paddingLeft: "130px",
+                  }}
+                >
                   <span style={{ color: "red", marginRight: "5px" }}>[{a.askType}]</span>
                   {a.askTitle}
                 </div>
-                <div style={{ paddingRight: "20px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "150px",
+                    paddingLeft: "40px",
+                  }}
+                >
                   {new Date(a.askDate).toLocaleDateString()}
                 </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "140px",
+                    paddingLeft: "50px",
+                    paddingTop: "40px",
+                    textAlign: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <h.TableTextTd
+                    width="130px"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    {a.askStatus === "answered" ? (
+                      <h.StatusTextTrue>답변완료</h.StatusTextTrue>
+                    ) : (
+                      <h.StatusTextFalse>미답변</h.StatusTextFalse>
+                    )}
+                  </h.TableTextTd>
+                </div>
               </TableInfoList>
+
+              {/* 선택된 항목인 경우 문의 상세와 본사 답변 렌더링 */}
               {selectedItem === a.askNum && (
-                <AnswerContainer>
+                <React.Fragment>
                   <DetailContainer>
                     <h2
                       style={{
@@ -217,18 +309,10 @@ const AskList = () => {
                       }}
                       readOnly
                     >
-                      {
-                        // 선택된 항목의 상세 내용만 렌더링
-                        (isSearchActive ? filterAsk : ask)
-                          .filter(a => a.askNum === selectedItem) // 선택된 askNum 필터링
-                          .map(a => (
-                            <div key={a.askNum}>
-                              {a.askContent || "아직 답변이 작성되지 않았습니다."}
-                            </div>
-                          ))
-                      }
+                      {a.askContent || "문의 내용이 없습니다."}
                     </AnswerContent>
                   </DetailContainer>
+
                   <DetailContainer1>
                     <h3
                       style={{
@@ -241,7 +325,6 @@ const AskList = () => {
                     >
                       본사 답변
                     </h3>
-
                     <AnswerContent
                       style={{
                         display: "flex",
@@ -254,25 +337,57 @@ const AskList = () => {
                       {answers[a.askNum] || "아직 답변이 작성되지 않았습니다."}
                     </AnswerContent>
                   </DetailContainer1>
-                </AnswerContainer>
+                </React.Fragment>
               )}
             </React.Fragment>
           ))
         ) : (
           <div
             style={{
-              display: "flex", // flexbox 사용
-              justifyContent: "center", // 수평 가운데 정렬
-              alignItems: "center", // 수직 가운데 정렬
-              height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
-              fontSize: "16px", // 텍스트 크기 설정
-              color: "#555", // 텍스트 색상 설정
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "200px",
+              fontSize: "16px",
+              color: "#555",
             }}
           >
             검색 결과가 없습니다.
           </div>
         )}
       </div>
+
+      <s.ButtonGroupStyle variant="outlined" style={{ paddingTop: "40px", paddingLeft: "380px" }}>
+        <s.IconButtonStyle
+          onClick={handlePrevPage}
+          style={{
+            backgroundColor: "transparent",
+            color: "black",
+          }}
+        >
+          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+        </s.IconButtonStyle>
+
+        {pageBtn.map(page => (
+          <s.IconButtonStyle
+            key={page}
+            onClick={() => handlePageChange(page)}
+            style={{
+              color: "black",
+              backgroundColor: page === currentPage ? "white" : "transparent",
+            }}
+          >
+            {page}
+          </s.IconButtonStyle>
+        ))}
+
+        <s.IconButtonStyle
+          onClick={handleNextPage}
+          style={{ backgroundColor: "transparent", color: "black" }}
+        >
+          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+        </s.IconButtonStyle>
+      </s.ButtonGroupStyle>
     </ContentListDiv>
   );
 };
@@ -364,8 +479,22 @@ const TableHeader = styled.div`
     margin-left: 30px;
   }
 
+  & > div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    margin-left: 120px;
+    width: 240px;
+  }
+
+  & > div:nth-child(3) {
+    display: flex;
+    justify-content: center;
+    width: 100px;
+    margin-left: 60px; /* 간격을 줄임 */
+  }
+
   & > div:last-child {
-    margin-right: 80px;
+    margin-right: 50px;
   }
 `;
 
@@ -420,7 +549,7 @@ const DetailContainer1 = styled.div`
 
   text-align: center;
 
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;

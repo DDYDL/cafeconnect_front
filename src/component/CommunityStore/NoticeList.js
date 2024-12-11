@@ -1,7 +1,7 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
 import { useAtomValue } from "jotai/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms";
@@ -15,13 +15,27 @@ const NoticeList = () => {
   const [storeCode, setStoreCode] = useState(null);
   const [notice, setNotice] = useState([]);
   const token = useAtomValue(tokenAtom);
-  const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
-  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
+  const navigate = useNavigate();
   const [searchNotice, setSearchNotice] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
 
-  // useCallback 제거된 fetchStoreCode
-  const fetchStoreCode = async () => {
+  const pageCount = Math.ceil(notice.length / itemsPerPage); // 총 페이지 수
+  const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1); // 이전 페이지로 이동
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < pageCount) {
+      setCurrentPage(currentPage + 1); // 다음 페이지로 이동
+    }
+  };
+
+  const fetchStoreCode = useCallback(async () => {
     try {
       if (!token) return;
       const response = await axiosInToken(token).get("/store");
@@ -30,125 +44,175 @@ const NoticeList = () => {
     } catch (err) {
       console.error("storeCode 요청 중 오류 발생:", err);
     }
-  };
+  }, [token]);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]);
+
+  const fetchData = useCallback(async () => {
     if (!token || !storeCode) return;
     try {
-      const response = await axiosInToken(token).get(`/noticeList/${storeCode}`);
-      const formattedData = response.data.map(notice => ({
-        ...notice,
-        noticeDate: new Date(notice.noticeDate).toLocaleDateString("ko-KR"),
+      const response = await axiosInToken(token).get(`/noticeList`);
+      const formattedData = response.data.map(item => ({
+        ...item,
+        noticeDate: new Date(item.noticeDate).toLocaleDateString("ko-KR"),
       }));
       setNotice(formattedData);
     } catch (err) {
       console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+      alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
-  };
+  }, [token, storeCode]);
 
-  // useEffect는 그대로 유지
   useEffect(() => {
-    fetchStoreCode();
-  }, [token]);
+    fetchData();
+  }, [fetchData]);
 
   const handleItemClick = noticeNum => {
-    setSelectedItem(selectedItem === noticeNum ? null : noticeNum); // Toggle answer form visibility
     navigate(`/noticeDetail/${noticeNum}`);
   };
 
   const handleSearch = () => {
     if (searchNotice.trim() === "") {
-      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
-      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+      fetchData();
     } else {
-      // 검색어가 있을 경우, complain 리스트 필터링
-      const filteredNoticeList = notice.filter(
-        a => a.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase()) // 대소문자 구분 없이 검색
+      const filteredNoticeList = notice.filter(a =>
+        a.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase())
       );
-
-      setNotice(filteredNoticeList); // 필터링된 complain 리스트 상태로 업데이트
+      setNotice(filteredNoticeList);
     }
   };
 
-  // Enter 키로 검색
   const handleKeyDown = e => {
     if (e.key === "Enter") {
-      handleSearch(); // Enter 키가 눌렸을 때 검색 실행
+      handleSearch();
     }
   };
 
-  const filterNotice = notice.filter(n =>
-    n.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase())
-  );
+  const getFilteredComplains = () => {
+    const filtered = notice.filter(n =>
+      n.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase())
+    );
+    // 페이지에 맞는 데이터만 필터링
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filtered.slice(indexOfFirstItem, indexOfLastItem);
+  };
+
+  const handlePageChange = pageNumber => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalPages = Math.ceil(notice.length / itemsPerPage); // 총 페이지 수 계산
 
   return (
-    <ContentListDiv>
-      <HeadingContainer>
-        <Heading>공지사항</Heading>
-        <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>공지사항</BoldText>
-        </Navigation>
-      </HeadingContainer>
+    <div style={{ maxHeight: "1200px", overflowY: "auto" }}>
+      <ContentListDiv>
+        <HeadingContainer>
+          <Heading>공지사항</Heading>
+        </HeadingContainer>
+        <HeadingContainer1>
+          <s.ButtonDiv width="200px" float="right">
+            <s.SearchDiv width="200px">
+              <Input
+                name="search"
+                label="제목 검색"
+                value={searchNotice}
+                onChange={e => setSearchNotice(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <MagnifyingGlassIcon
+                className="h-5 w-5"
+                style={searchIconStyle}
+                onClick={handleSearch}
+              />
+            </s.SearchDiv>
+          </s.ButtonDiv>
+        </HeadingContainer1>
+        <CustomHorizontal width="basic" bg="black" />
+        <TableHeader>
+          <div>번호</div>
+          <div>제목</div>
+          <div>작성일</div>
+        </TableHeader>
+        <CustomHorizontal width="basic" bg="black" />
 
-      <HeadingContainer1>
-        <s.ButtonDiv width="200px" float="right">
-          <s.SearchDiv width="200px">
-            <Input
-              name="search"
-              label="제목 검색"
-              value={searchNotice}
-              onChange={e => setSearchNotice(e.target.value)}
-              onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
-            />
-            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
-            <MagnifyingGlassIcon
-              className="h-5 w-5"
-              style={searchIconStyle}
-              onClick={handleSearch} // 아이콘 클릭 시 검색 함수 실행
-            />
-          </s.SearchDiv>
-        </s.ButtonDiv>
-      </HeadingContainer1>
-      <CustomHorizontal width="basic" bg="black" />
-      <TableHeader>
-        <div>번호</div>
-        <div>제목</div>
-        <div>작성일</div>
-      </TableHeader>
-      <CustomHorizontal width="basic" bg="black" />
+        <div>
+          {getFilteredComplains().length > 0 ? (
+            getFilteredComplains().map((n, index) => (
+              <TableInfoList onClick={() => handleItemClick(n.noticeNum)} key={n.noticeNum}>
+                <div style={{ paddingLeft: "30px" }}>
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </div>{" "}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "left",
+                    width: "440px",
+                    paddingLeft: "100px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <span style={{ color: n.noticeType === "주요 공지사항" ? "red" : "black" }}>
+                    [{n.noticeType}]
+                  </span>{" "}
+                  {n.noticeTitle}
+                </div>
+                <div style={{ paddingRight: "20px" }}>{n.noticeDate}</div>
+              </TableInfoList>
+            ))
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "200px",
+                fontSize: "16px",
+                color: "#555",
+              }}
+            >
+              검색 결과가 없습니다.
+            </div>
+          )}
+        </div>
 
-      {/* 조건부 렌더링 */}
-      <div>
-        {(isSearchActive ? filterNotice : notice).length > 0 ? (
-          (isSearchActive ? filterNotice : notice).map(n => (
-            <TableInfoList onClick={() => handleItemClick(n.noticeNum)} key={n.noticeNum}>
-              <div>{n.noticeNum}</div>
-              <div style={{ paddingLeft: "20px" }}>{n.noticeTitle}</div>
-              <div style={{ paddingRight: "20px" }}>
-                {new Date(n.noticeDate).toLocaleDateString()}
-              </div>
-            </TableInfoList>
-          ))
-        ) : (
-          <div
+        <CustomHorizontal width="basic" bg="grey" />
+
+        <s.ButtonGroupStyle variant="outlined" style={{ paddingTop: "40px", paddingLeft: "380px" }}>
+          <s.IconButtonStyle
+            onClick={handlePrevPage}
             style={{
-              textAlign: "center",
-              paddingTop: "20px",
-              paddingBottom: "20px",
-              paddingRight: "40px",
-              fontSize: "15px",
-              color: "grey",
+              backgroundColor: "transparent",
+              color: "black",
             }}
           >
-            검색 결과가 없습니다.
-          </div>
-        )}
-      </div>
+            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+          </s.IconButtonStyle>
 
-      <CustomHorizontal width="basic" bg="grey" />
-    </ContentListDiv>
+          {pageBtn.map(page => (
+            <s.IconButtonStyle
+              key={page}
+              onClick={() => handlePageChange(page)}
+              style={{
+                color: "black",
+                backgroundColor: page === currentPage ? "white" : "transparent",
+              }}
+            >
+              {page}
+            </s.IconButtonStyle>
+          ))}
+
+          <s.IconButtonStyle
+            onClick={handleNextPage}
+            style={{ backgroundColor: "transparent", color: "black" }}
+          >
+            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+          </s.IconButtonStyle>
+        </s.ButtonGroupStyle>
+      </ContentListDiv>
+    </div>
   );
 };
 
@@ -172,7 +236,6 @@ const HeadingContainer1 = styled.div`
   display: flex;
   justify-content: right;
   align-items: center;
-  // margin-bottom: 15px;
 `;
 
 const Heading = styled.h2`
@@ -182,155 +245,23 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
-const Navigation = styled.div`
-  font-size: 10px;
-  position: absolute;
-  right: 0;
-`;
-
-const PeriodButton = styled.button`
-  display: flex;
-  // flex-direction: row;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-
-  width: 120px;
-  height: 40px;
-  padding: 8px 16px;
-  background-color: ${props => (props.isSelected ? "lightblue" : "white")};
-  font-size: 16px;
-  border: ${props => (props.isSelected ? "2px solid grey" : "1px solid #ddd")};
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${props => (props.isSelected ? "lightblue" : "#f0f0f0")};
-  }
-`;
-
-const SearchContainer = styled.div`
-  // width: 800px;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  gap: 10px;
-  // margin-left: 200px;
-`;
-
-const SearchTitle = styled.div`
-  width: 50px;
-  font-weight: bold;
-  font-size: 16px;
-`;
-
-const SearchInput = styled.input`
-  padding: 6px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-`;
-
-const SearchButton = styled.button`
-  padding: 8px;
-  display: flex;
-  align-items: center;
-
-  font-size: 16px;
-  border: 1px solid;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
 const TableHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   height: 50px;
   font-weight: bold;
-
-  & > div:first-child {
-    margin-left: 30px;
-  }
-
-  & > div:last-child {
-    margin-right: 80px;
-  }
+  padding-left: 20px;
+  padding-right: 40px;
 `;
 
 const TableInfoList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   height: 50px;
-
-  // margin-top: 5px;
   margin-bottom: 5px;
-
   cursor: pointer;
-
-  & > div {
-    onClick =>() = > {
-      color: red;
-    }
-  }
-
-  & > div:first-child {
-    margin-left: 37px;
-  }
-
-  & > div:last-child {
-    margin-right: 37px;
-  }
-`;
-
-const AnswerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-`;
-
-const NoticeContent = styled.textarea`
-  min-height: 150px;
-
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const CloseButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: grey;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
-const BoldText = styled.span`
-  font-weight: bold;
 `;
 
 export default NoticeList;
