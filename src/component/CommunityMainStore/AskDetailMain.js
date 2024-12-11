@@ -4,14 +4,14 @@ import * as h from '../styles/HStyledStore.tsx';
 
 // 로그인 토큰
 import { axiosInToken} from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router';
 
 const AskDetailMain = ()=>{
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const {askNum} = useParams();
     const [ask, setAsk] = useState({});
     const navigate = useNavigate();
@@ -24,6 +24,7 @@ const AskDetailMain = ()=>{
     const select = () => {
         axiosInToken(token).get(`askDetailMain/${askNum}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res.data)
                 let resAsk = res.data.ask;
                 setAsk({...resAsk});
@@ -38,6 +39,7 @@ const AskDetailMain = ()=>{
     const addAnswer = () => {
         axiosInToken(token).post('askAnswerMain',ask)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res);
                 alert('답변이 등록되었습니다.');
                 navigate(`/askDetailMain/${res.data}`);
