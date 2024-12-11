@@ -89,25 +89,22 @@ function StoreItemRevenue() {
             </Select>
           </sr.StoreChooseWrap>
 
-          <sr.DatePickerInputWrap>
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
-              <DatePicker
-                value={startDate}
-                label="시작일자"
-                onChange={date => setStartDate(date)}
-                showDaysOutsideCurrentMonth
-                format="yyyy.MM.dd"
-              />
-              <span>~</span>
-              <DatePicker
-                value={endDate}
-                label="종료일자"
-                onChange={date => setEndDate(date)}
-                showDaysOutsideCurrentMonth
-                format="yyyy.MM.dd"
-              />
-            </LocalizationProvider>
-          </sr.DatePickerInputWrap>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+            <DatePicker
+              slotProps={{ textField: { size: "small" }, InputLabelProps: { shrink: false } }}
+              format="yyyy-MM-dd"
+              value={startDate}
+              onChange={date => setStartDate(date)}
+              // showDaysOutsideCurrentMonth
+            />
+            <span>~</span>
+            <DatePicker
+              slotProps={{ textField: { size: "small" }, InputLabelProps: { shrink: false } }}
+              format="yyyy-MM-dd"
+              value={endDate}
+              onChange={date => setEndDate(date)}
+            />
+          </LocalizationProvider>
           <StyledButton size="sm" theme="brown" onClick={handleSearch}>
             조회
           </StyledButton>
@@ -129,21 +126,21 @@ function StoreItemRevenue() {
             {/* <thead class="text-xs text-gray-700 uppercase dark:text-gray-400"> */}
             <thead className="bg-gray-100 text-s text-gray-700">
               <tr>
-                <TableHeaderCell>대분류</TableHeaderCell>
-                <TableHeaderCell>중분류</TableHeaderCell>
-                <TableHeaderCell>소분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "80px" }}>대분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "80px" }}>중분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "80px" }}>소분류</TableHeaderCell>
 
-                <TableHeaderCell>상품명</TableHeaderCell>
+                <TableHeaderCell style={{ width: "150px" }}>상품명</TableHeaderCell>
                 <TableHeaderCell>상품단가</TableHeaderCell>
                 <TableHeaderCell>상품수량</TableHeaderCell>
                 <TableHeaderCell>상품금액</TableHeaderCell>
 
-                <TableHeaderCell>소분류 총 수량</TableHeaderCell>
-                <TableHeaderCell>소분류 총 금액</TableHeaderCell>
-                <TableHeaderCell>중분류 총 수량</TableHeaderCell>
-                <TableHeaderCell>중분류 총 금액</TableHeaderCell>
-                <TableHeaderCell>대분류 총 수량</TableHeaderCell>
-                <TableHeaderCell>대분류 총 금액</TableHeaderCell>
+                <TableHeaderCell>소분류 수량</TableHeaderCell>
+                <TableHeaderCell>소분류 금액</TableHeaderCell>
+                <TableHeaderCell>중분류 수량</TableHeaderCell>
+                <TableHeaderCell>중분류 금액</TableHeaderCell>
+                <TableHeaderCell>대분류 수량</TableHeaderCell>
+                <TableHeaderCell>대분류 금액</TableHeaderCell>
               </tr>
             </thead>
             <tbody>

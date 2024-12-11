@@ -139,11 +139,31 @@ export const PriceRow = styled.div`
   }
 `;
 
-// 입력
+
+
+// 입력폼
+export const InputGroup = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+export const InputLabel = styled.label`
+  width: 100px; // 라벨의 고정 너비
+  margin-right: 20px;
+  font-size: 14px;
+  color: #666;
+  
+  &.required::after {
+    content: '*';
+    color: #e53e3e;
+    margin-left: 4px;
+  }
+`;
+
 export const InputField = styled.input`
   width: 70%;
   padding: 10px;
   border: 1px solid #e9e9e9;
   border-radius: 4px;
-  margin-bottom: 10px;
 `;

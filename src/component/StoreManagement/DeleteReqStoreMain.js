@@ -3,7 +3,7 @@ import * as h from '../styles/HStyledStore.tsx';
 
 import { useState, useEffect } from 'react';
 import { axiosInToken } from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { Input } from "@material-tailwind/react";
 import ReactSelect from "react-select";
@@ -16,7 +16,7 @@ const DeleteReqStoreMain = ()=>{
     const [keyword, setKeyword] = useState('');
     const [regionArr, setRegionArr] = useState([]);
     const [selectedRegion, setSelectedRegion] = useState(null);
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
 
     useEffect(()=> {
         if(token!=null && token!=='')  { makeRegionArr(); select(1); };
@@ -29,6 +29,9 @@ const DeleteReqStoreMain = ()=>{
     const select = (page) => {
         axiosInToken(token).get(`deleteReqList?page=${page}&type=${type}&keyword=${keyword}`)
             .then(res=> {
+
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
+
                 let pageInfo = res.data.pageInfo;
                 console.log(res.data.storeList)
                 setStoreList([...res.data.storeList])
@@ -55,6 +58,9 @@ const DeleteReqStoreMain = ()=>{
     const deleteSubmit = (storeCode) => {
         axiosInToken(token).post(`deleteStoreMain/${storeCode}`)
                     .then(res=> {
+
+                        if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
+
                        console.log(res);
                        select(1);
                     })

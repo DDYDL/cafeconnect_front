@@ -15,8 +15,8 @@ function ItmListCopy() {
   const [startPage, setStartPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPageNumber, setTotalPageNumber] = useState(0);
-  const [hasNext, setHasNext] = useState(null);
-  const [hasPrevious, setHasPrevious] = useState(null);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
   const [empty, setEmpty] = useState(null);
   const [usingKeyword, setUsingKeyword] = useState(true);
   const [usingCategory, setUsingCategory] = useState(false);
@@ -46,7 +46,9 @@ function ItmListCopy() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
+  };
+  const handleIcon = () => {
+    fetchKeywordData(keyWord, 0);
   };
 
   const handleSelectMajorCategory = (value) => {
@@ -65,6 +67,7 @@ function ItmListCopy() {
       },
       0
     );
+    fetchMiddleData(value);
   };
 
   const handleSelectMiddleCategory = (value) => {
@@ -83,6 +86,7 @@ function ItmListCopy() {
       },
       0
     );
+    fetchSubData(value);
   };
 
   const handleSelectSubCategory = (value) => {
@@ -112,10 +116,10 @@ function ItmListCopy() {
       console.log(error);
     }
   };
-  const fetchMiddleData = async () => {
+  const fetchMiddleData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategoryCopy2`
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -123,10 +127,10 @@ function ItmListCopy() {
     }
   };
 
-  const fetchSubData = async () => {
+  const fetchSubData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/subCategoryCopy2`
+        `http://localhost:8080/subCategoryCopy?categoryName=${value}`
       );
       setSubCategoryList(response.data);
     } catch (error) {
@@ -136,6 +140,7 @@ function ItmListCopy() {
 
   const fetchKeywordData = async (keyword, pageNum) => {
     try {
+      
       setLoading(true);
       const response = await axios.get(
         `http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
@@ -148,12 +153,13 @@ function ItmListCopy() {
       setTotalElements(response.data.totalElements);
       setTotalPageNumber(response.data.totalPages);
       //넘어가는 부분이 있음
+      
       if (
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true)
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -164,13 +170,13 @@ function ItmListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -194,7 +200,7 @@ function ItmListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -211,14 +217,30 @@ function ItmListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      
+      // if (response.data.pageable.pageNumber > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      console.log(response.data)
+      if(response.data.first === true){
+        
         setHasPrevious(false);
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        
+        setHasNext(true)
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(true);
+      setUsingCategory(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -232,6 +254,7 @@ function ItmListCopy() {
       const response = await axios.get(
         `http://localhost:8080/itemListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&ItemCategorySubName=${category.ItemCategorySubName}&pageNum=${pageNum}&pageSize=10`
       );
+      
 
       setCurrentPage(response.data.pageable.pageNumber);
 
@@ -244,7 +267,7 @@ function ItmListCopy() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
+        // setHasNext(true);
         setEmptyList([]);
         setPageNumList(
           Array.from(
@@ -256,13 +279,13 @@ function ItmListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -286,7 +309,7 @@ function ItmListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -305,14 +328,29 @@ function ItmListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingCategory(true)
+      setUsingKeyword(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -321,10 +359,9 @@ function ItmListCopy() {
   };
 
   useEffect(() => {
+    
     fetchKeywordData("", 0);
     fetchMajorData();
-    fetchMiddleData();
-    fetchSubData();
   }, []);
 
   return (
@@ -349,45 +386,63 @@ function ItmListCopy() {
                   className="w-16 p-r-2"
                   style={{ width: "200px" }}
                 >
-                  <Select label="대분류" onChange={handleSelectMajorCategory}>
-                    {majorCategoryList.map((majorCategory, index) => (
-                      <Option value={majorCategory.categoryValue} key={index}>
-                        {majorCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="대분류" onChange={handleSelectMajorCategory}>
+                      {majorCategoryList.map((majorCategory, index) => (
+                        <Option value={majorCategory.categoryValue} key={index}>
+                          {majorCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
                   style={{ width: "200px" }}
                 >
-                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
-                    {middleCategoryList.map((middleCategory, index) => (
-                      <Option value={middleCategory.categoryValue} key={index}>
-                        {middleCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select
+                      label="중분류"
+                      onChange={handleSelectMiddleCategory}
+                    >
+                      {middleCategoryList.map((middleCategory, index) => (
+                        <Option
+                          value={middleCategory.categoryValue}
+                          key={index}
+                        >
+                          {middleCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
                   style={{ width: "200px" }}
                 >
-                  <Select label="소분류" onChange={handleSelectSubCategory}>
-                    {subCategoryList.map((subCategory, index) => (
-                      <Option value={subCategory.categoryValue} key={index}>
-                        {subCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="소분류" onChange={handleSelectSubCategory}>
+                      {subCategoryList.map((subCategory, index) => (
+                        <Option value={subCategory.categoryValue} key={index}>
+                          {subCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <div style={{ marginLeft: "100px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))} />}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        style={{ cursor: "pointer" }}
+                        onClick={handleIcon}
+                      />
+                    }
+                    label="상품명 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>
@@ -448,7 +503,7 @@ function ItmListCopy() {
                           {`${page.itemMajorCategoryName}/${
                             page.itemMiddleCategoryName
                           }/${
-                            page.ItemCategorySubName == true
+                            page.itemSubCategoryName !== null
                               ? page.itemSubCategoryName
                               : ""
                           }`}
@@ -513,7 +568,7 @@ function ItmListCopy() {
                     </div>
                   ))}
 
-                {!empty &&
+                {/* {!empty &&
                   emptyList.map((page, index) => (
                     <div className={styles["frame"]} key={index}>
                       <div className={styles["data"]}>
@@ -564,20 +619,30 @@ function ItmListCopy() {
                         ></div>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
               </div>
 
               <div style={{ marginTop: "30px" }}>
                 <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
-                    {!empty && hasPrevious && (
+                    {!empty && hasPrevious && usingKeyword && (
                       <s.IconButtonStyle
-                        onClick={() => fetchKeywordData(keyWord, startPage - 1)}
+                        onClick={() => fetchKeywordData(keyWord, currentPage - 1)}
                       >
                         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>
                     )}
-                    {usingKeyword && !empty && hasNext && (
+                    {!empty && hasPrevious && usingCategory && (
+                      <s.IconButtonStyle
+                        onClick={() =>
+                          fetchKeywordData(category, startPage - 1)
+                        }
+                      >
+                        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                      </s.IconButtonStyle>
+                    )}
+                    
+                    {/* {usingKeyword && !empty && hasNext && (
                       <>
                         <s.IconButtonStyle
                           style={
@@ -639,6 +704,7 @@ function ItmListCopy() {
                         </s.IconButtonStyle>
                       </>
                     )}
+
                     {usingCategory && !empty && hasNext && (
                       <>
                         <s.IconButtonStyle
@@ -700,11 +766,11 @@ function ItmListCopy() {
                           {startPage + 5}
                         </s.IconButtonStyle>
                       </>
-                    )}
+                    )} */}
 
                     {usingKeyword &&
                       !empty &&
-                      !hasNext &&
+                      
                       pageNumList.map((value, index) => (
                         <s.IconButtonStyle
                           style={
@@ -717,9 +783,10 @@ function ItmListCopy() {
                           {value + 1}
                         </s.IconButtonStyle>
                       ))}
+
                     {usingCategory &&
                       !empty &&
-                      !hasNext &&
+                      
                       pageNumList.map((value, index) => (
                         <s.IconButtonStyle
                           style={
@@ -739,12 +806,17 @@ function ItmListCopy() {
                       </s.IconButtonStyle>
                     )}
 
-                    {!empty && hasNext && (
+                    {!empty && hasNext && usingKeyword && (
                       <s.IconButtonStyle
-                        onClick={fetchKeywordData(
-                          keyWord,
-                          5 * (Math.floor(fetchKeywordData / 5) + 1)
-                        )}
+                        onClick={()=>fetchKeywordData(keyWord, currentPage + 1)}
+                      >
+                        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                      </s.IconButtonStyle>
+                    )}
+
+                    {!empty && hasNext && usingCategory && (
+                      <s.IconButtonStyle
+                        onClick={()=>fetchCategoryData(category, currentPage + 1)}
                       >
                         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                       </s.IconButtonStyle>

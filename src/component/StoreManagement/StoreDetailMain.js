@@ -3,7 +3,7 @@ import * as s from '../styles/StyledStore.tsx';
 
 // 로그인 토큰
 import { axiosInToken } from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 const StoreDetailMain = ()=>{
     const [store, setStore] = useState({});
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const {storeCode} = useParams();
     const navigate = useNavigate();
 
@@ -24,6 +24,7 @@ const StoreDetailMain = ()=>{
     const select = () => {
         axiosInToken(token).get(`storeDetailMain/${storeCode}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res.data)
                 let resStore = res.data.store;
                 const resStoreOpenTime = new Date();
@@ -40,6 +41,7 @@ const StoreDetailMain = ()=>{
     const deleteStore = () => {
         axiosInToken(token).post(`deleteStoreMain/${storeCode}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res.data)
                 let resStore = res.data.store;
                 setStore({...resStore});

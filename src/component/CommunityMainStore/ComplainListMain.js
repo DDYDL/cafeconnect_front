@@ -3,7 +3,7 @@ import * as h from '../styles/HStyledStore.tsx';
 
 import { useState, useEffect } from 'react';
 import { axiosInToken } from '../../config.js'
-import { useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { format } from "date-fns";
 import { ko } from "date-fns/locale/ko";
@@ -14,7 +14,7 @@ const ComplainListMain = ()=>{
     const [complainList, setComplainList] = useState([]);
     const [pageBtn, setPageBtn] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const navigate = useNavigate();
 
     useEffect(()=> {
@@ -25,6 +25,8 @@ const ComplainListMain = ()=>{
     const select = (page) => {
         axiosInToken(token).get(`complainListMain?page=${page}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
+
                 let pageInfo = res.data.pageInfo;
                 console.log(res.data.complainList)
                 setComplainList([...res.data.complainList])
@@ -78,7 +80,7 @@ const ComplainListMain = ()=>{
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{select(page)}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>

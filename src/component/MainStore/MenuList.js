@@ -43,7 +43,6 @@ function MenuList() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
   };
 
   const handleChangeCategory = (value) => {
@@ -70,7 +69,7 @@ function MenuList() {
       const response = await axios.get(
         `http://localhost:8080/menuListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
-
+      console.log(response.data);
       setCurrentPage(response.data.pageable.pageNumber);
 
       setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
@@ -82,8 +81,8 @@ function MenuList() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -94,13 +93,13 @@ function MenuList() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -124,7 +123,7 @@ function MenuList() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -141,15 +140,23 @@ function MenuList() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
       }
-
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
+      }
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      console.log(response.data);
+      setUsingKeyword(true)
+      setUsingCategory(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -175,8 +182,8 @@ function MenuList() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -187,13 +194,13 @@ function MenuList() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -217,7 +224,7 @@ function MenuList() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -236,14 +243,28 @@ function MenuList() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(false)
+      setUsingCategory(true)
     } catch (error) {
       setError(error);
     } finally {
@@ -275,18 +296,26 @@ function MenuList() {
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <Select label="분류" onChange={handleChangeCategory}>
-                    {categoryList.map((category, index) => (
-                      <Option value={category.categoryValue}>
-                        {category.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="분류" onChange={handleChangeCategory}>
+                      {categoryList.map((category, index) => (
+                        <Option value={category.categoryValue}>
+                          {category.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
-                <div style={{ marginLeft: "508px" }}>
+                <div style={{ marginLeft: "580px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))}/>}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        onClick={() => fetchKeywordData(keyWord, 0)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    }
+                    label="메뉴명 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>
@@ -406,7 +435,7 @@ function MenuList() {
                           <div
                             className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.carbohydrate ? page.carbohydrate : "-"}
+                            {page.carbohydrate ? page.carbohydrate+'g' : "-"}
                           </div>
                         </div>
                         <div
@@ -415,7 +444,7 @@ function MenuList() {
                           <div
                             className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.sugar ? page.sugar : "-"}
+                            {page.sugar ? page.sugar+'g' : "-"}
                           </div>
                         </div>
                         <div
@@ -424,13 +453,13 @@ function MenuList() {
                           <div
                             className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.natrium ? page.natrium : "-"}
+                            {page.natrium ? page.natrium +'mg': "-"}
                           </div>
                         </div>
                       </div>
                     ))}
 
-                  {!empty &&
+                  {/* {!empty &&
                     emptyList.map((page, index) => (
                       <div className={styles["frame"]}>
                         <div className={styles["data"]}>
@@ -494,7 +523,7 @@ function MenuList() {
                           ></div>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div
@@ -503,16 +532,26 @@ function MenuList() {
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      {!empty && hasPrevious && (
+                      {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
-                            fetchKeywordData(keyWord, startPage - 1)
+                            fetchKeywordData(keyWord, currentPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
-                      {usingKeyword && !empty && hasNext && (
+                      {!empty && hasPrevious && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchCategoryData(category, currentPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+
+                      {/* {usingKeyword && !empty && hasNext && (
                         <>
                           <s.IconButtonStyle
                             style={
@@ -637,11 +676,11 @@ function MenuList() {
                             {startPage + 5}
                           </s.IconButtonStyle>
                         </>
-                      )}
+                      )} */}
 
                       {usingKeyword &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -656,7 +695,7 @@ function MenuList() {
                         ))}
                       {usingCategory &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -678,12 +717,16 @@ function MenuList() {
                         </s.IconButtonStyle>
                       )}
 
-                      {!empty && hasNext && (
+                      {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(
-                            keyWord,
-                            5 * (Math.floor(fetchKeywordData / 5) + 1)
-                          )}
+                          onClick={() => fetchKeywordData(keyWord, currentPage + 1)}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasNext && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={()=>fetchCategoryData(category, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

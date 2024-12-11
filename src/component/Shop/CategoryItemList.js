@@ -60,6 +60,7 @@ const CategoryItemList = ({ categories }) => {
 
       setPageBtn([...page]);
       setPageInfo(pageInfo);
+      console.log(response.data.items);
       setItems(response.data.items);
       
       //카테고리 재 선택 시 수량 초기화
@@ -160,7 +161,7 @@ const CategoryItemList = ({ categories }) => {
                   {items.map((item) => (
                     <s.CategoryItemListLi key={item.itemCode}>
                       <s.ItemListImg>
-                        <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} />
+                        <img src={`${url}/image/${item.itemFileName}`} alt={item.itemName} />
                         {store.roles==='ROLE_STORE' &&
                         <s.HoverControls className="hover-controls">
                           <s.QuantityControl>

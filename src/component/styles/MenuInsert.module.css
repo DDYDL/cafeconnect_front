@@ -637,9 +637,9 @@
   flex-direction: column;
   margin-top: 16px;
   min-height: 220px;
-  padding: 43px 0;
+  
   width: 424px;
-  cursor: pointer;
+  
 }
 
 .MenuInsert .upload-files4ee86225svg {
@@ -729,7 +729,7 @@
 .MenuInsert .small-btn_brown {
   align-items: flex-start;
   background-color: #54473f;
-  border-radius: 2px;
+  border-radius: 5px;
   display: flex;
   height: 53px;
   justify-content: flex-end;

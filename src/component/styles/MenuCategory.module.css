@@ -566,6 +566,7 @@
   .MenuCategory .small-btn_brown {
     background-color: #54473f;
     left: 49px;
+    border-radius: 5px;
   }
   
   .MenuCategory .text-28 {

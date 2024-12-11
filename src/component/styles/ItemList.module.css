@@ -528,7 +528,7 @@
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
-    height: 1505px;
+    height: 100%;
     margin-top: 10px;
     width: 1000px;
     margin-bottom:30px;
@@ -672,6 +672,7 @@
     margin-top: 34px;
     position: relative;
     width: 1000px;
+    min-height: 500px;
   }
   
   .ItemList .frame-87 {
@@ -705,7 +706,7 @@
   }
   
   .ItemList .cell-1 {
-    width: 91px;
+    width: 101px;
   }
   
   .ItemList .text-9 {
@@ -812,7 +813,7 @@
   .ItemList .frame-88 {
     height: 110px;
     position: relative;
-    width: 91px;
+    width: 100px;
   }
   
   .ItemList .a12345 {
@@ -834,7 +835,7 @@
   .ItemList .frame-90 {
     align-items: center;
     display: flex;
-    gap: 40px;
+    
     position: relative;
     top: 14px;
     width: 368px;
@@ -856,7 +857,7 @@
     flex-direction: column;
     gap: 13px;
     position: relative;
-    width: 159px;
+    width: 250px;
   }
   
   .ItemList .text-2 {
@@ -1058,7 +1059,7 @@
   .ItemList .small-btn_brown {
     align-items: flex-start;
     background-color: #54473f;
-    border-radius: 2px;
+    border-radius: 5px;
     display: flex;
     height: 53px;
     left: 0;

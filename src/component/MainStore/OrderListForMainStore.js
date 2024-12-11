@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
@@ -16,7 +16,7 @@ import * as ol from "../styledcomponent/orderlist.tsx";
 
 function OrderListForMainStore() {
   const store = useAtomValue(memberAtom);
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
   const today = new Date();
   const monthAgo = new Date(today);
@@ -50,6 +50,10 @@ function OrderListForMainStore() {
     axiosInToken(token)
       .post("/mainStoreOrderList", formData)
       .then((res) => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         setOrderList(res.data.orderList || []);
         setTotalCount(res.data.totalCount || 0);
       })
@@ -91,6 +95,10 @@ const handleStatusSubmit = (orderCode) => {
   axiosInToken(token)
     .post("/updateOrderStatus", formData)
     .then((res) => {
+
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
       if (res.data ===true) {
         alert("주문 상태가 변경되었습니다.");
         submit(); // 목록 새로고침
@@ -116,12 +124,11 @@ const handleStatusSubmit = (orderCode) => {
           <h2>주문접수 관리</h2>
         </ContainerTitleArea>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+        
           <ol.DatePickerWrap>
-            <ol.DatePickerInputWrap>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
               <DatePicker
                 slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
                 format="yyyy-MM-dd"
                 value={startDate}
                 onChange={(newValue) => setStartDate(new Date(newValue))}
@@ -129,17 +136,16 @@ const handleStatusSubmit = (orderCode) => {
               <span>~</span>
               <DatePicker
                 slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
                 format="yyyy-MM-dd"
                 value={endDate}
                 onChange={(newValue) => setEndDate(new Date(newValue))}
               />
-            </ol.DatePickerInputWrap>
             <StyledButton size="sm" theme="brown" onClick={submit}>
               조회
             </StyledButton>
+            </LocalizationProvider>
           </ol.DatePickerWrap>
-        </LocalizationProvider>
+       
         <ol.OrderListWrap>
           <ol.FilterWrapForMainStore>
             <div className="total-count">

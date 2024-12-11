@@ -58,7 +58,6 @@ function RepairListCopy() {
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
-    
   };
 
   const handleSelectMajorCategory = (value) => {
@@ -77,6 +76,7 @@ function RepairListCopy() {
       },
       0
     );
+    fetchMiddleData(value)
   };
 
   const handleSelectMiddleCategory = (value) => {
@@ -95,6 +95,7 @@ function RepairListCopy() {
       },
       0
     );
+    fetchMiddleData(value);
   };
 
   const fetchMajorData = async () => {
@@ -108,10 +109,10 @@ function RepairListCopy() {
       console.log(error);
     }
   };
-  const fetchMiddleData = async () => {
+  const fetchMiddleData = async (value) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/middleCategoryCopy2`
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
     } catch (error) {
@@ -137,8 +138,8 @@ function RepairListCopy() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -149,13 +150,13 @@ function RepairListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -179,7 +180,7 @@ function RepairListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -196,14 +197,28 @@ function RepairListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(true)
+      setUsingCategory(false)
     } catch (error) {
       setError(error);
     } finally {
@@ -217,7 +232,7 @@ function RepairListCopy() {
       const response = await axios.get(
         `http://localhost:8080/repairListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&pageNum=${pageNum}&pageSize=10`
       );
-      console.log(response.data)
+      console.log(response.data);
 
       setCurrentPage(response.data.pageable.pageNumber);
 
@@ -230,8 +245,8 @@ function RepairListCopy() {
         Math.floor(response.data.pageable.pageNumber / 5) <
         Math.floor((response.data.totalPages - 1) / 5)
       ) {
-        setHasNext(true);
-        setEmptyList([]);
+        // setHasNext(true);
+        // setEmptyList([]);
         setPageNumList(
           Array.from(
             { length: 5 },
@@ -242,13 +257,13 @@ function RepairListCopy() {
           )
         );
       } else {
-        setHasNext(false);
+        // setHasNext(false);
 
         //마지막 페이지 확인
         if (response.data.last) {
-          const emptyListSize = 10 - response.data.numberOfElements;
+          // const emptyListSize = 10 - response.data.numberOfElements;
 
-          setEmptyList(new Array(emptyListSize).fill(1));
+          // setEmptyList(new Array(emptyListSize).fill(1));
 
           if (response.data.pageable.pageNumber % 5 === 0) {
             setPageNumList(
@@ -272,7 +287,7 @@ function RepairListCopy() {
             );
           }
         } else {
-          setEmptyList([]);
+          // setEmptyList([]);
 
           const pageNumListSize =
             response.data.totalPages -
@@ -291,14 +306,28 @@ function RepairListCopy() {
           );
         }
       }
-      if (currentPage > 4) {
-        setHasPrevious(true);
-      } else {
+      // if (currentPage > 4) {
+      //   setHasPrevious(true);
+      // } else {
+      //   setHasPrevious(false);
+      // }
+      if(response.data.first === true){
         setHasPrevious(false);
+        
+      }else{
+        setHasPrevious(true);
+      }
+      if(response.data.last === true){
+        setHasNext(false)
+      }else{
+        setHasNext(true)
+        
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
+      setUsingKeyword(false)
+      setUsingCategory(true)
     } catch (error) {
       setError(error);
     } finally {
@@ -309,7 +338,6 @@ function RepairListCopy() {
   useEffect(() => {
     fetchKeywordData("", 0);
     fetchMajorData();
-    fetchMiddleData();
   }, []);
 
   return (
@@ -334,29 +362,44 @@ function RepairListCopy() {
                   className="w-16 p-r-2"
                   style={{ width: "200px" }}
                 >
-                  <Select label="대분류" onChange={handleSelectMajorCategory}>
-                    {majorCategoryList.map((majorCategory, index) => (
-                      <Option value={majorCategory.categoryValue} key={index}>
-                        {majorCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select label="대분류" onChange={handleSelectMajorCategory}>
+                      {majorCategoryList.map((majorCategory, index) => (
+                        <Option value={majorCategory.categoryValue} key={index}>
+                          {majorCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
-                    {middleCategoryList.map((middleCategory, index) => (
-                      <Option value={middleCategory.categoryValue} key={index}>
-                        {middleCategory.categoryName}
-                      </Option>
-                    ))}
-                  </Select>
+                  <div className="select-wrap" style={{ width: "200px" }}>
+                    <Select
+                      label="중분류"
+                      onChange={handleSelectMiddleCategory}
+                    >
+                      {middleCategoryList.map((middleCategory, index) => (
+                        <Option
+                          value={middleCategory.categoryValue}
+                          key={index}
+                        >
+                          {middleCategory.categoryName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </s.ButtonInnerDiv>
 
-                <div style={{ marginLeft: "307px" }}>
+                <div style={{ marginLeft: "380px" }}>
                   <Input
-                    icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={()=>(fetchKeywordData(keyWord, 0))} />}
-                    label="매장명 검색"
+                    icon={
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        onClick={() => fetchKeywordData(keyWord, 0)}
+                      />
+                    }
+                    label="가맹점 검색"
                     onChange={handleChangeKeyword}
                   />
                 </div>
@@ -471,7 +514,7 @@ function RepairListCopy() {
                       </div>
                     ))}
 
-                  {!empty &&
+                  {/* {!empty &&
                     emptyList.map((page, index) => (
                       <div className={styles["frame"]}>
                         <div className={styles["data"]}>
@@ -517,23 +560,32 @@ function RepairListCopy() {
                           ></div>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               </div>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
                 <div style={{ marginTop: "30px" }}>
                   <s.PageButtonGroupDiv>
                     <s.ButtonGroupStyle variant="outlined">
-                      {!empty && hasPrevious && (
+                      {!empty && hasPrevious && usingKeyword && (
                         <s.IconButtonStyle
                           onClick={() =>
-                            fetchKeywordData(keyWord, startPage - 1)
+                            fetchKeywordData(keyWord, currentPage - 1)
                           }
                         >
                           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
-                      {usingKeyword && !empty && hasNext && (
+                      {!empty && hasPrevious && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={() =>
+                            fetchCategoryData(category, currentPage - 1)
+                          }
+                        >
+                          <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {/* {usingKeyword && !empty && hasNext && (
                         <>
                           <s.IconButtonStyle
                             style={
@@ -658,11 +710,11 @@ function RepairListCopy() {
                             {startPage + 5}
                           </s.IconButtonStyle>
                         </>
-                      )}
+                      )} */}
 
                       {usingKeyword &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -677,7 +729,7 @@ function RepairListCopy() {
                         ))}
                       {usingCategory &&
                         !empty &&
-                        !hasNext &&
+                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -699,12 +751,16 @@ function RepairListCopy() {
                         </s.IconButtonStyle>
                       )}
 
-                      {!empty && hasNext && (
+                      {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(
-                            keyWord,
-                            5 * (Math.floor(fetchKeywordData / 5) + 1)
-                          )}
+                          onClick={fetchKeywordData(keyWord, currentPage + 1)}
+                        >
+                          <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+                        </s.IconButtonStyle>
+                      )}
+                      {!empty && hasNext && usingCategory && (
+                        <s.IconButtonStyle
+                          onClick={fetchCategoryData(category, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

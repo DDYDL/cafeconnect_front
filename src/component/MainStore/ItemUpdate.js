@@ -29,6 +29,22 @@ function ItemInsert() {
     itemSubCategoryName: "",
     imageUrl: null,
   });
+  const [capacityUnit, setCapacityUnit] = useState("");
+  const handleCapacityUnit = (e) => {
+    setCapacityUnit(e);
+    setItem({
+      ...item,
+      itemCapacity: capacity + e.target.value,
+    });
+  };
+  const [capacity, setCapacity] = useState("");
+  const handleCapacity = (e) => {
+    setCapacity(e.target.value);
+    setItem({
+      ...item,
+      itemCapacity: e.target.value + capacityUnit,
+    });
+  };
   const [x, setX] = useState("");
   const [y, setY] = useState("");
   const [z, setZ] = useState("");
@@ -135,6 +151,9 @@ function ItemInsert() {
   };
 
   const handleImageInput = (e) => {
+    if(!e.target.files[0]){
+      return;
+    }
     setFile(e.target.files[0]);
     setItem({
       ...item,
@@ -148,6 +167,23 @@ function ItemInsert() {
       setMajorCategoryList(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleConvertToFile = async (imageUrl) => {
+    try {
+      // fetch를 사용해 imageUrl의 데이터 가져오기
+      const response = await fetch(imageUrl);
+
+      // Blob으로 변환
+      const blob = await response.blob();
+
+      // File 객체 생성
+      const file = new File([blob], "image.jpg", { type: blob.type });
+
+      setFile(file);
+    } catch (error) {
+      console.error("Error converting imageUrl to File:", error);
     }
   };
 
@@ -198,6 +234,11 @@ function ItemInsert() {
           : ""
       );
       setImageUrl(response.data.imageUrl);
+      setCapacityUnit(
+        response.data.itemCapacity.match(/[a-zA-Z]+$/)?.[0] || ""
+      );
+      setCapacity(response.data.itemCapacity.match(/\d+/)?.[0] || "");
+      handleConvertToFile(response.data.imageUrl);
     } catch (error) {
       console.log(error);
 
@@ -205,24 +246,29 @@ function ItemInsert() {
       navigate("/mainItemList");
     }
   };
-  const checkProperties = () =>{
-    if(item.itemName !== '' && item.itemPrice !== '' && item.itemCapacity !== '' &&  item.itemUnitQuantity !== '' &&  item.itemStandard !== null &&  
-      item.itemStorage  !== '' && item.itemCountryOrigin !== '' &&  item.itemMajorCategory !== ''
-    ){
+  const checkProperties = () => {
+    if (
+      item.itemName !== "" &&
+      item.itemPrice !== "" &&
+      item.itemCapacity !== "" &&
+      item.itemUnitQuantity !== "" &&
+      item.itemStorage !== "" &&
+      item.itemCountryOrigin !== "" &&
+      item.itemMajorCategory !== ""
+    ) {
       return true;
     }
     return false;
-      
-  }
+  };
   const handleUpload = async () => {
     const formData = new FormData();
-    if(!file){
-      alert('이미지를 등록하세요')
+    if (!file) {
+      alert("이미지를 등록하세요");
       return;
     }
     formData.append("file", file);
-    if(!checkProperties()){
-      alert('등록되지 않은 항목이 존재합니다');
+    if (!checkProperties()) {
+      alert("등록되지 않은 항목이 존재합니다");
       return;
     }
     const itemSaveForm = {
@@ -238,7 +284,7 @@ function ItemInsert() {
       itemCategoryMiddleName: item.itemMiddleCategoryName,
       itemCategorySubName: item.itemSubCategoryName,
     };
-    
+
     const json = JSON.stringify(itemSaveForm);
     const blob = new Blob([json], {
       type: "application/json",
@@ -317,13 +363,13 @@ function ItemInsert() {
                     <div
                       className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                     >
-                      공급가
+                      공급가(원)
                     </div>
                     <s.InputStyle
                       name="itemPrice"
                       width="440px"
                       type="text"
-                      placeholder="공급가를 입력하세요"
+                      placeholder="공급가를 입력하세요(단위생략)"
                       value={item.itemPrice}
                       onChange={handleInput}
                     />
@@ -334,15 +380,29 @@ function ItemInsert() {
                     >
                       용량
                     </div>
-
-                    <s.InputStyle
-                      name="itemCapacity"
-                      width="440px"
-                      type="text"
-                      placeholder="용량을 입력하세요"
-                      value={item.itemCapacity}
-                      onChange={handleInput}
-                    />
+                    <div style={{ display: "flex", gap: "20px" }}>
+                      <s.InputStyle
+                        name="itemCapacity"
+                        width="220px"
+                        type="text"
+                        placeholder="용량을 입력하세요"
+                        value={capacity}
+                        onChange={handleCapacity}
+                      />
+                      <div className="select-wrap" style={{ width: "100px" }}>
+                        <Select
+                          label="용량단위"
+                          onChange={handleCapacityUnit}
+                          value={capacityUnit}
+                        >
+                          <Option value="">용량 단위를 선택하세요</Option>
+                          <Option value="kg">kg</Option>
+                          <Option value="g">g</Option>
+                          <Option value="ml">ml</Option>
+                          <Option value="L">L</Option>
+                        </Select>
+                      </div>
+                    </div>
                   </div>
                   <div className={styles["container-3"]}>
                     <div className={`${styles["flex-col"]} ${styles["flex"]}`}>
@@ -360,6 +420,15 @@ function ItemInsert() {
                         onChange={handleXStandardInput}
                       />
                     </div>
+                    <div
+                      style={{
+                        width: "40px",
+                        textAlign: "center",
+                        marginBottom: "22px",
+                      }}
+                    >
+                      X
+                    </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
                       <s.InputStyle
                         name="itemY"
@@ -369,6 +438,15 @@ function ItemInsert() {
                         value={y}
                         onChange={handleYStandardInput}
                       />
+                    </div>
+                    <div
+                      style={{
+                        width: "40px",
+                        textAlign: "center",
+                        marginBottom: "22px",
+                      }}
+                    >
+                      X
                     </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
                       <s.InputStyle
@@ -397,20 +475,28 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="대분류"
-                              onChange={handleItemMajorCategorySelectBox}
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {majorCategoryList.map((majorCategory) => (
-                                <Option
-                                  key={majorCategory.categoryName}
-                                  value={majorCategory.categoryName}
-                                >
-                                  {majorCategory.categoryName}
-                                </Option>
-                              ))}
-                            </Select>
+                              <Select
+                                label="대분류"
+                                onChange={handleItemMajorCategorySelectBox}
+                              >
+                                {majorCategoryList.map((majorCategory) => (
+                                  <Option
+                                    key={majorCategory.categoryName}
+                                    value={majorCategory.categoryName}
+                                  >
+                                    {majorCategory.categoryName}
+                                  </Option>
+                                ))}
+                              </Select>
+                              {/* <select value={item.itemMajorCategoryName} onChange={handleItemMajorCategorySelectBox} label="대분류" style={{borderRadius:"7px",width:"440px",height:"40px",backgroundColor:"#f8f8f8"}}>
+                                {majorCategoryList.map((majorCategory,index)=>(
+                                  <option value={majorCategory.categoryName}>{majorCategory.categoryName}</option>
+                                ))}
+                              </select> */}
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -422,20 +508,23 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="중분류"
-                              onChange={handleItemMiddleCategorySelectBox}
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {middleCategoryList.map((middleCategory) => (
-                                <Option
-                                  key={middleCategory.categoryName}
-                                  value={middleCategory.categoryName}
-                                >
-                                  {middleCategory.categoryName}
-                                </Option>
-                              ))}
-                            </Select>
+                              <Select
+                                label="중분류"
+                                onChange={handleItemMiddleCategorySelectBox}
+                              >
+                                {middleCategoryList.map((middleCategory) => (
+                                  <Option
+                                    key={middleCategory.categoryName}
+                                    value={middleCategory.categoryName}
+                                  >
+                                    {middleCategory.categoryName}
+                                  </Option>
+                                ))}
+                              </Select>
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -444,20 +533,23 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="소분류"
-                              onChange={handleItemSubCategorySelectBox}
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {subCategoryList.map((subCategory) => (
-                                <Option
-                                  key={subCategory.categoryName}
-                                  value={subCategory.categoryName}
-                                >
-                                  {subCategory.categoryName}
-                                </Option>
-                              ))}
-                            </Select>
+                              <Select
+                                label="소분류"
+                                onChange={handleItemSubCategorySelectBox}
+                              >
+                                {subCategoryList.map((subCategory) => (
+                                  <Option
+                                    key={subCategory.categoryName}
+                                    value={subCategory.categoryName}
+                                  >
+                                    {subCategory.categoryName}
+                                  </Option>
+                                ))}
+                              </Select>
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -492,12 +584,15 @@ function ItemInsert() {
                     <div className="select-wrap" style={{ width: "440px" }}>
                       <Select
                         label="단위구분"
-                        
+                        value={item.itemUnit}
                         onChange={handleItemUnitSelectbox}
                       >
                         <Option value="">단위를 선택하세요</Option>
-                        <Option value="단위1">단위1</Option>
-                        <Option value="단위2">단위2</Option>
+                        <Option value="BOX">BOX</Option>
+                        <Option value="EA">EA</Option>
+                        <Option value="PK">PK</Option>
+                        <Option value="CAN">CAN</Option>
+                        <Option value="BTL">BTL</Option>
                       </Select>
                     </div>
                   </div>
@@ -510,7 +605,7 @@ function ItemInsert() {
                     <div className="select-wrap" style={{ width: "440px" }}>
                       <Select
                         label="보관상태"
-                        
+                        value={item.itemStorage}
                         onChange={handleItemStorageSelectbox}
                       >
                         <Option value="">보관상태를 선택하세요</Option>
@@ -524,13 +619,13 @@ function ItemInsert() {
                     <div
                       className={`${styles["label"]} ${styles["valign-text-middle"]} ${styles["notosanskr-bold-black-16px"]}`}
                     >
-                      단위 수량
+                      단위 수량(개수)
                     </div>
                     <s.InputStyle
                       name="itemUnitQuantity"
                       width="440px"
                       type="text"
-                      placeholder="단위수량을 입력하세요"
+                      placeholder="단위수량을 입력하세요(단위 생락)"
                       value={item.itemUnitQuantity}
                       onChange={handleInput}
                     />
@@ -541,30 +636,37 @@ function ItemInsert() {
                     >
                       이미지 등록
                     </div>
-                    <div
-                      className={styles["border-1"]}
-                      onClick={handleUploadImage}
-                    >
+                    <div className={styles["border-1"]}>
                       <img
                         className={styles["upload-files4ee86225svg"]}
-                        src={upload_file}
+                        src={imageUrl === null ? thumb : imageUrl}
+                        style={{
+                          width: "224px",
+                          height: "204px",
+                          marginRight: "0px",
+                          marginTop: "10px",
+                          marginBottom: "10px",
+                        }}
                         alt="upload-files.4ee86225.svg"
-                      />
-                      <div
-                        className={`${styles["text-11"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticitem"]}`}
-                      >
-                        <span>
-                          <span className={styles["span0"]}>
-                            <br />
-                          </span>
-                          <span className={styles["span1-1"]}>이미지 선택</span>
-                        </span>
-                      </div>
+                      ></img>
                     </div>
-                    <img
+                    <div
                       className={styles["product-thumb-1bfdce747webp"]}
-                      src={imageUrl === null ? thumb : imageUrl}
-                    ></img>
+                      onClick={handleUploadImage}
+                      style={{
+                        marginRight: "10px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        backgroundColor: "#54473f",
+                        marginTop: "10px",
+                        borderRadius: "5px",
+                        color: "white",
+                      }}
+                    >
+                      업로드
+                    </div>
                   </div>
                   <input
                     style={{ display: "none" }}

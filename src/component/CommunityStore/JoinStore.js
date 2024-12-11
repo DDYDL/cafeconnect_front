@@ -20,6 +20,7 @@ const JoinStore = () => {
   const [storeCode, setStoreCode] = useState(null);
   const token = useAtomValue(tokenAtom);
   const [storeName, setStoreName] = useState("");
+  const [isUsernameChecked, setIsUsernameChecked] = useState(false);
 
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
@@ -58,11 +59,12 @@ const JoinStore = () => {
         setSuccessMessage(""); // 중복된 경우, 성공 메시지 초기화
       } else {
         setErrorMessage(""); // 중복되지 않으면 에러 메시지 초기화
+        setIsUsernameChecked(true);
         setSuccessMessage("아이디 사용 가능합니다."); // 중복되지 않으면 성공 메시지 표시
       }
     } catch (err) {
       console.error("중복 확인 중 오류 발생:", err);
-      setErrorMessage("중복 확인 중 오류가 발생했습니다.");
+      setErrorMessage("이미 사용중인 아이디 입니다.");
       setSuccessMessage(""); // 오류 발생 시 성공 메시지 초기화
     }
   };
@@ -114,7 +116,7 @@ const JoinStore = () => {
       // 등록이 성공하면 알림창 띄우기
       if (response.status === 200) {
         alert("등록이 완료되었습니다.");
-        navigate("/shopMain"); // 홈 화면으로 리디렉션
+        navigate("/loginStore"); // 홈 화면으로 리디렉션
       }
     } catch (error) {
       console.error("등록 중 오류 발생:", error);
@@ -153,17 +155,18 @@ const JoinStore = () => {
           <s.TableTextTd
             style={{
               marginTop: "10px",
-              position: "relative", // input 내부의 메시지 위치 설정을 위해 relative 설정
+              position: "relative",
             }}
           >
             <s.InputStyle
               style={{
                 width: "300px",
-                paddingRight: "40px", // 메시지 공간을 확보하기 위한 padding
+                paddingRight: "40px",
               }}
               type="text"
               value={username}
               onChange={e => setUsername(e.target.value)} // input 값 변경 시 상태 업데이트
+              disabled={isUsernameChecked}
             />
 
             {/* 메시지를 input 내부의 오른쪽에 작게 표시 */}
@@ -193,7 +196,7 @@ const JoinStore = () => {
             }}
             variant="outlined"
             bgColor="white"
-            onClick={checkDoubleId} // 버튼 클릭 시 중복 확인 요청
+            onClick={checkDoubleId}
           >
             중복 확인
           </s.ButtonStyle>
@@ -218,7 +221,7 @@ const JoinStore = () => {
           <s.TableTextTd>
             <s.InputStyle
               style={{ width: "300px", marginLeft: "20px" }}
-              type="text"
+              type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
@@ -302,6 +305,7 @@ const JoinStore = () => {
               type="text"
               value={storeName}
               onChange={e => setStoreName(e.target.value)}
+              readOnly
             />
           </s.TableTextTd>
         </s.TrStyle>

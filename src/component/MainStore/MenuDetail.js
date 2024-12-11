@@ -75,7 +75,6 @@ function MenuDetail() {
             </div>
             <div className={styles["background"]}>
               <div className={styles["flex-row"]}>
-                
                 <div className={styles["link"]}>
                   <div
                     className={`${styles["overlap-group"]} ${styles["themewagongithubiosemanticheading-6"]}`}
@@ -235,7 +234,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                       >
-                        열량
+                        열량(kcal)
                       </div>
                       <div
                         className={styles["data-1"]}
@@ -253,7 +252,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-2"]} ${styles["valign-text-middle"]}`}
                       >
-                        카페인 함유량
+                        카페인 함유량(mg)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -271,7 +270,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-5"]} ${styles["valign-text-middle"]}`}
                       >
-                        탄수화물 함유량
+                        탄수화물 함유량(g)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -289,7 +288,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-2"]} ${styles["valign-text-middle"]}`}
                       >
-                        지방 함유량
+                        지방 함유량(g)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -307,7 +306,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-2"]} ${styles["valign-text-middle"]}`}
                       >
-                        나트륨 함유량
+                        나트륨 함유량(mg)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -325,7 +324,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-2"]} ${styles["valign-text-middle"]}`}
                       >
-                        당류 함유량
+                        당류 함유량(g)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -345,7 +344,7 @@ function MenuDetail() {
                       <div
                         className={`${styles["data-2"]} ${styles["valign-text-middle"]}`}
                       >
-                        단백질 함유량
+                        단백질 함유량(g)
                       </div>
                       <div
                         className={styles["data-3"]}
@@ -375,7 +374,11 @@ function MenuDetail() {
                           className={`${styles["x20mg"]} ${styles["valign-text-middle"]}`}
                           style={{ width: "250px" }}
                         >
-                          {menu.menuStatus === 'normal' ? '일반' : menu.menuStatus === 'signature' ? '시그니쳐' : '베스트'}
+                          {menu.menuStatus === "normal"
+                            ? "일반"
+                            : menu.menuStatus === "signature"
+                            ? "시그니쳐"
+                            : "베스트"}
                         </div>
                       </div>
                     </div>
