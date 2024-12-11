@@ -19,8 +19,10 @@ const NoticeListMain = () => {
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
   const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
   const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는 상태
+
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const token = useAtomValue(tokenAtom);
+  const [newToken, setNewToken] = useState(null);
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchNotice, setSearchNotice] = useState("");
 
@@ -29,6 +31,12 @@ const NoticeListMain = () => {
     if (!token || !storeCode) return;
     try {
       const response = await axiosInToken(token).get(`/noticeListMain`);
+
+      const newToken = response.headers.authorization;
+      if (newToken) {
+        setNewToken(newToken);
+      }
+
       const formattedData = response.data.map(notice => ({
         ...notice,
         noticeDate: new Date(notice.noticeDate).toLocaleDateString("ko-KR"),

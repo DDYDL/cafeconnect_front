@@ -1,122 +1,53 @@
 // Yearly.js
 import { Accordion, AccordionBody, AccordionHeader } from "@material-tailwind/react";
-import axios from "axios";
 import { useAtomValue } from "jotai/react";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms";
-import { axiosInToken, url } from "../../config.js";
 
-const Yearly = ({ storeCode }) => {
-  const [salesData, setSalesData] = useState([]);
-  const [analysis, setAnalysis] = useState([{}]);
+const Yearly = ({ menu, analyzeData }) => {
   const [menuCategory, setMenuCategory] = useState([]);
   const [open, setOpen] = React.useState(0);
   const token = useAtomValue(tokenAtom);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
+
   const handleOpen = value => {
     setOpen(prevOpen => (prevOpen === value ? 0 : value));
   };
 
-  // menu category 가져오기
-  const getMenuCategory = () => {
-    axios
-      .get(`${url}/selectMenuCategory`)
-      .then(res => {
-        console.log(res.data);
-        setMenuCategory(res.data);
-      })
-      .catch(err => {
-        console.log(err);
+  useEffect(() => {
+    const tmc = menu.map(x => x.menuCategoryName);
+    const mn = tmc.filter((m, i) => tmc.indexOf(m) === i).map(c => ({ menuCategoryName: c }));
+    console.log(mn);
+    setMenuCategory(mn);
+    console.log(analyzeData);
+    if (analyzeData !== null) {
+      const year = analyzeData[Object.keys(analyzeData)[2]];
+      let count = 0,
+        amount = 0;
+      year.forEach(s => {
+        count += s.salesCount;
+        amount += s.salesAmount;
       });
-  };
 
-  useEffect(() => {
-    getMenuCategory(); // 카테고리 데이터 가져오기
-  }, []);
-
-  useEffect(() => {
-    const fetchData = () => {
-      axiosInToken(token)
-        .get(`annualAnalysis/${storeCode}`)
-        .then(res => {
-          const groupedData = res.data.reduce((acc, item) => {
-            const { menuName, price, year, salesCount, menuCategoryName } = item;
-
-            // 카테고리별로 처리
-            if (!acc[menuCategoryName]) {
-              acc[menuCategoryName] = {};
-            }
-
-            if (!acc[menuCategoryName][menuName]) {
-              acc[menuCategoryName][menuName] = {
-                menuName,
-                price,
-                2022: 0, // 2022년은 총합으로 구할 거니까 초기화
-                2023: 0, // 2023년은 해당 연도만 계산
-                2024: 0, // 2024년도 마찬가지
-                salesAmount2024: 0, // 2024년 판매 금액 초기화
-              };
-            }
-
-            // 판매 수량 누적 처리
-            if (year === 2022) acc[menuCategoryName][menuName][2022] += salesCount || 0;
-            if (year === 2023) acc[menuCategoryName][menuName][2023] += salesCount || 0;
-            if (year === 2024) acc[menuCategoryName][menuName][2024] += salesCount || 0;
-
-            // 2024년 판매 금액 계산 (판매 수량 * 가격)
-            if (year === 2024) {
-              acc[menuCategoryName][menuName].salesAmount2024 += (salesCount || 0) * price || 0;
-            }
-
-            return acc;
-          }, {});
-
-          // 그룹화된 데이터 확인
-          console.log("groupedData" + JSON.stringify(groupedData));
-
-          setSalesData(groupedData); // 카테고리별로 상품 데이터 설정
-
-          // 총 판매 수량과 금액 계산 (2024년 기준)
-          let totalQuantity2024 = 0;
-          let totalRevenue2024 = 0;
-
-          Object.values(groupedData).forEach(category => {
-            Object.values(category).forEach(item => {
-              totalQuantity2024 += item[2024] || 0;
-              totalRevenue2024 += item.salesAmount2024 || 0; // 2024년 판매 금액 누적
-            });
-          });
-
-          setTotalQuantity(totalQuantity2024); // 총 판매 수량 설정
-          setTotalRevenue(totalRevenue2024); // 총 판매 금액 설정
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    };
-
-    if (token != null && token !== "") fetchData();
-  }, [token, storeCode]);
-
-  function Icon({ id, open }) {
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className={`${open === id ? "rotate-180" : ""} h-5 w-5 transition-transform`}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-      </svg>
-    );
-  }
+      setTotalQuantity(count);
+      setTotalRevenue(amount);
+    }
+  }, [menu, analyzeData]);
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        width: "1200px",
+        marginLeft: "-110px", // 왼쪽으로 200px 이동
+      }}
+    >
       <FirstBody>
         <Title4>매출 현황(금년)</Title4>
 
@@ -125,12 +56,10 @@ const Yearly = ({ storeCode }) => {
           <SummaryBox>
             <SummaryTitle>총 판매 수량</SummaryTitle>
             <SummaryValue>{totalQuantity.toLocaleString()}개</SummaryValue>
-            <SummaryCategory>모든 상품</SummaryCategory>
           </SummaryBox>
           <SummaryBox>
             <SummaryTitle>총 판매 금액</SummaryTitle>
             <SummaryValue>{totalRevenue.toLocaleString()}원</SummaryValue>
-            <SummaryCategory>모든 상품</SummaryCategory>
           </SummaryBox>
         </SummaryRow>
       </FirstBody>
@@ -144,39 +73,96 @@ const Yearly = ({ storeCode }) => {
             <StyledAccordionBody>
               <SalesTable>
                 <thead>
-                  <TableRow style={{ backgroundColor: "#DEDEDE" }}>
-                    <TableColumn style={{ width: "50%" }}>상품명</TableColumn>
-                    <TableColumn>2022</TableColumn>
-                    <TableColumn>2023</TableColumn>
-                    <TableColumn>2024</TableColumn>
-                    <TableColumn>차이</TableColumn>
+                  <TableRow style={{ backgroundColor: "#DEDEDE", border: "solid 1px lightgray" }}>
+                    <TableColumn
+                      style={{ width: "25%", border: "solid 1px lightgray" }}
+                      rowSpan={2}
+                    >
+                      상품명
+                    </TableColumn>
+                    {analyzeData !== null &&
+                      Object.keys(analyzeData).map(s => (
+                        <TableColumn style={{ border: "solid 1px lightgray" }} colSpan={2}>
+                          {s}
+                        </TableColumn>
+                      ))}
+                    <TableColumn rowSpan={2} style={{ border: "solid 1px lightgray" }}>
+                      전년대비
+                    </TableColumn>
+                  </TableRow>
+                  <TableRow style={{ backgroundColor: "#DEDEDE", border: "solid 1px lightgray" }}>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>수량</TableColumn>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>매출액</TableColumn>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>수량</TableColumn>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>매출액</TableColumn>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>수량</TableColumn>
+                    <TableColumn style={{ border: "solid 1px lightgray" }}>매출액</TableColumn>
                   </TableRow>
                 </thead>
                 <tbody>
-                  {Object.values(salesData[category.menuCategoryName] || {}).length > 0 ? (
-                    Object.values(salesData[category.menuCategoryName] || {}).map((data, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell>{data.menuName}</TableCell>
-                        <TableCell>{data[2022] || "-"}</TableCell>
-                        <TableCell>{data[2023] || "-"}</TableCell>
-                        <TableCell>{data[2024] || "-"}</TableCell>
-                        <TableCell>{data[2024] - data[2023] || "-"}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan="5" style={{ textAlign: "center" }}>
-                        데이터가 없습니다
-                      </TableCell>
-                    </TableRow>
-                  )}
+                  {analyzeData !== null &&
+                    menu
+                      .filter(m => m.menuCategoryName === category.menuCategoryName)
+                      .map(data => (
+                        <TableRow key={data.menuCode}>
+                          <TableCell>{data.menuName}</TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[0]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesCount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {" "}
+                            {analyzeData[Object.keys(analyzeData)[0]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesAmount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[1]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesCount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[1]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesAmount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[2]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesCount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[2]]
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesAmount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {analyzeData[Object.keys(analyzeData)[2]].find(
+                              d => d.menuCode === data.menuCode
+                            ) === undefined &&
+                            analyzeData[Object.keys(analyzeData)[1]].find(
+                              d => d.menuCode === data.menuCode
+                            ) === undefined
+                              ? "-"
+                              : (
+                                  analyzeData[Object.keys(analyzeData)[2]].find(
+                                    d => d.menuCode === data.menuCode
+                                  )?.salesAmount -
+                                  analyzeData[Object.keys(analyzeData)[1]].find(
+                                    d => d.menuCode === data.menuCode
+                                  )?.salesAmount
+                                ).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </tbody>
               </SalesTable>
             </StyledAccordionBody>
           </Accordion>
         ))}
       </StyledAccordionContainer>
-    </>
+    </div>
   );
 };
 
@@ -208,19 +194,24 @@ const SummaryRow = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  gap: 80px;
+  gap: 40px;
   padding-top: 20px;
 `;
 
 const SummaryBox = styled.div`
   width: 230px;
-  height: 110px;
+  height: 60px;
   border: 1px solid lightgray;
   border-radius: 5px;
-  padding: 20px;
+  // padding: 20px;
+  padding-top: 8px;
+  padding-right: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
@@ -246,8 +237,13 @@ const SummaryCategory = styled.div`
 
 const FirstBody = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: left;
+  // flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+  padding-right: 140px;
+  height: 80px;
 `;
 
 const Title4 = styled.div`

@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
+import { memberAtom, tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
@@ -12,18 +12,19 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const ComplainList = () => {
   const [complain, setComplain] = useState([]);
-  const [storeCode, setStoreCode] = useState(null);
   const [selectedButton, setSelectedButton] = useState(null);
   const [searchComplain, setSearchComplain] = useState("");
   const navigate = useNavigate();
-  const token = useAtomValue(tokenAtom);
   const buttonLabels = ["1주일", "1개월", "3개월"];
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
+  const store = useAtomValue(memberAtom);
+  const token = useAtomValue(tokenAtom);
 
   const pageCount = Math.ceil(complain.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
 
+  const storeCode = store.storeCode;
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1); // 이전 페이지로 이동
@@ -36,23 +37,6 @@ const ComplainList = () => {
     }
   };
 
-  // / fetchStoreCode를 useCallback으로 래핑
-  const fetchStoreCode = useCallback(async () => {
-    try {
-      if (!token) return; // 토큰 없으면 요청 생략
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
-      setStoreCode(storeCodeFromResponse);
-      console.log("StoreCode:", storeCodeFromResponse);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
-  }, [token]); // 의존성 배열에 token 추가
-
-  useEffect(() => {
-    fetchStoreCode();
-  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
-
   useEffect(() => {}, []);
 
   const fetchData = useCallback(async () => {
@@ -64,6 +48,8 @@ const ComplainList = () => {
         complainDate: new Date(item.complainDate).toLocaleDateString("ko-KR"),
       }));
       setComplain(formattedData);
+      console.log("response" + JSON.stringify(response));
+      console.log("formattedData" + JSON.stringify(formattedData));
     } catch (err) {
       console.error("컴플레인 리스트 요청 중 오류 발생:", err);
       alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");

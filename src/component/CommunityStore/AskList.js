@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
+import { memberAtom, tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
@@ -16,21 +16,24 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 // todo 답변 저장 -> 해당 답변이 계속 보여지도록 해야함.
 const AskList = () => {
   const [ask, setAsk] = useState([]);
-  const [storeCode, setStoreCode] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
   const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
   const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는
   const [filteredAsk, setFilteredAsk] = useState([]); // 필터링된 데이터 상태 추가상태
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const token = useAtomValue(tokenAtom);
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchAsk, setSearchAsk] = useState("");
+  const [AskData, setAskData] = useState(null);
+  const [token, setToken] = useState(null);
+  const atomToken = useAtomValue(tokenAtom);
+  const store = useAtomValue(memberAtom);
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
 
   const pageCount = Math.ceil(ask.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+  const storeCode = store.storeCode;
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -43,14 +46,6 @@ const AskList = () => {
       setCurrentPage(currentPage + 1); // 다음 페이지로 이동
     }
   };
-  // const getFilteredAsk = () => {
-  //   // 이 함수에서 바로 필터링이 아닌, handleSearch에서 필터링된 ask를 반환하도록 변경
-  //   const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
-  //   // 페이지에 맞는 데이터만 필터링
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  //   return filtered.slice(indexOfFirstItem, indexOfLastItem);
-  // };
 
   const getFilteredAsk = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -58,41 +53,21 @@ const AskList = () => {
     return filteredAsk.slice(indexOfFirstItem, indexOfLastItem);
   };
 
-  // useCallback 제거된 fetchStoreCode
-  const fetchStoreCode = async () => {
-    try {
-      if (!token) return;
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode;
-      setStoreCode(storeCodeFromResponse);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
+  const fetchSales = type => {
+    if (!atomToken) return;
+    axiosInToken(atomToken)
+      .get(`/askList/${storeCode}`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+        console.log(res);
+        setAskData({ ...res.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
-
-  // useCallback 제거된 fetchData
-  const fetchData = async () => {
-    if (!token || !storeCode) return;
-    try {
-      const response = await axiosInToken(token).get(`/askList/${storeCode}`);
-      const formattedData = response.data.map(ask => ({
-        ...ask,
-        askDate: new Date(ask.askDate).toLocaleDateString("ko-KR"),
-      }));
-      setAsk(formattedData);
-    } catch (err) {
-      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
-    }
-  };
-
-  // useEffect는 그대로 유지
-  useEffect(() => {
-    fetchStoreCode();
-  }, [token]);
-
-  useEffect(() => {
-    fetchData();
-  }, [token, storeCode]);
 
   const handleItemClick = async askNum => {
     if (selectedItem === askNum) {
@@ -105,15 +80,6 @@ const AskList = () => {
     }
   };
 
-  // const handleSearch = () => {
-  //   // 검색어가 비어 있지 않을 경우에만 필터링
-  //   if (searchAsk.trim() !== "") {
-  //     const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
-  //     setFilteredAsk(filtered); // 필터링된 데이터 상태 업데이트
-  //   } else {
-  //     setFilteredAsk(ask); // 검색어가 비어 있으면 원래 데이터로 되돌리기
-  //   }
-  // };
   const handleSearch = () => {
     // 검색어가 비어 있지 않을 경우에만 필터링
     if (searchAsk.trim() !== "") {

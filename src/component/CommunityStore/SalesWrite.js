@@ -1,7 +1,10 @@
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { ko } from "date-fns/locale/ko";
 import { useAtomValue } from "jotai/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Select, { components } from "react-select";
-import Datepicker from "react-tailwindcss-datepicker";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms.js";
 import { axiosInToken } from "../../config.js";
@@ -26,7 +29,6 @@ const SalesWrite = () => {
   };
   const [saleItem, setSaleItem] = useState(initSaleItem);
   const [salesList, setSalesList] = useState([]);
-  const [datePicker, setDatePicker] = useState({ startDate: null, endDate: null });
   const [date, setDate] = useState();
   const [isTemp, setIsTemp] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -34,6 +36,9 @@ const SalesWrite = () => {
   const [value, setValue] = useState();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState([]);
+  const [storeCode, setStoreCode] = useState(null);
+  const [startDate, setStartDate] = useState(new Date()); // 시작일
+  const [datePicker, setDatePicker] = useState(startDate);
 
   // 메뉴 데이터를 가져오는 useEffect
   useEffect(() => {
@@ -41,7 +46,7 @@ const SalesWrite = () => {
       axiosInToken(token)
         .get("menuList")
         .then(res => {
-          console.log(res.data);
+          console.log("menuList" + JSON.stringify(res.data));
           setOptions(res.data.map(m => ({ label: m.menuName, value: m.menuCode })));
           setMenuList([...res.data]);
         })
@@ -52,6 +57,25 @@ const SalesWrite = () => {
     //if(token!=null && token!=='') fetchData();
     fetchData();
   }, [token]);
+
+  const formattedDate = datePicker.toISOString().split("T")[0];
+
+  // / fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
+
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
   // 순번, 상품명, 수량, 매출 합계 상태 (배열로 관리)
   const [rows, setRows] = useState([
@@ -108,18 +132,18 @@ const SalesWrite = () => {
     setSalesList([...sendSalesList]);
     axiosInToken(token)
       .post("salesWrite", {
-        salesDate: date,
-        storeCode: initSaleItem.storeCode,
+        salesDate: datePicker,
+        storeCode: storeCode,
         salesList: sendSalesList,
       })
       .then(res => {
         console.log(res.data);
         setIsTemp(flag === 1);
         if (flag === 1) {
-          alert(`${date}일 매출이 임시저장되었습니다`);
+          alert(`${formattedDate}일 매출이 임시저장되었습니다`);
         } else if (flag === 2) {
           setIsSaved(true);
-          alert(`${date}일 매출이 등록되었습니다`);
+          alert(`${formattedDate}일 매출이 등록되었습니다`);
         }
       })
       .catch(err => {
@@ -130,18 +154,18 @@ const SalesWrite = () => {
 
   const changeDate = newDate => {
     setDatePicker(newDate);
-    if (newDate.startDate === null) return;
-    const d = newDate.startDate;
-    const year = d.getFullYear(); // 2023
-    const month = (d.getMonth() + 1).toString().padStart(2, "0"); // 06
-    const day = d.getDate().toString().padStart(2, "0"); // 18
-    const dateString = year + "-" + month + "-" + day; // 2023-06-18
-    console.log(dateString);
-    setDate(dateString);
+    // if (newDate.startDate === null) return;
+    // const d = newDate.startDate;
+    // const year = d.getFullYear(); // 2023
+    // const month = (d.getMonth() + 1).toString().padStart(2, "0"); // 06
+    // const day = d.getDate().toString().padStart(2, "0"); // 18
+    // const dateString = year + "-" + month + "-" + day; // 2023-06-18
+    // console.log(dateString);
+    // setDate(dateString);
 
     setSalesList([]);
     axiosInToken(token)
-      .post("salesTemp", { salesDate: dateString, storeCode: initSaleItem.storeCode })
+      .post("salesTemp", { salesDate: startDate, storeCode: storeCode })
       .then(res => {
         console.log(res);
         setSalesList([...res.data]);
@@ -184,7 +208,18 @@ const SalesWrite = () => {
           <SelectData>
             <SalesDateText>매출 일자</SalesDateText>
 
-            <Datepicker useRange={false} asSingle={true} value={datePicker} onChange={changeDate} />
+            {/* <Datepicker useRange={false} asSingle={true} value={datePicker} onChange={changeDate} /> */}
+
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+              <DatePicker
+                slotProps={{ textField: { size: "small" } }}
+                format="yyyy-MM-dd"
+                useRange={false}
+                asSingle={true}
+                value={startDate}
+                onChange={changeDate}
+              />
+            </LocalizationProvider>
           </SelectData>
 
           <TempSaveButton
@@ -209,7 +244,7 @@ const SalesWrite = () => {
 
       <TableHeader>
         <TableHeaderItem1>순번</TableHeaderItem1>
-        <TableHeaderItem2>상품명</TableHeaderItem2>
+        <TableHeaderItem2>메뉴</TableHeaderItem2>
         <TableHeaderItem3>수량</TableHeaderItem3>
         <TableHeaderItem4>매출 합계</TableHeaderItem4>
         <TableHeaderItem5>삭제</TableHeaderItem5>
@@ -256,6 +291,7 @@ const SalesWrite = () => {
               options={options.filter(
                 o => salesList.filter(s => o.value === s.menuCode).length === 0
               )}
+              placeholder="메뉴를 입력하세요"
               isClearable={true}
               value={value}
               inputValue={inputValue}
@@ -300,11 +336,12 @@ const SalesWrite = () => {
 
 const HeadingContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   position: relative;
   // margin-bottom: 38px;
   margin-bottom: 50px;
+  font-weight: bold;
 `;
 
 const HeadingContainer1 = styled.div`

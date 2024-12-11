@@ -1,121 +1,49 @@
 // Yearly.js
 import { Accordion, AccordionBody, AccordionHeader } from "@material-tailwind/react";
-import axios from "axios";
-import { useAtomValue } from "jotai/react";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
-import { axiosInToken, url } from "../../config.js";
 
-const Customize = ({ storeCode, startDate, endDate }) => {
-  const [salesData, setSalesData] = useState([]);
-  const [analysis, setAnalysis] = useState([{}]);
+const Customize = ({ menu, analyzeData }) => {
   const [menuCategory, setMenuCategory] = useState([]);
   const [open, setOpen] = React.useState(0);
-  const token = useAtomValue(tokenAtom);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const handleOpen = value => {
     setOpen(prevOpen => (prevOpen === value ? 0 : value));
   };
 
-  const formattedStartDate = new Date(startDate).toISOString().split("T")[0]; // YYYY-MM-DD
-  const formattedEndDate = new Date(endDate).toISOString().split("T")[0]; // YYYY-MM-DD
+  useEffect(() => {
+    const tmc = menu.map(x => x.menuCategoryName);
+    const mn = tmc.filter((m, i) => tmc.indexOf(m) === i).map(c => ({ menuCategoryName: c }));
+    console.log(mn);
+    setMenuCategory(mn);
+    console.log(analyzeData);
 
-  // menu category 가져오기
-  const getMenuCategory = () => {
-    axios
-      .get(`${url}/selectMenuCategory`)
-      .then(res => {
-        console.log(res.data);
-        setMenuCategory(res.data);
-      })
-      .catch(err => {
-        console.log(err);
+    if (analyzeData !== null) {
+      let count = 0,
+        amount = 0;
+      analyzeData.forEach(s => {
+        count += s.salesCount;
+        amount += s.salesAmount;
       });
-  };
 
-  useEffect(() => {
-    getMenuCategory(); // 카테고리 데이터 가져오기
-  }, []);
-
-  useEffect(() => {
-    const fetchData = () => {
-      axiosInToken(token)
-        .get(`customAnalysis/${storeCode}`, {
-          params: {
-            startDate: formattedStartDate,
-            endDate: formattedEndDate,
-          },
-        })
-        .then(res => {
-          const groupedData = res.data.reduce((acc, item) => {
-            const { menuName, menuCategoryName, salesCount, price } = item;
-
-            // 카테고리 이름 없으면, 새로 생성
-            if (!acc[menuCategoryName]) {
-              acc[menuCategoryName] = {};
-            }
-
-            // 카테고리 안에 menuName 없으면 새로운 객체 생성
-            if (!acc[menuCategoryName][menuName]) {
-              acc[menuCategoryName][menuName] = {
-                menuName,
-                salesCount,
-                price,
-              };
-            }
-            // 수량과 금액 합산
-            acc[menuCategoryName][menuName].salesCount += salesCount;
-            acc[menuCategoryName][menuName].price += price * salesCount; // 금액은 가격 * 수량으로 계산
-
-            return acc;
-          }, {});
-
-          // 그룹화된 데이터 확인
-          console.log("groupedData" + JSON.stringify(groupedData));
-
-          setSalesData(groupedData); // 카테고리별로 상품 데이터 설정
-
-          // 총 합계 계산
-          let totalQuantity = 0;
-          let totalRevenue = 0;
-          Object.values(groupedData).forEach(category => {
-            Object.values(category).forEach(item => {
-              totalQuantity += item.salesCount;
-              totalRevenue += item.price;
-            });
-          });
-
-          setTotalQuantity(totalQuantity); // 총 판매 수량 설정
-          setTotalRevenue(totalRevenue); // 총 판매 금액 설정
-        })
-
-        .catch(err => {
-          console.log(err);
-        });
-    };
-
-    if (token != null && token !== "") fetchData();
-  }, [token, storeCode]);
-
-  function Icon({ id, open }) {
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className={`${open === id ? "rotate-180" : ""} h-5 w-5 transition-transform`}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-      </svg>
-    );
-  }
+      setTotalQuantity(count);
+      setTotalRevenue(amount);
+    }
+  }, [menu, analyzeData]);
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textalign: "center",
+        width: "1200px",
+        marginLeft: "-110px", // 왼쪽으로 200px 이동
+      }}
+    >
       <FirstBody>
         <Title4>매출 현황(사용자 지정)</Title4>
 
@@ -124,12 +52,10 @@ const Customize = ({ storeCode, startDate, endDate }) => {
           <SummaryBox>
             <SummaryTitle>총 판매 수량</SummaryTitle>
             <SummaryValue>{totalQuantity.toLocaleString()}개</SummaryValue>
-            <SummaryCategory>모든 상품</SummaryCategory>
           </SummaryBox>
           <SummaryBox>
             <SummaryTitle>총 판매 금액</SummaryTitle>
             <SummaryValue>{totalRevenue.toLocaleString()}원</SummaryValue>
-            <SummaryCategory>모든 상품</SummaryCategory>
           </SummaryBox>
         </SummaryRow>
       </FirstBody>
@@ -144,34 +70,45 @@ const Customize = ({ storeCode, startDate, endDate }) => {
               <SalesTable>
                 <thead>
                   <TableRow style={{ backgroundColor: "#DEDEDE" }}>
-                    <TableColumn style={{ width: "70%" }}>상품명</TableColumn>
-                    <TableColumn style={{ width: "15%" }}>합계 수량</TableColumn>
-                    <TableColumn style={{ width: "15%" }}>합계 금액</TableColumn>
+                    <TableColumn style={{ width: "70%", border: "solid 1px lightgray" }}>
+                      상품명
+                    </TableColumn>
+                    <TableColumn style={{ width: "15%", border: "solid 1px lightgray" }}>
+                      합계 수량
+                    </TableColumn>
+                    <TableColumn style={{ width: "15%", border: "solid 1px lightgray" }}>
+                      합계 금액
+                    </TableColumn>
                   </TableRow>
                 </thead>
                 <tbody>
-                  {Object.values(salesData[category.menuCategoryName] || {}).length > 0 ? (
-                    Object.values(salesData[category.menuCategoryName] || {}).map((data, idx) => (
-                      <TableRow key={idx}>
-                        <TableCell>{data.menuName}</TableCell>
-                        <TableCell>{data.salesCount}</TableCell>
-                        <TableCell>{data.price.toLocaleString()}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan="5" style={{ textAlign: "center" }}>
-                        데이터가 없습니다
-                      </TableCell>
-                    </TableRow>
-                  )}
+                  {analyzeData !== null &&
+                    menu
+                      .filter(m => m.menuCategoryName === category.menuCategoryName)
+                      .map(data => (
+                        <TableRow key={data.menuCode}>
+                          <TableCell style={{ border: "solid 1px lightgray" }}>
+                            {data.menuName}
+                          </TableCell>
+                          <TableCell style={{ border: "solid 1px lightgray" }}>
+                            {analyzeData
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesCount.toLocaleString() || "-"}
+                          </TableCell>
+                          <TableCell style={{ border: "solid 1px lightgray" }}>
+                            {analyzeData
+                              .find(d => d.menuCode === data.menuCode)
+                              ?.salesAmount.toLocaleString() || "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </tbody>
               </SalesTable>
             </StyledAccordionBody>
           </Accordion>
         ))}
       </StyledAccordionContainer>
-    </>
+    </div>
   );
 };
 
@@ -203,19 +140,24 @@ const SummaryRow = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  gap: 80px;
+  gap: 40px;
   padding-top: 20px;
 `;
 
 const SummaryBox = styled.div`
   width: 230px;
-  height: 110px;
+  height: 60px;
   border: 1px solid lightgray;
   border-radius: 5px;
-  padding: 20px;
+  // padding: 20px;
+  padding-top: 8px;
+  padding-right: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
@@ -241,8 +183,13 @@ const SummaryCategory = styled.div`
 
 const FirstBody = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: left;
+  // flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+  padding-right: 140px;
+  height: 80px;
 `;
 
 const Title4 = styled.div`
