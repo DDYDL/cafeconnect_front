@@ -42,7 +42,7 @@ const AskDetailMain = ()=>{
                 if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
                 console.log(res);
                 alert('답변이 등록되었습니다.');
-                navigate(`/askDetailMain/${res.data}`);
+                navigate(`/askListMain`);
             })
             .catch(err=>{
                 console.log(err.response.data);
@@ -100,7 +100,7 @@ const AskDetailMain = ()=>{
                         <m.TableInfoTd><m.TableTitleSpan>답변</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                        <m.TableInfoTd><h.Textarea type='text' value={ask.askAnswer} onChange={edit}/></m.TableInfoTd>
+                        <m.TableInfoTd><h.Textarea type='text' value={ask.askAnswer} onChange={edit} spellCheck="false"/></m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </h.TableInfo>
