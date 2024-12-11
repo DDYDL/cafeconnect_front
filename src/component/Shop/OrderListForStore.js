@@ -4,6 +4,7 @@ import {
   ContainerTitleArea,
 } from "../styledcomponent/common.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
+import * as s from '../styles/StyledStore.tsx';
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -14,8 +15,10 @@ import { Select, Option } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
+import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
+
 function OrderListForStore() {
   const today = new Date();
   const monthAgo = new Date(today);
@@ -25,32 +28,52 @@ function OrderListForStore() {
   const [status, setStatus] = useState("");
   const [orderList, setOrderList] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [pageBtn, setPageBtn] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
+  
   const store = useAtomValue(memberAtom);
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token != null && token !== "") submit();
+    if (token != null && token !== "")
+       submit(1);
   }, [token, store.storeCode]);
 
   const handleStatusChange=(val)=>{
     setStatus(val);
-    submit();
+    submit(1);
   }
 
-  const submit = () => {
+  const submit = (page) => {
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
     formData.append("startDate", format(startDate, "yyyy-MM-dd"));
     formData.append("endDate", format(endDate, "yyyy-MM-dd"));
+    formData.append("page",page);
     if (status) formData.append("orderState", status);
 
     axiosInToken(token)
       .post("orderListForStore", formData)
       .then((res) => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         console.log(res.data);
+   
+        let pageInfo = res.data.pageInfo;
+        console.log(pageInfo);
+        let page = [];
+          for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+              page.push(i);
+          }
+        setPageBtn([...page]);
+        setPageInfo(pageInfo);
         setOrderList(res.data.orderList || []);
         setTotalCount(res.data.totalCount || 0);
+          
+      
       })
       .catch((err) => {
         console.log(err);
@@ -59,13 +82,15 @@ function OrderListForStore() {
 
   const cancelOrder = (code) => {
     //경고창 주문 취소 물어보기 (즉시 취소)
-
     const confirm = window.confirm("주문을 취소하시겠습니까?");
     if(!confirm) return; //false면 돌아감 
 
 
     axiosInToken(token).get(`cancelItemOrder?storeCode=${store.storeCode}&orderCode=${code}`)
     .then(res=>{
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
       if(res.data === true) {
         alert("주문 취소 완료되었습니다");
         submit();
@@ -83,30 +108,30 @@ function OrderListForStore() {
         <ContainerTitleArea>
           <h2>주문내역</h2>
         </ContainerTitleArea>
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+        
           <ol.DatePickerWrap>
-            <ol.DatePickerInputWrap>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
               <DatePicker
-                slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
+                
+                slotProps={{textField: { size: "small" } , InputLabelProps: { shrink: false } }}
                 format="yyyy-MM-dd"
                 value={startDate}
                 onChange={(newValue) => setStartDate(new Date(newValue))}
               />
               <span>~</span>
               <DatePicker
-                slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
+                className="customPicker"
+                slotProps={{ textField: { size: "small" }, InputLabelProps: { shrink: false } }}
                 format="yyyy-MM-dd"
                 value={endDate}
                 onChange={(newValue) => setEndDate(new Date(newValue))}
               />
-            </ol.DatePickerInputWrap>
             <StyledButton size="sm" theme="brown" onClick={submit}>
               조회
             </StyledButton>
+            </LocalizationProvider>
           </ol.DatePickerWrap>
-        </LocalizationProvider>
+        
 
         <ol.OrderListWrap>
           <ol.FilterWrapForStore>
@@ -114,7 +139,7 @@ function OrderListForStore() {
               총 <strong>{totalCount}</strong>건
             </div>
             <div className="status-option">
-              <Select value={status}  onChange={handleStatusChange}>
+              <Select  label="주문 상태" value={status}  onChange={handleStatusChange}>
                 <Option value="">전체</Option>
                 <Option value="주문접수">주문접수</Option>
                 <Option value="배송중">배송중</Option>
@@ -133,16 +158,16 @@ function OrderListForStore() {
             <div>주문처리상태</div>
             <div>취소신청</div>
           </ol.OrderHeader>
-          {orderList && orderList.length > 0 ? (
-  orderList.map((order, index) => (
+  {orderList && orderList.length > 0 ? (
+  orderList?.map((order, index) => (
     <ol.OrderItem
       key={index}
       onClick={() => navigate(`/orderDetail/${order.orderCode}`)}
     >
       <div>{format(new Date(order.orderDate), "yyyy-MM-dd")}</div>
       <div>{order.orderCode}</div>
-      <div>{order.orderItems.map(item => item.itemName).join(", ")}</div>
-      <div>{order.orderItems.reduce((sum, item) => sum + item.orderCount, 0)}</div>
+      <div>{order.itemNames?.join(", ")}</div>
+      <div>{order.totalCount}</div>             
       <div>{order.totalAmount.toLocaleString()}원</div>
       <div>{order.orderState}</div>
       <div>
@@ -169,6 +194,20 @@ function OrderListForStore() {
 ) : (
     <div className="mt-7 flex justify-center">주문 내역이 없습니다.</div>
 )}
+
+      <s.PageButtonGroupDiv>
+                  <s.ButtonGroupStyle variant="outlined">
+                    <s.IconButtonStyle>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    </s.IconButtonStyle>
+                    {pageBtn.map(page=>(
+                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    ))}
+                    <s.IconButtonStyle>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    </s.IconButtonStyle>
+                  </s.ButtonGroupStyle>
+       </s.PageButtonGroupDiv> 
         </ol.OrderListWrap>
       </CommonContainer>
     </CommonWrapper>

@@ -7,14 +7,14 @@ import * as o from "../styledcomponent/order.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import {useNavigate,useLocation} from 'react-router-dom';
 import {useState,useEffect}from 'react';
-import { useAtomValue } from 'jotai/react';
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from '../../atoms';
 import { axiosInToken,url } from '../../config.js';
 
 function Order() {
   const location = useLocation();
   const navigate = useNavigate();
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [orderItem,setOrderItem] = useState([]);
   const [storeInfo,setStoreInfo] = useState([]);
@@ -31,6 +31,10 @@ function Order() {
      
       axiosInToken(token).post('order', formData)
       .then(res=>{
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
          // 주문 상품 정보 
         setOrderItem(res.data.map(cart => ({ // 중첩구조라 분리 시킴 
         cartNum: cart.cartNum,
@@ -101,7 +105,12 @@ function Order() {
           cartNums: orderItem.map(item =>parseInt(item.cartNum)),
           amount: calculateTotalPrice()
         };
+
           const res = await axiosInToken(token).post('paymentRequest', paymentRequest);
+         
+          if(res.headers.authorization!=null) {
+            setToken(res.headers.authorization)
+        }
           if(res.data.isValidated === false) {
               alert("검증 실패");
               return;
@@ -156,6 +165,10 @@ function Order() {
                   };
                   console.log(paymentData);
                   const res = await axiosInToken(token).post('paymentComplete', paymentData);
+                 
+                  if(res.headers.authorization!=null) {
+                    setToken(res.headers.authorization)
+                }
                   if(res.data) {
                     alert('결제가 완료되었습니다.');
                     navigate('/orderList');
@@ -194,7 +207,7 @@ function Order() {
                   {items.map((item) => (
                     <o.OrderItemList key={item.itemCode}>
                       <div>
-                        <o.OrderItemImage src={`${url}/image/{item.itemFileNum}`} alt={item.name} />
+                        <o.OrderItemImage src={`${url}/image/{item.itemFileName}`} alt={item.name} />
                       </div>
                       <o.OrderItemInfo>
                         <o.OrderItemCategory>{item.category}</o.OrderItemCategory>
@@ -212,13 +225,27 @@ function Order() {
 
             <o.OrderInfoSection>
               <o.OrderFinalTitle>주문자 정보</o.OrderFinalTitle>
+              <o.InputGroup>
+              <o.InputLabel>가맹점명</o.InputLabel>  
               <o.InputField type="text" placeholder="이름" readOnly value={storeInfo.storeName}/>
+              </o.InputGroup>
+              <o.InputGroup>
+              <o.InputLabel>연락처</o.InputLabel>  
               <o.InputField type="tel" placeholder="연락처" readOnly value={storeInfo.storePhone}/>
-              <o.InputField type="text" placeholder="가맹점코드" readOnly value={storeInfo.storeCode}/>
-
+              </o.InputGroup>
+              <o.InputGroup>
+              <o.InputLabel>점주명</o.InputLabel>  
+              <o.InputField type="text" placeholder="점주명" readOnly value={storeInfo.ownerName}/>
+              </o.InputGroup> 
               <o.OrderFinalTitle>배송지 정보</o.OrderFinalTitle>
+              <o.InputGroup>
+              <o.InputLabel>우편번호</o.InputLabel>   
               <o.InputField type="text" placeholder="우편번호" readOnly value={storeInfo.storeAddressNum}/>
+              </o.InputGroup>
+              <o.InputGroup>
+              <o.InputLabel>주소</o.InputLabel>  
               <o.InputField type="text" placeholder="기본주소" readOnly value={storeInfo.storeAddress}/>
+              </o.InputGroup>
               {/* <o.InputField type="text" placeholder="상세주소" readOnly/> */}
             </o.OrderInfoSection>
             <o.OrderFinalTitle>결제 방법 선택</o.OrderFinalTitle>

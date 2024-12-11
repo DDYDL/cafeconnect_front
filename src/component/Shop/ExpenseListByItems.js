@@ -10,7 +10,7 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import * as ol from "../styledcomponent/orderlist.tsx";
 import { useState, useEffect } from "react";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
 import { ko } from "date-fns/locale/ko";
 import { format } from "date-fns";
@@ -23,18 +23,12 @@ function ExpenseListByItems() {
   const [startDate, setStartDate] = useState(monthAgo);
   const [endDate, setEndDate] = useState(today);
   const store = useAtomValue(memberAtom);
-  const token = useAtomValue(tokenAtom);
-
+  const [token,setToken] = useAtom(tokenAtom);
   const [orderItemSummary, setOrderItemSummary] = useState([]);
   const [summaryByMajor, setSummaryByMajor] = useState([]);
   const [summaryByMiddle, setSummaryByMiddle] = useState([]);
   const [summaryBySub, setSummaryBySub] = useState([]);
 
-  //yyyy-MM-dd형식으로 바꾸어야함!!
-  // const formatDateForServer = (dateString) => {
-  //   const date = new Date(dateString);
-  //   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  // };
 
   useEffect(() => {
     // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
@@ -50,6 +44,10 @@ function ExpenseListByItems() {
     axiosInToken(token)
       .post("expenseList", formData)
       .then((res) => {
+        
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         console.log(res.data);
 
         setOrderItemSummary(res.data.itemOrderExpsenSummary);
@@ -216,12 +214,11 @@ function ExpenseListByItems() {
           <h2>지출내역</h2>
         </ContainerTitleArea>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
+       
           <ol.DatePickerWrap>
-            <ol.DatePickerInputWrap>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
               <DatePicker
                 slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
                 format="yyyy-MM-dd"
                 value={startDate}
                 onChange={(newValue) => setStartDate(new Date(newValue))}
@@ -229,20 +226,20 @@ function ExpenseListByItems() {
               <span>~</span>
               <DatePicker
                 slotProps={{ textField: { size: "small" } }}
-                label="연-월-일"
                 format="yyyy-MM-dd"
                 value={endDate}
                 onChange={(newValue) => setEndDate(new Date(newValue))}
               />
-            </ol.DatePickerInputWrap>
             <StyledButton size="sm" theme="brown" onClick={submit}>
               조회
             </StyledButton>
+            </LocalizationProvider>
           </ol.DatePickerWrap>
-        </LocalizationProvider>
+       
         <>
-          <div class="relative overflow-x-auto shadow-md sm:rounded-lg table-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto w-max">
+
+          <div class="relative overflow-x-auto shadow-md sm:rounded-lg table-auto w-full">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto" >
               <thead class="text-xs text-gray-700 uppercase bg-gray-200   dark:bg-gray-700 dark:text-gray-400 table-auto">
                 <tr>
                   <th scope="col" class="px-6 py-3">
