@@ -80,7 +80,7 @@ function CartList() {
           alert('장바구니에서 삭제됐습니다.');
           getCartList();
             // cartCount를 업데이트
-            axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
             .then(response => {
               
               if(response.headers.authorization!=null) {

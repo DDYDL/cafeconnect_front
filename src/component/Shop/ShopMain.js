@@ -68,6 +68,17 @@ function ShopMain() {
                 .catch(err=>{
                     console.log(err);
                 })
+
+            // cartCount를 업데이트
+            axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            .then(response => {
+              
+              if(response.headers.authorization!=null) {
+                setToken(res.headers.authorization)
+            }
+              setCartCount(response.data);   //jotai 값 세팅
+            });    
+
         }
     })
     .catch(err=>{
@@ -96,7 +107,7 @@ function ShopMain() {
       if (res.data != null) {
         alert('장바구니에 등록되었습니다.');
          // cartCount를 업데이트
-      axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+         axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
       .then(response => {
         
         if(response.headers.authorization!=null) {

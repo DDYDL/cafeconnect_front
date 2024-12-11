@@ -94,8 +94,8 @@ const ShopItemDetail = () => {
             if (res.data != null) {
               alert('장바구니에 등록되었습니다.');
 
-                // cartCount를 업데이트
-          axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+          // cartCount를 업데이트
+          axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
           .then(response => {
             
             if(response.headers.authorization!=null) {
