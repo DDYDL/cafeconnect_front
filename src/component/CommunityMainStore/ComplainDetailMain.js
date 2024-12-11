@@ -15,7 +15,6 @@ import { ko } from "date-fns/locale/ko";
 const ComplainDetailMain = ()=>{
     // Jotai의 member 가져오기
     const [token,setToken] = useAtom(tokenAtom);
-    const [member, setMember] = useAtom(memberAtom);
     const {complainNum} = useParams();
     const [complain, setComplain] = useState({});
     const navigate = useNavigate();
@@ -98,9 +97,7 @@ const ComplainDetailMain = ()=>{
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd>
-                            {complain.complainAnswer==''||complain.complainAnswer==null?
-                            <h.Textarea type='text' onChange={edit}/> :
-                            <h.Textarea type='text' value={complain.complainAnswer} onChange={edit}/>}
+                            <h.Textarea type='text' value={complain.complainAnswer} onChange={edit}/>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
             <h.SaveButtonDiv>

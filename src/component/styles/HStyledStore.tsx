@@ -133,6 +133,7 @@ ${OneImgAndPDiv}:hover &{
         export const ListCntDiv = styled.div<Container>`
         margin-top:40px;
         margin-bottom:7px;
+        margin-left: 15px;
         display:flex;
         `;
         
@@ -524,8 +525,8 @@ border: none;
   height: 180px;
   font-size: 14px;
   border-radius: 8px;
-  padding-top: 10px;
-  padding-left: 10px;
+  padding-top: 20px;
+  padding-left: 25px;
 
   border: 1px solid #ccc9; /* 90% 불투명한 연한 회색 */
 `;
@@ -540,4 +541,12 @@ export const SearchIcon = styled(MagnifyingGlassIcon)`
       cursor:pointer;
     }
 
+`;
+
+export const PageCntDiv = styled.div<Container>`
+width:150px;
+    p { 
+    margin-top: 20px;
+    text-align:center;
+    }
 `;

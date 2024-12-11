@@ -48,7 +48,9 @@ const ComplainListMain = ()=>{
             <s.ContentListDiv>
                 <s.MainTitleText>컴플레인</s.MainTitleText>
                 <s.CategoryButtonGroupDiv >
-                    <h.ListCntDiv>총 10건</h.ListCntDiv>
+                    <h.ListCntDiv>
+                        <p>총&nbsp;{pageInfo.allCnt}&nbsp;건</p>
+                    </h.ListCntDiv>
                 </s.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>

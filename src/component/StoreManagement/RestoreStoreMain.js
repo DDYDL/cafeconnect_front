@@ -109,6 +109,10 @@ const RestoreStoreMain = ()=>{
                             onChange={searchRegion}
                         />
                     </h.ReactSelectDiv>
+                    <div className='w-2/4'></div>
+                    <h.PageCntDiv>
+                        <p>총&nbsp;{pageInfo.allCnt}&nbsp;건</p>
+                    </h.PageCntDiv>
                 </h.CategoryButtonGroupDiv>
 
                 <s.TableList textAlign='center'>

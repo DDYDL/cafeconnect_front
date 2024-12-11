@@ -156,9 +156,9 @@ const NoticeList = () => {
                     paddingTop: "10px",
                   }}
                 >
-                  <span style={{ color: n.noticeType === "주요" ? "red" : "black" }}>
-                    [{n.noticeType}]
-                  </span>
+                  <span style={{ color: n.noticeType === "주요" ? "red" : "black"}}>
+                    [&nbsp;{n.noticeType}&nbsp;]
+                  </span>&nbsp;&nbsp;
                   {/* {" "} */}
                   {n.noticeTitle}
                 </div>
