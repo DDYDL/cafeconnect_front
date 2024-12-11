@@ -24,8 +24,8 @@ const AskList = () => {
   const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
   const [searchAsk, setSearchAsk] = useState("");
   const [AskData, setAskData] = useState(null);
-  const [token, setToken] = useState(null);
-  const atomToken = useAtomValue(tokenAtom);
+  // const [token, setToken] = useState(null);
+  const token = useAtomValue(tokenAtom);
   const store = useAtomValue(memberAtom);
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
@@ -54,13 +54,13 @@ const AskList = () => {
   };
 
   const fetchSales = type => {
-    if (!atomToken) return;
-    axiosInToken(atomToken)
+    if (!token) return;
+    axiosInToken(token)
       .get(`/askList/${storeCode}`)
       .then(res => {
-        if (res.headers.authorization != null) {
-          setToken(res.headers.authorization);
-        }
+        // if (res.headers.authorization != null) {
+        //   setToken(res.headers.authorization);
+        // }
         console.log(res);
         setAskData({ ...res.data });
       })

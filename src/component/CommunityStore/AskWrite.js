@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAtomValue } from "jotai/react";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms";
@@ -27,22 +27,23 @@ const AskWrite = () => {
 
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const [askType, setAskType] = useState("default");
-  const [newToken, setNewToken] = useState(null);
 
-  const storeInfo = () => {
-    axiosInToken(token)
-      .get(`/store`)
-      .then(res => {
-        const newToken = res.headers.authorization;
-        if (newToken) {
-          setNewToken(newToken); // 새로운 토큰 저장
-        }
-        setAsk(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  // / fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return; // 토큰 없으면 요청 생략
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
+      setStoreCode(storeCodeFromResponse);
+      console.log("StoreCode:", storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]); // 의존성 배열에 token 추가
+
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {

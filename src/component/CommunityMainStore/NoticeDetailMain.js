@@ -19,6 +19,7 @@ const NoticeDetailMain = () => {
     const fetchNoticeDetail = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/noticeDetailMain/${noticeNum}`);
+        console.log("response" + JSON.stringify(response));
         const noticeData = response.data;
 
         // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
