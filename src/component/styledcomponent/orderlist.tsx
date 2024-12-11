@@ -11,22 +11,13 @@ export const DatePickerWrap =styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .flowbite-datepicker {
-      width: 200px;
-      
-      input {
-        height: 30px;
-        padding: 0 8px;
-        text-align: center;
-      }
-
-      button {
-        height: 30px;
-        color: #333 !important;
-        // padding: 0 4px;
-        
-      }
+    box-shadow:none;
+    border: none;
+    gap: 10px;
+   
+    input{
+    text-align: center;
+    }
 
     }
 `;
@@ -46,6 +37,8 @@ export const DatePickerInputWrap =styled.div`
     color: #333;
   }
 `;
+
+
 
 export const OrderListWrap = styled.div`
     position: relative;
@@ -80,7 +73,8 @@ export const FilterWrapForStore = styled.div`
     display: flex;
     gap: 10px;
     justify-content: flex-end;
-
+       box-shadow:none;
+    border: none;
     .total-count {
       display: flex;
       align-items: center;
@@ -95,8 +89,8 @@ export const FilterWrapForStore = styled.div`
     }
 
     .status-option{
+    
        min-width: 36px;
-       
        span,li{
        font-size: 16px;
        color: #333;

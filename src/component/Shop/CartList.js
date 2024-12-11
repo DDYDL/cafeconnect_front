@@ -13,13 +13,13 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PreviousOrderItemsModal from "./PreviousOrderItemModal.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
 import { axiosInToken,url } from "../../config.js";
 
 function CartList() {
   const navigate = useNavigate();
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -37,6 +37,9 @@ function CartList() {
     axiosInToken(token)
       .get(`cartList?storeCode=${store.storeCode}`)
       .then((res) => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         console.log(res.data);
         setCartItems(res.data);
         setTempQuantity(res.data.item.cartItemCount); // 재 조회 시 임시 수량도 저장
@@ -50,6 +53,9 @@ function CartList() {
     axiosInToken(token)
     .get(`selectPreviouOrderDate?storeCode=${store.storeCode}`)
     .then((res) => {
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
       setPrevOrderDateList(res.data.orderDates);
     })
     .catch((err) => {
@@ -64,6 +70,10 @@ function CartList() {
     formData.append("cartNum", cartNum); 
     axiosInToken(token).post('deleteCartItem', formData)
       .then(res => { //true false반환
+       
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         if (res.data === true) {
           alert('장바구니에서 삭제됐습니다.');
           getCartList();
@@ -92,6 +102,10 @@ function CartList() {
     formData.append("count",newCount);
     axiosInToken(token).post('updateCartItemQuantity', formData)
     .then(res=>{
+      
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
         alert("수량 변경 됐습니다.");
         getCartList(); // 다시 재 조회 
     }).catch(err=>{
@@ -155,7 +169,6 @@ const handleOrder = () => {
           open={isModalOpen}
           handleClose={() => setIsModalOpen(false)}
           storeCode={store.storeCode}
-          token={token}
           prevOrderDateList={prevOrderDateList}
           onSuccess={() => { // 모달에서 장바구니에 추가하는 작업이 있을 경우 실행 
             getCartList();  // 장바구니 다시 로드
@@ -179,7 +192,7 @@ const handleOrder = () => {
             <c.CartItem key={item.cartNum}>
               <div>
                 <c.ProductImage
-                  src={`${url}/image/${item.item.itemFileNum}`}
+                  src={`${url}/image/${item.item.itemFileName}`}
                   alt={item.item.itemName}
                 />
               </div>

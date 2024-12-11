@@ -13,17 +13,15 @@ import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@he
 import {useNavigate} from 'react-router-dom';
 import { tokenAtom, memberAtom } from "../../atoms";
 import { axiosInToken,url } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { format } from 'date-fns';
 
 
 function RepairRequestList() {
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
   const [selectedRepair, setSelectedRepair] = useState({});//modal에 넘김
-
   const [repairList,setRepairList] = useState([]);
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -52,6 +50,10 @@ function RepairRequestList() {
     formData.append("type",searchType);
     axiosInToken(token).post('repairRequestList',formData)
     .then (res=>{
+
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
         let pageInfo = res.data.pageInfo;
         console.log(pageInfo);
         let page = [];

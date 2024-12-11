@@ -9,18 +9,17 @@ import { StyledButton } from "../styledcomponent/button.tsx";
 import { useState, useEffect } from "react";
 import { tokenAtom, memberAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { useNavigate } from "react-router"; 
 import ReactSelect from "react-select";
 
 function RepairRequsetForm() {
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [storeInfo, setStoreInfo] = useState({}); //session에 담아줄 수 있을까..?
   const [machines, setMachines] = useState([]); // 전체 머신 가져오기[]
 
   const [selectedMachine, setSelectedMachine] = useState(null); //ReactSelect의 value속성에 활용 {value:string,label:string}형태 {}
-  
   const [respairRequest, setRepairRequest] = useState({
     repairType: "",
     itemCode: "",
@@ -42,6 +41,9 @@ function RepairRequsetForm() {
     axiosInToken(token)
       .get(`selectStore/${store.storeCode}`)
       .then((res) => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         console.log(res.data);
         setStoreInfo(res.data);
       })
@@ -55,6 +57,9 @@ function RepairRequsetForm() {
     axiosInToken(token)
       .get("machineFormList")
       .then((res) => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         // ReactSelect 컴포넌트의 value형식과 일치시켜야함{value:string,label:string}
         setMachines(res.data.map(item=>({
           value:item.itemCode,
@@ -90,6 +95,10 @@ function RepairRequsetForm() {
     }
      axiosInToken(token).post('writeRepairRequest',respairRequest)
      .then(res=>{
+
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
        if(res.data===true){
         alert("수리 신청이 등록되었습니다.");
         navigate('/repairRequestList');

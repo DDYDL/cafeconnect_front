@@ -7,12 +7,12 @@ import {
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as c from "../styledcomponent/cartlist.tsx";
 import { axiosInToken } from "../../config.js";
-
+import { useAtom } from "jotai/react";
+import { tokenAtom} from "../../atoms";
 const PreviousOrderItemsModal = ({
   open,
   handleClose,
   storeCode,
-  token,
   prevOrderDateList,
   onSuccess,
 }) => {
@@ -20,6 +20,7 @@ const PreviousOrderItemsModal = ({
   const [selectedDateIndex, setSelectedDateIndex] = useState(0); // 날짜 목록의 인덱스
   const [selectedItems, setSelectedItems] = useState([]); // 선택한 주문했던 아이템 담기
   const [orderItems, setOrderItems] = useState([]); // 구매했던 아이템 리스트
+  const [token,setToken] = useAtom(tokenAtom);
 
   useEffect(() => {
     //date가 있으면
@@ -37,6 +38,10 @@ const PreviousOrderItemsModal = ({
     axiosInToken(token)
       .post("selectPreviouOrder", formData)
       .then((res) => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         setOrderItems(res.data.items);
       })
       .catch((err) => {
@@ -85,6 +90,11 @@ const PreviousOrderItemsModal = ({
     axiosInToken(token)
       .post("addPreOrderItemToCart", formData)
       .then((res) => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
+
         alert("장바구니에 상품을 추가했습니다.");
         onSuccess(); //장바구니 리스트 재로드;
       })
