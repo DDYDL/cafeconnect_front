@@ -100,7 +100,7 @@ const PreviousOrderItemsModal = ({
 
         alert("장바구니에 상품을 추가했습니다.");
         // cartCount를 업데이트
-        axios.get(`${url}/cartAllCount?storeCode=${storeCode}`)
+        axiosInToken(token).get(`${url}/cartAllCount?storeCode=${storeCode}`)
         .then(response => {
           
           if(response.headers.authorization!=null) {

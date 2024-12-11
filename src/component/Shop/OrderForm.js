@@ -174,14 +174,17 @@ function Order() {
                   if(res.data) {
                     alert('결제가 완료되었습니다.');
                     // cartCount를 업데이트
-                    axios.get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+                    axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
                     .then(response => {
                       
                       if(response.headers.authorization!=null) {
                         setToken(res.headers.authorization)
                     }
                       setCartCount(response.data);   //jotai 값 세팅
-                    });    
+                    })
+                    .catch(err=>{
+                      console.log(err);
+                    })   
                     navigate('/orderList');
                   }
                                     
