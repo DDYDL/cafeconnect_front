@@ -33,12 +33,19 @@ const LoginStore = () => {
         setMember({...member, [e.target.name]:e.target.value});
     }
 
+    const activeEnter = (e)=>{
+        console.log(e.key);
+        if(e.key === "Enter") {
+            submit(e);
+        }
+    }
+
     const submit = (e)=>{
+        e.preventDefault();
         const formData = new FormData();
         console.log(member);
         formData.append("username", member.username);
         formData.append("password", member.password);
-        e.preventDefault();
 
         axios.post(`${url}/login`, formData)
         .then(res=>{
@@ -63,7 +70,7 @@ const LoginStore = () => {
                     if(res.data!==null) {
                         console.log(res.data);
                         // 토큰 저장에 성공 시 알람 리스트 요청
-                        axios.post(`${url}/alarms`,{storeCode:res.data})
+                        axiosInToken(token).post(`${url}/alarms`,{storeCode:res.data})
                             .then(res=> {
                                 console.log(res.data)
                                 if(res.data.length!==0) {
@@ -98,10 +105,6 @@ const LoginStore = () => {
         })
     }
 
-    const findUsername = ()=>{
-
-    }
-
     const findPassword = ()=>{
         navigate('/findPassword');
     }
@@ -131,14 +134,12 @@ const LoginStore = () => {
                         </s.ButtonDivLogin>
                         </td>
                         </tr>
-                        <tr><td><s.InputStyle name='password' width='320px' marginTop='10px' type="password" placeholder='Password' style={{padding:'15px'}} onChange={edit}/></td></tr>
+                        <tr><td><s.InputStyle onKeyDown={(e)=>activeEnter(e)} name='password' width='320px' marginTop='10px' type="password" placeholder='Password' style={{padding:'15px'}} onChange={edit}/></td></tr>
                     </tbody>
                 </table>
                 </s.LoginAlign>
 
                 <s.LoginAlignLeft marginTop='10px' textAlign='left' fontSize='12px'>
-                    <span>아이디 찾기</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h.VerticalLine/>
                     <span onClick={findPassword}>비밀번호 찾기</span>
                 </s.LoginAlignLeft>
 

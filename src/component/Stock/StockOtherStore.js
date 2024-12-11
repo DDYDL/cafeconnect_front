@@ -5,12 +5,15 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { tokenAtom } from '../../atoms.js';
 
 const StockOrderStore = () => {
     const navigate = useNavigate();
     const [itemList, setItemList] = useState([]);
     const [itemName, setItemName] = useState("");
+    const [token, setToken] = useAtom(tokenAtom);
 
     useEffect(()=>{
         setItemList([]);
@@ -19,8 +22,11 @@ const StockOrderStore = () => {
     }, [])
 
     const getItemList = ()=>{
-        axios.get(`${url}/selectItemList`)
+        axiosInToken(token).get(`${url}/selectItemList`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setItemList([...res.data]);
         })
@@ -32,8 +38,11 @@ const StockOrderStore = () => {
 
     const searchKeyword = (itemName)=>{
         console.log(itemName);
-        axios.get(`${url}/selectItemByName/${itemName}`)
+        axiosInToken(token).get(`${url}/selectItemByName/${itemName}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setItemList([...res.data]);
         })
@@ -64,7 +73,7 @@ const StockOrderStore = () => {
                         {
                             itemList.map(item=>(
                                 <s.TableTextTr key={item.itemCode} onClick={()=>selectItem(item.itemCode, item.itemName)}>
-                                    <s.TableTextTd paddingLeft='20px'><s.ImageSize src={`${url}/image/${item.itemFileNum}`}/><s.SpanSizeDiv width='300px'><s.SpanSize>{item.itemCode}</s.SpanSize><br/><s.SpanSize>{item.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
+                                    <s.TableTextTd paddingLeft='20px'><s.ImageSize src={`${url}/image/${item.itemFileName}`}/><s.SpanSizeDiv width='300px'><s.SpanSize>{item.itemCode}</s.SpanSize><br/><s.SpanSize>{item.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                     <s.TableTextTd>{item.itemMajorCategoryName}/{item.itemMiddleCategoryName}/{item.itemSubCategoryName}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemCapacity}*{item.itemUnitQuantity}/{item.itemUnit}</s.TableTextTd>
                                     <s.TableTextTd>{item.itemStorage}</s.TableTextTd>

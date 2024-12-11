@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import * as s from '../styles/StyledStore.tsx';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 
 import { Link } from 'react-router-dom';
-import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { memberAtom, tokenAtom } from '../../atoms.js';
 
 const StockOrderItemAdd = () => {
     const [orderList, setOrderList] = useState([]);
+    const [token, setToken] = useAtom(tokenAtom);
 
     // 체크박스 체크여부 확인
     const [checkOrder, setCheckOrder] = useState(false);
@@ -30,8 +31,11 @@ const StockOrderItemAdd = () => {
 
     const getOrderList = ()=>{
         console.log(member.storeCode);
-        axios.get(`${url}/selectOrderList/${member.storeCode}`)
+        axiosInToken(token).get(`${url}/selectOrderList/${member.storeCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setOrderList([...res.data]);
         })
@@ -55,8 +59,11 @@ const StockOrderItemAdd = () => {
     })
 
     const addStock = ()=>{
-        axios.get(`${url}/addStockByOrderNum/${orderNumList}`)
+        axiosInToken(token).get(`${url}/addStockByOrderNum/${orderNumList}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             alert("재고가 추가 되었습니다.");
             orderNumList.forEach(function(orderNum) {
@@ -90,7 +97,7 @@ const StockOrderItemAdd = () => {
                                 <s.TableTextTd><input type='checkbox' onChange={(e)=>orderConfirm(e.target.checked, order.orderNum)}/></s.TableTextTd>
                                 <s.TableTextTd>{order.orderCode}</s.TableTextTd>
                                 <s.TableTextTd>{order.orderDateStr}</s.TableTextTd>
-                                <s.TableTextTd><s.ImageSize src={`${url}/image/${order.itemFileNum}`}/><s.SpanSizeDiv><s.SpanSize>{order.itemCode}</s.SpanSize><br/><s.SpanSize>{order.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
+                                <s.TableTextTd><s.ImageSize src={`${url}/image/${order.itemFileName}`}/><s.SpanSizeDiv><s.SpanSize>{order.itemCode}</s.SpanSize><br/><s.SpanSize>{order.itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                 <s.TableTextTd>{order.itemMajorCategoryName}/{order.itemMiddleCategoryName}/{order.itemSubCategoryName}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemCapacity}*{order.itemUnitQuantity}/{order.itemUnit}</s.TableTextTd>
                                 <s.TableTextTd>{order.itemUnit}</s.TableTextTd>

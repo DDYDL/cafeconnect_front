@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Route, Routes } from "react-router-dom";
 
 import Header from "./component/Header/Header";
@@ -75,20 +75,27 @@ import NoticeDetailMain from "./component/CommunityMainStore/NoticeDetailMain.js
 import NoticeListMain from "./component/CommunityMainStore/NoticeListMain.js";
 import NoticeWriteMain from "./component/CommunityMainStore/NoticeWriteMain.js";
 
-import axios from "axios";
-import { useAtom, useSetAtom } from "jotai/react";
-import { alarmsAtom, fcmTokenAtom, memberAtom, memberLocalAtom } from "./atoms.js";
+import axios, { AxiosError } from "axios";
+import { useAtom, useAtomValue, useSetAtom } from "jotai/react";
+import { alarmsAtom, fcmTokenAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from "./atoms.js";
 import SalesAnalysis from "./component/CommunityStore/SalesAnalysis.js";
 import SalesWrite from "./component/CommunityStore/SalesWrite.js";
-import { url } from "./config.js";
+import { axiosInToken, url } from "./config.js";
 import { firebaseReqPermission, registerServiceWorker } from "./firebaseconfig.js";
 import SocialLogin from "./component/Main/SocialLogin.js";
 import FindPassword from "./component/Main/FindPassword.js";
+import NewPassword from "./component/Main/NewPassword.js";
 
 function App() {
   const [path, setPath] = useState(false);
   const location = useLocation();
+  const {pathname} = useLocation();
   const [member, setMember] = useAtom(memberAtom);
+  const token = useAtomValue(tokenAtom);
+
+  const navigate = useNavigate();
+  // Jotai에 있는 로그인 token 가져오기
+  const setToken = useSetAtom(tokenAtom);
 
   // 알람 state 변수
   const [alarm, setAlarm] = useState({});
@@ -96,6 +103,28 @@ function App() {
   const setFcmToken = useSetAtom(fcmTokenAtom);
   // 알람 리스트 가져오기
   const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+  // axios.defaults.withCredentials = true;
+
+  // // refresh token 만료시 에러잡고 로그아웃
+  // axios.interceptors.response.use(  
+  //     response => {
+  //     console.log(response);
+  //     return response;
+  //   },
+  //   async error => {
+  //     console.log(error);
+  //     if (error.response.status === 401) {
+  //       // Handle unauthorized access
+  //       console.log(error);
+  //       alert("로그인 시간 만료");
+  //     } else {
+  //       // Handle other errors
+  //       console.log(error);
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );  
 
   useEffect(async () => {
     // app 실행하자마자 service Worker부터 받아오기
@@ -107,12 +136,25 @@ function App() {
     firebaseReqPermission(setFcmToken, setAlarm);
 
     // 로그인 페이지는 헤더 안 보이게 하기
-    if (location.pathname === "loginStore" && path) setPath(false);
-    else if (location.pathname !== "loginStore" && !path) setPath(true);
+    console.log(location.pathname)
+    if (location.pathname === "loginStore") setPath(false);
+    else if (location.pathname !== "loginStore") setPath(true);
 
     getItemCategory();
     getMenuCategory();
   }, []);
+
+  useEffect(()=>{
+    // route 경로가 바뀔때마다 변경
+    if (pathname === "/findPassword") {
+      setPath(false);
+    }
+    else if (pathname.includes("newPassword")) {
+      setPath(false);
+      console.log("ww");
+    }
+    else if (pathname !== "/findPassword") setPath(true);
+  }, [pathname])
 
   // alarm state 변수가 바뀔 때마다 alarm이 빈 객체가 아니면 Jotai의 alarms 알람 리스트에 새로운 알람 하나 추가
   useEffect(() => {
@@ -174,6 +216,7 @@ function App() {
 
         <Route exect path="/socialLogin" element={<SocialLogin/>} />
         <Route exect path="/findPassword" element={<FindPassword/>} />
+        <Route exect path="/newPassword/:username" element={<NewPassword/>} />
 
         {/* 가맹점 페이지 링크 */}
 

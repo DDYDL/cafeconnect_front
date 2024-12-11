@@ -1,13 +1,13 @@
 import * as s from '../styles/StyledStore.tsx';
 import axios from 'axios';
-import { url } from '../../config.js';
+import { axiosInToken, url } from '../../config.js';
 
 import { Link } from 'react-router-dom';
 import { Input, Select, Option } from "@material-tailwind/react";
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { useAtom } from 'jotai/react';
-import { memberAtom } from '../../atoms.js';
+import { useAtom, useAtomValue } from 'jotai/react';
+import { memberAtom, tokenAtom } from '../../atoms.js';
 import ReactSelect from "react-select";
 import * as c from "../styledcomponent/cartlist.tsx";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -28,6 +28,7 @@ const StockManage = ({major, middle, sub})=>{
     const [itemCategoryNum, setItemCategoryNum] = useState("");
     const [stock, setStock] = useState({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
     const [upStock, setUpStock] = useState({storeCode:0, upitemCode:0, upstockExpirationDate:'', upstockReceiptDate:'', upstockCount:0});
+    const [token, setToken] = useAtom(tokenAtom);
 
     const [info, setInfo] = useState([]);
 
@@ -84,8 +85,11 @@ const StockManage = ({major, middle, sub})=>{
     }
 
     const getStockList = ()=>{
-        axios.get(`${url}/selectStockByStoreCode/${member.storeCode}`)
+        axiosInToken(token).get(`${url}/selectStockByStoreCode/${member.storeCode}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStockList(res.data);
         })
@@ -118,8 +122,11 @@ const StockManage = ({major, middle, sub})=>{
         formData.append("stockCount", stock.stockCount);
         e.preventDefault();
         
-        axios.post(`${url}/addStock`, formData)
+        axiosInToken(token).post(`${url}/addStock`, formData)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             alert("재고가 추가 되었습니다.");
             // stockList에 추가
@@ -152,8 +159,11 @@ const StockManage = ({major, middle, sub})=>{
         }
         formData.append("stockCount", upStock.upstockCount);
         
-        axios.post(`${url}/updateStock`, formData)
+        axiosInToken(token).post(`${url}/updateStock`, formData)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             alert("재고가 수정 되었습니다.");
             // stockList에 추가
@@ -168,8 +178,11 @@ const StockManage = ({major, middle, sub})=>{
 
     const deleteStock = (stockNum)=>{
         console.log(stockNum);
-        axios.get(`${url}/deleteStock/${stockNum}`) 
+        axiosInToken(token).get(`${url}/deleteStock/${stockNum}`) 
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             alert("재고가 삭제 되었습니다.");
             setStockList(res.data);
@@ -203,8 +216,11 @@ const StockManage = ({major, middle, sub})=>{
             console.log("false");
         }
         
-        axios.post(`${url}/selectStockByCategory`, formData)
+        axiosInToken(token).post(`${url}/selectStockByCategory`, formData)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStockList(res.data);
         })
@@ -215,8 +231,11 @@ const StockManage = ({major, middle, sub})=>{
     }
 
     const searchKeyword = (keyword)=>{
-        axios.get(`${url}/selectStockByKeyword/${member.storeCode}/${keyword}`)
+        axiosInToken(token).get(`${url}/selectStockByKeyword/${member.storeCode}/${keyword}`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
             console.log(res.data);
             setStockList(res.data);
         })
@@ -249,8 +268,11 @@ const StockManage = ({major, middle, sub})=>{
 
     // 아이템 리스트 가져오기
     const getItem = ()=>{
-        axios.get(`${url}/allItemList`)
+        axiosInToken(token).get(`${url}/allItemList`)
         .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
           console.log(res.data);
           setItemList([...res.data]);
           setItemListFilter([...res.data]);
@@ -471,7 +493,7 @@ const StockManage = ({major, middle, sub})=>{
                             Object.entries(stockList).map((stock, index)=>(
                                     <>
                                     <s.TableTextTr key={index} onClick={()=>stockInfo(index)}>
-                                        <s.TableTextTd width='250px'><s.ImageSize src={`${url}/image/${stock[1][0].itemFileNum}`}/><s.SpanSizeDiv><s.SpanSize>{stock[1][0].itemCode}</s.SpanSize><br/><s.SpanSize>{stock[1][0].itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
+                                        <s.TableTextTd width='250px'><s.ImageSize src={`${url}/image/${stock[1][0].itemFileName}`}/><s.SpanSizeDiv><s.SpanSize>{stock[1][0].itemCode}</s.SpanSize><br/><s.SpanSize>{stock[1][0].itemName}</s.SpanSize></s.SpanSizeDiv></s.TableTextTd>
                                         <s.TableTextTd width='150px'>{stock[1][0].itemMajorCategoryName}/{stock[1][0].itemMiddleCategoryName}/{stock[1][0].itemSubCategoryName}</s.TableTextTd>
                                         <s.TableTextTd width='100px'>{stock[1][0].itemCapacity}*{stock[1][0].itemUnitQuantity}/{stock[1][0].itemUnit}</s.TableTextTd>
                                         <s.TableTextTd width='100px'>{stock[1][0].itemStorage}</s.TableTextTd>

@@ -129,7 +129,7 @@ const ComplainWrite = () => {
             <s.TrStyle>
               <s.TableTextTd>가맹점명 *</s.TableTextTd>
               <s.TableTextTd>
-              <div className="flex gap-2 items-center">
+              <div style={{width:'630px'}} className="flex gap-2 items-center">
                <ReactSelect
                   className="w-full"
                   placeholder="가맹점명을 입력해주세요"

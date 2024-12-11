@@ -53,6 +53,7 @@ export const SignatureMenuImage = styled.img`
 
     -webkit-transition: .5s ease-in-out;
 	transition: .5s ease-in-out;
+    object-fit:contain;
 
     ${SignatureDiv}:hover &{
         margin-left: 120px;
@@ -62,7 +63,7 @@ export const SignatureMenuImage = styled.img`
 `;
 
 export const SignatureMenuP = styled.p<Container>`
-    width:170px;
+    width:190px;
     position: relative;
     padding: 0px;
     margin-left:100px;
