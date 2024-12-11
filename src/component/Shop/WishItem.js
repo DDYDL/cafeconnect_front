@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Select, Option } from "@material-tailwind/react";
-import { useAtomValue } from 'jotai/react';
+import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from '../../atoms';
 import { axiosInToken ,url} from '../../config.js';
 import { useNavigate } from "react-router";
 
 function WishItem() {
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const navigate = useNavigate();
   // 요청 받아 올 배열
@@ -37,6 +37,9 @@ function WishItem() {
     axiosInToken(token)
       .get('shopCategory')
       .then(res => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         setAllCategories(res.data.allCategory);
       })
       .catch(err => {
@@ -52,6 +55,10 @@ function WishItem() {
 
     axiosInToken(token).post('wishItem', formData)
       .then(res => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
+        console.log(res.data);
         setWishItems(res.data||[]);
       })
       .catch(err => {
@@ -86,9 +93,16 @@ function WishItem() {
       const formData = new FormData();
       formData.append("storeCode", store.storeCode);
       axiosInToken(token).post('wishItem', formData)
-        .then(res => setWishItems([...res.data]));
-      return;
-    }
+        .then(res => {
+
+          if(res.headers.authorization!=null) {
+            setToken(res.headers.authorization)
+          }
+            setWishItems([...res.data])
+            return;
+          })
+        }  
+    
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
     formData.append(level === 'major' ? 'majorNum' : level === 'middle' ? 'middleNum' : 'subNum', value);
@@ -106,7 +120,13 @@ function WishItem() {
     });
   
     axiosInToken(token).post('wishItem', formData)
-      .then(res => setWishItems([...res.data])) // 데이터 받아와서 새로운 배열생성 
+      .then(res => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+        }
+        setWishItems([...res.data])
+      }
+      ) // 데이터 받아와서 새로운 배열생성 
       .catch(err => console.log(err));
   };
 
@@ -145,6 +165,9 @@ function WishItem() {
     formData.append("check", selectedItems); // wishNum 이 담긴 배열 전달  
     axiosInToken(token).post('deleteWishItem', formData)
       .then(res => {
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         if (res.data != null) {
           alert('관심상품에서 삭제됐습니다.');
           // 관심상품 목록 페이지로 이동 (naviegate('wishList'))
@@ -160,6 +183,10 @@ function WishItem() {
   const handleAddToCart = (itemCode) => {
     axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=1`)
       .then(res => {
+       
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         if (res.data != null) {
           alert('장바구니에 등록되었습니다.');
         }
@@ -265,7 +292,7 @@ function WishItem() {
                   />
                 </w.ItemListChekcWrap>
                 <w.ItemListImg>
-                  <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} />
+                  <img src={`${url}/image/${item.itemFileName}`} alt={item.itemName} />
                 </w.ItemListImg>
                 <w.ItemListTextBox>
                   <w.ItemTitle>{item.itemName}</w.ItemTitle>

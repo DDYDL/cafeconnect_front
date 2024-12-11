@@ -7,7 +7,7 @@ import * as od from "../styledcomponent/orderdetail.tsx";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { tokenAtom, memberAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
+import { useAtomValue,useAtom } from "jotai/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { url } from "../../config.js";
@@ -16,7 +16,7 @@ function OrderDetailForStore() {
   const [orderDetail, setOrderDetail] = useState(null);
   const { orderCode } = useParams();
   const store = useAtomValue(memberAtom);
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
   const isPaymentCanceled =
     orderDetail?.paymentDetail?.paymentStatus !== "paid";
@@ -34,6 +34,10 @@ function OrderDetailForStore() {
     axiosInToken(token)
       .post("orderDetail", formData)
       .then((res) => {
+       
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         console.log(res.data);
         // 응답 데이터 가공
         const details = res.data.orderDetail;
@@ -140,7 +144,7 @@ function OrderDetailForStore() {
               <od.ProductWrap>
                 <od.ProductImage>
                   <img
-                    src={`${url}/image/${item.itemFileNum}`}
+                    src={`${url}/image/${item.itemFileName}`}
                     alt={item.itemName}
                   />
                 </od.ProductImage>

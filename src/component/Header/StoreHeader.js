@@ -10,6 +10,7 @@ import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from '
 import { useSetAtom } from 'jotai/react';
 import axios from 'axios';
 import { url } from '../../config.js';
+import { CartItem } from '../styledcomponent/cartlist.tsx';
 
 const StoreHeader = ({alarms})=>{
   // 메뉴 모달을 위한 state 변수
@@ -30,7 +31,7 @@ const StoreHeader = ({alarms})=>{
 
   const [storeList, setStoreList] = useState([]);
   const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
-
+  const [cartCount,setCartCount] =useState(0);
 
   useEffect(()=>{
     selectStoreList();
@@ -96,6 +97,17 @@ const StoreHeader = ({alarms})=>{
     console.log(value);
     getAlarmList(value);
     setStore(storeList.find(store=>store.storeCode===member.storeCode));
+  }
+
+  //장바구니 리스트카운트 조회 
+  const getCartCount =()=>{
+    axios.get(`cartAllCount?storeCode=${store.storeCode}`)
+    .then(res=>{
+        setCartCount(res.data);
+    }).catch(err=>{
+      console.log(err);
+      alert("카운트 가져오기 실패");
+    })   
   }
 
   return(
@@ -175,7 +187,12 @@ const StoreHeader = ({alarms})=>{
             </h.NavLinkIcon>
             <h.NavLinkIcon to="/repairRequestList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
             <h.NavLinkIcon to="/wishList"><h.Icon src="/wish.png"/></h.NavLinkIcon>
-            <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png"/></h.NavLinkIcon>
+            {/* 장바구니 개수 표시 */}
+            <h.NavLinkIcon to="/cartList"><h.Icon src="/cart.png"/>
+            <h.AlarmIconDiv>
+              <span>{cartCount!==null?cartCount:0}</span>
+              </h.AlarmIconDiv> 
+            </h.NavLinkIcon>
           </h.DivIcon>
         </h.Div>
 

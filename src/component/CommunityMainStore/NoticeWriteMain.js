@@ -95,7 +95,7 @@ const NoticeWriteMain = () => {
       });
   };
 
-  const noticeType = [{value:'일반', label:'공지사항'}, {value:'주요', label:'주요 공지사항'}]
+  const noticeType = [{value:'일반 공지사항', label:'공지사항'}, {value:'주요 공지사항', label:'주요 공지사항'}]
 
   return (
     <ContentListDiv>

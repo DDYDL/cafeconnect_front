@@ -8,13 +8,13 @@ import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import {useNavigate,useParams} from 'react-router-dom';
 import { tokenAtom, memberAtom } from '../../atoms';
 import { axiosInToken,url} from '../../config.js';  
-import { useAtomValue } from 'jotai/react';
+import { useAtomValue,useAtom } from "jotai/react";
 
 const ShopItemDetail = () => {
   const navigate = useNavigate();
   const [item,setItem]=useState({});  // toLocaleString()사용 시, 데이터 선언을 안했기 때문에 에러 방지를 위해 ?.(옵셔널체이닝 적용)
   const [isWished, setIsWished]= useState(false);
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom); //store.roles = ROLE_MAINSTORE 이면 버튼 비활성화 
   const [quantity, setQuantity] = useState(1);
   const {itemCode} = useParams();
@@ -31,6 +31,10 @@ const ShopItemDetail = () => {
   const getItemInfo = (itemCode) => {
     axiosInToken(token).get(`shopItemDetail/${itemCode}${store.storeCode?`?storeCode=${store.storeCode}` : ''}`)
       .then(res => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         setItem(res.data.item);
         if(res.data.wishNum!=null){
           setIsWished(true);
@@ -60,6 +64,11 @@ const ShopItemDetail = () => {
     formData.append("itemCode",itemCode);
     axiosInToken(token).post('addWishItem',formData)
       .then((res) => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
+
         if(res.data===true) {
           setIsWished(!isWished);
           alert("관심 상품 등록 성공");  
@@ -76,6 +85,10 @@ const ShopItemDetail = () => {
   const handleAddToCart = () => {
     axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${quantity}`)
       .then(res => {
+
+        if(res.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
         if (res.data != null) {
           alert('장바구니에 등록되었습니다.');
         }
@@ -94,7 +107,7 @@ const ShopItemDetail = () => {
             <d.PdtDetailLeft>
               <d.PdtDetailItemImg>
                 <d.PdtDetailItemImgArea>
-                <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemFileName} />
+                <img src={`${url}/image/${item.itemFileName}`} alt={item.itemFileName} />
                 </d.PdtDetailItemImgArea>
               </d.PdtDetailItemImg>
             </d.PdtDetailLeft>

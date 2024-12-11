@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { axiosInToken} from '../../config.js'
-import { useAtom, useAtomValue } from 'jotai/react';
+import { useAtom } from 'jotai/react';
 import { memberAtom } from '../../atoms.js';
 import { tokenAtom } from '../../atoms';
 import { format } from "date-fns";
@@ -14,7 +14,7 @@ import { ko } from "date-fns/locale/ko";
 
 const ComplainDetailMain = ()=>{
     // Jotai의 member 가져오기
-    const token = useAtomValue(tokenAtom);
+    const [token,setToken] = useAtom(tokenAtom);
     const [member, setMember] = useAtom(memberAtom);
     const {complainNum} = useParams();
     const [complain, setComplain] = useState({});
@@ -28,6 +28,8 @@ const ComplainDetailMain = ()=>{
     const select = () => {
         axiosInToken(token).get(`complainDetailMain/${complainNum}`)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
+
                 console.log(res.data)
                 let resComplain = res.data.complain;
                 setComplain({...resComplain});
@@ -42,6 +44,8 @@ const ComplainDetailMain = ()=>{
     const addAnswer = () => {
         axiosInToken(token).post('addComplainAnswer',complain)
             .then(res=> {
+                if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
+
                 console.log(res);
                 alert('코멘트 등록 및 가맹점 전송이 완료되었습니다.');
                 navigate(`/complainDetailMain/${res.data}`);

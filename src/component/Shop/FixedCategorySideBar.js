@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography, List, ListItem, ListItemPrefix, Accordion, AccordionHeader, AccordionBody } from "@material-tailwind/react";
+import { Typography, List, ListItem} from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 

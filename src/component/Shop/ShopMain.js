@@ -10,7 +10,7 @@ import axios from 'axios';
 
 function ShopMain() {
   
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [items,setItems] = useState({});
   const [quantity, setQuantity] = useState({});
@@ -30,7 +30,11 @@ function ShopMain() {
   const getMajorItems=()=>{
     axiosInToken(token).get('shopMain')
     .then(res=>{
-      setItems(res.data.allCategory)
+
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
+      setItems(res.data.allCategory);
     })
     
   }
@@ -44,6 +48,9 @@ function ShopMain() {
             // 토큰 저장에 성공 시 알람 리스트 요청
             axios.post(`${url}/alarms`,{storeCode:res.data})
                 .then(res=> {
+                  if(res.headers.authorization!=null) {
+                    setToken(res.headers.authorization)
+                }
                     console.log(res.data)
                     if(res.data.length!==0) {
                         setAlarms(res.data);
@@ -73,6 +80,9 @@ function ShopMain() {
     axiosInToken(token)
     .get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${sendQuantity}`)
     .then(res => {
+      if(res.headers.authorization!=null) {
+        setToken(res.headers.authorization)
+    }
       if (res.data != null) {
         alert('장바구니에 등록되었습니다.');
       }
@@ -95,7 +105,7 @@ function ShopMain() {
           <s.ItemListLi key={item.itemCode}>
             <s.ItemListImg>
               {/* 이미지 경로대로 업데이트하기 */}
-              <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemName} /> 
+              <img src={`${url}/image/${item.itemFileName}`} alt={item.itemName} /> 
               {store.roles==='ROLE_STORE' &&
               <s.HoverControls className="hover-controls">
                 <s.QuantityControl>
