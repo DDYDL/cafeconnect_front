@@ -149,17 +149,30 @@ const NoticeList = () => {
                   style={{
                     display: "flex",
                     justifyContent: "left",
+                    textAlign: "left",
+                    alignItems: "left",
                     width: "440px",
                     paddingLeft: "100px",
                     paddingTop: "10px",
                   }}
                 >
-                  <span style={{ color: n.noticeType === "주요 공지사항" ? "red" : "black" }}>
+                  <span style={{ color: n.noticeType === "주요" ? "red" : "black" }}>
                     [{n.noticeType}]
-                  </span>{" "}
+                  </span>
+                  {/* {" "} */}
                   {n.noticeTitle}
                 </div>
-                <div style={{ paddingRight: "20px" }}>{n.noticeDate}</div>
+                <div
+                  style={{
+                    paddingRight: "20px",
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  {n.noticeDate}
+                </div>
               </TableInfoList>
             ))
           ) : (
