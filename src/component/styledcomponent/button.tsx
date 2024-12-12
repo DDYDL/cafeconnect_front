@@ -34,12 +34,12 @@ const SIZES = {
     min-width: 52px;
   `,
   md: `
-    height: 42px;
+    height: 40px;
     font-size: 15px;
     font-weight: 500;
     line-height: 22px;
     padding: 0 16px;
-    min-width: 110px;
+    min-width: 100px;
   `,
   lg: `
     height: 56px;

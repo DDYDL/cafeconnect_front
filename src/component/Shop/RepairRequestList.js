@@ -99,6 +99,7 @@ function RepairRequestList() {
     let newDate = format(new Date(date),'yyyy-MM-dd');
     return newDate;
   }
+
   const search=()=>{
      
     if(!searchType) {
@@ -110,6 +111,19 @@ function RepairRequestList() {
       }
       getRepairRequest(1);    
   }
+
+  const handlePrevPage = () => {
+    if (pageInfo.curPage > 1) {
+      getRepairRequest(pageInfo.curPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pageInfo.curPage < pageInfo.endPage) {
+      getRepairRequest(pageInfo.curPage + 1);
+    }
+  };
+
   
   //모달
   const RepairDetailModal = ({ open, handleClose, repairData }) => {
@@ -206,6 +220,7 @@ function RepairRequestList() {
               <Input icon={<MagnifyingGlassIcon className="h-5 w-5" 
                 onClick={search}/> } 
                 label="검색어를 입력하세요"
+                onKeyDown={(e)=>e.preventDefault()}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 value={searchKeyword}
                 disabled={!searchType}  // searchType이 없을 때(전체) disabled
@@ -242,13 +257,19 @@ function RepairRequestList() {
       
         <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
-                    <s.IconButtonStyle>
+                    <s.IconButtonStyle
+                     onClick={handlePrevPage}
+                     disabled={pageInfo.curPage === 1}
+                     >
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
                     <s.IconButtonStyle key={page} onClick={()=>{getRepairRequest(page)}}>{page}</s.IconButtonStyle>
                     ))}
-                    <s.IconButtonStyle>
+                    <s.IconButtonStyle
+                    onClick={handleNextPage}
+                    disabled={pageInfo.endPage === pageInfo.curPage}
+                    >
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>

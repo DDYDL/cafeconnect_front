@@ -72,9 +72,10 @@ export const FilterWrapForStore = styled.div`
     margin: 30px 0 16px;
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
+    justify-content: space-between;
        box-shadow:none;
     border: none;
+    
     .total-count {
       display: flex;
       align-items: center;
@@ -82,10 +83,20 @@ export const FilterWrapForStore = styled.div`
       font-size: 16px;
       color: #333;
 
-      strong {
-        color: #333;
-        margin-right: 4px;
-      }
+          /* .all_counter 클래스 스타일 */
+        .all_counter {
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        /* .numbering 클래스 스타일 */
+        .numbering {
+            color: #333; /* numbering 색상을 #CBD2A4로 설정 */
+            font-weight: bold;
+            margin-left: 5px;
+        }
     }
 
     .status-option{
@@ -98,6 +109,14 @@ export const FilterWrapForStore = styled.div`
        }
     }
 `;
+
+//expenseList 
+export const ExpenseListTableDiv = styled.div`
+
+  td{align-content:center;}
+`;
+
+
 
 
 // mainsotre
@@ -114,10 +133,20 @@ export const FilterWrapForMainStore = styled.div`
     font-size: 16px;
     color: #333;
 
-    strong {
-      color: #333;
-      margin: 0 4px;
-    }
+           /* .all_counter 클래스 스타일 */
+        .all_counter {
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        /* .numbering 클래스 스타일 */
+        .numbering {
+            color: #333; /* numbering 색상을 #CBD2A4로 설정 */
+            font-weight: bold;
+            margin-left: 5px;
+        }
   }
 
   form {
@@ -125,12 +154,14 @@ export const FilterWrapForMainStore = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    justify-content: flex-end;
 
     .select-wrap {  //material select와 input의 속성 사이즈 조절하기 위해서는 containerProps={{ className: "min-w-[36px]" }}직접 select에 처리해야함  
       min-width: 36px;
     }
 
     .input-wrap {
+      width:200px;
       min-width: 46px;
     }
 
