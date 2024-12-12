@@ -39,15 +39,21 @@ function RepairRequestList() {
 
   useEffect(()=>{
     getRepairRequest(1);
-  },[token]);
+  },[token,store.storeCode,searchType]);
 
   // 목록 불러오기 
   const getRepairRequest=(page)=>{
     const formData  = new FormData();
     formData.append("storeCode",store.storeCode);
     formData.append("page",page);
-    formData.append("keyword",searchKeyword);
-    formData.append("type",searchType);
+    // searchType이 있을 때만 검색 조건 추가
+  if(searchType) {
+    formData.append("keyword", searchKeyword);
+    formData.append("type", searchType);
+  } else {
+    formData.append("keyword", "");
+    formData.append("type", "");
+  }
     axiosInToken(token).post('repairRequestList',formData)
     .then (res=>{
 
@@ -96,10 +102,15 @@ function RepairRequestList() {
   const search=()=>{
      
     if(!searchType) {
-        alert("필수 항목을 모두 입력해주세요");
+      return; // 전체 선택시 검색 불가
+      }
+      if(!searchKeyword.trim()) {
+        alert("검색어를 입력해주세요");
+        return;
       }
       getRepairRequest(1);    
   }
+  
   //모달
   const RepairDetailModal = ({ open, handleClose, repairData }) => {
     console.log('repairData:', repairData);
@@ -114,7 +125,7 @@ function RepairRequestList() {
       <r.StyledDialogBody divider>
         <r.DetailSection>
           <r.ProductInfo>
-            <img src={repairData?.imageUrl ||`${url}/image/${repairData.itemFileNum}`} alt={repairData.itemFileName} />
+            <img src={`${url}/image/${repairData.itemFileName}`}alt={repairData.itemFileName} />
             <div>
               <r.InfoLabel>상품명</r.InfoLabel>
               <r.InfoValue>{repairData?.itemName}</r.InfoValue>
@@ -176,7 +187,13 @@ function RepairRequestList() {
               <div className="select-wrap">
                 <Select
                   value={searchType}
-                  onChange={(val) => setSearchType(val)}
+                  onChange={(val) => {
+                    setSearchType(val);  
+                    if (!val) {  // 전체 선택 시
+                      setSearchKeyword('');  // 검색어 초기화
+                      getRepairRequest(1);   // 전체 목록 조회
+                    }  
+                  }}
                   label="검색구분"
                 >
                   <Option value="">전체</Option>
@@ -186,12 +203,13 @@ function RepairRequestList() {
                 </Select>
               </div>
               <div className="input-wrap">
-              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={search}/> } label="검색어를 입력하세요"  onChange={(e) => setSearchKeyword(e.target.value)}/>
-                {/* <Input
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  label="검색어를 입력하세요"
-                /> */}
+              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" 
+                onClick={search}/> } 
+                label="검색어를 입력하세요"
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                value={searchKeyword}
+                disabled={!searchType}  // searchType이 없을 때(전체) disabled
+                />
               </div>
             </form>
             <StyledButton size="md" theme="brown" onClick={()=>navigate("/repairRequest")}>
@@ -208,8 +226,8 @@ function RepairRequestList() {
           {repairList && repairList.map((item) => (
             <r.RepairItem key={item.repairNum} onClick={() => handleOpenModal(item)}> 
               <div className="flex items-center gap-4">
-                <img src={`${url}/image/${item.itemFileNum}`} alt={item.itemFileName}  className="w-20 h-20" />
-                <div>
+                <img src={`${url}/image/${item?.itemFileName}`} alt={item.itemFileName}  className="w-20 h-20" />
+                <div className="text-left">
                   <div className="text-sm text-gray-500">{formatCategory(item)}</div>
                   <div>{item.itemName}</div>
                 </div>
@@ -228,7 +246,7 @@ function RepairRequestList() {
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{getRepairRequest(page)}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>

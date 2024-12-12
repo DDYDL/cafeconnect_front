@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchButtonDiv, SearchDiv } from '../styles/StyledStore.tsx';
 import { Input } from "@material-tailwind/react";
-import { MagnifyingGlassIcon, ShoppingCartIcon,XMarkIcon,ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, ShoppingCartIcon, XMarkIcon, ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import {
   CommonWrapper,
   CommonContainer,
@@ -11,21 +11,27 @@ import {
 import * as s from "../styledcomponent/shopmain.tsx";
 import * as ss from '../styles/StyledStore.tsx';
 import FixedCategorySidebar from './FixedCategorySideBar.js';
-import { useAtomValue } from 'jotai/react';
-import { tokenAtom, memberAtom } from '../../atoms';
-import { axiosInToken,url} from '../../config.js';
-import { SpanSize } from '../styles/HStyledStore.tsx';
+import { useAtomValue, useSetAtom, useAtom } from 'jotai/react';
+import { tokenAtom, memberAtom, cartCountAtom } from '../../atoms';
+import { axiosInToken, url } from '../../config.js';
+
 
 const CategoryItemList = ({ categories }) => {
   const [searchParams] = useSearchParams();
-  const token = useAtomValue(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [items, setItems] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [quantities, setQuantities] = useState({});
   const [pageBtn, setPageBtn] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
-  
+
+  // 검색 모드인지 아닌지를 구분
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // 검색어를 저장할 상태 추가
+  const [savedSearchKeyword, setSavedSearchKeyword] = useState('');
+
 
   // 사이드바로부터 파라미터 받아오기 
   const majorNum = searchParams.get('majorNum');
@@ -33,13 +39,15 @@ const CategoryItemList = ({ categories }) => {
   const subNum = searchParams.get('subNum');
 
   useEffect(() => {
+    setIsSearchMode(false);
+    setSavedSearchKeyword(''); // 카테고리 변경 시 저장된 검색어도 초기화
     submit(1);
   }, [majorNum, middleNum, subNum]);
 
   // 병렬 처리를 위해 async await 사용
   const submit = async (page) => {
     const formData = new FormData();
-    formData.append("page",page);
+    formData.append("page", page);
     // 가장 마지막 선택 값만 전송
     if (subNum) {
       formData.append("subNum", subNum);
@@ -50,19 +58,22 @@ const CategoryItemList = ({ categories }) => {
     }
     try {
       const response = await axiosInToken(token).post('categoryItemList', formData);
-      
+
+      if (response.headers.authorization != null) {
+        setToken(response.headers.authorization)
+      }
       let pageInfo = response.data.pageInfo;
       console.log(pageInfo);
       let page = [];
-        for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
-            page.push(i);
-        }
+      for (let i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+        page.push(i);
+      }
 
       setPageBtn([...page]);
       setPageInfo(pageInfo);
       console.log(response.data.items);
       setItems(response.data.items);
-      
+
       //카테고리 재 선택 시 수량 초기화
       const newQuantities = {};
       response.data.items.forEach(item => {
@@ -73,30 +84,79 @@ const CategoryItemList = ({ categories }) => {
       console.log(err);
     }
   };
-
   //상품명으로 검색 
   const handleSearch = () => {
     if (!searchKeyword.trim()) return;
-    
+
+    setIsSearchMode(true); //r검색전환
+    setSavedSearchKeyword(searchKeyword);
+
     const formData = new FormData();
+
     formData.append("keyword", searchKeyword);
-    
+    formData.append("page", 1);
+
     axiosInToken(token).post('categoryItemSearch', formData)
       .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
         let pageInfo = res.data.pageInfo;
         console.log(pageInfo);
         let page = [];
-          for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
-              page.push(i);
-          }
-  
+        for (let i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+          page.push(i);
+        }
+
         setPageBtn([...page]);
         setPageInfo(pageInfo);
-
         setItems(res.data.items);
+        setSearchKeyword('');
       }).catch(err => {
         console.log(err);
       });
+  };
+  // 검색 페이징
+  const handleSearchPaging = async (page) => {
+    const formData = new FormData();
+    formData.append("keyword", savedSearchKeyword);
+    formData.append("page", page);
+
+    try {
+      const res = await axiosInToken(token).post('categoryItemSearch', formData);
+      if (res.headers.authorization != null) {
+        setToken(res.headers.authorization);
+      }
+      let pageInfo = res.data.pageInfo;
+      console.log(pageInfo);
+      let page = [];
+      for (let i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+        page.push(i);
+      }
+      setItems(res.data.items);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    if (isSearchMode) {
+      handleSearchPaging(page);
+    } else {
+      submit(page);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pageInfo.currentPage > 1) {
+      handlePageClick(pageInfo.currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pageInfo.currentPage < pageInfo.totalPage) {
+      handlePageClick(pageInfo.currentPage + 1);
+    }
   };
 
   const handleQuantityChange = (itemCode, change) => {
@@ -106,13 +166,28 @@ const CategoryItemList = ({ categories }) => {
     }));
   };
 
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleAddToCart = (itemCode) => {
     const quantity = quantities[itemCode] || 1;
     axiosInToken(token)
       .get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=${quantity}`)
       .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization)
+        }
         if (res.data != null) {
           alert('장바구니에 등록되었습니다.');
+          // cartCount를 업데이트
+          axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            .then(response => {
+
+              if (response.headers.authorization != null) {
+                setToken(res.headers.authorization)
+              }
+              setCartCount(response.data);   //jotai 값 세팅
+            }).catch(err => {
+              console.log(err);
+            })
         }
       }).catch(err => {
         console.log(err);
@@ -124,12 +199,12 @@ const CategoryItemList = ({ categories }) => {
     <CommonWrapper>
       <CommonContainer size='1240PX'>
         <div className="flex">
-       
-           {/* 왼쪽 사이드바 */}
-            <div className="w-[250px] sticky top-0 h-screen overflow-y-auto">
+
+          {/* 왼쪽 사이드바 */}
+          <div className="w-[250px] sticky top-0 h-screen overflow-y-auto">
             <FixedCategorySidebar categories={categories} />
           </div>
-          
+
           {/* 오른쪽 메인 컨텐츠 */}
           <div className="flex-1 pl-8">
             <ContainerTitleArea>
@@ -138,8 +213,8 @@ const CategoryItemList = ({ categories }) => {
 
             <SearchButtonDiv>
               <SearchDiv>
-                <Input 
-                  icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={handleSearch} />}
+                <Input
+                  icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={() => handleSearch(1)} />}
                   label="상품 검색"
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
@@ -156,13 +231,12 @@ const CategoryItemList = ({ categories }) => {
                 </s.CountWrapper>
               </s.ItemListAlignWrapper>
 
-              <s.ShopMainItemList>
-                <s.CategoryItemListUl>
-                  {items.map((item) => (
-                    <s.CategoryItemListLi key={item.itemCode}>
-                      <s.ItemListImg>
-                        <img src={`${url}/image/${item.itemFileName}`} alt={item.itemName} />
-                        {store.roles==='ROLE_STORE' &&
+              <s.CategoryItemListUl>
+                {items.map((item) => (
+                  <s.CategoryItemListLi key={item.itemCode}>
+                    <s.CategoryItemListImg>
+                      <img src={`${url}/image/${item.itemFileName}`} alt={item.itemName} />
+                      {store.roles === 'ROLE_STORE' &&
                         <s.HoverControls className="hover-controls">
                           <s.QuantityControl>
                             <s.QuantityButton onClick={(e) => {
@@ -185,44 +259,53 @@ const CategoryItemList = ({ categories }) => {
                             <ShoppingCartIcon className="h-6 w-6" />
                           </s.CartButton>
                         </s.HoverControls>
-                          } 
-                      </s.ItemListImg>
-                      <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
-                        <s.ItemListTextBox>
-                          <s.ItemTitle>{item.itemName}</s.ItemTitle>
-                          <s.ItemPrice>{item.itemPrice.toLocaleString()}원</s.ItemPrice>
-                          {item.itemStorage && (
-                            <s.ItemStorageLabelP>
-                              <s.ItemStorageType $storageway={item.itemStorage}>
-                                {item.itemStorage}
-                              </s.ItemStorageType>
-                            </s.ItemStorageLabelP>
-                          )}
-                        </s.ItemListTextBox>
-                      </s.ItemListA>
-                    </s.CategoryItemListLi>
-                  ))}
-                </s.CategoryItemListUl>
-              </s.ShopMainItemList>
+                      }
+                    </s.CategoryItemListImg>
+                    <s.ItemListA to={`/shopItemDetail/${item.itemCode}`}>
+                      <s.CategoryItemListTextBox>
+                        <s.CategoryItemTitle>{item.itemName}</s.CategoryItemTitle>
+                        <s.CategoryItemPrice>{item.itemPrice.toLocaleString()}원</s.CategoryItemPrice>
+                        {item.itemStorage && (
+                          <s.ItemStorageLabelP>
+                            <s.ItemStorageType $storageway={item.itemStorage}>
+                              {item.itemStorage}
+                            </s.ItemStorageType>
+                          </s.ItemStorageLabelP>
+                        )}
+                      </s.CategoryItemListTextBox>
+                    </s.ItemListA>
+                  </s.CategoryItemListLi>
+                ))}
+              </s.CategoryItemListUl>
             </s.ItemCategoryListWrapper>
-            <ss.PageButtonGroupDiv>
-                  <ss.ButtonGroupStyle variant="outlined">
-                    <ss.IconButtonStyle>
-                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
-                    </ss.IconButtonStyle>
-                    {pageBtn.map(page=>(
-                    <ss.IconButtonStyle key={page}>{page}</ss.IconButtonStyle>
-                    ))}
-                    <ss.IconButtonStyle>
-                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
-                    </ss.IconButtonStyle>
-                  </ss.ButtonGroupStyle>
-       </ss.PageButtonGroupDiv> 
+
+            <ss.PageButtonGroupDiv className="flex justify-center mt-8">
+              <ss.ButtonGroupStyle variant="outlined">
+                <ss.IconButtonStyle
+                  onClick={handlePrevPage}
+                  disabled={pageInfo.startPage <= 1}>
+                  <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous />
+                </ss.IconButtonStyle>
+                {pageBtn.map(page => (
+                  <ss.IconButtonStyle key={page}
+                    onClick={() => handlePageClick(page)}
+                    style={{
+                      backgroundColor: pageInfo.currentPage === page ? '#e5e7eb' : 'transparent'
+                    }}
+                  >
+                    {page}
+                  </ss.IconButtonStyle>
+                ))}
+                <ss.IconButtonStyle
+                  onClick={handleNextPage}
+                  disabled={pageInfo.endPage >= pageInfo.totalPage}
+                >
+                  <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next />
+                </ss.IconButtonStyle>
+              </ss.ButtonGroupStyle>
+            </ss.PageButtonGroupDiv>
           </div>
         </div>
-      
-
-
       </CommonContainer>
     </CommonWrapper>
   );

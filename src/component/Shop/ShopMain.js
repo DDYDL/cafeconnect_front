@@ -24,7 +24,8 @@ function ShopMain() {
   const [alarms, setAlarms] = useAtom(alarmsAtom);
 
   useEffect(()=>{
-    if(token!==null && token!=='') getMajorItems();
+    if(token!==null && token!=='') 
+      getMajorItems();
     getFcmToken();
   },[token]);
 
@@ -36,6 +37,9 @@ function ShopMain() {
         setToken(res.headers.authorization)
     }
       setItems(res.data.allCategory);
+    })
+    .catch(err=>{
+      console.log(err);
     })
     .catch(err=>{
       console.log(err);
@@ -77,7 +81,9 @@ function ShopMain() {
                 setToken(res.headers.authorization)
             }
               setCartCount(response.data);   //jotai 값 세팅
-            });    
+            }).catch(err=>{
+              console.log(err);
+            })    
 
         }
     })
@@ -114,12 +120,16 @@ function ShopMain() {
           setToken(res.headers.authorization)
       }
         setCartCount(response.data);   //jotai 값 세팅
-      });
-
+      }).catch(err=>{
+        console.log(err);
+      })
       }
     }).catch(err => {
       console.log(err);
       alert('장바구니 등록에 실패했습니다.');
+    })
+    .catch(err=>{
+      console.log(err);
     });
   };
 

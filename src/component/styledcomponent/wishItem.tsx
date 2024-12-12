@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 export const WishItemWrapper = styled.div`
-    position: relative;
     //width: 1240px;
     width:1000px;
     padding: 0;
+    margin: 0 auto;
+
 
 `;
 export const FilterWrapper = styled.div`    
@@ -68,33 +69,62 @@ export const CheckWrap = styled.div`
         cursor: pointer;
     }
 `;
+//그리드 시작 
 export const ItemListUl = styled.ul`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);  // 4개의 균등한 컬
+     grid-template-columns: repeat(4, 235px); // 고정된 너비
     /* grid-template-columns: repeat(auto-fill, minmax(242px, 1fr)); 1240ver. */
     gap: 20px;
     margin: 0;
     padding: 0;
     list-style: none;
-    position: relative; // 아이콘 포함시킴 
+     width: 100%;
+    //position: relative; // 아이콘 포함시킴 
 `;
 
 export const ItemListLi = styled.li`
+    // position: relative;
+    // margin-bottom: 30px;
     position: relative;
-    margin-bottom: 30px;
+    width: 235px; // 고정된 너비
+    //width: 100%;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+
+     &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 `;
 
 export const ItemListChekcWrap = styled.div`
-    margin-bottom: 5px;
+    // margin-bottom: 5px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+
+    input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
 `;
 
 export const ItemListImg = styled.div`
-    height: 230px;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%; // 1:1 비율 유지
     position: relative;
-    margin-bottom: 16px;
     overflow: hidden;
+    border-radius: 8px;
+    background-color: #f8f8f8;
 
     img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -102,31 +132,54 @@ export const ItemListImg = styled.div`
 `;
 
 export const ItemListTextBox = styled.div`
-    padding: 0 4px 0 6px;
-    height: 80px;
+    padding: 16px;
+    min-height: 100px;
+    position: relative;
 `;
 
 export const ItemTitle = styled.div`
-    font-size: 14px;
-    line-height: 16px;
-    margin: 0 0 7px 0 !important;
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 0 8px 0;
     font-family: "Noto Sans KR";
     font-weight: 500;
-    max-height: initial;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 40px; // 장바구니 아이콘 공간 확보
 `;
 
 export const ItemPrice = styled.div`
-    position: relative;
-    font-family: "Noto Sans KR";
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 14px;
+font-family: "Noto Sans KR";
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+`;
+export const CartIconWrapper = styled.div`
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    cursor: pointer;
     display: flex;
-    justify-content: flex-start;
-    align-items: baseline;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #CBD2A4;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: #b0bc8f;
+        transform: scale(1.1);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+    }
 `;
 
 export const ItemStorageLabelP = styled.p`
@@ -160,26 +213,3 @@ ${({ $storageway }) =>
 }
 `;
 
-export const CartIconWrapper = styled.div`
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-
-    &:hover {
-        background-color: rgba(203, 210, 164, 0.2);
-        transform: scale(1.1);
-    }
-
-    svg {
-        width: 20px;
-        height: 20px;
-        color: #54473F;
-    }
-`;

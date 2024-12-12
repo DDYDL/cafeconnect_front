@@ -260,30 +260,22 @@ export const CartButton = styled.button`
 
 //카테고리ShopList시작
 export const ItemCategoryListWrapper = styled.div`
-    position: relative;
-    //width: 1240px;
-    width:1000px;
-    padding: 0;
-
+    width: 100%;
+    padding: 20px 0;
 `;
 
 export const ItemListAlignWrapper= styled.div`
-    align-items: center;
     display: flex;
-    height: 4rem;
     justify-content: space-between;
-    margin-bottom: 2rem;
-    width: 100%;
-    border-bottom: 2px solid #333;
-    border-top:2px solid #333;    
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px; 
 `;
 export const CountWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    margin-top: 1rem;
     
-    /* .all_counter 클래스 스타일 */
     .all_counter {
         font-size: 16px;
         color: #333;
@@ -291,25 +283,71 @@ export const CountWrapper = styled.div`
         align-items: center;
     }
 
-    /* .numbering 클래스 스타일 */
     .numbering {
-        color: #CBD2A4; /* numbering 색상을 #CBD2A4로 설정 */
+        color: #CBD2A4;
         font-weight: bold;
-        margin-left: 5px;
+        margin: 0 5px;
     }
 `;
 export const CategoryItemListUl = styled.ul`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);  // 4개의 균등한 컬
-    /* grid-template-columns: repeat(auto-fill, minmax(242px, 1fr)); 1240ver. */
+    grid-template-columns: repeat(4, minmax(200px, 1fr)); // 최소 너비 지정
     gap: 20px;
-    margin: 0;
     padding: 0;
+    margin: 0;
     list-style: none;
-    position: relative; // 아이콘 포함시킴 
+    width: 100%;
 `;
 export const CategoryItemListLi = styled.li`
     position: relative;
+    width: 100%; // 부모 그리드 셀에 맞춤
     margin-bottom: 30px;
+    
 `;
 
+export const CategoryItemListImg = styled.div`
+   width: 100%;
+    height: 0;
+    padding-bottom: 100%; // 1:1 비율 유지
+    position: relative;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    
+    img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    &:hover .hover-controls {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+export const CategoryItemListTextBox = styled.div`
+    padding: 8px 4px;
+    height: auto;
+    min-height: 94px;
+`;
+export const CategoryItemTitle = styled.div`
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 0 8px 0;
+    font-family: "Noto Sans KR";
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+export const CategoryItemPrice = styled.div`
+    font-family: "Noto Sans KR";
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+`;
