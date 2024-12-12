@@ -69,8 +69,8 @@ const Customize = ({ menu, analyzeData }) => {
             <StyledAccordionBody>
               <SalesTable>
                 <thead>
-                  <TableRow style={{ backgroundColor: "#DEDEDE" }}>
-                    <TableColumn style={{ width: "70%", border: "solid 1px lightgray" }}>
+                  <TableRow style={{ backgroundColor: "#DEDEDE", width: "800px" }}>
+                    <TableColumn style={{ width: "50%", border: "solid 1px lightgray" }}>
                       상품명
                     </TableColumn>
                     <TableColumn style={{ width: "15%", border: "solid 1px lightgray" }}>
@@ -117,7 +117,7 @@ const StyledAccordionContainer = styled.div`
   // max-width: 600px; /* 최대 너비 설정 */
   // margin: 0 auto; /* 가운데 정렬 */
 
-  width: 100%;
+  width: 800px;
   margin-top: 20px;
   margin-bottom: 10px;
 `;
@@ -130,6 +130,9 @@ const StyledAccordionHeader = styled(AccordionHeader)`
 
 const StyledAccordionBody = styled(AccordionBody)`
   width: 100%;
+
+  display: flex;
+  justify-content: center;
   // padding: 10px;
   font-size: 16px;
 
@@ -239,7 +242,9 @@ const MetricCategory = styled.div`
 `;
 
 const SalesTable = styled.table`
-  width: 100%;
+  // width: 100%;
+
+  width: 800px;
   // margin-top: 10px;
   margin-bottom: 10px;
 `;

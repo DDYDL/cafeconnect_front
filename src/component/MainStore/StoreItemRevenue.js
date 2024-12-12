@@ -6,7 +6,7 @@ import { ko } from "date-fns/locale";
 import { useAtomValue } from "jotai/react";
 import { useEffect, useState } from "react";
 import styled from "styled-components"; // styled-components 임포트
-import { tokenAtom } from "../../atoms";
+import { memberAtom, tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { CommonWrapper, ContainerTitleArea } from "../styledcomponent/common.tsx";
@@ -15,7 +15,8 @@ import * as sr from "../styledcomponent/mainstorerevenue.tsx";
 function StoreItemRevenue() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [storeCode, setStoreCode] = useState(453287);
+  const store = useAtomValue(memberAtom);
+  const [storeCode, setStoreCode] = useState(store.storeCode);
   const token = useAtomValue(tokenAtom);
   const [item, setItem] = useState([]);
   const [storeList, setStoreList] = useState([]);
@@ -78,9 +79,16 @@ function StoreItemRevenue() {
           <h2>상품별 매출 조회</h2>
         </ContainerTitleArea>
 
-        <sr.FilterWrapWithDatePicker>
+        <sr.FilterWrapWithDatePicker
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <sr.StoreChooseWrap>
-            <Select label="선택" className="selectbox" onChange={value => setStoreCode(value)}>
+            <Select label="선택" className="selectBox" onChange={value => setStoreCode(value)}>
               {storeList.map(store => (
                 <Option key={store.storeCode} value={store.storeCode}>
                   {store.storeName}
@@ -91,6 +99,7 @@ function StoreItemRevenue() {
 
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
             <DatePicker
+              sx={{ width: "200px" }}
               slotProps={{ textField: { size: "small" }, InputLabelProps: { shrink: false } }}
               format="yyyy-MM-dd"
               value={startDate}
@@ -99,19 +108,25 @@ function StoreItemRevenue() {
             />
             <span>~</span>
             <DatePicker
+              sx={{ width: "200px" }}
               slotProps={{ textField: { size: "small" }, InputLabelProps: { shrink: false } }}
               format="yyyy-MM-dd"
               value={endDate}
               onChange={date => setEndDate(date)}
             />
           </LocalizationProvider>
-          <StyledButton size="sm" theme="brown" onClick={handleSearch}>
+          <StyledButton size="sm" theme="brown" onClick={handleSearch} style={{ height: "40px" }}>
             조회
           </StyledButton>
 
           {/* 총금액 표시 */}
           <div className="ml-4 flex items-center">
-            <Typography variant="small" color="blue-gray" className="font-bold">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="font-bold"
+              style={{ width: "220px" }}
+            >
               총금액: {totalAmount.toLocaleString()} 원
             </Typography>
           </div>
@@ -126,11 +141,11 @@ function StoreItemRevenue() {
             {/* <thead class="text-xs text-gray-700 uppercase dark:text-gray-400"> */}
             <thead className="bg-gray-100 text-s text-gray-700">
               <tr>
-                <TableHeaderCell style={{ width: "80px" }}>대분류</TableHeaderCell>
-                <TableHeaderCell style={{ width: "80px" }}>중분류</TableHeaderCell>
-                <TableHeaderCell style={{ width: "80px" }}>소분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "100px" }}>대분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "120px" }}>중분류</TableHeaderCell>
+                <TableHeaderCell style={{ width: "100px" }}>소분류</TableHeaderCell>
 
-                <TableHeaderCell style={{ width: "150px" }}>상품명</TableHeaderCell>
+                <TableHeaderCell style={{ width: "280px" }}>상품명</TableHeaderCell>
                 <TableHeaderCell>상품단가</TableHeaderCell>
                 <TableHeaderCell>상품수량</TableHeaderCell>
                 <TableHeaderCell>상품금액</TableHeaderCell>
@@ -188,11 +203,13 @@ function StoreItemRevenue() {
                     ) : (
                       ""
                     )}
-
+                    {/* numberWithCommas */}
                     <TableCell>{data.itemName}</TableCell>
-                    <TableCell>{data.itemPrice}</TableCell>
+                    {/* <TableCell>{data.itemPrice.toLocaleString()}</TableCell> */}
+                    <TableCell>{data.itemPrice.toLocaleString()}</TableCell>
                     <TableCell>{data.salesCount}</TableCell>
                     <TableCell>{data.salesAmount}</TableCell>
+
                     {index === 0 ||
                     item[index - 1].itemSubCategoryNum !== data.itemSubCategoryNum ? (
                       <TableCell
@@ -349,7 +366,7 @@ const TableHeaderCell = styled.th`
 
 const StoreCommonContainer = styled.div`
   position: relative;
-  width: ${props => props.size || "1400px"};
+  width: ${props => props.size || "1600px"};
   margin: 0 auto;
   font-family: "Noto Sans KR";
 `;

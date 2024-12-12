@@ -15,7 +15,6 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 // 공지사항 리스트(가맹점)
 const AskList = () => {
-  // const [storeCode, setStoreCode] = useState(null);
   const [ask, setAsk] = useState([]);
   const navigate = useNavigate();
   const [searchAsk, setSearchAsk] = useState("");
@@ -24,8 +23,7 @@ const AskList = () => {
   const pageCount = Math.ceil(ask.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
   const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
-  const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [filteredAsk, setFilteredAsk] = useState([]); // 필터링된 데이터 상태 추가상태
+  const [orderAsk, setOrderAsk] = useState([]);
 
   const store = useAtomValue(memberAtom);
   const storeCode = store.storeCode;
@@ -63,25 +61,6 @@ const AskList = () => {
   useEffect(() => {
     if (token != null && token !== "") fetchData();
   }, [token]);
-
-  // const fetchData = useCallback(async () => {
-  //   if (!token || !storeCode) return;
-  //   try {
-  //     const response = await axiosInToken(token).get(`/askList/${storeCode}`);
-  //     const formattedData = response.data.map(item => ({
-  //       ...item,
-  //       askDate: new Date(item.askDate).toLocaleDateString("ko-KR"),
-  //     }));
-  //     setAsk(formattedData);
-  //   } catch (err) {
-  //     console.error("컴플레인 리스트 요청 중 오류 발생:", err);
-  //     alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
-  //   }
-  // }, [token, storeCode]);
-
-  // useEffect(() => {
-  //   if (token != null && token !== "") select();
-  // }, [token]);
 
   const fetchData = () => {
     axiosInToken(token)
@@ -131,6 +110,14 @@ const AskList = () => {
     }
   };
 
+  // 등록순으로 오름차순
+  useEffect(() => {
+    if (ask) {
+      const sortedData = [...ask].sort((a, b) => b.askDate - a.askDate);
+      setOrderAsk(sortedData);
+    }
+  }, [ask]);
+
   const onSearchClick = () => {
     // setIsSearchActive(true);
     handleSearch();
@@ -142,13 +129,13 @@ const AskList = () => {
     }
   };
 
-  // const getFilteredComplains = () => {
-  //   const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
-  //   // 페이지에 맞는 데이터만 필터링
-  //   const indexOfLastItem = currentPage * itemsPerPage;
-  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  //   return filtered.slice(indexOfFirstItem, indexOfLastItem);
-  // };
+  const getFilteredAskList = () => {
+    // const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+    // 페이지에 맞는 데이터만 필터링
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return orderAsk.slice(indexOfFirstItem, indexOfLastItem);
+  };
 
   const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
@@ -206,8 +193,8 @@ const AskList = () => {
 
       {/* 조건부 렌더링 */}
       <div>
-        {getFilteredAsk().length > 0 ? (
-          getFilteredAsk().map((a, index) => (
+        {getFilteredAskList().length > 0 ? (
+          getFilteredAskList().map((a, index) => (
             <React.Fragment key={a.askNum}>
               <TableInfoList
                 style={{ paddingTop: "20px" }}
@@ -403,16 +390,6 @@ const Heading = styled.h2`
   text-align: center;
   flex-grow: 1;
 `;
-
-// const TableHeader = styled.div`
-//   display: flex;
-//   // justify-content: space-between;
-//   align-items: center;
-//   height: 50px;
-//   font-weight: bold;
-//   padding-left: 20px;
-//   padding-right: 40px;
-// `;
 
 const TableHeader = styled.div`
   display: flex;

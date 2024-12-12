@@ -1,10 +1,10 @@
 import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import { useAtomValue } from "jotai/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai/react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
+import { memberAtom, tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
 import * as s from "../styles/StyledStore.tsx";
@@ -12,16 +12,19 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 // 공지사항 리스트(가맹점)
 const NoticeList = () => {
-  const [storeCode, setStoreCode] = useState(null);
+  // const [storeCode, setStoreCode] = useState(null);
   const [notice, setNotice] = useState([]);
-  const token = useAtomValue(tokenAtom);
+  const [orderNotice, setOrderNotice] = useState([]);
   const navigate = useNavigate();
   const [searchNotice, setSearchNotice] = useState("");
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
+  const store = useAtomValue(memberAtom);
+  const [token, setToken] = useAtom(tokenAtom);
 
   const pageCount = Math.ceil(notice.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+  const storeCode = store.storeCode;
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -35,39 +38,32 @@ const NoticeList = () => {
     }
   };
 
-  const fetchStoreCode = useCallback(async () => {
-    try {
-      if (!token) return;
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode;
-      setStoreCode(storeCodeFromResponse);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
+  const fetchData = () => {
+    axiosInToken(token)
+      .get(`http://localhost:8080/noticeList`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+        const noticeData = res.data;
+        console.log("noticeData" + JSON.stringify(noticeData));
+
+        // 데이터가 배열인지 확인 후 처리
+        if (Array.isArray(noticeData)) {
+          setNotice(noticeData);
+        } else {
+          console.error("API 응답이 배열이 아닙니다:", noticeData);
+          setNotice([]);
+        }
+      })
+      .catch(error => {
+        console.error("데이터 요청 오류:", error);
+        setNotice([]); // 오류 발생 시 빈 배열로 초기화
+      });
+  };
+  useEffect(() => {
+    if (token != null && token !== "") fetchData();
   }, [token]);
-
-  useEffect(() => {
-    fetchStoreCode();
-  }, [fetchStoreCode]);
-
-  const fetchData = useCallback(async () => {
-    if (!token || !storeCode) return;
-    try {
-      const response = await axiosInToken(token).get(`/noticeList`);
-      const formattedData = response.data.map(item => ({
-        ...item,
-        noticeDate: new Date(item.noticeDate).toLocaleDateString("ko-KR"),
-      }));
-      setNotice(formattedData);
-    } catch (err) {
-      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
-      alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
-    }
-  }, [token, storeCode]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const handleItemClick = noticeNum => {
     navigate(`/noticeDetail/${noticeNum}`);
@@ -84,20 +80,27 @@ const NoticeList = () => {
     }
   };
 
+  // 등록순으로 오름차순
+  useEffect(() => {
+    if (notice) {
+      const sortedData = [...notice, { noticeDate: notice.noticeDate }].sort(
+        (a, b) => b.noticeDate - a.noticeDate
+      );
+      setOrderNotice(sortedData);
+    }
+  }, [notice]);
+
   const handleKeyDown = e => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-  const getFilteredComplains = () => {
-    const filtered = notice.filter(n =>
-      n.noticeTitle.toLowerCase().includes(searchNotice.toLowerCase())
-    );
+  const getFilteredNoticeList = () => {
     // 페이지에 맞는 데이터만 필터링
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    return filtered.slice(indexOfFirstItem, indexOfLastItem);
+    return orderNotice.slice(indexOfFirstItem, indexOfLastItem);
   };
 
   const handlePageChange = pageNumber => {
@@ -139,8 +142,8 @@ const NoticeList = () => {
         <CustomHorizontal width="basic" bg="black" />
 
         <div>
-          {getFilteredComplains().length > 0 ? (
-            getFilteredComplains().map((n, index) => (
+          {getFilteredNoticeList().length > 0 ? (
+            getFilteredNoticeList().map((n, index) => (
               <TableInfoList onClick={() => handleItemClick(n.noticeNum)} key={n.noticeNum}>
                 <div style={{ paddingLeft: "30px", width: "80px" }}>
                   {(currentPage - 1) * itemsPerPage + index + 1}
@@ -162,7 +165,6 @@ const NoticeList = () => {
                     [&nbsp;{n.noticeType}&nbsp;]
                   </span>
                   &nbsp;&nbsp;
-                  {/* {" "} */}
                   {n.noticeTitle}
                 </div>
                 <div
@@ -174,7 +176,7 @@ const NoticeList = () => {
                     textAlign: "center",
                   }}
                 >
-                  {n.noticeDate}
+                  {new Date(n.noticeDate).toLocaleDateString()}
                 </div>
               </TableInfoList>
             ))

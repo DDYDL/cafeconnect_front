@@ -120,6 +120,8 @@ const ComplainDetail = () => {
                 alignItems: "flex-start", // 수직 정렬을 위쪽으로
                 textAlign: "left", // 텍스트를 왼쪽 정렬
                 paddingLeft: "20px", // 왼쪽 여백
+                border: "1px solid rgba(234, 234, 234, 1)",
+                resize: "none",
               }}
               value={complain.complainAnswer}
             />
