@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { axiosInToken, url } from '../../config.js';
 import styled from 'styled-components';
-import Error, { logoutError } from '../../Error.js';
 
 const MyAlarmList = ()=>{
     const [alarmList, setAlarmList] = useState([]);
@@ -95,7 +94,7 @@ const MyAlarmList = ()=>{
                     alarmList.map(alarm=>(
                         <m.AlarmDiv style={{backgroundColor: alarm.alarmStatus ? "rgba(234, 234, 234, 1)" : "rgba(255, 255, 255, 1)"}}>
                             {alarm.alarmStatus ? <></> : <m.AlarmCheckboxDiv><m.AlarmCheckbox onChange={(e)=>checkAlarmConfirm(e, alarm.alarmNum)}/></m.AlarmCheckboxDiv>}
-                            <m.AlarmInnerDiv>
+                            <m.AlarmInnerDiv paddingBottom='10px'>
                                 <m.AlarmSpan>{alarm.alarmType}</m.AlarmSpan>
                                 <h.VerticalLine marginRight='10px'/>
                                 <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>{alarm.alarmDate}</m.AlarmSpan>

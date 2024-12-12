@@ -58,7 +58,7 @@ function ShopMain() {
             // 토큰 저장에 성공 시 알람 리스트 요청
 
             // 가맹점이 없으면 알림
-            if(member.storeCode === null) {
+            if(member.storeCode === null && member.roles==='ROLE_STORE') {
               alert('가맹점을 추가해주세요');
               navigate("/mystoreManage");
             }

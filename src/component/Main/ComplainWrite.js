@@ -85,6 +85,7 @@ const ComplainWrite = () => {
     axios.post(`${url}/complainWrite`, formData)
     .then(res=>{
       console.log(res.data);
+      alert("글이 등록되었습니다");
       navigate("/complain");
     })
     .catch(err=>{
@@ -123,7 +124,7 @@ const ComplainWrite = () => {
             <s.TrStyle>
               <s.TableTextTd>전화번호 *</s.TableTextTd>
               <s.TableTextTd>
-                <s.InputStyle type="text" name='userPhone' onChange={edit} required/>
+                <s.InputStyle type="text" name='userPhone' placeholder="ex) 010-1234-5678" onChange={edit} required/>
               </s.TableTextTd>
             </s.TrStyle>
             <s.TrStyle>

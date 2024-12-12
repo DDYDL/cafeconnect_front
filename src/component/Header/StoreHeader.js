@@ -2,14 +2,15 @@ import { NavLink } from 'react-router-dom';
 import * as h from '../styles/StyledHeader.tsx';
 import * as m from '../styles/StyledMypage.tsx';
 
-import {useEffect, useState} from "react";
-import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody, Option } from "@material-tailwind/react";
+import {useEffect, useRef, useState} from "react";
+import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody, Option, input } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';
 import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom,cartCountAtom } from '../../atoms.js';
 import { useSetAtom } from 'jotai/react';
 import axios from 'axios';
 import {axiosInToken,url } from '../../config.js';
+import ReactSelect from "react-select";
 import { CartItem } from '../styledcomponent/cartlist.tsx';
 
 const StoreHeader = ({alarms})=>{
@@ -31,7 +32,12 @@ const StoreHeader = ({alarms})=>{
 
   const [storeList, setStoreList] = useState([]);
   const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
- 
+
+  const inputRef = useRef(null);
+
+  // React Select
+  const [selectedStore, setSelectedStore] = useState(null); // value
+  const [storeNameList, setStoreNameList] = useState([]); // 전체 아이템 리스트
 
   useEffect(()=>{
     selectStoreList();
@@ -66,6 +72,10 @@ const StoreHeader = ({alarms})=>{
         console.log(res.data);
         setStoreList([...res.data]);
         setStore(res.data.find(store=>store.storeCode===member.storeCode));
+        setStoreNameList(res.data.map(store=>({
+          value:store.storeCode,
+          label:store.storeName
+        })))
     })
     .catch(err=>{
         console.log(err);
@@ -74,6 +84,8 @@ const StoreHeader = ({alarms})=>{
 
   //가맹점 바꾸면 알람 다시 가져오기
   const getAlarmList = (storeCode)=>{
+
+    console.log(store);
     axiosInToken(token).post(`${url}/alarms`,{storeCode:storeCode})
       .then(res=> {
         if(res.headers.authorization!=null) {
@@ -85,6 +97,7 @@ const StoreHeader = ({alarms})=>{
         }
       })
       .catch(err=>{
+        setAlarms([]);
         console.log(err);
       })
   }
@@ -103,10 +116,13 @@ const StoreHeader = ({alarms})=>{
   
   // 가맹점 바꾸기
   const changeStore = (value)=>{
-    setMember({...member, ['storeCode']:value})
+    selectStore(value);
     console.log(value);
-    getAlarmList(value);
+    console.log(store);
+    setMember({...member, ['storeCode']:value.value})
+    console.log(value.value);
     setStore(storeList.find(store=>store.storeCode===member.storeCode));
+    getAlarmList(value.value);
   }
 
   // 장바구니 카운트 가져오기 
@@ -126,6 +142,11 @@ const StoreHeader = ({alarms})=>{
       }
     }, [member.storeCode]); // member.storeCode 변경을 바로바로 적용하기 위함
 
+    //자동완성에서 입력한 상품명의 이름과 코드 변경 및 저장 
+    const selectStore = (selectedOption) => {
+        setSelectedStore(selectedOption);
+    };
+
   return(
       <div>
         <h.Div className="navbar">
@@ -133,19 +154,44 @@ const StoreHeader = ({alarms})=>{
             <NavLink to="/shopMain"><h.Logo src="/logo.svg"/></NavLink>
           </h.DivLogo>
 
-          <h.DivSide>
-            <h.SelectDivTop>
+          <m.DivSide>
+              <m.SelectDivTop>
+                <m.ReactSelectDivHeader width='150px'>
+                  <m.ReactSelectHeader
+                        isSearchable={false}
+                        placeholder={store.storeName}
+                        value={selectedStore}
+                        options={storeNameList}
+                        onChange={(e)=>changeStore(e)}
+                    />
+                </m.ReactSelectDivHeader>
+              </m.SelectDivTop>
+            {/* <h.SelectDivTop>
               <h.SelectInnerDivTop>
-                <h.SelectBoxTop label={member.storeCode === 0 ? '': member.storeCode} onChange={(e)=>changeStore(e)}>
+                <h.SelectBoxTop
+                  label={store.storeName}
+                  onChange={(e)=>changeStore(e)}
+                  ref={inputRef}
+                  selected={(element) =>
+                    { if(element) {
+                      const children = inputRef.current.children;
+                      console.log(children);
+                      // // 자식인 span에 텍스트 설정
+                      // children[1].innerHtml = element.props.name;
+                      // 처음만 라벨 보이고, 선택하면 라벨 안 보이게 하기
+                      // children[1].style.setProperty('display', 'none');
+                      return;
+                    }}}
+                >
                   {storeList.map(store=>(
-                    <Option value={store.storeCode}>{store.storeName}</Option>
+                    <Option key={store.storeCode} dangerouslySetInnerHTML={{ __html: `${store.storeName}`}} value={store.storeCode} name={store.storeName}></Option>
                   ))}
                 </h.SelectBoxTop>
               </h.SelectInnerDivTop>
-            </h.SelectDivTop>
+            </h.SelectDivTop> */}
             <h.VerticalLine/>
             <h.NavLinkSide to="/logout" onClick={logout}>로그아웃</h.NavLinkSide>
-          </h.DivSide>
+          </m.DivSide>
 
           <h.DivMenu>
             <Menu placement="bottom-start" open={openMenu}
@@ -198,7 +244,7 @@ const StoreHeader = ({alarms})=>{
               <h.Icon src="/alarm.png" onClick={handleOpen}/>
               {/* 알람 개수 표시 */}
               <h.AlarmIconDiv>
-              <span>{alarms.length!==0 && alarms.length}</span>
+              <span>{alarms.length===0 ? 0 : alarms.length}</span>
               </h.AlarmIconDiv>
             </h.NavLinkIcon>
             <h.NavLinkIcon to="/repairRequestList"><h.Icon src="/repair.png"/></h.NavLinkIcon>
@@ -221,13 +267,13 @@ const StoreHeader = ({alarms})=>{
             {alarms.length===0 ? <m.AlarmDiv width='100%' height='130px'>알람이 없습니다.</m.AlarmDiv> :
                 alarms.map((item)=>
                     <m.AlarmDiv key={item.alarmNum} width='100%' height='130px'>
-                      <m.AlarmCheckboxDiv><m.AlarmCheckbox onChange={(e)=>alarmConfirm(item.alarmNum)}/></m.AlarmCheckboxDiv>
+                      <m.AlarmCheckboxDivHeader><m.AlarmCheckbox onChange={(e)=>alarmConfirm(item.alarmNum)}/></m.AlarmCheckboxDivHeader>
                       <m.AlarmInnerDiv>
                         <m.AlarmSpan>{item.alarmType}</m.AlarmSpan>
                         <h.VerticalLine marginRight='10px'/>
                         <m.AlarmSpan fontWeight='normal' fontColor='rgba(148, 148, 148, 1)'>{item.alarmDate}</m.AlarmSpan>
                       </m.AlarmInnerDiv>
-                      <m.AlarmSpanContent>{item.alarmContent}</m.AlarmSpanContent>
+                      <m.AlarmTextDiv><m.AlarmSpanContent>{item.alarmContent}</m.AlarmSpanContent></m.AlarmTextDiv>
                     </m.AlarmDiv>
                 )
             }
