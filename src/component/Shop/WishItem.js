@@ -12,7 +12,6 @@ import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
 import { tokenAtom, memberAtom, cartCountAtom } from '../../atoms';
 import { axiosInToken ,url} from '../../config.js';
 import { useNavigate } from "react-router";
-import axios from 'axios';
 
 function WishItem() {
   const [token,setToken] = useAtom(tokenAtom);
@@ -31,9 +30,15 @@ function WishItem() {
   // 처음엔 카테고리와 카테고리 선택 안한 전체 데이터 가져오기 
   useEffect(() => {
     submit();
-    getCategories();
+    
   }, [token,store.storeCode]);
 
+
+  useEffect(()=>{
+    getCategories();
+  }, [token,store.storeCode])
+  
+  
   const getCategories = () => {
     axiosInToken(token)
       .get('shopCategory')
@@ -171,9 +176,24 @@ function WishItem() {
       }
         if (res.data != null) {
           alert('관심상품에서 삭제됐습니다.');
-          // 관심상품 목록 페이지로 이동 (naviegate('wishList'))
-          submit();
-        }
+     
+
+        // 이전 상태를 기반으로 카테고리 초기화
+        setSelectedCategory({
+            major: '',
+            middle: '',
+            sub: ''
+          
+        });
+          //handleCategoryChange('major','');
+          // 대분류 선택을 초기화하면서 전체 데이터를 불러옴
+          //setSelectedCategory({ major: '', middle: '', sub: '' });
+          // // 관심상품 목록 페이지로 이동 (naviegate('wishList'))
+           submit();
+          // // 선택된 아이템 초기화
+          setSelectedItems([]);
+          setSelectAll(false);
+         }
       })
       .catch(err => {
         console.log(err);
@@ -220,8 +240,8 @@ function WishItem() {
         </ContainerTitleArea>
         <w.WishItemWrapper>
           <w.FilterWrapper >
-            <div className="min-w-[36px]">
-              <Select
+            <w.ButtonInnerDiv>
+              <w.SelectStyle
                 variant="outlined"
                 label="대분류"
                 onChange={(value) => handleCategoryChange('major', value)}
@@ -232,11 +252,11 @@ function WishItem() {
                     {category.itemCategoryName}
                   </Option>
                 ))}
-              </Select>
-            </div>
+              </w.SelectStyle>
+            </w.ButtonInnerDiv>
 
-            <div className="min-w-[36px]">
-              <Select
+            <w.ButtonInnerDiv>
+              <w.SelectStyle
                 variant="outlined"
                 label="중분류"
                 onChange={(value) => handleCategoryChange('middle', value)}
@@ -248,11 +268,11 @@ function WishItem() {
                     {category.itemCategoryName}
                   </Option>
                 ))}
-              </Select>
-            </div>
+              </w.SelectStyle>
+            </w.ButtonInnerDiv>
 
-            <div className="min-w-[36px]">
-              <Select
+            <w.ButtonInnerDiv>
+              <w.SelectStyle
                 variant="outlined"
                 label="소분류"
                 onChange={(value) => handleCategoryChange('sub', value)}
@@ -264,10 +284,11 @@ function WishItem() {
                     {category.itemCategoryName}
                   </Option>
                 ))}
-              </Select>
-            </div>
+              </w.SelectStyle>
+            </w.ButtonInnerDiv>
 
           </w.FilterWrapper>
+          <w.StatsWrapper>
           <w.CountWrapper>
             <span className="all_counter">
               총<span className="numbering">{wishItems.length}</span>개
@@ -293,6 +314,8 @@ function WishItem() {
               삭제
             </StyledButton>
           </w.WishtemDeleteWrapper>
+          </w.StatsWrapper>
+
 
           <w.ItemListUl>
             {wishItems?.map((item) => (

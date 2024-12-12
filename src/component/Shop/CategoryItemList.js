@@ -88,7 +88,7 @@ const CategoryItemList = ({ categories }) => {
   const handleSearch = () => {
     if (!searchKeyword.trim()) return;
 
-    setIsSearchMode(true); //r검색전환
+    setIsSearchMode(true); //검색전환
     setSavedSearchKeyword(searchKeyword);
 
     const formData = new FormData();
@@ -133,6 +133,8 @@ const CategoryItemList = ({ categories }) => {
       for (let i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
         page.push(i);
       }
+      setPageBtn([...page]);
+      setPageInfo(pageInfo);
       setItems(res.data.items);
     } catch (err) {
       console.log(err);
@@ -148,14 +150,14 @@ const CategoryItemList = ({ categories }) => {
   };
 
   const handlePrevPage = () => {
-    if (pageInfo.currentPage > 1) {
-      handlePageClick(pageInfo.currentPage - 1);
+    if (pageInfo.curPage > 1) {
+      handlePageClick(pageInfo.curPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    if (pageInfo.currentPage < pageInfo.totalPage) {
-      handlePageClick(pageInfo.currentPage + 1);
+    if (pageInfo.curPage < pageInfo.endPage) {
+      handlePageClick(pageInfo.curPage + 1);
     }
   };
 
@@ -283,14 +285,14 @@ const CategoryItemList = ({ categories }) => {
               <ss.ButtonGroupStyle variant="outlined">
                 <ss.IconButtonStyle
                   onClick={handlePrevPage}
-                  disabled={pageInfo.startPage <= 1}>
+                  disabled={pageInfo.curPage === 1}>
                   <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous />
                 </ss.IconButtonStyle>
                 {pageBtn.map(page => (
                   <ss.IconButtonStyle key={page}
                     onClick={() => handlePageClick(page)}
                     style={{
-                      backgroundColor: pageInfo.currentPage === page ? '#e5e7eb' : 'transparent'
+                      backgroundColor: pageInfo.curPage === page ? '#e5e7eb' : 'transparent'
                     }}
                   >
                     {page}
@@ -298,7 +300,7 @@ const CategoryItemList = ({ categories }) => {
                 ))}
                 <ss.IconButtonStyle
                   onClick={handleNextPage}
-                  disabled={pageInfo.endPage >= pageInfo.totalPage}
+                  disabled={pageInfo.endPage === pageInfo.curPage}
                 >
                   <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next />
                 </ss.IconButtonStyle>

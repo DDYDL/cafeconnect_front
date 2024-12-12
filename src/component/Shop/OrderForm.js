@@ -54,7 +54,7 @@ function Order() {
         console.log(err);
       })
 
-  },[token,location.state]);
+  },[token,location.state,store.storeCode]);
   
   // StorageType별로 상품 그룹화
   //reduce(누적값,현재값) : 배열의 값을 누적해서 처리, 배열 요소 순회하며 차례로 처리, 하나의 최종 결과를 반환, 결과는 배열,객체,숫자 등 원하는 형태 가능
@@ -191,15 +191,18 @@ function Order() {
               } catch (error) {
                   console.error('주문 처리 실패:', error);
                   alert('주문 처리 중 오류가 발생했습니다.');
+                  navigate('/cartList');
               }
           } else {
               alert(`결제 실패: ${error_msg}`);
+              navigate('/cartList');
           }
       });
 
   } catch(err) {
       console.error(err);
       alert('결제 요청 중 오류가 발생했습니다.');
+      navigate('/cartList');
   }
   };
    
