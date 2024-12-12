@@ -8,8 +8,11 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import * as m from "../styles/StyledMain.tsx";
 import axios from "axios";
-
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 function ItmListCopy() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startPage, setStartPage] = useState(0);
@@ -108,7 +111,7 @@ function ItmListCopy() {
   };
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/majorCategoryCopy`
       );
       setMajorCategoryList(response.data);
@@ -118,7 +121,7 @@ function ItmListCopy() {
   };
   const fetchMiddleData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
@@ -129,7 +132,7 @@ function ItmListCopy() {
 
   const fetchSubData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/subCategoryCopy?categoryName=${value}`
       );
       setSubCategoryList(response.data);
@@ -142,7 +145,7 @@ function ItmListCopy() {
     try {
       
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/itemListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
 
@@ -251,7 +254,7 @@ function ItmListCopy() {
   const fetchCategoryData = async (category, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/itemListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&ItemCategorySubName=${category.ItemCategorySubName}&pageNum=${pageNum}&pageSize=10`
       );
       
@@ -359,10 +362,12 @@ function ItmListCopy() {
   };
 
   useEffect(() => {
-    
-    fetchKeywordData("", 0);
+    if(token){
+      fetchKeywordData("", 0);
     fetchMajorData();
-  }, []);
+    }
+    
+  }, [token]);
 
   return (
     <>

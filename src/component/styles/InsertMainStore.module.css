@@ -630,8 +630,9 @@
   border-radius: 5px;
   display: flex;
   height: 53px;
-  left: 0;
-  min-width: 169px;
+  left: -350px;
+  width: 100px;
+  height: 30px;
   padding: 20px 48px;
   position: absolute;
   top: 0;
@@ -646,6 +647,10 @@
   text-align: center;
   white-space: nowrap;
   width: 72px;
+  position:absolute;
+  left:14px;
+  top:15px;
+  font-size:12px;
 }
 
 .InsertMainStore .footer {

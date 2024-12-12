@@ -10,8 +10,12 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
 import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 import axios from "axios";
 function MenuList() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startPage, setStartPage] = useState(0);
@@ -54,7 +58,7 @@ function MenuList() {
   };
   const fetchMenuCategory = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/menuCategoryCopy`
       );
       setCategoryList(response.data);
@@ -66,7 +70,7 @@ function MenuList() {
   const fetchKeywordData = async (keyword, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/menuListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
       console.log(response.data);
@@ -167,7 +171,7 @@ function MenuList() {
   const fetchCategoryData = async (category, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/menuListByCategory?categoryName=${category}&pageNum=${pageNum}&pageSize=10`
       );
 
@@ -273,9 +277,12 @@ function MenuList() {
   };
 
   useEffect(() => {
-    fetchKeywordData("", 0);
+    if(token){
+      fetchKeywordData("", 0);
     fetchMenuCategory();
-  }, []);
+    }
+    
+  }, [token]);
 
   return (
     <>

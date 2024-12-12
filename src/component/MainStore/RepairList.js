@@ -11,7 +11,11 @@ import axios from "axios";
 import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 function RepairListCopy() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startPage, setStartPage] = useState(0);
@@ -100,7 +104,7 @@ function RepairListCopy() {
 
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/majorCategoryCopy`
       );
       setMajorCategoryList(response.data);
@@ -111,7 +115,7 @@ function RepairListCopy() {
   };
   const fetchMiddleData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
@@ -123,7 +127,7 @@ function RepairListCopy() {
   const fetchKeywordData = async (keyword, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/repairListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
 
@@ -229,7 +233,7 @@ function RepairListCopy() {
   const fetchCategoryData = async (category, pageNum) => {
     try {
       setLoading(true);
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/repairListByCategory?ItemCategoryMajorName=${category.ItemCategoryMajorName}&ItemCategoryMiddleName=${category.ItemCategoryMiddleName}&pageNum=${pageNum}&pageSize=10`
       );
       console.log(response.data);
@@ -336,9 +340,12 @@ function RepairListCopy() {
   };
 
   useEffect(() => {
-    fetchKeywordData("", 0);
+    if(token){
+      fetchKeywordData("", 0);
     fetchMajorData();
-  }, []);
+    }
+    
+  }, [token]);
 
   return (
     <>
