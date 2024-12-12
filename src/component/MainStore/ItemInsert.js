@@ -9,7 +9,11 @@ import { Option, Select } from "@material-tailwind/react";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
 import logo from '../assets/img/logo.svg'
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 function ItemInsert() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [item, setItem] = useState({
     itemName: "",
     itemPrice: "",
@@ -104,7 +108,7 @@ function ItemInsert() {
 
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      const response = await axiosInToken(token).get(`http://localhost:8080/majorCategory`);
       setMajorCategoryList(response.data);
     } catch (error) {
       console.log(error);
@@ -113,7 +117,7 @@ function ItemInsert() {
 
   const fetchMiddleData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/middleCategory?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
@@ -124,7 +128,7 @@ function ItemInsert() {
 
   const fetchSubData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/subCategory?categoryName=${value}`
       );
       setSubCategoryList(response.data);
@@ -172,7 +176,7 @@ function ItemInsert() {
     formData.append("itemSaveForm", blob);
     console.log(blob);
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         "http://localhost:8080/addItem",
         formData
       );
@@ -187,8 +191,11 @@ function ItemInsert() {
     handleUpload();
   };
   useEffect(() => {
-    fetchMajorData();
-  }, []);
+    if(token){
+      fetchMajorData();
+    }
+    
+  }, [token]);
 
   return (
     <>
@@ -487,7 +494,7 @@ function ItemInsert() {
                     </div>
                     <div
                       className={styles["product-thumb-1bfdce747webp"]}
-                      style={{marginRight:"10px",display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",marginTop:"10px",borderRadius:"5px",color:"white"}}
+                      style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",borderRadius:"5px",color:"white",height:"30px",fontSize:"14px"}}
                       onClick={handleUploadImage}
                       
                     >업로드</div>

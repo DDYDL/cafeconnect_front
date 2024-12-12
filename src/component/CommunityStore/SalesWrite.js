@@ -37,8 +37,8 @@ const SalesWrite = () => {
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState([]);
   const [storeCode, setStoreCode] = useState(null);
-  const [startDate, setStartDate] = useState(new Date()); // 시작일
-  const [datePicker, setDatePicker] = useState(startDate);
+  const [salesDate, setSalesDate] = useState(new Date()); // 시작일
+  const [datePicker, setDatePicker] = useState(salesDate);
 
   // 메뉴 데이터를 가져오는 useEffect
   useEffect(() => {
@@ -152,23 +152,61 @@ const SalesWrite = () => {
       });
   };
 
+  // const changeDate = newDate => {
+  //   setDatePicker(newDate);
+  //   const formattedDate = newDate.toISOString().split("T")[0];
+  // if (newDate.startDate === null) return;
+  // const d = newDate.startDate;
+  // const year = d.getFullYear(); // 2023
+  // const month = (d.getMonth() + 1).toString().padStart(2, "0"); // 06
+  // const day = d.getDate().toString().padStart(2, "0"); // 18
+  // const dateString = year + "-" + month + "-" + day; // 2023-06-18
+  // console.log(dateString);
+  // setDate(dateString);
+
+  // setSalesList([]);
+  // axiosInToken(token)
+  //   .post("salesTemp", { salesDate: salesDate, storeCode: storeCode })
+  //   .then(res => {
+  //     console.log(res);
+
+  //     // 받은 데이터를 변형하여 새로운 리스트 생성
+  //     const transformedData = res.data.map(item => {
+  //       const date = new Date(item.salesDate); // salesDate를 Date 객체로 변환
+  //       const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+  //       return {
+  //         ...item, // 기존 데이터 유지
+  //         salesDate: formattedDate, // salesDate를 변환된 값으로 교체
+  //       };
+  //     });
+
+  // Date 객체 생성
+  // const date = new Date(salesDate);
+
+  // YYYY-MM-DD 형식으로 변환
+  // const formattedDate = date.toISOString().split("T")[0];
+
   const changeDate = newDate => {
     setDatePicker(newDate);
-    // if (newDate.startDate === null) return;
-    // const d = newDate.startDate;
-    // const year = d.getFullYear(); // 2023
-    // const month = (d.getMonth() + 1).toString().padStart(2, "0"); // 06
-    // const day = d.getDate().toString().padStart(2, "0"); // 18
-    // const dateString = year + "-" + month + "-" + day; // 2023-06-18
-    // console.log(dateString);
-    // setDate(dateString);
+    const formattedDate = newDate.toISOString().split("T")[0];
 
-    setSalesList([]);
     axiosInToken(token)
-      .post("salesTemp", { salesDate: startDate, storeCode: storeCode })
+      .post("salesTemp", { salesDate: formattedDate, storeCode: storeCode })
       .then(res => {
         console.log(res);
-        setSalesList([...res.data]);
+
+        const transformedData = res.data.map(item => ({
+          ...item,
+          salesDate: new Date(item.salesDate).toISOString().split("T")[0], // 형식 변환
+        }));
+
+        setSalesList(transformedData); // 상태 업데이트
+        console.log("transformedData:", transformedData);
+
+        setIsTemp(res.data.some(item => item.salesStatus === 1)); // 임시저장 여부 설정
+        setIsSaved(res.data.some(item => item.salesStatus === 2)); // 저장 여부 설정
+
+        // 추가된 부분
         if (res.data.length > 0 && res.data[0].salesStatus === 1) {
           setIsTemp(true);
         } else {
@@ -182,9 +220,32 @@ const SalesWrite = () => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.error("데이터 불러오기 실패:", err);
+        setSalesList([]); // 오류 시 기존 데이터 초기화
       });
   };
+
+  // axiosInToken(token)
+  // .post("salesTemp", { salesDate: formattedDate, storeCode: storeCode })
+  // .then(res => {
+  //   console.log(res);
+
+  //   const transformedData = res.data.map(item => ({
+  //     ...item,
+  //     salesDate: new Date(item.salesDate).toISOString().split("T")[0], // 형식 변환
+  //   }));
+
+  //   setSalesList(transformedData); // 상태 업데이트
+  //   console.log("transformedData:", transformedData);
+
+  //   setIsTemp(res.data.some(item => item.salesStatus === 1)); // 임시저장 여부 설정
+  //   setIsSaved(res.data.some(item => item.salesStatus === 2)); // 저장 여부 설정
+  // })
+
+  // // setSalesList(transformedData);
+  // console.log("transformedData" + JSON.stringify(transformedData));
+
+  // };
 
   const onInputChange = (inputValue, { action }) => {
     if (action === "input-change") {
@@ -216,8 +277,9 @@ const SalesWrite = () => {
                 format="yyyy-MM-dd"
                 useRange={false}
                 asSingle={true}
-                value={startDate}
+                value={salesDate}
                 onChange={changeDate}
+                sx={{ width: "200px" }}
               />
             </LocalizationProvider>
           </SelectData>
@@ -428,10 +490,8 @@ const SelectData = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 340px;
-  // border: 1px solid lightblue;
+  width: 244px;
   border-radius: 5px;
-  padding-left: 10px;
 `;
 
 const TempSave = styled.div`
@@ -453,6 +513,7 @@ const SalesDate = styled.div`
 const SalesDateText = styled.div`
   display: flex;
   width: 100px;
+  font-weight: bold;
 `;
 
 const OrderInput = styled.input`

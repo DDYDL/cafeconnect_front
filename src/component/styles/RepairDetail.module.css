@@ -765,12 +765,13 @@
   background-color: #54473f;
   border-radius: 5px;
   display: flex;
-  height: 53px;
+  height: 30px;
   justify-content: center;
   left: 0;
-  min-width: 174px;
-  padding: 20px 39px;
-  justify-content: cetner;
+  width: 100px;
+  align-items: center;
+  
+  
   position: absolute;
   top: 0;
 }

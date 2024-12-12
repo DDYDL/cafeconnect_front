@@ -5,11 +5,11 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { axiosInToken } from "../../config.js";
-import { useAtomValue } from "jotai/react";
-import { tokenAtom } from "../../atoms";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 
 function ItemDetail() {
-  const token = useAtomValue(tokenAtom);
+  const [token,setToken] = useAtom(tokenAtom);
   const [item, setItem] = useState({
     itemCode: "",
     itemName: "",
@@ -30,7 +30,7 @@ function ItemDetail() {
   const navigate = useNavigate();
   const fetchData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/selectItemByItemCode/${itemCode}`
       );
       setItem(response.data);
@@ -44,7 +44,7 @@ function ItemDetail() {
   };
   const deleteData = async () => {
     try {
-      await axios.get(`http://localhost:8080/deleteItem/${itemCode}`);
+      await axiosInToken(token).get(`http://localhost:8080/deleteItem/${itemCode}`);
       navigate("/mainItemList");
     } catch (error) {
       alert("삭제에 실패했습니다");
@@ -61,8 +61,11 @@ function ItemDetail() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if(token){
+      fetchData();
+    }
+    
+  }, [token]);
 
   return (
     <>

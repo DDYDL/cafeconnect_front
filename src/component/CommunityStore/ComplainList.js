@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import { useAtomValue } from "jotai/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai/react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { memberAtom, tokenAtom } from "../../atoms";
@@ -12,6 +12,7 @@ import { ContentListDiv } from "../styles/StyledStore.tsx";
 
 const ComplainList = () => {
   const [complain, setComplain] = useState([]);
+  const [orderComplain, setOrderComplain] = useState([]);
   const [selectedButton, setSelectedButton] = useState(null);
   const [searchComplain, setSearchComplain] = useState("");
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ const ComplainList = () => {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
   const store = useAtomValue(memberAtom);
-  const token = useAtomValue(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
+  const [complainData, setComplainData] = useState([]);
 
   const pageCount = Math.ceil(complain.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
@@ -39,40 +41,58 @@ const ComplainList = () => {
 
   useEffect(() => {}, []);
 
-  const fetchData = useCallback(async () => {
-    if (!token || !storeCode) return; // 토큰 또는 storeCode가 없는 경우 요청 생략
-    try {
-      const response = await axiosInToken(token).get(`/complainListStore/${storeCode}`);
-      const formattedData = response.data.map(item => ({
-        ...item,
-        complainDate: new Date(item.complainDate).toLocaleDateString("ko-KR"),
-      }));
-      setComplain(formattedData);
-      console.log("response" + JSON.stringify(response));
-      console.log("formattedData" + JSON.stringify(formattedData));
-    } catch (err) {
-      console.error("컴플레인 리스트 요청 중 오류 발생:", err);
-      alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
-    }
-  }, [token, storeCode]); // token, storeCode를 의존성 배열에 추가
+  const fetchData = () => {
+    axiosInToken(token)
+      .get(`http://localhost:8080/complainListStore/${storeCode}`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+        const complainData = res.data;
+        console.log("complainData: " + JSON.stringify(complainData));
+
+        // 데이터가 배열인지 확인 후 처리
+        if (Array.isArray(complainData)) {
+          // 작성일 기준 내림차순 정렬
+          const sortedData = complainData.sort(
+            (a, b) => new Date(a.complainDate) - new Date(b.complainDate)
+          );
+          setComplain(sortedData); // 정렬된 데이터를 상태로 설정
+          setComplainData(sortedData); // 검색과 필터링에 사용할 데이터도 동일하게 설정
+        } else {
+          console.error("API 응답이 배열이 아닙니다:", complainData);
+          setComplain([]);
+        }
+      })
+      .catch(error => {
+        console.error("데이터 요청 오류:", error);
+        setComplain([]); // 오류 발생 시 빈 배열로 초기화
+      });
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]); // fetchData를 의존성 배열에 추가
+    if (token != null && token !== "") fetchData();
+  }, [token]);
 
   const handleSearch = () => {
     if (searchComplain.trim() === "") {
-      // 검색어가 비어있으면 전체 complain 목록으로 되돌리기
-      fetchData(); // fetchData 함수는 전체 데이터를 다시 가져오는 함수입니다.
+      fetchData();
     } else {
-      // 검색어가 있을 경우, complain 리스트 필터링
-      const filteredComplains = complain.filter(
-        c => c.complainTitle.toLowerCase().includes(searchComplain.toLowerCase()) // 대소문자 구분 없이 검색
+      const filteredComplainList = complain.filter(
+        c => c.complainTitle.toLowerCase().includes(searchComplain.toLowerCase()) //
       );
-
-      setComplain(filteredComplains); // 필터링된 complain 리스트 상태로 업데이트
+      setComplain(filteredComplainList);
     }
   };
+
+  // 등록순으로 오름차순
+  useEffect(() => {
+    if (complain) {
+      const sortedData = [...complain].sort((a, b) => b.complainDate - a.complainDate);
+      console.log("sortedDate" + JSON.stringify(sortedData));
+      setOrderComplain(sortedData);
+    }
+  }, [complain]);
 
   // Enter 키로 검색
   const handleKeyDown = e => {
@@ -82,7 +102,7 @@ const ComplainList = () => {
   };
 
   // 기간 필터링
-  const filterComplainsByPeriod = period => {
+  const getPeriodStartDate = period => {
     const currentDate = new Date();
     let periodStartDate;
 
@@ -100,37 +120,46 @@ const ComplainList = () => {
         periodStartDate = new Date(0);
     }
 
-    return complain.filter(c => new Date(c.complainDate) >= periodStartDate);
+    return periodStartDate;
   };
 
   // 검색 및 기간 필터링을 적용한 컴플레인 리스트를 반환
   const getFilteredComplains = () => {
-    let filtered = complain;
+    let filtered = complainData;
 
-    // 검색 필터링
+    // Search filtering
     if (searchComplain.trim() !== "") {
       filtered = filtered.filter(c =>
         c.complainTitle.toLowerCase().includes(searchComplain.toLowerCase())
       );
     }
 
-    // 기간 필터링
+    // Period filtering
     if (selectedButton !== null) {
-      filtered = filterComplainsByPeriod(buttonLabels[selectedButton]);
+      const periodStartDate = getPeriodStartDate(buttonLabels[selectedButton]); // 버튼에 따라 시작 날짜 계산
+      filtered = filtered.filter(c => new Date(c.complainDate) >= periodStartDate); // 조건에 맞는 데이터만 필터링
     }
+
+    // Sort by date (ascending)
+    filtered.sort((a, b) => new Date(b.complainDate) - new Date(a.complainDate));
 
     // 페이지네이션 적용
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    return filtered.slice(indexOfFirstItem, indexOfLastItem);
+    return filtered.slice(indexOfFirstItem, indexOfLastItem); // 필터링된 데이터를 페이지 단위로 반환
   };
 
   const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
+  // const handleButtonClick = index => {
+  //   setSelectedButton(selectedButton === index ? null : index);
+  // };
+
   const handleButtonClick = index => {
-    setSelectedButton(selectedButton === index ? null : index);
+    setSelectedButton(index);
+    setCurrentPage(1); // 페이지를 첫 번째로 초기화
   };
 
   const handleItemClick = complainNum => {
@@ -164,7 +193,6 @@ const ComplainList = () => {
               onChange={e => setSearchComplain(e.target.value)}
               onKeyDown={handleKeyDown} // Enter 키 눌렸을 때 handleSearch 실행
             />
-            {/* <MagnifyingGlassIcon className="h-5 w-5" style={searchIconStyle} /> */}
             <MagnifyingGlassIcon
               className="h-5 w-5"
               style={searchIconStyle}
@@ -186,12 +214,13 @@ const ComplainList = () => {
         {getFilteredComplains().length > 0 ? (
           getFilteredComplains().map((c, index) => (
             <TableInfoList onClick={() => handleItemClick(c.complainNum)} key={c.complainNum}>
-              {/* <div>{index + 1}</div> */}
               <div style={{ paddingLeft: "30px" }}>
                 {(currentPage - 1) * itemsPerPage + index + 1}
               </div>{" "}
               <div style={{ paddingLeft: "20px" }}>{c.complainTitle}</div>
-              <div style={{ paddingRight: "20px" }}>{c.complainDate}</div>
+              <div style={{ paddingRight: "20px" }}>
+                {new Date(c.complainDate).toLocaleDateString()}
+              </div>
             </TableInfoList>
           ))
         ) : (
@@ -207,19 +236,6 @@ const ComplainList = () => {
           >
             검색 결과가 없습니다.
           </div>
-          // ) : (
-          //   <div
-          //     style={{
-          //       display: "flex", // flexbox 사용
-          //       justifyContent: "center", // 수평 가운데 정렬
-          //       alignItems: "center", // 수직 가운데 정렬
-          //       height: "200px", // 적절한 높이 설정 (화면 중앙에 맞추고 싶다면 부모 컨테이너의 높이도 설정 필요)
-          //       fontSize: "16px", // 텍스트 크기 설정
-          //       color: "#555", // 텍스트 색상 설정
-          //     }}
-          //   >
-          //     검색 결과가 없습니다.
-          //   </div>
         )}
       </div>
 
@@ -269,13 +285,6 @@ const searchIconStyle = {
   color: "#333",
 };
 
-const NoResults = styled.div`
-  text-align: center;
-  padding: 20px;
-  font-size: 15px;
-  color: grey;
-`;
-
 const HeadingContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -299,12 +308,6 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
-const Navigation = styled.div`
-  font-size: 10px;
-  position: absolute;
-  right: 0;
-`;
-
 const PeriodButton = styled.button`
   display: flex;
   justify-content: center;
@@ -315,48 +318,11 @@ const PeriodButton = styled.button`
   height: 40px;
   margin-top: 30px;
 
-  background-color: ${props => (props.isSelected ? "lightgreen" : "white")};
+  background-color: ${props => (props.isSelected ? "#CECEF6" : "white")};
   font-size: 16px;
   border: ${props => (props.isSelected ? "2px solid grey" : "1px solid #ddd")};
   border-radius: 5px;
   cursor: pointer;
-`;
-
-const SearchContainer = styled.div`
-  // width: 800px;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  gap: 10px;
-  margin-left: 20px;
-`;
-
-const SearchTitle = styled.div`
-  width: 50px;
-  font-weight: bold;
-  font-size: 16px;
-`;
-
-const SearchInput = styled.input`
-  padding: 6px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-`;
-
-const SearchButton = styled.button`
-  padding: 8px;
-  display: flex;
-  align-items: center;
-
-  font-size: 16px;
-  border: 1px solid;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
 `;
 
 const TableHeader = styled.div`
@@ -404,49 +370,6 @@ const TableInfoList = styled.div`
   & > div:last-child {
     margin-right: 37px;
   }
-`;
-
-const AnswerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-`;
-
-const AnswerTextarea = styled.textarea`
-  min-height: 150px;
-
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const SubmitButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: grey;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
-const BoldText = styled.span`
-  font-weight: bold;
 `;
 
 export default ComplainList;

@@ -9,8 +9,11 @@ import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import logo from "../assets/img/logo.svg";
-
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 function MenuInsert() {
+  const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
   const imageInput = useRef();
   const { menuCode } = useParams();
@@ -93,7 +96,7 @@ function MenuInsert() {
   };
   const fetchMenuCategory = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/menuCategory`);
+      const response = await axiosInToken(token).get(`http://localhost:8080/menuCategory`);
       setCategoryList(response.data);
     } catch (error) {
       console.log(error);
@@ -101,7 +104,7 @@ function MenuInsert() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/selectMenuByMenuCode/${menuCode}`
       );
       setMenu(response.data);
@@ -171,7 +174,7 @@ function MenuInsert() {
     formData.append("menuUpdateForm", blob);
     console.log(blob);
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/updateMenu/${menuCode}`,
         formData
       );
@@ -187,9 +190,12 @@ function MenuInsert() {
     handleUpload();
   };
   useEffect(() => {
-    fetchData();
+    if(token){
+      fetchData();
     fetchMenuCategory();
-  }, []);
+    }
+    
+  }, [token]);
   return (
     <>
       <m.CarouselDiv>
@@ -344,6 +350,8 @@ function MenuInsert() {
                         marginTop: "20px",
                         borderRadius: "5px",
                         color: "white",
+                        fontSize:"14px",
+                        height:"30px"
                       }}
                       alt="image"
                       onClick={handleUploadImage}

@@ -8,8 +8,12 @@ import { Option, Select } from "@material-tailwind/react";
 import { useNavigate } from "react-router";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 import logo from "../assets/img/logo.svg";
 function MenuInsert() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [menu, setMenu] = useState({
     menuName: "",
     menuPrice: "",
@@ -64,7 +68,7 @@ function MenuInsert() {
 
   const fetchMenuCategory = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/menuCategoryCopy`
       );
       setCategoryList(response.data);
@@ -123,7 +127,7 @@ function MenuInsert() {
     formData.append("menuSaveForm", blob);
     console.log(blob);
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         "http://localhost:8080/addMenu",
         formData
       );
@@ -140,8 +144,11 @@ function MenuInsert() {
     handleUpload();
   };
   useEffect(() => {
-    fetchMenuCategory();
-  }, []);
+    if(token){
+      fetchMenuCategory();
+    }
+    
+  }, [token]);
 
   return (
     <>
@@ -284,6 +291,8 @@ function MenuInsert() {
                           marginTop: "10px",
                           borderRadius: "5px",
                           color: "white",
+                          fontSize:"14px",
+                          height:"30px"
                         }}
                         alt="image"
                         onClick={handleUploadImage}

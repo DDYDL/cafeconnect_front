@@ -1,7 +1,7 @@
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
-import {useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { axiosInToken } from '../../config.js'
 import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
@@ -16,6 +16,7 @@ const StoreListMain = ()=>{
     const [pageInfo, setPageInfo] = useState({});
     const [type, setType] = useState('');
     const [keyword, setKeyword] = useState('');
+    const [inputValue, setInputValue] = useState();
     const navigate = useNavigate();
     const [token,setToken] = useAtom(tokenAtom);
     const [regionArr, setRegionArr] = useState([]);
@@ -24,11 +25,7 @@ const StoreListMain = ()=>{
     useEffect(()=> {
         // 토큰의 State가 useEffect보다 느려서 토큰없이 실행 방지(Error 방지)
         if(token!=null && token!=='')  { makeRegionArr(); select(1); }
-    }, [token])
-
-    useEffect(()=> {
-        select(1);
-    }, [keyword])
+    }, [token, type, keyword, inputValue])
     
     const select = (page) => {
         axiosInToken(token).get(`storeListMain?page=${page}&type=${type}&keyword=${keyword}`)
@@ -43,34 +40,58 @@ const StoreListMain = ()=>{
                 for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
                     page.push(i);
                 }
+                
                 setPageBtn([...page]);
                 setPageInfo(pageInfo);
             }).catch(err=>{
                 console.log(err.response.data);
-                // alert("가맹점 조회에 실패했습니다.");
+                alert("가맹점 조회에 실패했습니다.");
             })
-    }
-
-    const search = () => {
-        select(1);
     }
 
     const storeDetail = (storeCode)=>{
         navigate(`/storeDetailMain/${storeCode}`);
     }
 
+    // 지역 검색
     const searchRegion = (selectedOption) => {
         setSelectedRegion(selectedOption);
-        setType("storeAddress");
         setKeyword(selectedOption.value);
-      };
-
-    const searchName = (e) => {
-        setType("storeName");
-        setSelectedRegion("");
-        setKeyword(e.target.value);
+        setType("storeAddress");
+        // 매장명검색 초기화
+        setInputValue('');
     };
-      
+    
+    // 매장명 검색
+    const searchName = (e) => {
+        setInputValue(e.target.value);
+        setKeyword(e.target.value);
+        setType("storeName");
+
+        // 지역 검색 초기화
+        setSelectedRegion(regionArr[0]);
+    };
+
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    // 매장명 검색 Input에서 엔터 허용
+    const activeEnter = (e)=>{
+        if(e.key === "Enter") {
+            searchName(e);
+        }
+    }
+
+    // 페이지네이션 화살표(이전, 다음) 함수
+    const previousPage = () => {
+        if (pageInfo.curPage  > 1) { select(pageInfo.curPage -1); }
+      };
+    const nextPage = () => {
+        if (pageInfo.curPage != pageInfo.endPage) { select(pageInfo.curPage+1); }
+      };
+    
+    // 지역 배열 (for ReactSelect)
     const makeRegionArr = () => {
         const regions = [
             {value: '', label: '지역 전체'},
@@ -93,7 +114,6 @@ const StoreListMain = ()=>{
         ];
         
         setRegionArr(regions);
-        console.log(regionArr);
     };
 
     return (
@@ -102,7 +122,8 @@ const StoreListMain = ()=>{
                 <h.MainTitleText>가맹점 조회</h.MainTitleText>
                 <h.CategoryButtonGroupDiv>
                     <h.SearchDiv>
-                        <Input icon={<h.SearchIcon className="h-5 w-5" onClick={search}/> } label="매장명 검색" onChange={searchName}/>
+                        <Input icon={<h.SearchIcon className="h-5 w-5" onClick={searchName}/> } label="매장명 검색" spellCheck='false'
+                        onChange={handleInputChange} value={inputValue} onKeyDown={(e)=>activeEnter(e)}/>
                     </h.SearchDiv>
                     <h.ReactSelectDiv>
                         <ReactSelect
@@ -116,7 +137,7 @@ const StoreListMain = ()=>{
                     </h.ReactSelectDiv>
                     <div className='w-2/4'></div>
                     <h.PageCntDiv>
-                        <p>총&nbsp;{pageInfo.allCnt}&nbsp;건</p>
+                        <span>총<span>{pageInfo.allCnt}</span>개</span>
                     </h.PageCntDiv>
                 </h.CategoryButtonGroupDiv>
                 <s.TableList>
@@ -127,25 +148,26 @@ const StoreListMain = ()=>{
                         <h.TableTextTh width='150px'>전화번호</h.TableTextTh></s.TableListThead>
                     <tbody>
                     {storeList!=null?(storeList.map(store=>(
-                        <h.TableTextTr key={store.storeCode} onClick={e=>storeDetail(store.storeCode)}>
+                        <h.TableTextTr key={store.storeCode} onClick={()=>{storeDetail(store.storeCode)}}>
                             <s.TableTextTd>{regionArr.find(region => region.value === store.storeRegion)?.label}</s.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
                             <h.TableTextTd style={{cursor:'pointer'}}>{store.storeAddress}</h.TableTextTd >
-                            <h.TableTextTd>{store.storePhone}</h.TableTextTd >
+                            <h.TableTextTd>{store.storePhone==''? '-':store.storePhone}</h.TableTextTd >
                         </h.TableTextTr>
                     ))):"가맹점이 없습니다."}
                     </tbody>
                 </s.TableList>
+
                 <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
-                    <s.IconButtonStyle>
-                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
+                    <s.IconButtonStyle onClick={previousPage} disabled={pageInfo.curPage  === 1}>
+                      <ArrowLeftIcon strokeWidth={2} className="h-4 w-4"/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
                     <s.IconButtonStyle key={page} onClick={()=>{select(page)}}>{page}</s.IconButtonStyle>
                     ))}
-                    <s.IconButtonStyle>
-                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
+                    <s.IconButtonStyle onClick={nextPage} disabled={pageInfo.curPage === pageInfo.endPage}>
+                      <ArrowRightIcon strokeWidth={2} className="h-4 w-4"/>
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
                 </s.PageButtonGroupDiv>
