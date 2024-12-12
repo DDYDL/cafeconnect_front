@@ -26,7 +26,7 @@ function RepairRequsetForm() {
     itemName: "",
     repairTitle: "",
     repairContent: "",
-    storeCode:store.storeCode
+    storeCode:store.storeCode,
   });
   const navigate = useNavigate();
 

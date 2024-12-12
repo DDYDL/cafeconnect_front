@@ -111,7 +111,20 @@ const StoreHeader = ({alarms})=>{
 
   // 장바구니 카운트 가져오기 
   const[cartCount,setCartCount] = useAtom(cartCountAtom);
-  
+  // 가맹점 변경될 때마다 장바구니 카운트 업데이트
+    useEffect(() => {
+      if (member.storeCode) {
+        axiosInToken(token).get(`${url}/cartAllCount?storeCode=${member.storeCode}`)
+          .then(res => {
+            if(res.headers.authorization != null) {
+              setToken(res.headers.authorization);
+            }
+            setCartCount(res.data);
+          }).catch(err => {
+            console.log(err);
+          });
+      }
+    }, [member.storeCode]); // member.storeCode 변경을 바로바로 적용하기 위함
 
   return(
       <div>
