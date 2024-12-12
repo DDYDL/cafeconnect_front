@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import * as m from "../styles/StyledMain.tsx";
 import styles from "../styles/RepairDetail.module.css";
 import axios from "axios";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 import { useParams, useNavigate } from "react-router";
 function RepairDetail() {
+  const [token,setToken] = useAtom(tokenAtom);
   const { repairNum } = useParams();
   const navigate = useNavigate();
   const [repair, setRepair] = useState({
@@ -46,7 +50,7 @@ function RepairDetail() {
   const fetchData = async () => {
     console.log(repairNum);
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/selectRepairByRepairNum/${repairNum}`
       );
       setRepair(response.data);
@@ -63,8 +67,11 @@ function RepairDetail() {
     }
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    if(token){
+      fetchData();
+    }
+    
+  }, [token]);
   const handleActiveIng = async () => {
     const formData = new FormData();
     const itemSaveForm = {
@@ -78,7 +85,7 @@ function RepairDetail() {
     formData.append("repairUpdateForm", blob);
 
     try {
-      await axios.post(
+      await axiosInToken(token).post(
         `http://localhost:8080/updateStateRepair/${repairNum}`,
         formData
       );
@@ -103,7 +110,7 @@ function RepairDetail() {
     formData.append("repairUpdateForm", blob);
 
     try {
-      await axios.post(
+      await axiosInToken(token).post(
         `http://localhost:8080/updateStateRepair/${repairNum}`,
         formData
       );

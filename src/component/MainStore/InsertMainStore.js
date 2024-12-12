@@ -156,8 +156,9 @@ function InsertMainStore() {
                     <div
                       style={{
                         marginLeft: "20px",
+                        marginTop:"10px",
                         width: "71px",
-                        height: "50px",
+                        height: "30px",
                         display: "grid",
                         font: "Noto Sans KR",
                         fontSize: "12px",
@@ -272,8 +273,9 @@ function InsertMainStore() {
                     <div
                       style={{
                         marginLeft: "20px",
+                        marginTop:"10px",
                         width: "71px",
-                        height: "50px",
+                        height: "30px",
                         font: "Noto Sans KR",
                         fontSize: "12px",
                         display: "grid",

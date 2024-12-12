@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import * as m from "../styles/StyledMain.tsx";
-import frame_300 from "../assets/img/frame-300.svg";
-import frame_296 from "../assets/img/frame-296.svg";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue, useAtom } from "jotai/react";
 import plus from "../assets/img/plus-circle-outline.svg";
 import minus from "../assets/img/minus-circle-outline.svg";
 import styles from "../styles/MenuCategory.module.css";
 import axios from "axios";
 
 function MenuCategory() {
+  const [token, setToken] = useAtom(tokenAtom);
   const [categoryList, setCategoryList] = useState([]);
   const [activeInput, setActiveInput] = useState(false);
   const [activeCategoryName, setActiveCategoryName] = useState(null);
@@ -79,12 +81,26 @@ function MenuCategory() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/menuCategory`);
+      const response = await axiosInToken(token).get(`http://localhost:8080/menuCategory`);
 
       setCategoryList(response.data);
+
+
+
     } catch (error) {
       console.log(error);
     }
+    // axiosInToken(token)
+    //   .get(`http://localhost:8080/menuCategory`)
+    //   .then((response) => {
+    //     if (response.headers.authorization != null) {
+    //       setToken(response.headers.authorization)
+    //     }
+    //     setCategoryList(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
   };
 
   const handleButton = () => {
@@ -97,7 +113,7 @@ function MenuCategory() {
   };
   const deleteData = async () => {
     try {
-      await axios.get(
+      await axiosInToken(token).get(
         `http://localhost:8080/deleteMenuCategory/${activeCategoryNum}`
       );
       const ModifyCategoryList = categoryList.filter(
@@ -110,10 +126,30 @@ function MenuCategory() {
       console.log(error);
       alert("삭제 실패하였습니다");
     }
+
+
+    // axiosInToken(token)
+    //   .get(`http://localhost:8080/deleteMenuCategory/${activeCategoryNum}`)
+    //   .then((response) => {
+    //     if (response.headers.authorization != null) {
+    //       setToken(response.headers.authorization)
+    //     }
+    //     const ModifyCategoryList = categoryList.filter(
+    //       (category) => category.categoryNum !== activeCategoryNum
+    //     );
+    //     setCategoryList(ModifyCategoryList);
+    //     setActiveCategoryNum(null);
+    //     setActiveCategoryName(null);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     alert("삭제 실패하였습니다");
+    //   })
   };
-  const handleAddSubmit = async () => {
+
+  const handleAddSubmit = async() => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/checkMiddleCategory?categoryName=${saveText}`
       );
       if (response.data.code === "success") {
@@ -124,6 +160,23 @@ function MenuCategory() {
       console.log(error);
       alert("통신 오류");
     }
+
+
+    // axiosInToken(token)
+    //   .get(`http://localhost:8080/checkMiddleCategory?categoryName=${saveText}`)
+    //   .then((response) => {
+    //     if (response.headers.authorization != null) {
+    //       setToken(response.headers.authorization)
+    //     }
+    //     if (response.data.code === "success") {
+    //       alert("이미 동일한 카테고리명이 존재합니다");
+    //       return;
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     alert("통신 오류");
+    //   })
 
     const formData = new FormData();
 
@@ -138,7 +191,7 @@ function MenuCategory() {
     formData.append("addMenuCategoryForm", blob);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/addMenuCategory`,
         formData
       );
@@ -157,7 +210,32 @@ function MenuCategory() {
       console.log(error);
       alert("등록 실패");
     }
+
+    // axiosInToken(token)
+    //   .post(`http://localhost:8080/addMenuCategory`)
+    //   .then((response) => {
+    //     if (response.headers.authorization != null) {
+    //       setToken(response.headers.authorization)
+    //     }
+    //     setCategoryList([
+    //       ...categoryList,
+    //       {
+    //         categoryNum: response.data.num,
+    //         categoryName: saveText,
+    //       },
+    //     ]);
+    //     setSaveText("");
+    //     setSaveState(false);
+    //     setActiveInput(false);
+    //     alert("등록 성공");
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     alert("등록 실패");
+    //   })
   };
+
+
   const handleUpdateSubmit = async () => {
     const formData = new FormData();
 
@@ -173,7 +251,7 @@ function MenuCategory() {
     formData.append("updateMenuCategoryForm", blob);
 
     try {
-      await axios.post(`http://localhost:8080/updateMenuCategory`, formData);
+      await axiosInToken(token).post(`http://localhost:8080/updateMenuCategory`, formData);
       setCategoryList(
         categoryList.map((category, index) => {
           if (category.categoryNum === activeCategoryNum) {
@@ -198,10 +276,47 @@ function MenuCategory() {
       console.log(error);
       alert("수정 실패");
     }
+
+    // axiosInToken(token)
+    //   .post(`http://localhost:8080/updateMenuCategory`, formData)
+    //   .then((response) => {
+    //     if (response.headers.authorization != null) {
+    //       setToken(response.headers.authorization)
+    //     }
+    //     setCategoryList(
+    //       categoryList.map((category, index) => {
+    //         if (category.categoryNum === activeCategoryNum) {
+    //           return {
+    //             categoryNum: activeCategoryNum,
+    //             categoryName: updateText,
+    //           };
+    //         } else {
+    //           return category;
+    //         }
+    //       })
+    //     );
+    //     setUpdateText("");
+    //     setUpdateState(false);
+    //     setActiveUpdateInput({
+    //       name: "",
+    //       state: false,
+    //     });
+
+    //     alert("수정 성공");
+
+
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     alert("수정 실패");
+    //   })
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    if(token){
+      fetchData();
+    }
+    
+  }, [token]);
   return (
     <m.CarouselDiv>
       <input type="hidden" id="anPageName" name="page" value="MenuCategory" />
@@ -277,9 +392,9 @@ function MenuCategory() {
                           style={
                             activeCategoryName === category.categoryName
                               ? {
-                                  backgroundColor: "#f2878773",
-                                  cursor: "pointer",
-                                }
+                                backgroundColor: "#f2878773",
+                                cursor: "pointer",
+                              }
                               : { cursor: "pointer" }
                           }
                         >
