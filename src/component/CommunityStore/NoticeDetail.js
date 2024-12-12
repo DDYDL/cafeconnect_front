@@ -114,7 +114,7 @@ const NoticeDetail = () => {
             <Textarea
               onChange={e => setContent(e.target.value)}
               // placeholder="공지 상세 작성"
-              style={{ width: "680px" }}
+              style={{ width: "680px", border: "none", resize: "none" }}
               value={notice.noticeContent}
             />
             {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}

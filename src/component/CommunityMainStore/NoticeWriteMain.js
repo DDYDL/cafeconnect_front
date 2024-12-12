@@ -1,49 +1,39 @@
-import * as h from '../styles/HStyledStore.tsx';
+import * as h from "../styles/HStyledStore.tsx";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import axios from "axios";
 import { useAtom, useAtomValue } from "jotai/react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import ReactSelect from "react-select";
 import { memberAtom, tokenAtom } from "../../atoms.js";
-import { axiosInToken, url } from "../../config.js";
+import { axiosInToken } from "../../config.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
-import ReactSelect from "react-select";
 
 const NoticeWriteMain = () => {
-  const token = useAtomValue(tokenAtom);
+  const [member, setMemeber] = useAtom(memberAtom);
+  const initSaleItem = {
+    noticeType: "",
+    noticeTitle: "",
+    noticeContent: "",
+    mainStoreId: member.memberNum,
+  };
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [notice, setNotice] = useState([]);
-  const [selectedNoticeType, setSelectedNoticeType] = useState([{value:'일반', label:'공지사항'}]);
+  const [notice, setNotice] = useState([initSaleItem]);
+  const [token, setToken] = useAtom(tokenAtom);
+  const [selectedNoticeType, setSelectedNoticeType] = useState([
+    { value: "일반", label: "공지사항" },
+  ]);
   const { noticeNum } = useParams(); // URL에서 noticeNum 추출
-  const [storeCode, setStoreCode] = useState(null);
-  const [member, setMemeber] = useAtom(memberAtom);
-
-  // / fetchStoreCode를 useCallback으로 래핑
-  const fetchStoreCode = useCallback(async () => {
-    try {
-      if (!token) return; // 토큰 없으면 요청 생략
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
-      setStoreCode(storeCodeFromResponse);
-      console.log("StoreCode:", storeCodeFromResponse);
-      console.log("token" + token);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
-  }, [token]); // 의존성 배열에 token 추가
-
-  useEffect(() => {
-    fetchStoreCode();
-  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
+  const store = useAtomValue(memberAtom);
+  const storeCode = store.storeCode;
 
   // 등록 버튼 클릭 시 처리
   const handleRegister = async () => {
@@ -58,44 +48,55 @@ const NoticeWriteMain = () => {
     navigate("/noticeListMain");
   };
 
-  // 작성한 글을 서버로 전송
-  const handleSubmit = () => {
-    console.log("제목 (서버로 전송):", title);
-    console.log("내용 (서버로 전송):", content);
+  const handleSubmit = event => {
+    // event.preventDefault();
 
-    const notice = {
-      noticeType: "주요 공지사항",
-      noticeTitle: title,
-      noticeContent: content,
+    // 필수 필드 검증
+    if (!noticeType) {
+      alert("요구사항 유형을 선택해주세요");
+      return;
+    }
+    if (!notice.noticeTitle) {
+      alert("제목을 입력해주세요");
+      return;
+    }
+    if (!notice.noticeContent) {
+      alert("내용을 입력해주세요");
+      return;
+    }
+
+    const newNotice = {
+      // ...notice,
+      noticeType: notice.noticeType,
+      noticeTitle: notice.noticeTitle,
+      noticeContent: notice.noticeContent,
       noticeDate: new Date().toISOString(),
       mainStoreId: member.memberNum,
     };
-    console.log("notice 객체:", notice);
 
-    const res = axios
-      .post(`${url}/noticeWriteMain`, notice, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    console.log("newNotice 객체:", newNotice);
+
+    axiosInToken(token)
+      .post(`http://localhost:8080/noticeWriteMain`, newNotice)
       .then(res => {
-        console.log(res.data);
-        // 입력 필드 초기화
-        setTitle("");
-        setContent("");
-
-        console.log("Notice:", notice);
-        console.log("Notice added:", res.data);
-        alert("등록 완료");
-        navigate("/noticeListMain"); // 성공 시 페이지 이동
+        if (res.headers.authorization != null) {
+          console.log("notice", newNotice);
+          console.log("res.data", res.data);
+          setToken(res.headers.authorization);
+        }
+        alert("문의가 성공적으로 등록되었습니다.");
+        navigate(`/noticeListMain`);
       })
       .catch(err => {
-        alert("등록에 실패했습니다. 다시 시도해주세요."); // 실패 시 알림
-        console.log(err);
+        console.error(err);
+        alert("문의 등록 중 오류가 발생했습니다.");
       });
   };
 
-  const noticeType = [{value:'일반 공지사항', label:'공지사항'}, {value:'주요 공지사항', label:'주요 공지사항'}]
+  const noticeType = [
+    { value: "일반", label: "공지사항" },
+    { value: "주요", label: "주요 공지사항" },
+  ];
 
   return (
     <ContentListDiv>
@@ -104,40 +105,57 @@ const NoticeWriteMain = () => {
       </HeadingContainer>
 
       <Form>
-        <s.TrStyle>
-          <s.TableTextTd><h.TableTitleSpan>공지유형<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
+        <s.TrStyle style={{ paddingLeft: "20px" }}>
           <s.TableTextTd>
-            <h.NoticeSelectDiv>
+            <h.TableTitleSpan>
+              공지유형<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
+          <s.TableTextTd>
+            <h.NoticeSelectDiv style={{ marginLeft: "20px" }}>
               <ReactSelect
-                  isSearchable={false}
-                  className="w-full CustomSelect"
-                  value={selectedNoticeType} 
-                  options={noticeType}
-                  onChange={(val)=>{setSelectedNoticeType(val)}}
+                isSearchable={false}
+                className="w-full CustomSelect"
+                placeholder="공지유형 선택"
+                options={noticeType}
+                onChange={e => setNotice({ noticeType: e.value })}
               />
             </h.NoticeSelectDiv>
           </s.TableTextTd>
         </s.TrStyle>
 
         <s.TrStyle>
-          <s.TableTextTd><h.TableTitleSpan>제목<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
+          <s.TableTextTd style={{ width: "120px" }}>
+            <h.TableTitleSpan>
+              제목<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
+              style={{ width: "630px", marginLeft: "20px" }}
               type="text"
-              style={{ width: "680px" }}
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={notice.noticeTitle}
+              onChange={e => setNotice({ ...notice, noticeTitle: e.target.value })}
             />
           </s.TableTextTd>
         </s.TrStyle>
 
-        <s.TrStyle style={{ height: "200px", margin: "30px" }}>
-          <s.TableTextTd><h.TableTitleSpan>내용<h.Required>*</h.Required></h.TableTitleSpan></s.TableTextTd>
+        <s.TrStyle style={{ height: "250px", paddingTop: "20px" }}>
+          <s.TableTextTd style={{ width: "120px" }}>
+            <h.TableTitleSpan>
+              내용<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
           <s.TableTextTd>
             <Textarea
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              style={{ width: "680px" }}
+              style={{
+                width: "630px",
+                marginLeft: "20px",
+                border: "1px solid rgba(234, 234, 234, 1)",
+                resize: "none",
+              }}
+              value={notice.noticeContent}
+              onChange={e => setNotice({ ...notice, noticeContent: e.target.value })}
             />
           </s.TableTextTd>
         </s.TrStyle>
@@ -170,78 +188,13 @@ const Heading = styled.h2`
   position: absolute;
 `;
 
-const Navigation = styled.div`
-  font-size: 10px;
-  margin-left: 850px;
-`;
-
 const Form = styled.form`
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   flex-direction: column;
-`;
-
-const FormContainer1 = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  text-align: center;
-  width: 600px;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-`;
-
-const Form1div = styled.div`
-  /* 직속 자식 div에만 적용 */
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 50px;
-`;
-
-const FormContainer2 = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  text-align: center;
-  align-items: center;
-  width: 800px;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-  margin-left: 200px;
-`;
-
-const Form2div = styled.div`
-  /* 직속 자식 div에만 적용 */
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 82px;
-`;
-
-const FormContainer3 = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  text-align: center;
-  align-items: center;
-  width: 800px;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-  margin-left: 200px;
-`;
-
-const Form3div = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 82px;
-`;
-
-const BoldText = styled.span`
-  font-weight: bold;
+  padding-top: 30px;
 `;
 
 export default NoticeWriteMain;

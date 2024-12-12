@@ -1,12 +1,13 @@
-import axios from "axios";
-import { useAtomValue } from "jotai/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai/react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
+import ReactSelect from "react-select";
 import styled from "styled-components";
-import { tokenAtom } from "../../atoms";
+import { memberAtom, tokenAtom } from "../../atoms";
 import { axiosInToken } from "../../config.js";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
+import * as h from "../styles/HStyledStore.tsx";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
@@ -18,32 +19,14 @@ const AskWrite = () => {
     storeCode: 1,
     // askDate: new Date(), // 현재 날짜와 시간으로 초기화
   };
-  const [askTitle, setAskTitle] = useState("");
-  const [askContent, setAskContent] = useState("");
-  const token = useAtomValue(tokenAtom);
   // const { storeCode } = useParams();
   const [ask, setAsk] = useState(initSaleItem);
-  const [storeCode, setStoreCode] = useState(null);
-
+  const [token, setToken] = useAtom(tokenAtom);
+  const store = useAtomValue(memberAtom);
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [askType, setAskType] = useState("default");
+  // const [selectedAskType, setSelectedAskType] = useState([{ value: "일반", label: "공지사항" }]);
 
-  // / fetchStoreCode를 useCallback으로 래핑 // storecode사용 가능
-  const fetchStoreCode = useCallback(async () => {
-    try {
-      if (!token) return; // 토큰 없으면 요청 생략
-      const response = await axiosInToken(token).get("/store");
-      const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
-      setStoreCode(storeCodeFromResponse);
-      console.log("StoreCode:", storeCodeFromResponse);
-    } catch (err) {
-      console.error("storeCode 요청 중 오류 발생:", err);
-    }
-  }, [token]); // 의존성 배열에 token 추가
-
-  useEffect(() => {
-    fetchStoreCode();
-  }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
+  const storeCode = store.storeCode;
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {
@@ -81,19 +64,14 @@ const AskWrite = () => {
     };
     console.log("newAsk" + newAsk);
 
-    // !! 작성 완료, post내부 url 문제로 백엔드에 전송 안됐었음.
-    axios
-      .post(`http://localhost:8080/askWrite`, JSON.stringify(newAsk), {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 필요한 경우 인증 토큰 추가
-        },
-      })
+    axiosInToken(token)
+      .post(`http://localhost:8080/askWrite`, newAsk)
       .then(res => {
-        console.log("newAsk", newAsk);
-        console.log("res.data", res.data);
-
-        // 등록 완료 후 alert을 먼저 띄운 뒤, 일정 시간이 지나면 페이지 이동
+        if (res.headers.authorization != null) {
+          console.log("newAsk", newAsk);
+          console.log("res.data", res.data);
+          setToken(res.headers.authorization);
+        }
         alert("문의가 성공적으로 등록되었습니다.");
         navigate(`/askList`);
       })
@@ -102,41 +80,48 @@ const AskWrite = () => {
         alert("문의 등록 중 오류가 발생했습니다.");
       });
   };
+
+  const askType = [
+    { value: "선택", label: "선택" },
+    { value: "상품 문의", label: "상품 문의" },
+    { value: "배송 문의", label: "배송 문의" },
+    { value: "수리 문의", label: "수리 문의" },
+    { value: "이벤트 문의", label: "이벤트 문의" },
+    { value: "기타 문의", label: "기타 문의" },
+  ];
+
   return (
     <ContentListDiv>
       <HeadingContainer>
         <Heading>1:1문의 작성</Heading>
-        {/* <Navigation>
-          <span>홈 / 커뮤니티</span>
-          <span> / </span>
-          <BoldText>1:1 문의 작성</BoldText>
-        </Navigation> */}
       </HeadingContainer>
 
       <Form onSubmit={handleSubmit}>
         <s.TrStyle>
-          <s.TableTextTd style={{ width: "120px" }}>요구사항 유형 *</s.TableTextTd>
-          <s.TableTextTd>
-            {/* <s.InputStyle type="text" style={{ width: "680px" }} disabled /> */}
-
-            <Select
-              style={{ marginLeft: "20px" }}
-              id="inquiryType"
-              value={ask.askType}
-              onChange={e => setAsk({ ...ask, askType: e.target.value })}
-            >
-              <Option value="default">선택</Option>
-              <Option value="상품 문의">상품 문의</Option>
-              <Option value="배송 문의">배송 문의</Option>
-              <Option value="수리 문의">수리 문의</Option>
-              <Option value="이벤트 문의">이벤트 문의</Option>
-              <Option value="기타 문의">기타 문의</Option>
-            </Select>
+          <s.TableTextTd style={{ width: "120px" }}>
+            <h.TableTitleSpan>
+              요구사항 유형<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
+          <s.TableTextTd style={{ paddingLeft: "22px" }}>
+            <h.NoticeSelectDiv>
+              <ReactSelect
+                isSearchable={false}
+                className="w-full CustomSelect"
+                placeholder="문의 유형 선택"
+                options={askType}
+                onChange={e => setAsk({ askType: e.value })}
+              />
+            </h.NoticeSelectDiv>
           </s.TableTextTd>
         </s.TrStyle>
 
         <s.TrStyle>
-          <s.TableTextTd style={{ width: "120px" }}>제목 *</s.TableTextTd>
+          <s.TableTextTd style={{ width: "120px" }}>
+            <h.TableTitleSpan>
+              제목<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
           <s.TableTextTd>
             <s.InputStyle
               style={{ width: "630px", marginLeft: "20px" }}
@@ -147,24 +132,28 @@ const AskWrite = () => {
           </s.TableTextTd>
         </s.TrStyle>
 
-        <s.TrStyle style={{ height: "200px", paddingTop: "20px" }}>
-          <s.TableTextTd style={{ width: "120px" }}>내용 *</s.TableTextTd>
+        <s.TrStyle style={{ height: "250px", paddingTop: "20px" }}>
+          <s.TableTextTd style={{ width: "120px" }}>
+            <h.TableTitleSpan>
+              내용<h.Required>*</h.Required>
+            </h.TableTitleSpan>
+          </s.TableTextTd>
           <s.TableTextTd>
             <Textarea
-              style={{ width: "630px", marginLeft: "20px" }}
+              style={{
+                width: "630px",
+                marginLeft: "20px",
+                border: "1px solid rgba(234, 234, 234, 1)",
+                resize: "none",
+              }}
               value={ask.askContent}
               onChange={e => setAsk({ ...ask, askContent: e.target.value })}
             />
-            {/* <s.InputStyle type="text" value={title} onChange={e => setTitle(e.target.value)} /> */}
           </s.TableTextTd>
         </s.TrStyle>
 
         <ButtonContainer>
-          <s.ButtonStyle
-            variant="outlined"
-            bgColor="white"
-            // onClick={handleCancel}
-          >
+          <s.ButtonStyle variant="outlined" bgColor="white">
             <Link to="/askList">취소</Link>
           </s.ButtonStyle>
           &nbsp;&nbsp;
@@ -189,11 +178,6 @@ const Heading = styled.h2`
   position: absolute;
 `;
 
-const Navigation = styled.div`
-  font-size: 10px;
-  margin-left: 850px;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -201,6 +185,7 @@ const Form = styled.form`
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding-top: 30px;
 `;
 
 const Select = styled.select`
@@ -229,66 +214,6 @@ const Select = styled.select`
 const Option = styled.option`
   // padding: 10px;
   // font-size: 16px;
-`;
-
-const FormContainer1 = styled.div`
-  display: flex;
-  // justify-content: flex-start;
-  align-items: center;
-  text-align: center;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-  margin-left: 200px;
-`;
-
-const Form1div = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-`;
-
-const FormContainer2 = styled.div`
-  display: flex;
-  // justify-content: flex-start;
-  text-align: center;
-  align-items: center;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-  margin-left: 200px;
-`;
-
-const Form2div = styled.div`
-  /* 직속 자식 div에만 적용 */
-  font-size: 20px;
-  font-weight: bold;
-  // margin-right: 82px;
-  // margin-right: 120px;
-`;
-
-const FormContainer3 = styled.div`
-  display: flex;
-  // justify-content: flex-start;
-  text-align: center;
-  align-items: center;
-
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-    margin-left: 200px;
-  }
-`;
-
-const Form3div = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 120px;
-`;
-
-const BoldText = styled.span`
-  font-weight: bold;
 `;
 
 export default AskWrite;
