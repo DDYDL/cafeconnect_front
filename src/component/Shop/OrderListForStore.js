@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInToken } from "../../config.js";
 import { useAtomValue,useAtom } from "jotai/react";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { XMarkIcon,MagnifyingGlassIcon, ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
 
 function OrderListForStore() {
   const today = new Date();
@@ -34,11 +34,12 @@ function OrderListForStore() {
   const store = useAtomValue(memberAtom);
   const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
-
+  
+  //초기 로딩 useEffect
   useEffect(() => {
     if (token != null && token !== "")
        submit(1);
-  }, [token, store.storeCode]);
+  }, [token, store.storeCode,status]); // 변경될때마다 바로 적용돼야하는 값 추가하면 자동 조회됨 
 
   const handleStatusChange=(val)=>{
     setStatus(val);
@@ -88,12 +89,13 @@ function OrderListForStore() {
 
     axiosInToken(token).get(`cancelItemOrder?storeCode=${store.storeCode}&orderCode=${code}`)
     .then(res=>{
+      
       if(res.headers.authorization!=null) {
         setToken(res.headers.authorization)
     }
       if(res.data === true) {
         alert("주문 취소 완료되었습니다");
-        submit();
+        submit(1);
       }
     }).catch(err=>{
       console.log(err);
@@ -126,7 +128,7 @@ function OrderListForStore() {
                 value={endDate}
                 onChange={(newValue) => setEndDate(new Date(newValue))}
               />
-            <StyledButton size="sm" theme="brown" onClick={submit}>
+            <StyledButton size="sm" theme="brown" onClick={() => submit(1)}>
               조회
             </StyledButton>
             </LocalizationProvider>
@@ -195,20 +197,21 @@ function OrderListForStore() {
     <div className="mt-7 flex justify-center">주문 내역이 없습니다.</div>
 )}
 
-      <s.PageButtonGroupDiv>
+
+        </ol.OrderListWrap>
+        <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
                     <s.IconButtonStyle>
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{submit(page)}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
        </s.PageButtonGroupDiv> 
-        </ol.OrderListWrap>
       </CommonContainer>
     </CommonWrapper>
   );

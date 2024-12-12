@@ -13,9 +13,10 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PreviousOrderItemsModal from "./PreviousOrderItemModal.js";
-import { useAtomValue,useAtom } from "jotai/react";
-import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
+import { tokenAtom, memberAtom,cartCountAtom } from "../../atoms";
 import { axiosInToken,url } from "../../config.js";
+import axios from 'axios';
 
 function CartList() {
   const navigate = useNavigate();
@@ -63,7 +64,18 @@ function CartList() {
     });
   }
 
+  // 이전 상품 추가 버튼 클릭 핸들러 추가
+const handlePreviousOrderClick = () => {
+  if (!prevOrderDateList || prevOrderDateList.length === 0) {
+    alert('이전 주문 상품이 없습니다.');
+    return;
+  }
+  setIsModalOpen(true);
+};
+
+
   //삭제
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleDelete = (cartNum) => {
     const formData = new FormData();
     formData.append("storeCode", store.storeCode);
@@ -77,6 +89,16 @@ function CartList() {
         if (res.data === true) {
           alert('장바구니에서 삭제됐습니다.');
           getCartList();
+            // cartCount를 업데이트
+            axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            .then(response => {
+              
+              if(response.headers.authorization!=null) {
+                setToken(res.headers.authorization)
+            }
+              setCartCount(response.data);   //jotai 값 세팅
+            });   
+
         }
       })
       .catch(err => {
@@ -157,7 +179,7 @@ const handleOrder = () => {
             size="sm"
             theme="brown"
             $hasicon
-            onClick={() => setIsModalOpen(true)}
+            onClick={handlePreviousOrderClick}
           >
             <PlusIcon />
             이전 상품 추가

@@ -3,8 +3,8 @@ import { useState ,useEffect} from 'react';
 import { Carousel } from "@material-tailwind/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import * as s from '../styledcomponent/shopmain.tsx'
-import { useAtom, useAtomValue } from 'jotai/react';
-import { tokenAtom, memberAtom, fcmTokenAtom, alarmsAtom } from '../../atoms';
+import { useAtom, useAtomValue ,useSetAtom} from 'jotai/react';
+import { tokenAtom, memberAtom, fcmTokenAtom, alarmsAtom,cartCountAtom } from '../../atoms';
 import { axiosInToken, url } from '../../config.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
@@ -16,6 +16,7 @@ function ShopMain() {
   const [items,setItems] = useState({});
   const [quantity, setQuantity] = useState({});
 
+  
   // fcm token value 가져오기
   const [fcmToken, setFcmToken] = useAtom(fcmTokenAtom);
   // 세션 스토리지 member 설정
@@ -26,7 +27,8 @@ function ShopMain() {
   const navigate = useNavigate();
 
   useEffect(()=>{
-    if(token!==null && token!=='') getMajorItems();
+    if(token!==null && token!=='') 
+      getMajorItems();
     getFcmToken();
   },[token]);
 
@@ -38,6 +40,9 @@ function ShopMain() {
         setToken(res.headers.authorization)
     }
       setItems(res.data.allCategory);
+    })
+    .catch(err=>{
+      console.log(err);
     })
     .catch(err=>{
       console.log(err);
@@ -71,6 +76,19 @@ function ShopMain() {
                 .catch(err=>{
                     console.log(err);
                 })
+
+            // cartCount를 업데이트
+            axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+            .then(response => {
+              
+              if(response.headers.authorization!=null) {
+                setToken(res.headers.authorization)
+            }
+              setCartCount(response.data);   //jotai 값 세팅
+            }).catch(err=>{
+              console.log(err);
+            })    
+
         }
     })
     .catch(err=>{
@@ -86,6 +104,7 @@ function ShopMain() {
     }));
   };
 
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleAddToCart = (e, itemCode) => {
     const sendQuantity = quantity[itemCode] || 1;
     e.stopPropagation();
@@ -97,10 +116,24 @@ function ShopMain() {
     }
       if (res.data != null) {
         alert('장바구니에 등록되었습니다.');
+         // cartCount를 업데이트
+         axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+      .then(response => {
+        
+        if(response.headers.authorization!=null) {
+          setToken(res.headers.authorization)
+      }
+        setCartCount(response.data);   //jotai 값 세팅
+      }).catch(err=>{
+        console.log(err);
+      })
       }
     }).catch(err => {
       console.log(err);
       alert('장바구니 등록에 실패했습니다.');
+    })
+    .catch(err=>{
+      console.log(err);
     });
   };
 

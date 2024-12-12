@@ -18,10 +18,15 @@ function OrderDetailForMainStore() {
   const { orderCode } = useParams();
   const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
-  const isPaymentCanceled =
-    orderDetail?.paymentDetail?.paymentStatus !== "paid";
+  
+  // const isPaymentCanceled =
+  //   orderDetail?.paymentDetail?.paymentStatus !== "paid";
 
-  useEffect(() => {
+    const isPaymentCanceled =
+    orderDetail?.orderState === "주문취소";
+
+
+    useEffect(() => {
     if (token && orderCode) getOrderInfo(orderCode);
   }, [token, orderCode]);
 
@@ -67,6 +72,7 @@ function OrderDetailForMainStore() {
             itemPrice: item.itemPrice,
             totalPrice: item.orderCount * item.itemPrice,
             itemFileNum: item.itemFileNum,
+            itemFileName:item.itemFileName,
           })),
           totalAmount: details.reduce(
             (sum, item) => sum + item.itemPrice * item.orderCount,

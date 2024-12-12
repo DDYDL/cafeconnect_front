@@ -1,8 +1,10 @@
-import axios from "axios";
+import { useAtom } from "jotai/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
@@ -13,23 +15,36 @@ const NoticeDetail = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const { noticeNum } = useParams(); // URL에서 noticeNum 추출
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState({});
+  const { noticeNum } = useParams();
+  const [token, setToken] = useAtom(tokenAtom);
 
   useEffect(() => {
-    const fetchNoticeDetail = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/noticeDetail/${noticeNum}`);
-        const noticeData = response.data;
-        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+    if (token != null && token !== "") select();
+  }, [token]);
+
+  const select = () => {
+    axiosInToken(token)
+      .get(`http://localhost:8080/noticeDetail/${noticeNum}`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+
+        const noticeData = res.data;
+
+        // complainDate를 한국식 날짜 형식으로 변환
         const formattedDate = new Date(noticeData.noticeDate).toLocaleDateString("ko-KR");
-        setNotice({ ...noticeData, noticeDate: formattedDate });
-      } catch (error) {
-        console.error("Error fetching notice:", error);
-      }
-    };
-    fetchNoticeDetail(); // 컴포넌트가 마운트될 때 공지사항 상세 정보 가져오기
-  }, [noticeNum]); // noticeNum이 변경될 때마다 다시 실행
+
+        setNotice({
+          ...noticeData,
+          noticeDate: formattedDate, // 날짜 포맷 변경
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching complain details:", error);
+      });
+  };
 
   return (
     <ContentListDiv>

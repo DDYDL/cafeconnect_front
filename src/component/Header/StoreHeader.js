@@ -6,10 +6,10 @@ import {useEffect, useState} from "react";
 import { Menu, MenuHandler, MenuItem, DialogHeader, DialogBody, Option } from "@material-tailwind/react";
 import { useNavigate } from 'react-router';
 import { useAtom } from 'jotai/react';
-import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom } from '../../atoms.js';
+import { alarmsAtom, initMember, memberAtom, memberLocalAtom, tokenAtom,cartCountAtom } from '../../atoms.js';
 import { useSetAtom } from 'jotai/react';
 import axios from 'axios';
-import { axiosInToken, url } from '../../config.js';
+import {axiosInToken,url } from '../../config.js';
 import { CartItem } from '../styledcomponent/cartlist.tsx';
 
 const StoreHeader = ({alarms})=>{
@@ -31,7 +31,7 @@ const StoreHeader = ({alarms})=>{
 
   const [storeList, setStoreList] = useState([]);
   const [store, setStore] = useState({storeCode:0, storeName:'', storeStatus:''});
-  const [cartCount,setCartCount] =useState(0);
+ 
 
   useEffect(()=>{
     selectStoreList();
@@ -109,16 +109,22 @@ const StoreHeader = ({alarms})=>{
     setStore(storeList.find(store=>store.storeCode===member.storeCode));
   }
 
-  //장바구니 리스트카운트 조회 
-  const getCartCount =()=>{
-    axios.get(`cartAllCount?storeCode=${store.storeCode}`)
-    .then(res=>{
-        setCartCount(res.data);
-    }).catch(err=>{
-      console.log(err);
-      alert("카운트 가져오기 실패");
-    })   
-  }
+  // 장바구니 카운트 가져오기 
+  const[cartCount,setCartCount] = useAtom(cartCountAtom);
+  // 가맹점 변경될 때마다 장바구니 카운트 업데이트
+    useEffect(() => {
+      if (member.storeCode) {
+        axiosInToken(token).get(`${url}/cartAllCount?storeCode=${member.storeCode}`)
+          .then(res => {
+            if(res.headers.authorization != null) {
+              setToken(res.headers.authorization);
+            }
+            setCartCount(res.data);
+          }).catch(err => {
+            console.log(err);
+          });
+      }
+    }, [member.storeCode]); // member.storeCode 변경을 바로바로 적용하기 위함
 
   return(
       <div>
@@ -203,6 +209,7 @@ const StoreHeader = ({alarms})=>{
               <span>{cartCount!==null?cartCount:0}</span>
               </h.AlarmIconDiv> 
             </h.NavLinkIcon>
+
           </h.DivIcon>
         </h.Div>
 

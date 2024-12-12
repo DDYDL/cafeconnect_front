@@ -42,3 +42,10 @@ export const alarmsAtom = atomWithStorage(
     [],
     createJSONStorage(()=>sessionStorage)
 )
+
+// 세션 스토리지에 장바구니 카운트 저장
+export const cartCountAtom = atomWithStorage(
+    'cartCount',
+    0, //초기값
+    createJSONStorage(()=>sessionStorage)
+);

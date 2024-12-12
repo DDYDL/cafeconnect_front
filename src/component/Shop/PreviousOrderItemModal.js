@@ -6,9 +6,11 @@ import {
 } from "@heroicons/react/24/outline";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import * as c from "../styledcomponent/cartlist.tsx";
-import { axiosInToken } from "../../config.js";
-import { useAtom } from "jotai/react";
-import { tokenAtom} from "../../atoms";
+import { axiosInToken,url} from "../../config.js";
+import { useAtom,useSetAtom } from "jotai/react";
+import { tokenAtom,cartCountAtom} from "../../atoms";
+import axios from 'axios';
+
 const PreviousOrderItemsModal = ({
   open,
   handleClose,
@@ -29,6 +31,13 @@ const PreviousOrderItemsModal = ({
       getOrderItems(prevOrderDateList[0]); // 데이터 호출
     }
   }, [prevOrderDateList]);
+
+
+   // 선택초기화 
+   const handleModalClose = () => {
+    setSelectedItems([]); // 선택된 아이템 초기화
+    handleClose(); //close 함수 호출
+  };
 
   const getOrderItems = (selectDate) => {
     const formData = new FormData();
@@ -78,6 +87,7 @@ const PreviousOrderItemsModal = ({
     }
   };
 
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleAddToCart = () => {
     if (selectedItems.length === 0) {
       alert("선택된 상품이 없습니다.");
@@ -96,7 +106,17 @@ const PreviousOrderItemsModal = ({
       }
 
         alert("장바구니에 상품을 추가했습니다.");
+        // cartCount를 업데이트
+        axiosInToken(token).get(`${url}/cartAllCount?storeCode=${storeCode}`)
+        .then(response => {
+          
+          if(response.headers.authorization!=null) {
+            setToken(res.headers.authorization)
+        }
+          setCartCount(response.data);   //jotai 값 세팅
+        });  
         onSuccess(); //장바구니 리스트 재로드;
+        
       })
       .catch((err) => {
         console.log(err);
@@ -105,10 +125,10 @@ const PreviousOrderItemsModal = ({
   };
 
   return (
-    <c.StyledDialog open={open} handler={handleClose} size="lg">
+    <c.StyledDialog open={open} handler={handleModalClose} size="lg">
       <c.ModalHeader>
         <c.ModalTitle>이전 상품 추가</c.ModalTitle>
-        <XMarkIcon className="h-5 w-5 cursor-pointer" onClick={handleClose} />
+        <XMarkIcon className="h-5 w-5 cursor-pointer" onClick={handleModalClose} />
       </c.ModalHeader>
 
       <c.DateNavigation>

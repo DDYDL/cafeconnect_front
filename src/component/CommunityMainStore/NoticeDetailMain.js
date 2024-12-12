@@ -1,8 +1,10 @@
-import axios from "axios";
+import { useAtom, useAtomValue } from "jotai/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link, useNavigate } from "react-router-dom"; // navigate를 사용하려면 이 임포트가 필요합니다.
 import styled from "styled-components";
+import { memberAtom, tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
@@ -14,28 +16,35 @@ const NoticeDetailMain = () => {
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
   const { noticeNum } = useParams(); // URL에서 noticeNum 추출
   const [notice, setNotice] = useState("");
+  const [token, setToken] = useAtom(tokenAtom);
+  const store = useAtomValue(memberAtom);
 
   useEffect(() => {
-    const fetchNoticeDetail = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/noticeDetailMain/${noticeNum}`);
-        const noticeData = response.data;
+    if (token != null && token !== "") select();
+  }, [token]);
 
-        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+  const select = () => {
+    axiosInToken(token)
+      .get(`http://localhost:8080/noticeDetailMain/${noticeNum}`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+
+        const noticeData = res.data;
+
+        // complainDate를 한국식 날짜 형식으로 변환
         const formattedDate = new Date(noticeData.noticeDate).toLocaleDateString("ko-KR");
 
         setNotice({
           ...noticeData,
-          noticeDate: formattedDate, // 변환된 날짜로 업데이트
+          noticeDate: formattedDate, // 날짜 포맷 변경
         });
-
-        console.log("Notice:", noticeData);
-      } catch (error) {
-        console.error("Error fetching notice:", error);
-      }
-    };
-    fetchNoticeDetail();
-  }, [noticeNum]);
+      })
+      .catch(error => {
+        console.error("Error fetching complain details:", error);
+      });
+  };
 
   // 취소 시, 홈으로 리디렉션
   const handleCancel = () => {

@@ -1,14 +1,14 @@
 import * as s from '../styles/StyledStore.tsx';
 import * as h from '../styles/HStyledStore.tsx';
 
-import {useState, useEffect} from 'react';
-import {axiosInToken} from '../../config.js'
+import { useState, useEffect } from 'react';
+import { axiosInToken } from '../../config.js'
 import { useAtom } from 'jotai/react';
 import { tokenAtom } from '../../atoms';
 import { format } from "date-fns";
 import { ko } from "date-fns/locale/ko";
 import { useNavigate } from 'react-router';
-import { ArrowRightIcon, ArrowLeftIcon} from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const AskListMain = ()=>{
     const [askList, setAskList] = useState([]);
@@ -48,7 +48,9 @@ const AskListMain = ()=>{
             <s.ContentListDiv>
                 <s.MainTitleText>1:1 문의</s.MainTitleText>
                 <s.CategoryButtonGroupDiv >
-                    <h.ListCntDiv>총 10건</h.ListCntDiv>
+                    <h.ListCntDiv>
+                        <p>총&nbsp;{pageInfo.allCnt}&nbsp;건</p>
+                    </h.ListCntDiv>
                 </s.CategoryButtonGroupDiv>
 
                 <s.TableList>
@@ -68,7 +70,7 @@ const AskListMain = ()=>{
                             <h.TableTextTd width='300px'>{ask.askTitle}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{ask.storeName}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{format(ask.askDate, 'yyyy.MM.dd', {locale: ko})}</h.TableTextTd >
-                            <h.TableTextTd width='130px'>{ask.askStatus=="answered"?            
+                            <h.TableTextTd width='130px'>{ask.askStatus=="1"?            
                             <h.StatusTextTrue>답변완료</h.StatusTextTrue>:
                             <h.StatusTextFalse>미답변</h.StatusTextFalse>}
                             </h.TableTextTd >

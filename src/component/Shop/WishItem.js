@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
 import { StyledButton } from "../styledcomponent/button.tsx";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Select, Option } from "@material-tailwind/react";
-import { useAtomValue,useAtom } from "jotai/react";
-import { tokenAtom, memberAtom } from '../../atoms';
+import { useAtomValue,useAtom,useSetAtom } from "jotai/react";
+import { tokenAtom, memberAtom, cartCountAtom } from '../../atoms';
 import { axiosInToken ,url} from '../../config.js';
 import { useNavigate } from "react-router";
+import axios from 'axios';
 
 function WishItem() {
   const [token,setToken] = useAtom(tokenAtom);
@@ -31,7 +32,7 @@ function WishItem() {
   useEffect(() => {
     submit();
     getCategories();
-  }, [token]);
+  }, [token,store.storeCode]);
 
   const getCategories = () => {
     axiosInToken(token)
@@ -180,6 +181,7 @@ function WishItem() {
 
   };
 
+  const setCartCount = useSetAtom(cartCountAtom);
   const handleAddToCart = (itemCode) => {
     axiosInToken(token).get(`addCart?storeCode=${store.storeCode}&itemCode=${itemCode}&cartItemCount=1`)
       .then(res => {
@@ -189,18 +191,30 @@ function WishItem() {
       }
         if (res.data != null) {
           alert('장바구니에 등록되었습니다.');
+        // cartCount를 업데이트
+        axiosInToken(token).get(`${url}/cartAllCount?storeCode=${store.storeCode}`)
+        .then(response => {
+          
+          if(response.headers.authorization!=null) {
+            setToken(res.headers.authorization)
         }
+          setCartCount(response.data);   //jotai 값 세팅
+        });   
+        
+      }
+      
       })
       .catch(err => {
         console.log(err);
+      }).catch(err =>{
+        console.log(err);
       })
-      alert('장바구니에 등록되었습니다.');
-    console.log(`장바구니에 추가: 상품 ${itemCode}, 수량 1`);
+      
   };
 
   return (
     <CommonWrapper>
-      <CommonContainer>
+      <CommonContainer size="1000px">
         <ContainerTitleArea>
           <h2>관심상품</h2>
         </ContainerTitleArea>
