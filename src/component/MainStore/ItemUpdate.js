@@ -8,9 +8,12 @@ import { Option, Select } from "@material-tailwind/react";
 import { useRef } from "react";
 import { useParams } from "react-router";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
-
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 import axios from "axios";
 function ItemInsert() {
+  const [token,setToken] = useAtom(tokenAtom);
   const { itemCode } = useParams();
   const imageInput = useRef();
   const navigate = useNavigate();
@@ -163,7 +166,7 @@ function ItemInsert() {
   };
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      const response = await axiosInToken(token).get(`http://localhost:8080/majorCategory`);
       setMajorCategoryList(response.data);
     } catch (error) {
       console.log(error);
@@ -189,7 +192,7 @@ function ItemInsert() {
 
   const fetchMiddleData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/middleCategory?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
@@ -200,7 +203,7 @@ function ItemInsert() {
 
   const fetchSubData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/subCategory?categoryName=${value}`
       );
       setSubCategoryList(response.data);
@@ -210,7 +213,7 @@ function ItemInsert() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/selectItemByItemCode/${itemCode}`
       );
       console.log(response.data);
@@ -292,7 +295,7 @@ function ItemInsert() {
     formData.append("itemUpdateForm", blob);
     console.log(blob);
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/updateItem/${item.itemCode}`,
         formData
       );
@@ -308,9 +311,12 @@ function ItemInsert() {
   };
 
   useEffect(() => {
-    fetchData();
+    if(token){
+      fetchData();
     fetchMajorData();
-  }, []);
+    }
+    
+  }, [token]);
 
   return (
     <>

@@ -5,8 +5,12 @@ import plus from "../assets/img/plus-circle-outline.svg";
 import minus from "../assets/img/minus-circle-outline.svg";
 import styles from "../styles/ItemCategory.module.css";
 import axios from "axios";
+import { axiosInToken } from "../../config.js";
+import { tokenAtom, memberAtom } from "../../atoms";
+import { useAtomValue,useAtom } from "jotai/react";
 
 function Category() {
+  const [token,setToken] = useAtom(tokenAtom);
   const [majorCategoryList, setMajorCategoryList] = useState([]);
   const [middleCategoryList, setMiddleCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] = useState([]);
@@ -295,7 +299,7 @@ function Category() {
 
   const fetchMajorData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/majorCategory`);
+      const response = await axiosInToken(token).get(`http://localhost:8080/majorCategory`);
 
       setMajorCategoryList(response.data);
     } catch (error) {
@@ -304,7 +308,7 @@ function Category() {
   };
   const fetchMiddleData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/middleCategory?categoryName=${value}`
       );
       console.log(response.data);
@@ -315,7 +319,7 @@ function Category() {
   };
   const fetchSubData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/subCategory?categoryName=${value}`
       );
       console.log(response.data);
@@ -365,7 +369,7 @@ function Category() {
     formData.append("itemMajorCategoryForm", blob);
 
     try {
-      await axios.post(`http://localhost:8080/deleteMajorCategory`, formData);
+      await axiosInToken(token).post(`http://localhost:8080/deleteMajorCategory`, formData);
 
       const ModifyCategoryList = majorCategoryList.filter(
         (category) => category.categoryNum !== activeMajorCategoryNum
@@ -394,7 +398,7 @@ function Category() {
     formData.append("itemMiddleCategoryForm", blob);
 
     try {
-      await axios.post(`http://localhost:8080/deleteMiddleCategory`, formData);
+      await axiosInToken(token).post(`http://localhost:8080/deleteMiddleCategory`, formData);
 
       const ModifyCategoryList = middleCategoryList.filter(
         (category) => category.categoryNum !== activeMiddleCategoryNum
@@ -423,7 +427,7 @@ function Category() {
     formData.append("itemSubCategoryForm", blob);
 
     try {
-      await axios.post(`http://localhost:8080/deleteSubCategory`, formData);
+      await axiosInToken(token).post(`http://localhost:8080/deleteSubCategory`, formData);
 
       const ModifyCategoryList = subCategoryList.filter(
         (category) => category.categoryNum !== activeSubCategoryNum
@@ -438,7 +442,7 @@ function Category() {
   };
   const handleMajorAddSubmit = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/checkMajorCategory?categoryName=${majorSaveText}`
       );
       if (response.data.code === "success") {
@@ -460,7 +464,7 @@ function Category() {
     formData.append("itemMajorCategoryForm", blob);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/addMajorCategory`,
         formData
       );
@@ -483,7 +487,7 @@ function Category() {
   };
   const handleMiddleAddSubmit = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/checkMiddleCategory?categoryName=${middleSaveText}`
       );
       if (response.data.code === "success") {
@@ -507,7 +511,7 @@ function Category() {
     formData.append("itemMiddleCategoryForm", blob);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/addMiddleCategory`,
         formData
       );
@@ -530,7 +534,7 @@ function Category() {
   };
   const handleSubAddSubmit = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/checkSubCategory?categoryName=${subSaveText}`
       );
       if (response.data.code === "success") {
@@ -554,7 +558,7 @@ function Category() {
     formData.append("itemSubCategoryForm", blob);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInToken(token).post(
         `http://localhost:8080/addSubCategory`,
         formData
       );
@@ -589,7 +593,7 @@ function Category() {
     formData.append("itemMajorCategoryForm", blob);
 
     try {
-      await axios.post(
+      await axiosInToken(token).post(
         `http://localhost:8080/updateItemMajorCategory`,
         formData
       );
@@ -634,7 +638,7 @@ function Category() {
     formData.append("itemMiddleCategoryForm", blob);
 
     try {
-      await axios.post(
+      await axiosInToken(token).post(
         `http://localhost:8080/updateItemMiddleCategory`,
         formData
       );
@@ -679,7 +683,7 @@ function Category() {
     formData.append("itemSubCategoryForm", blob);
 
     try {
-      await axios.post(`http://localhost:8080/updateItemSubCategory`, formData);
+      await axiosInToken(token).post(`http://localhost:8080/updateItemSubCategory`, formData);
       setSubCategoryList(
         subCategoryList.map((category, index) => {
           if (category.categoryNum === activeSubCategoryNum) {
@@ -708,7 +712,7 @@ function Category() {
 
   const fetchTotalCategoryStringData = async (value) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInToken(token).get(
         `http://localhost:8080/categoryList?categoryNum=${value}`
       );
 
@@ -719,8 +723,11 @@ function Category() {
   };
 
   useEffect(() => {
-    fetchMajorData();
-  }, []);
+    if(token){
+      fetchMajorData();
+    }
+    
+  }, [token]);
 
   return (
     <>
