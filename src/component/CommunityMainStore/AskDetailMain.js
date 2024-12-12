@@ -9,11 +9,12 @@ import { tokenAtom } from '../../atoms';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect} from 'react';
 import { useNavigate } from 'react-router';
+import { format } from 'date-fns';
 
 const AskDetailMain = ()=>{
     const [token,setToken] = useAtom(tokenAtom);
     const {askNum} = useParams();
-    const [ask, setAsk] = useState({});
+    const [ask, setAsk] = useState({askDate:new Date()});
     const navigate = useNavigate();
 
     useEffect(()=> {
@@ -52,7 +53,7 @@ const AskDetailMain = ()=>{
     return (
         <>
             <s.ContentListDiv>
-            <s.MainTitleText>1:1문의 상세</s.MainTitleText>
+            <s.MainTitleText>1:1 문의</s.MainTitleText>
 
             <m.TableInfo>
                     <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
@@ -73,7 +74,7 @@ const AskDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>작성일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{ask.askDate}</m.TableInfoTd>
+                        <m.TableInfoTd>{format(new Date(ask.askDate),"yyyy.MM.dd")}</m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>지점명</m.TableTitleSpan></m.TableInfoTd>
