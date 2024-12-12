@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom"; // navigate를 사용하려면 �
 import styled from "styled-components";
 import { ButtonContainer } from "../styledcomponent/Button.style.js";
 // import { CustomHorizontal } from "../styledcomponent/Horizin.style.js";
-import axios from "axios";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { useAtom } from "jotai/react";
+import { Link, useParams } from "react-router-dom";
+import { tokenAtom } from "../../atoms";
+import { axiosInToken } from "../../config.js";
 import { Textarea } from "../styledcomponent/Input.style.js";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
@@ -14,34 +15,36 @@ const ComplainDetail = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [complain, setComplain] = useState("");
-  const { complainNum } = useParams(); // URL에서 noticeNum 추출
-
-  // const handleRegister = () => {
-  //   navigate("/complainList");
-  // };
+  const [complain, setComplain] = useState({});
+  const { complainNum } = useParams();
+  const [token, setToken] = useAtom(tokenAtom);
 
   useEffect(() => {
-    const fetchNoticeDetail = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/complainDetailStore/${complainNum}`
-        );
+    if (token != null && token !== "") select();
+  }, [token]);
 
-        const complainData = response.data;
-        console.log("complainData", complainData);
+  const select = () => {
+    axiosInToken(token)
+      .get(`http://localhost:8080/complainDetailStore/${complainNum}`)
+      .then(res => {
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
 
-        // 타임스탬프를 읽을 수 있는 날짜 형식으로 변환
+        const complainData = res.data;
+
+        // complainDate를 한국식 날짜 형식으로 변환
         const formattedDate = new Date(complainData.complainDate).toLocaleDateString("ko-KR");
-        setComplain({ ...complainData, complainDate: formattedDate });
 
-        console.log("complain" + complain);
-      } catch (error) {
-        console.error("Error fetching notice:", error);
-      }
-    };
-    fetchNoticeDetail(); // 컴포넌트가 마운트될 때 공지사항 상세 정보 가져오기
-  }, [complainNum]); // complainNum이 변경될 때마다 다시 실행
+        setComplain({
+          ...complainData,
+          complainDate: formattedDate, // 날짜 포맷 변경
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching complain details:", error);
+      });
+  };
 
   return (
     <ContentListDiv>
