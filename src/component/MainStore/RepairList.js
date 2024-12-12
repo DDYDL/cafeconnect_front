@@ -765,14 +765,14 @@ function RepairListCopy() {
 
                       {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={fetchKeywordData(keyWord, currentPage + 1)}
+                          onClick={()=>fetchKeywordData(keyWord, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
                       {!empty && hasNext && usingCategory && (
                         <s.IconButtonStyle
-                          onClick={fetchCategoryData(category, currentPage + 1)}
+                          onClick={()=>fetchCategoryData(category, currentPage + 1)}
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
