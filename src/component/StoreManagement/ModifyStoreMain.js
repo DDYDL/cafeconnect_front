@@ -129,6 +129,14 @@ const ModifyStoreMain = ()=>{
         setStore({...store, ['storeCloseDate']: selectedOption.value})
     };
 
+    // // 페이지네이션 화살표(이전, 다음) 함수
+    // const previousPage = () => {
+    //     if (pageInfo.curPage  > 1) { select(pageInfo.curPage -1); }
+    //     };
+    // const nextPage = () => {
+    //     if (pageInfo.curPage != pageInfo.endPage) { select(pageInfo.curPage+1); }
+    //     };
+
     return (
         <>
             <s.ContentListDiv>

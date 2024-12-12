@@ -149,7 +149,7 @@ ${OneImgAndPDiv}:hover &{
         export const ButtonStyle = styled(Button)<Container>`
         display:inline-block;
         width:${(props) => props.width ? props.width : "100px"};
-        height:30px;
+        height:40px;
         padding-top:7px;
         border-radius:3px;
         padding:0px;
@@ -352,11 +352,11 @@ text-align:center;
 export const ButtonInnerDiv = styled.div<Container>`
 margin-right:140px;
 `;
-
+/////////////////
 export const NoticeSelectDiv = styled.div<Container>`
-    width:200px;
-    margin-right:10px;
+margin-right:10px;
         > div > div {
+            width:200px;
             border-radius:5px;
             background-color:rgb(255, 255, 255);
             border-color:rgb(234, 234, 234);
@@ -368,17 +368,21 @@ export const NoticeSelectDiv = styled.div<Container>`
 `;
 
 export const ReactSelectDiv = styled.div<Container>`
-    width:200px;
     margin-right:10px;
-        > div > div {
-            border-radius:5px;
-            background-color:rgb(248, 248, 248);
-            border-color:rgb(176, 190, 197);
-            border-style: solid;
-            border-width:1px;
-            font-size: 14px;
-            color:rgb(69, 90, 100);
-            }
+    .CustomSelect {
+        width:200px;
+        > div {
+                height:40px;
+                border-radius:5px;
+                background-color:rgb(248, 248, 248);
+                border-color:rgb(176, 190, 197);
+                border-style: solid;
+                border-width:1px;
+                font-size: 14px;
+                color:rgb(69, 90, 100);
+                }
+        }
+    > div > div { height:40px; }
 `;
 
 export const SearchDiv = styled.div<Container>`
@@ -386,34 +390,36 @@ width:200px;
 `;
 
 export const TimePickerPeriodWrap =styled.div`
-width:300px;
-display: flex;
-    flex-direction:row;
-    justify-content: space-around;
-    align-items:center;
-    text-align:center;
-    box-shadow:none;
-    border: none;
-    
-    .CustomPicker{
-        width: 140px;
-        height: 40px;
-        border-radius: 5px;
-        background-color: rgb(255, 255, 255);
-        border-color: rgb(234, 234, 234);
-        border-style:solid;
-        border:1px;
-        color: rgb(0, 0, 0);
-        font-family: "Noto Sans KR";
-        letter-spacing :normal;
-        line-height: 24px;
+    width:300px;
+    display: flex;
+        flex-direction:row;
+        justify-content: space-around;
+        align-items:center;
+        text-align:center;
         box-shadow:none;
+        border: none;
         
-        input {
-        padding: 8px 12px 8px 12px;
-        text-align: start;
-      } 
-    }
+        .CustomPicker{
+            width: 140px;
+            height: 40px;
+            border-radius: 5px;
+            background-color: rgb(255, 255, 255);
+            border-color: rgb(234, 234, 234);
+            border-style:solid;
+            border:1px;
+            color: rgb(0, 0, 0);
+            font-family: "Noto Sans KR";
+            letter-spacing :normal;
+            line-height: 24px;
+            box-shadow:none;
+            
+            > div { height:40px; }
+
+            input {
+            padding: 8px 12px 8px 12px;
+            text-align: start;
+            } 
+        }
 `;
 export const DatePickerPeriodWrap =styled.div`
     width:300px;
@@ -426,15 +432,20 @@ export const DatePickerPeriodWrap =styled.div`
     border: none;
     
     .CustomPicker{
-        > div > div {
-            margin: 0 0 0 0;
-            padding: 0 0 0 0;
+        > div {
+            height:40px;
+            > div {
+                margin: 0 0 0 0;
+                padding: 0 0 0 0;
+                
+                > div {
+                    display:inline-block;
+                    margin: 0 0 0 0;
+                    padding: 0 0 0 0;
+                    }
+                }
             }
-        > div > div > div {
-            display:inline-block;
-            margin: 0 0 0 0;
-            padding: 0 0 0 0;
-        }
+
         width: 140px;
         height: 40px;
         border-radius: 5px;
@@ -465,35 +476,36 @@ export const DatePickerPeriodWrap =styled.div`
     }
 `;
 export const DatePickerWrap =styled.div`
-width:300px;
-text-align:center;
-box-shadow:none;
-border: none;
+    width:300px;
+    text-align:center;
+    box-shadow:none;
+    border: none;
 
-.CustomPicker{
-    width: 300px;
-    height: 40px;
-    border-radius: 5px;
-    background-color: rgb(255, 255, 255);
-        border-color: rgb(234, 234, 234);
-        border-style:solid;
-        border:1px;
-        color: rgb(0, 0, 0);
-        font-family: "Noto Sans KR";
-        letter-spacing :normal;
-        line-height: 24px;
-        box-shadow:none;
-        
-        div {
+    .CustomPicker{
+        width: 300px;
+        border-radius: 5px;
+        background-color: rgb(255, 255, 255);
+            border-color: rgb(234, 234, 234);
+            border-style:solid;
+            border:1px;
+            color: rgb(0, 0, 0);
+            font-family: "Noto Sans KR";
+            letter-spacing :normal;
+            line-height: 24px;
             box-shadow:none;
-            border: none;
+            
+            > div { height:40px; }
+
+            div {
+                box-shadow:none;
+                border: none;
+            }
+            
+            input {
+                padding: 8px 12px 8px 12px;
+                text-align: start;
+            } 
         }
-        
-        input {
-            padding: 8px 12px 8px 12px;
-            text-align: start;
-        } 
-    }
     `;
     
     export const StatusTextFalse =styled.p`
@@ -531,7 +543,7 @@ border: none;
   border: 1px solid #ccc9; /* 90% 불투명한 연한 회색 */
 `;
 
-export const Required = styled.p`
+export const Required = styled.span`
 float:right;
 color: red;
 `;
@@ -539,14 +551,16 @@ color: red;
 export const SearchIcon = styled(MagnifyingGlassIcon)`
     &:hover {
       cursor:pointer;
-    }
-
+    }   
 `;
 
 export const PageCntDiv = styled.div<Container>`
 width:150px;
-    p { 
-    margin-top: 20px;
-    text-align:center;
+margin-top: 20px;
+text-align:left;
+    > span > span { 
+    margin-left:5px;
+    margin-right:5px;
+    font-weight:bold;
     }
 `;
