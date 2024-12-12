@@ -381,17 +381,22 @@ function ItmListCopy() {
               >
                 상품 목록
               </div>
+              {/* <div
+                className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
+              >
+                {`총${totalElements}건`}
+              </div> */}
+              <div className={styles["flex-row"]}>
               <div
                 className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
               >
                 {`총${totalElements}건`}
               </div>
-              <div className={styles["flex-row"]}>
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
-                  style={{ width: "200px" }}
+                  style={{ width: "120px" }}
                 >
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
                     <Select label="대분류" onChange={handleSelectMajorCategory}>
                       {majorCategoryList.map((majorCategory, index) => (
                         <Option value={majorCategory.categoryValue} key={index}>
@@ -399,14 +404,14 @@ function ItmListCopy() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
-                  style={{ width: "200px" }}
+                  style={{ width: "120px" }}
                 >
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
                     <Select
                       label="중분류"
                       onChange={handleSelectMiddleCategory}
@@ -420,14 +425,14 @@ function ItmListCopy() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
 
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
-                  style={{ width: "200px" }}
+                  style={{ width: "120px" }}
                 >
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
                     <Select label="소분류" onChange={handleSelectSubCategory}>
                       {subCategoryList.map((subCategory, index) => (
                         <Option value={subCategory.categoryValue} key={index}>
@@ -435,10 +440,10 @@ function ItmListCopy() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
 
-                <div style={{ marginLeft: "100px" }}>
+                <div style={{ marginLeft: "100px",width:"200px",marginLeft:"50px" }}>
                   <Input
                     icon={
                       <MagnifyingGlassIcon
@@ -451,6 +456,21 @@ function ItmListCopy() {
                     onChange={handleChangeKeyword}
                   />
                 </div>
+                <div className={styles["overlap-group"]}>
+                <div
+                  className={`${styles["text-6-1"]} ${styles["valign-text-middle"]}`}
+                >
+                  상품 등록
+                </div>
+                <div className={styles["small-btn_brown"]}>
+                  <div
+                    className={`${styles["text-7-1"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    onClick={() => navigate("/itemInsert")}
+                  >
+                    상품등록
+                  </div>
+                </div>
+              </div>
               </div>
               <div className={styles["frame-92"]}>
                 <div className={styles["frame-87"]}>
@@ -473,6 +493,14 @@ function ItmListCopy() {
                       className={`${styles["text-10"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-shark-16px"]}`}
                     >
                       상품정보
+                    </div>
+                  </div>
+                  <div className={`${styles["cell-3"]} ${styles["cell-6"]}`}>
+                    <div
+                      className={`${styles["text-11"]} ${styles["valign-text-middle"]} ${styles["notosanskr-medium-shark-16px"]}`}
+                      style={{marginLeft:"15px"}}
+                    >
+                      단위
                     </div>
                   </div>
                   <div className={`${styles["cell-3"]} ${styles["cell-6"]}`}>
@@ -537,10 +565,20 @@ function ItmListCopy() {
                             <div
                               className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                               onClick={handleNavigate(index)}
+                              style={{wordWrap: "break-word",marginLeft:"10px",marginRight:"10px"}}
                             >
                               {page.itemName}
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        className={`${styles["data-2"]} ${styles["data-5"]}`}
+                      >
+                        <div
+                          className={`${styles["number"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
+                        >
+                          {page.itemUnit}
                         </div>
                       </div>
                       <div
@@ -829,7 +867,7 @@ function ItmListCopy() {
                   </s.ButtonGroupStyle>
                 </s.PageButtonGroupDiv>
               </div>
-              <div className={styles["overlap-group"]}>
+              {/* <div className={styles["overlap-group"]}>
                 <div
                   className={`${styles["text-6-1"]} ${styles["valign-text-middle"]}`}
                 >
@@ -843,7 +881,7 @@ function ItmListCopy() {
                     상품등록
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <footer className={styles["footer"]}>
               <div className={styles["footer-contents"]}>

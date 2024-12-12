@@ -513,7 +513,7 @@
     background-color: #f8f8f8;
     display: flex;
     flex-direction: column;
-    height: 1421px;
+    height: 1371px;
     margin-top: 20px;
     width: 1000px;
   }
@@ -604,7 +604,7 @@
   .MenuUpdate .input-1 {
     align-items: flex-start;
     flex-direction: column;
-    height: 372px;
+    height: 342px;
     padding: 15px 0;
   }
   
@@ -733,12 +733,14 @@
     background-color: #54473f;
     border-radius: 5px;
     display: flex;
-    height: 53px;
-    justify-content: flex-end;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
     margin-right: 30px;
-    margin-top: 59px;
-    min-width: 174px;
-    padding: 20px 39px;
+    
+    width: 100px;
+    
+    
   }
   
   .MenuUpdate .text-21 {
