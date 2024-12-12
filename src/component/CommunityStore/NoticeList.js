@@ -142,7 +142,7 @@ const NoticeList = () => {
           {getFilteredComplains().length > 0 ? (
             getFilteredComplains().map((n, index) => (
               <TableInfoList onClick={() => handleItemClick(n.noticeNum)} key={n.noticeNum}>
-                <div style={{ paddingLeft: "30px" }}>
+                <div style={{ paddingLeft: "30px", width: "80px" }}>
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </div>{" "}
                 <div
@@ -156,9 +156,12 @@ const NoticeList = () => {
                     paddingTop: "10px",
                   }}
                 >
-                  <span style={{ color: n.noticeType === "주요" ? "red" : "black"}}>
+                  <span
+                    style={{ fontWeight: "bold", color: n.noticeType === "주요" ? "red" : "black" }}
+                  >
                     [&nbsp;{n.noticeType}&nbsp;]
-                  </span>&nbsp;&nbsp;
+                  </span>
+                  &nbsp;&nbsp;
                   {/* {" "} */}
                   {n.noticeTitle}
                 </div>

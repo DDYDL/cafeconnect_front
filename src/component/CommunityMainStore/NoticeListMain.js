@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { useAtomValue } from "jotai/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { tokenAtom } from "../../atoms.js";
@@ -46,28 +46,6 @@ const NoticeListMain = () => {
       console.error("컴플레인 리스트 요청 중 오류 발생:", err);
     }
   };
-
-  // fetchStoreCode를 useCallback으로 래핑
-  // const fetchStoreCode = useCallback(async () => {
-  //   try {
-  //     if (!token) return; // 토큰 없으면 요청 생략
-  //     const response = await axiosInToken(token).get("/store");
-  //     const storeCodeFromResponse = response.data?.storeCode; // 응답에서 storeCode 추출
-  //     setStoreCode(storeCodeFromResponse);
-  //     console.log("StoreCode:", storeCodeFromResponse);
-  //   } catch (err) {
-  //     console.error("storeCode 요청 중 오류 발생:", err);
-  //   }
-  // }, [token]); // 의존성 배열에 token 추가
-
-  // useEffect(() => {
-  //   fetchStoreCode();
-  // }, [fetchStoreCode]); // fetchStoreCode를 의존성 배열에 추가
-
-  // // useEffect는 그대로 유지
-  // useEffect(() => {
-  //   fetchStoreCode();
-  // }, [token]);
 
   useEffect(() => {
     fetchData();
@@ -177,9 +155,10 @@ const NoticeListMain = () => {
                       width: "440px",
                     }}
                   >
-                  <span style={{ color: a.noticeType === "주요" ? "red" : "black" }}>
-                    [&nbsp;{a.noticeType}&nbsp;]
-                  </span>&nbsp;&nbsp;
+                    <span style={{ color: a.noticeType === "주요" ? "red" : "black" }}>
+                      [&nbsp;{a.noticeType}&nbsp;]
+                    </span>
+                    &nbsp;&nbsp;
                     {a.noticeTitle}
                   </div>
                   <div style={{ paddingRight: "20px" }}>

@@ -1,8 +1,8 @@
 import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Input } from "@material-tailwind/react";
-import axios from "axios";
-import { useAtomValue } from "jotai/react";
-import React, { useEffect, useState } from "react";
+import { useAtom, useAtomValue } from "jotai/react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { memberAtom, tokenAtom } from "../../atoms";
@@ -13,27 +13,25 @@ import * as h from "../styles/HStyledStore.tsx";
 import * as s from "../styles/StyledStore.tsx";
 import { ContentListDiv } from "../styles/StyledStore.tsx";
 
-// todo 답변 저장 -> 해당 답변이 계속 보여지도록 해야함.
+// 공지사항 리스트(가맹점)
 const AskList = () => {
+  // const [storeCode, setStoreCode] = useState(null);
   const [ask, setAsk] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
-  const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
-  const [selectedAnswer, setSelectedAnswer] = useState(null); // 클릭한 항목의 답변을 저장하는
-  const [filteredAsk, setFilteredAsk] = useState([]); // 필터링된 데이터 상태 추가상태
-  const navigate = useNavigate(); // useNavigate 훅을 호출하여 navigate 함수 정의
-  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 버튼 클릭 여부
+  const navigate = useNavigate();
   const [searchAsk, setSearchAsk] = useState("");
-  const [AskData, setAskData] = useState(null);
-  // const [token, setToken] = useState(null);
-  const token = useAtomValue(tokenAtom);
-  const store = useAtomValue(memberAtom);
-
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const itemsPerPage = 10; // 한 페이지에 보여줄 항목 수
-
   const pageCount = Math.ceil(ask.length / itemsPerPage); // 총 페이지 수
   const pageBtn = Array.from({ length: pageCount }, (_, index) => index + 1); // 페이지 번호 배열 생성
+  const [selectedItem, setSelectedItem] = useState(null); // Track the selected item
+  const [answers, setAnswers] = useState({}); // 항목별 답변을 저장하는 객체
+  const [filteredAsk, setFilteredAsk] = useState([]); // 필터링된 데이터 상태 추가상태
+
+  const store = useAtomValue(memberAtom);
   const storeCode = store.storeCode;
+
+  const { noticeNum } = useParams();
+  const [token, setToken] = useAtom(tokenAtom);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -47,116 +45,124 @@ const AskList = () => {
     }
   };
 
-  const getFilteredAsk = () => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    return filteredAsk.slice(indexOfFirstItem, indexOfLastItem);
-  };
+  const fetchStoreCode = useCallback(async () => {
+    try {
+      if (!token) return;
+      const response = await axiosInToken(token).get("/store");
+      const storeCodeFromResponse = response.data?.storeCode;
+      // setStoreCode(storeCodeFromResponse);
+    } catch (err) {
+      console.error("storeCode 요청 중 오류 발생:", err);
+    }
+  }, [token]);
 
-  const fetchSales = type => {
-    if (!token) return;
+  useEffect(() => {
+    fetchStoreCode();
+  }, [fetchStoreCode]);
+
+  useEffect(() => {
+    if (token != null && token !== "") fetchData();
+  }, [token]);
+
+  // const fetchData = useCallback(async () => {
+  //   if (!token || !storeCode) return;
+  //   try {
+  //     const response = await axiosInToken(token).get(`/askList/${storeCode}`);
+  //     const formattedData = response.data.map(item => ({
+  //       ...item,
+  //       askDate: new Date(item.askDate).toLocaleDateString("ko-KR"),
+  //     }));
+  //     setAsk(formattedData);
+  //   } catch (err) {
+  //     console.error("컴플레인 리스트 요청 중 오류 발생:", err);
+  //     alert("데이터를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.");
+  //   }
+  // }, [token, storeCode]);
+
+  // useEffect(() => {
+  //   if (token != null && token !== "") select();
+  // }, [token]);
+
+  const fetchData = () => {
     axiosInToken(token)
-      .get(`/askList/${storeCode}`)
+      .get(`http://localhost:8080/askList/${storeCode}`)
       .then(res => {
-        // if (res.headers.authorization != null) {
-        //   setToken(res.headers.authorization);
-        // }
-        console.log(res);
-        setAskData({ ...res.data });
+        if (res.headers.authorization != null) {
+          setToken(res.headers.authorization);
+        }
+
+        const askData = res.data;
+
+        console.log("askData" + JSON.stringify(askData));
+        // complainDate를 한국식 날짜 형식으로 변환
+        const formattedDate = new Date(askData.askDate).toLocaleDateString("ko-KR");
+
+        // 데이터가 배열인지 확인 후 처리
+        if (Array.isArray(askData)) {
+          setAsk(askData);
+        } else {
+          console.error("API 응답이 배열이 아닙니다:", askData);
+          setAsk([]);
+        }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.error("데이터 요청 오류:", error);
+        setAsk([]); // 오류 발생 시 빈 배열로 초기화
       });
   };
 
-  const handleItemClick = async askNum => {
-    if (selectedItem === askNum) {
-      // 이미 선택된 항목을 다시 클릭하면 초기화
-      setSelectedItem(null);
-      setSelectedAnswer(null);
-    } else {
-      setSelectedItem(askNum);
-      await fetchAnswerForSelectedItem(askNum); // 답변 가져오기
-    }
-  };
-
-  const handleSearch = () => {
-    // 검색어가 비어 있지 않을 경우에만 필터링
-    if (searchAsk.trim() !== "") {
-      const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
-      setFilteredAsk(filtered); // 필터링된 데이터 상태 업데이트
-      setCurrentPage(1); // 검색 후 페이지를 1로 초기화
-    } else {
-      setFilteredAsk(ask); // 검색어가 비어 있으면 원래 데이터로 되돌리기
-      setCurrentPage(1); // 검색 후 페이지를 1로 초기화
-    }
-  };
-
-  // Enter 키로 검색
-  const handleKeyDown = e => {
-    if (e.key === "Enter") {
-      handleSearch(); // Enter 키가 눌렸을 때 검색 실행
-    }
+  const handleItemClick = askNum => {
+    setSelectedItem(prevItem => (prevItem === askNum ? null : askNum));
+    // navigate(`/askDetail/${askNum}`);
   };
 
   const askWrite = () => {
     navigate("/askWrite");
   };
 
-  const onChangeAsk = e => {
-    setSearchAsk(e.target.value);
-  };
-
-  const fetchAnswerForSelectedItem = async askNum => {
-    try {
-      if (!storeCode) return;
-      const response = await axios.get(
-        `http://localhost:8080/askDetailStore/${storeCode}/getAnswer/${askNum}`
+  const handleSearch = () => {
+    if (searchAsk.trim() === "") {
+      fetchData();
+    } else {
+      const filteredAskList = ask.filter(a =>
+        a.askTitle.toLowerCase().includes(searchAsk.toLowerCase())
       );
-      console.log("response data:", response.data); // 응답 데이터 확인
-
-      const answer = response.data.askAnswer; // 서버에서 받은 답변
-      setAnswers(prev => {
-        console.log("Previous answers:", prev); // 상태 업데이트 전 로그
-        const updatedAnswers = { ...prev, [askNum]: answer };
-        console.log("Updated answers:", updatedAnswers); // 업데이트된 상태 로그
-        return updatedAnswers;
-      });
-    } catch (err) {
-      console.error("답변 요청 중 오류 발생:", err);
+      setAsk(filteredAskList);
     }
   };
 
-  // 검색 버튼 클릭 핸들러
   const onSearchClick = () => {
     // setIsSearchActive(true);
     handleSearch();
   };
 
-  // 데이터 fetching 함수들 (생략)
-  useEffect(() => {
-    // fetchData() 호출해서 ask 데이터를 가져올 때 필터링된 상태를 초기화
-    setFilteredAsk(ask); // 초기 데이터를 filteredAsk에 저장
-  }, [ask]);
-
-  // 리스트를 불러오는 함수
-  const fetchAskList = async () => {
-    try {
-      if (!storeCode) return; // storeCode가 없는 경우 요청을 하지 않음
-      const response = await axios.get(`http://localhost:8080/askList/${storeCode}/`);
-      setAsk(response.data); // ask 리스트를 상태에 저장
-    } catch (err) {
-      console.error("리스트 불러오기 오류:", err);
+  const handleKeyDown = e => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
-  useEffect(() => {
-    fetchAskList(); // 컴포넌트가 처음 렌더링될 때 ask 리스트를 불러옴
-  }, [storeCode]);
+  // const getFilteredComplains = () => {
+  //   const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+  //   // 페이지에 맞는 데이터만 필터링
+  //   const indexOfLastItem = currentPage * itemsPerPage;
+  //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  //   return filtered.slice(indexOfFirstItem, indexOfLastItem);
+  // };
 
   const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
+  const getFilteredAsk = () => {
+    const filtered = ask.filter(a => a.askTitle.toLowerCase().includes(searchAsk.toLowerCase()));
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    return filtered.slice(indexOfFirstItem, indexOfLastItem);
+  };
+
+  const totalPages = Math.ceil(ask.length / itemsPerPage); // 총 페이지 수 계산
 
   return (
     <ContentListDiv>
@@ -172,10 +178,12 @@ const AskList = () => {
         <s.ButtonDiv width="200px" float="right">
           <s.SearchDiv width="200px">
             <Input
+              label="검색어를 입력하세요"
               value={searchAsk}
               onChange={e => setSearchAsk(e.target.value)} // 검색어 입력시 상태 업데이트
               onKeyDown={handleKeyDown}
             />
+
             <MagnifyingGlassIcon
               className="h-5 w-5"
               style={searchIconStyle}
@@ -201,15 +209,21 @@ const AskList = () => {
         {getFilteredAsk().length > 0 ? (
           getFilteredAsk().map((a, index) => (
             <React.Fragment key={a.askNum}>
-              <TableInfoList onClick={() => handleItemClick(a.askNum)} key={a.askNum}>
-                <div>{(currentPage - 1) * itemsPerPage + index + 1}</div>
+              <TableInfoList
+                style={{ paddingTop: "20px" }}
+                onClick={() => handleItemClick(a.askNum)}
+                key={a.askNum}
+              >
+                <div style={{ paddingLeft: "30px" }}>
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </div>
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "left",
                     width: "440px",
                     marginLeft: "80px",
-                    paddingLeft: "130px",
+                    paddingLeft: "180px",
                   }}
                 >
                   <span style={{ color: "red", marginRight: "5px" }}>[{a.askType}]</span>
@@ -219,8 +233,9 @@ const AskList = () => {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                    width: "150px",
-                    paddingLeft: "40px",
+                    width: "160px",
+                    marginLeft: "80px",
+                    paddingLeft: "50px",
                   }}
                 >
                   {new Date(a.askDate).toLocaleDateString()}
@@ -230,7 +245,7 @@ const AskList = () => {
                     display: "flex",
                     justifyContent: "center",
                     width: "140px",
-                    paddingLeft: "50px",
+                    // paddingLeft: "50px",
                     paddingTop: "40px",
                     textAlign: "center",
                     alignItems: "center",
@@ -255,7 +270,7 @@ const AskList = () => {
               {selectedItem === a.askNum && (
                 <React.Fragment>
                   <DetailContainer>
-                    <h2
+                    <h3
                       style={{
                         display: "flex",
                         justifyContent: "left",
@@ -265,13 +280,14 @@ const AskList = () => {
                       }}
                     >
                       문의 상세
-                    </h2>
+                    </h3>
                     <AnswerContent
                       style={{
                         display: "flex",
                         justifyContent: "flex-start",
                         padding: "20px",
                         textAlign: "left",
+                        fontSize: "14px",
                       }}
                       readOnly
                     >
@@ -297,10 +313,11 @@ const AskList = () => {
                         justifyContent: "flex-start",
                         padding: "20px",
                         textAlign: "left",
+                        fontSize: "14px",
                       }}
                       readOnly
                     >
-                      {answers[a.askNum] || "아직 답변이 작성되지 않았습니다."}
+                      {a.askAnswer || "아직 답변이 작성되지 않았습니다."}
                     </AnswerContent>
                   </DetailContainer1>
                 </React.Fragment>
@@ -372,7 +389,6 @@ const HeadingContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  // margin-bottom: 38px;
 `;
 
 const HeadingContainer1 = styled.div`
@@ -388,79 +404,41 @@ const Heading = styled.h2`
   flex-grow: 1;
 `;
 
-const Navigation = styled.div`
-  font-size: 10px;
-  position: absolute;
-  right: 0;
-`;
-
-const SearchContainer = styled.div`
-  width: 800px;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  gap: 10px;
-  margin-left: 200px;
-`;
-
-const SearchTitle = styled.div`
-  width: 50px;
-  font-weight: bold;
-  font-size: 16px;
-`;
-
-const SearchInput = styled.input`
-  padding: 6px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-`;
-
-const SearchButton = styled.button`
-  padding: 8px;
-  display: flex;
-  align-items: center;
-
-  font-size: 16px;
-  border: 1px solid;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
+// const TableHeader = styled.div`
+//   display: flex;
+//   // justify-content: space-between;
+//   align-items: center;
+//   height: 50px;
+//   font-weight: bold;
+//   padding-left: 20px;
+//   padding-right: 40px;
+// `;
 
 const TableHeader = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  height: 40px;
+  height: 50px;
   font-weight: bold;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 40px;
 
-  & > div:first-child {
-    margin-left: 30px;
+  /* 각 필드 간격 및 위치 조정 */
+  & > div:nth-child(1) {
+    flex: 1; /* 번호 */
+    text-align: left;
   }
-
   & > div:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    margin-left: 120px;
-    width: 240px;
+    flex: 3; /* 제목 */
+    text-align: center;
+  }
+  & > div:nth-child(3),
+  & > div:nth-child(4) {
+    flex: 1; /* 작성일과 답변 상태 */
+    text-align: right;
   }
 
   & > div:nth-child(3) {
-    display: flex;
-    justify-content: center;
-    width: 100px;
-    margin-left: 60px; /* 간격을 줄임 */
-  }
-
-  & > div:last-child {
-    margin-right: 50px;
+    margin-left: auto; /* 작성일을 오른쪽으로 이동 */
   }
 `;
 
@@ -468,28 +446,9 @@ const TableInfoList = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  // width: 800px;
   height: 50px;
-
-  margin-top: 5px;
   margin-bottom: 5px;
-
   cursor: pointer;
-
-  & > div {
-    onClick =>() = > {
-      color: red;
-    }
-  }
-
-  & > div:first-child {
-    margin-left: 37px;
-  }
-
-  & > div:last-child {
-    margin-right: 37px;
-  }
 `;
 
 const DetailContainer = styled.div`
@@ -527,24 +486,6 @@ const DetailContainer1 = styled.div`
   overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
 `;
 
-const AnswerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
-  background-color: #ffffff;
-
-  min-height: 100px; /* 최소 높이를 300px로 설정 */
-  max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
-  overflow-y: auto; /* 내용이 길 경우 스크롤 가능 */
-`;
-
 const AnswerContent = styled.div`
   padding: 15px;
   font-size: 16px;
@@ -557,52 +498,6 @@ const AnswerContent = styled.div`
   min-height: 100px; /* 최소 높이를 300px로 설정 */
   max-height: 100%; /* 최대 높이 제한 해제 (선택 사항) */
   overflow-y: auto; /* 내용이 많을 경우 스크롤 표시 */
-`;
-
-const AnswerTextarea = styled.textarea`
-  min-height: 150px;
-
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const SubmitButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: grey;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
-const CancelButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: grey;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  background-color: pink;
-
-  &:hover {
-    background-color: lightblue;
-  }
-`;
-
-const BoldText = styled.span`
-  font-weight: bold;
 `;
 
 export default AskList;
