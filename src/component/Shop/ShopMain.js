@@ -7,6 +7,7 @@ import { useAtom, useAtomValue ,useSetAtom} from 'jotai/react';
 import { tokenAtom, memberAtom, fcmTokenAtom, alarmsAtom,cartCountAtom } from '../../atoms';
 import { axiosInToken, url } from '../../config.js';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 function ShopMain() {
   
@@ -22,6 +23,8 @@ function ShopMain() {
   const [member, setMember] = useAtom(memberAtom);
   // 알람 리스트 가져오기
   const [alarms, setAlarms] = useAtom(alarmsAtom);
+
+  const navigate = useNavigate();
 
   useEffect(()=>{
     if(token!==null && token!=='') 
@@ -57,6 +60,7 @@ function ShopMain() {
             // 가맹점이 없으면 알림
             if(member.storeCode === null) {
               alert('가맹점을 추가해주세요');
+              navigate("/mystoreManage");
             }
 
             axiosInToken(token).post(`${url}/alarms`,{storeCode:res.data})

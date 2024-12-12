@@ -25,8 +25,6 @@ const MyStoreInfo = () => {
     // Jotai에 있는 알람 가져오기
     const setAlarms = useSetAtom(alarmsAtom);
     const inputRef = useRef();
-
-    let childRef = useRef();
     
     const [store, setStore] = useState(
         {
@@ -112,7 +110,6 @@ const MyStoreInfo = () => {
         })
         .catch(err=>{
             console.log(err);
-            childRef.current.logoutError(err);
         })
     }
 
@@ -162,7 +159,6 @@ const MyStoreInfo = () => {
         })
         .catch(err=>{
             console.log(err);
-            childRef.current.logoutError(err);
         })
     }
 
@@ -184,7 +180,6 @@ const MyStoreInfo = () => {
 
     return (
         <>
-            <Error ref={childRef}/>
             <s.ContentListDiv>
             <s.MainTitleText>가맹점 정보 수정하기</s.MainTitleText>
 
