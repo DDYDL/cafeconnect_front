@@ -10,21 +10,18 @@ import ReactSelect from "react-select";
 
 const DeleteReqStoreMain = ()=>{
     const [storeList, setStoreList] = useState([]);
-    const [pageBtn, setPageBtn] = useState([]);
+    // const [pageBtn, setPageBtn] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
     const [type, setType] = useState('');
     const [keyword, setKeyword] = useState('');
+    const [inputValue, setInputValue] = useState();
+    const [token,setToken] = useAtom(tokenAtom);
     const [regionArr, setRegionArr] = useState([]);
     const [selectedRegion, setSelectedRegion] = useState(null);
-    const [token,setToken] = useAtom(tokenAtom);
 
     useEffect(()=> {
         if(token!=null && token!=='')  { makeRegionArr(); select(1); };
-    }, [token])
-
-    useEffect(()=> {
-        select(1);
-    }, [keyword])
+    }, [token, keyword])
 
     const select = (page) => {
         axiosInToken(token).get(`deleteReqList?page=${page}&type=${type}&keyword=${keyword}`)
@@ -32,41 +29,69 @@ const DeleteReqStoreMain = ()=>{
 
                 if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
 
+                console.log(res.data.storeList);
+                setStoreList([...res.data.storeList]);
+
                 let pageInfo = res.data.pageInfo;
-                console.log(res.data.storeList)
-                setStoreList([...res.data.storeList])
-                let page = [];
-                for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
-                    page.push(i);
-                }
-                setPageBtn([...page]);
+                // let page = [];
+                // for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
+                //     page.push(i);
+                // }
+                // setPageBtn([...page]);
                 setPageInfo(pageInfo);
             })
     }
-
-    const searchRegion = (selectedOption) => {
-        setSelectedRegion(selectedOption);
-        setType("storeAddress");
-        setKeyword(selectedOption.value);
-      };
-
-    const searchName = (e) => {
-        setType("storeName");
-        setKeyword(e.target.value);
-      };
 
     const deleteSubmit = (storeCode) => {
         axiosInToken(token).post(`deleteStoreMain/${storeCode}`)
                     .then(res=> {
 
                         if(res.headers.authorization!=null) { setToken(res.headers.authorization) }
-
-                       console.log(res);
-                       select(1);
+                        console.log(res);
+                        select(1);
                     })
     };
 
-      const makeRegionArr = () => {
+     // 지역 검색
+     const searchRegion = (selectedOption) => {
+        setSelectedRegion(selectedOption);
+        setKeyword(selectedOption.value);
+        setType("storeAddress");
+        // 매장명검색 초기화
+        setInputValue('');
+    };
+    
+    // 매장명 검색
+    const searchName = (e) => {
+        setInputValue(e.target.value);
+        setKeyword(e.target.value);
+        setType("storeName");
+
+        // 지역 검색 초기화
+        setSelectedRegion(regionArr[0]);
+    };
+
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    // 매장명 검색 Input에서 엔터 허용
+    const activeEnter = (e)=>{
+        if(e.key === "Enter") {
+            searchName(e);
+        }
+    }
+
+    // // 페이지네이션 화살표(이전, 다음) 함수
+    // const previousPage = () => {
+    //     if (pageInfo.curPage  > 1) { select(pageInfo.curPage -1); }
+    //   };
+    // const nextPage = () => {
+    //     if (pageInfo.curPage != pageInfo.endPage) { select(pageInfo.curPage+1); }
+    //   };
+    
+    // 지역 배열 (for ReactSelect)
+    const makeRegionArr = () => {
         const regions = [
             {value: '', label: '지역 전체'},
             {value: '강원특별자치도', label: '강원도'},
@@ -88,7 +113,6 @@ const DeleteReqStoreMain = ()=>{
         ];
         
         setRegionArr(regions);
-        console.log(regionArr);
     };
 
     return (
@@ -97,21 +121,22 @@ const DeleteReqStoreMain = ()=>{
                 <s.MainTitleText>가맹점 삭제 요청</s.MainTitleText>
                 <h.CategoryButtonGroupDiv>
                     <h.SearchDiv>
-                        <Input icon={<h.SearchIcon className="h-5 w-5" onClick={select(1)}/> } label="매장명 검색" onChange={searchName}/>
+                        <Input icon={<h.SearchIcon className="h-5 w-5" onClick={searchName}/> } label="매장명 검색" spellCheck='false'
+                        onChange={handleInputChange} value={inputValue} onKeyDown={(e)=>activeEnter(e)}/>
                     </h.SearchDiv>
                     <h.ReactSelectDiv>
                         <ReactSelect
                             isSearchable={false}
-                            className="w-full"
+                            className="w-full CustomSelect"
                             placeholder="지역 전체"
                             value={selectedRegion} 
                             options={regionArr} 
                             onChange={searchRegion}
-                        />
+                            />
                     </h.ReactSelectDiv>
                     <div className='w-2/4'></div>
                     <h.PageCntDiv>
-                        <p>총&nbsp;{pageInfo.allCnt}&nbsp;건</p>
+                        <span>총<span>{pageInfo.allCnt}</span>개</span>
                     </h.PageCntDiv>
                 </h.CategoryButtonGroupDiv>
 
@@ -122,7 +147,7 @@ const DeleteReqStoreMain = ()=>{
                         <s.TableTextTh width='500px'>주소</s.TableTextTh>
                         <s.TableTextTh width='160px'></s.TableTextTh></s.TableListThead>
                         <tbody>
-                        {storeList.map(store=>(
+                        {storeList!=null?(storeList.map(store=>(
                         <s.TableTextTr key={store.storeCode}>
                             <h.TableTextTd>{store.storeCode}</h.TableTextTd >
                             <h.TableTextTd>{store.storeName}</h.TableTextTd >
@@ -131,7 +156,7 @@ const DeleteReqStoreMain = ()=>{
                                     <s.ButtonStyle width='70px' onClick={() => {deleteSubmit(store.storeCode)}}>삭제하기</s.ButtonStyle>
                             </h.TableTextTd >
                         </s.TableTextTr>
-                    ))}
+                    ))): "삭제 요청된 가맹점이 없습니다."}
                     </tbody>
                 </s.TableList>
             </s.ContentListDiv>

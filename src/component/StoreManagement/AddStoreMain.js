@@ -87,8 +87,6 @@ const AddStoreMain = ()=>{
         }
     
         requirevalid();
-
-        console.log(store);
     
         console.log(store);
         axiosInToken(token).post('addStoreMain',store)
@@ -137,7 +135,7 @@ const AddStoreMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd textAlign="center">-</m.TableInfoTd>
+                        <m.TableInfoTd textAlign="center"><m.TableTitleSpan>-</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan for="storeName">가맹점명<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>
@@ -163,13 +161,13 @@ const AddStoreMain = ()=>{
                             <TimePicker
                                 value={timeDate.storeOpenTime}
                                 onChange={(time) => setTimeDate({ ...timeDate, ['storeOpenTime']: time})}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='HH:mm'
                             /><div>~</div>
                             <TimePicker
                                 value={timeDate.storeCloseTime}
                                 onChange={(time) => setTimeDate({ ...timeDate, ['storeCloseTime']: time})}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='HH:mm'
                             />
                         </LocalizationProvider>
@@ -181,6 +179,7 @@ const AddStoreMain = ()=>{
                         <m.TableInfoTd>
                             <h.ReactSelectDiv>
                                 <ReactSelect
+                                    className='w-[300px]'
                                     isSearchable={false}
                                     placeholder="휴무일을 선택하세요"
                                     value={selectedDay} 
@@ -199,7 +198,7 @@ const AddStoreMain = ()=>{
                                 value={timeDate.contractDate}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractDate']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker w-[300px] h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
@@ -215,7 +214,7 @@ const AddStoreMain = ()=>{
                                 value={timeDate.contractPeriodStart}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodStart']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                             <div>~</div>
@@ -223,7 +222,7 @@ const AddStoreMain = ()=>{
                                 value={timeDate.contractPeriodEnd}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodEnd']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
@@ -239,7 +238,7 @@ const AddStoreMain = ()=>{
                                 value={timeDate.openingDate}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['openingDate']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker w-[300px] h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
@@ -271,12 +270,13 @@ const AddStoreMain = ()=>{
                     <m.TableInfoTr>
                         <m.TableInfoTd colSpan={2}>
                        <s.SearchButtonDiv textAlign='right'>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}} onClick={submit}>저장</s.ButtonStyle>
+                            <h.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}} onClick={submit}>저장</h.ButtonStyle>
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
+
             <Dialog open={isOpen} handler={()=>setIsOpen(!isOpen)}>
             <DialogBody>
             {

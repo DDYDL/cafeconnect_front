@@ -165,13 +165,13 @@ const ModifyStoreMain = ()=>{
                             <TimePicker
                                 value={timeDate.storeOpenTime}
                                 onChange={(time) => setTimeDate({ ...timeDate, ['storeOpenTime']: time})}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='HH:mm'
                             /><div>~</div>
                             <TimePicker
                                 value={timeDate.storeCloseTime}
                                 onChange={(time) => setTimeDate({ ...timeDate, ['storeCloseTime']: time})}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='HH:mm'
                             />
                             </LocalizationProvider>
@@ -183,8 +183,10 @@ const ModifyStoreMain = ()=>{
                         <m.TableInfoTd>
                         <h.ReactSelectDiv>
                                 <ReactSelect
+                                    className='w-[300px]'
                                     isSearchable={false}
-                                    value={selectedDay}
+                                    placeholder="휴무일을 선택하세요"
+                                    value={selectedDay} 
                                     options={dayOfweekArr} 
                                     onChange={selectDay}
                                 />
@@ -200,7 +202,7 @@ const ModifyStoreMain = ()=>{
                                 value={timeDate.contractDate}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractDate']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker w-[300px] h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
@@ -215,7 +217,7 @@ const ModifyStoreMain = ()=>{
                                 value={timeDate.contractPeriodStart}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodStart']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                             <div>~</div>
@@ -223,7 +225,7 @@ const ModifyStoreMain = ()=>{
                                 value={timeDate.contractPeriodEnd}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['contractPeriodEnd']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
@@ -239,7 +241,7 @@ const ModifyStoreMain = ()=>{
                                 value={timeDate.openingDate}
                                 showDaysOutsideCurrentMonth
                                 onChange={(date) => setTimeDate({ ...timeDate, ['openingDate']: date })}
-                                className="CustomPicker"
+                                className="CustomPicker w-[300px] h-[40px]"
                                 format='yyyy.MM.dd'
                             />
                         </LocalizationProvider>
