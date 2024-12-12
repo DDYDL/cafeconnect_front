@@ -135,7 +135,7 @@ const AddStoreMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd textAlign="center">-</m.TableInfoTd>
+                        <m.TableInfoTd textAlign="center"><m.TableTitleSpan>-</m.TableTitleSpan></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan for="storeName">가맹점명<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>

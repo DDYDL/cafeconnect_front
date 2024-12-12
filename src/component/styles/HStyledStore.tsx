@@ -309,6 +309,7 @@ ${OneImgAndPDiv}:hover &{
     export const TableTitleSpan = styled.span`
     font-size:16px;
     font-weight:bold;
+
 `;
 
     export const TableTextTr = styled.tr<Container>`
