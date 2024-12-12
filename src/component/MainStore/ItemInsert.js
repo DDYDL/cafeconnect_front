@@ -494,7 +494,7 @@ function ItemInsert() {
                     </div>
                     <div
                       className={styles["product-thumb-1bfdce747webp"]}
-                      style={{marginRight:"10px",display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",marginTop:"10px",borderRadius:"5px",color:"white"}}
+                      style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",borderRadius:"5px",color:"white",height:"30px",fontSize:"14px"}}
                       onClick={handleUploadImage}
                       
                     >업로드</div>

@@ -291,6 +291,8 @@ function MenuInsert() {
                           marginTop: "10px",
                           borderRadius: "5px",
                           color: "white",
+                          fontSize:"14px",
+                          height:"30px"
                         }}
                         alt="image"
                         onClick={handleUploadImage}

@@ -615,7 +615,7 @@
 .MenuInsert .input-1 {
   align-items: flex-start;
   flex-direction: column;
-  height: 372px;
+  height: 332px;
   padding: 15px 0;
 }
 
@@ -731,13 +731,15 @@
   background-color: #54473f;
   border-radius: 5px;
   display: flex;
-  height: 53px;
-  justify-content: flex-end;
-  left: 796px;
-  min-width: 174px;
-  padding: 20px 39px;
+  height: 30px;
+  
+  left: 866px;
+  width: 100px;
+  justify-content: center;
+    align-items: center;
   position: absolute;
   top: 969px;
+  
 }
 
 .MenuInsert .text-20 {
@@ -747,6 +749,7 @@
   line-height: 18px;
   text-align: center;
   white-space: nowrap;
+  font-size: 14px;
   width: 90px;
 }
 

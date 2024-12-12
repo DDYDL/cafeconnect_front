@@ -1211,11 +1211,11 @@
   font-family: var(--font-family-noto_sans_kr);
   font-size: var(--font-size-m);
   font-weight: 300;
-  height: 39px;
+  height: 40px;
   letter-spacing: 0;
   line-height: 24px;
-  margin-left: 918px;
-  text-align: end;
+  
+  text-align: start;
   width: 82px;
-  margin-top:15px;
+  
 }

@@ -636,7 +636,8 @@ function ItemInsert() {
                       onChange={handleInput}
                     />
                   </div>
-                  <div className={`${styles["input-4"]} ${styles["input-5"]}`}>
+                  <div className={`${styles["input-4"]} ${styles["input-5"]}`}
+                  style={{height:"332px"}}>
                     <div
                       className={`${styles["label-2"]} ${styles["valign-text-middle"]} ${styles["label-3"]} ${styles["notosanskr-bold-black-16px"]}`}
                     >
@@ -669,6 +670,8 @@ function ItemInsert() {
                         marginTop: "10px",
                         borderRadius: "5px",
                         color: "white",
+                        fontSize:"14px",
+                        height:"30px"
                       }}
                     >
                       업로드

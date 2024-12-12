@@ -359,17 +359,22 @@ function RepairListCopy() {
               >
                 수리 목록
               </div>
+              {/* <div
+                className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
+              >
+                {`총${totalElements}건`}
+              </div> */}
+              <div className={styles["frame-container"]}>
               <div
                 className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
               >
                 {`총${totalElements}건`}
               </div>
-              <div className={styles["frame-container"]}>
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
-                  style={{ width: "200px" }}
+                  style={{ width: "120px" }}
                 >
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
                     <Select label="대분류" onChange={handleSelectMajorCategory}>
                       {majorCategoryList.map((majorCategory, index) => (
                         <Option value={majorCategory.categoryValue} key={index}>
@@ -377,11 +382,11 @@ function RepairListCopy() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
 
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                <s.ButtonInnerDiv className="w-16 p-r-2" style={{width:"120px"}}>
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
                     <Select
                       label="중분류"
                       onChange={handleSelectMiddleCategory}
@@ -395,10 +400,10 @@ function RepairListCopy() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
 
-                <div style={{ marginLeft: "380px" }}>
+                <div style={{width:"200px",marginLeft:"150px" }}>
                   <Input
                     icon={
                       <MagnifyingGlassIcon

@@ -296,14 +296,19 @@ function MenuList() {
               >
                 메뉴 목록
               </div>
+              {/* <div
+                className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
+              >
+                {`총${totalElements}건`}
+              </div> */}
+              <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
               <div
                 className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
               >
                 {`총${totalElements}건`}
               </div>
-              <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
-                <s.ButtonInnerDiv className="w-16 p-r-2">
-                  <div className="select-wrap" style={{ width: "200px" }}>
+                <s.ButtonInnerDiv className="w-16 p-r-2" style={{ width: "120px" }}>
+                  {/* <div className="select-wrap" style={{ width: "120px" }}> */}
                     <Select label="분류" onChange={handleChangeCategory}>
                       {categoryList.map((category, index) => (
                         <Option value={category.categoryValue}>
@@ -311,9 +316,9 @@ function MenuList() {
                         </Option>
                       ))}
                     </Select>
-                  </div>
+                  {/* </div> */}
                 </s.ButtonInnerDiv>
-                <div style={{ marginLeft: "580px" }}>
+                <div style={{ marginLeft: "300px",width:"200px" }}>
                   <Input
                     icon={
                       <MagnifyingGlassIcon
@@ -325,6 +330,17 @@ function MenuList() {
                     label="메뉴명 검색"
                     onChange={handleChangeKeyword}
                   />
+                </div>
+                <div
+                  className={styles["small-btn_brown"]}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate("/menuInsert")}
+                >
+                  <div
+                    className={`${styles["text-62"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                  >
+                    메뉴등록
+                  </div>
                 </div>
               </div>
               <div className={styles["overlap-group2"]}>
@@ -748,7 +764,7 @@ function MenuList() {
                 >
                   메뉴 등록
                 </div>
-                <div
+                {/* <div
                   className={styles["small-btn_brown"]}
                   style={{ cursor: "pointer" }}
                   onClick={() => navigate("/menuInsert")}
@@ -758,7 +774,7 @@ function MenuList() {
                   >
                     메뉴등록
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <footer className={styles["footer"]}>
