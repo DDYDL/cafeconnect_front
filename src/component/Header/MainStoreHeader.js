@@ -55,6 +55,7 @@ const MainStoreHeader = ()=>{
                             <MenuItem><NavLink to="/addStoreMain">가맹점 등록</NavLink></MenuItem>
                             <MenuItem><NavLink to="/restoreStoreMain">가맹점 복구</NavLink></MenuItem>
                             <MenuItem><NavLink to="/deleteReqStoreMain">가맹점 삭제</NavLink></MenuItem>
+                            <MenuItem><NavLink to="/repairList">수리 목록</NavLink></MenuItem>
                         </h.MenuListDiv>
                         <h.MenuListDiv style={{ marginLeft: '20px' }}>
                             <MenuItem><NavLink to="/mainItemList">상품 조회</NavLink></MenuItem>

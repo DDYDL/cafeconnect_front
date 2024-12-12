@@ -141,7 +141,20 @@ function OrderListForMainStore() {
         alert("상태 변경 실패");
       });
   };
+  const handlePrevPage = () => {
+    if (pageInfo.curPage > 1) {
+      submit(pageInfo.curPage - 1);
+    }
+  };
 
+  const handleNextPage = () => {
+    if (pageInfo.curPage < pageInfo.endPage) {
+      submit(pageInfo.curPage + 1);
+    }
+  };
+
+
+  
   return (
     <CommonWrapper>
       <CommonContainer size="1200px">
@@ -174,7 +187,9 @@ function OrderListForMainStore() {
         <ol.OrderListWrap>
           <ol.FilterWrapForMainStore>
             <div className="total-count">
-              총 <strong>{totalCount}</strong>건
+            <span className="all_counter">
+              총<span className="numbering">{totalCount}</span>건
+            </span>
             </div>
             <form>
               <div className="select-wrap">
@@ -273,13 +288,19 @@ function OrderListForMainStore() {
         </ol.OrderListWrap>
         <s.PageButtonGroupDiv>
           <s.ButtonGroupStyle variant="outlined">
-            <s.IconButtonStyle>
+            <s.IconButtonStyle
+            onClick={handlePrevPage}
+            disabled={pageInfo.curPage === 1}
+            >
               <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous />
             </s.IconButtonStyle>
             {pageBtn.map(page => (
               <s.IconButtonStyle key={page} onClick={() => { submit(page) }}>{page}</s.IconButtonStyle>
             ))}
-            <s.IconButtonStyle>
+            <s.IconButtonStyle
+            onClick={handleNextPage}
+            disabled={pageInfo.endPage === pageInfo.curPage}
+            >
               <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next />
             </s.IconButtonStyle>
           </s.ButtonGroupStyle>

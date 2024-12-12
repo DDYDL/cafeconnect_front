@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { Select} from "@material-tailwind/react";
+
 export const WishItemWrapper = styled.div`
     //width: 1240px;
     width:1000px;
@@ -8,17 +10,35 @@ export const WishItemWrapper = styled.div`
 
 `;
 export const FilterWrapper = styled.div`    
-    margin-top: 60px;
+    // margin-top: 60px;
+    // display: flex;
+    // gap: 10px;
+    // justify-content: flex-start;
+
+    width: 100%;
+    height: 70px;
+    background-color: #f2f2f2;
+    margin: 30px 0 20px;
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 10px;
-    justify-content: flex-start;
+    padding: 0 20px;
+`;
+// 총 + 전체선택 + 삭제
+export const StatsWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
 `;
 
 export const CountWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    margin-top: 1rem;
+   //margin-bottom: 10px;
+    //margin-top: 1rem;
     
     /* .all_counter 클래스 스타일 */
     .all_counter {
@@ -30,21 +50,55 @@ export const CountWrapper = styled.div`
 
     /* .numbering 클래스 스타일 */
     .numbering {
-        color: #CBD2A4; /* numbering 색상을 #CBD2A4로 설정 */
+        color: #333; /* numbering 색상을 #CBD2A4로 설정 */
         font-weight: bold;
         margin-left: 5px;
     }
 `;
-
 export const WishtemDeleteWrapper= styled.div`
+    // align-items: center;
+    // display: flex;
+    // height: 4rem;
+    // gap:10px;
+    // justify-content: flex-end;
+    // margin-bottom: 2rem;
+    // width: 100%;
+    // border-bottom: 2px solid #333;
     align-items: center;
     display: flex;
-    height: 4rem;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    width: 100%;
-    border-bottom: 2px solid #333;
+    gap: 20px;
+    padding-bottom: 1rem;
 `;
+
+export const ButtonInnerDiv = styled.div`
+    width:120px;
+    float:left;
+    margin-right:10px;
+
+    & > div {
+        width:120px;
+        min-width:120px !important;
+    }
+`;
+
+export const SelectStyle = styled(Select)`
+    width:120px;
+    min-width:120px;
+    display:inline-block;
+    background:rgba(255, 255, 255, 1);
+    border-radius:5px;
+    border-color:rgba(234, 234, 234, 1);
+    padding-bottom:3px;
+
+    & > ul {
+        top:0px;
+        padding:5px;
+        overflow: scroll;
+        scrollbar-width:thin;
+        overflow-x:hidden;
+    }
+`;
+
 
 export const CheckDeleteWrapper = styled.div`
     display: flex;
