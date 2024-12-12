@@ -32,6 +32,13 @@ const PreviousOrderItemsModal = ({
     }
   }, [prevOrderDateList]);
 
+
+   // 선택초기화 
+   const handleModalClose = () => {
+    setSelectedItems([]); // 선택된 아이템 초기화
+    handleClose(); //close 함수 호출
+  };
+
   const getOrderItems = (selectDate) => {
     const formData = new FormData();
     formData.append("storeCode", storeCode);
@@ -118,10 +125,10 @@ const PreviousOrderItemsModal = ({
   };
 
   return (
-    <c.StyledDialog open={open} handler={handleClose} size="lg">
+    <c.StyledDialog open={open} handler={handleModalClose} size="lg">
       <c.ModalHeader>
         <c.ModalTitle>이전 상품 추가</c.ModalTitle>
-        <XMarkIcon className="h-5 w-5 cursor-pointer" onClick={handleClose} />
+        <XMarkIcon className="h-5 w-5 cursor-pointer" onClick={handleModalClose} />
       </c.ModalHeader>
 
       <c.DateNavigation>

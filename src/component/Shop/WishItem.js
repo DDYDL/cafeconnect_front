@@ -32,7 +32,7 @@ function WishItem() {
   useEffect(() => {
     submit();
     getCategories();
-  }, [token]);
+  }, [token,store.storeCode]);
 
   const getCategories = () => {
     axiosInToken(token)
@@ -206,14 +206,15 @@ function WishItem() {
       })
       .catch(err => {
         console.log(err);
+      }).catch(err =>{
+        console.log(err);
       })
-      alert('장바구니에 등록되었습니다.');
-    console.log(`장바구니에 추가: 상품 ${itemCode}, 수량 1`);
+      
   };
 
   return (
     <CommonWrapper>
-      <CommonContainer>
+      <CommonContainer size="1000px">
         <ContainerTitleArea>
           <h2>관심상품</h2>
         </ContainerTitleArea>

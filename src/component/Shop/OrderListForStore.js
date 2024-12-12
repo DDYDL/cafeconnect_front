@@ -34,11 +34,12 @@ function OrderListForStore() {
   const store = useAtomValue(memberAtom);
   const [token,setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
-
+  
+  //초기 로딩 useEffect
   useEffect(() => {
     if (token != null && token !== "")
        submit(1);
-  }, [token, store.storeCode]);
+  }, [token, store.storeCode,status]); // 변경될때마다 바로 적용돼야하는 값 추가하면 자동 조회됨 
 
   const handleStatusChange=(val)=>{
     setStatus(val);
@@ -88,6 +89,7 @@ function OrderListForStore() {
 
     axiosInToken(token).get(`cancelItemOrder?storeCode=${store.storeCode}&orderCode=${code}`)
     .then(res=>{
+      
       if(res.headers.authorization!=null) {
         setToken(res.headers.authorization)
     }
@@ -126,7 +128,7 @@ function OrderListForStore() {
                 value={endDate}
                 onChange={(newValue) => setEndDate(new Date(newValue))}
               />
-            <StyledButton size="sm" theme="brown" onClick={submit}>
+            <StyledButton size="sm" theme="brown" onClick={() => submit(1)}>
               조회
             </StyledButton>
             </LocalizationProvider>
@@ -203,7 +205,7 @@ function OrderListForStore() {
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page} onClick={()=>{submit(page)}}>{page}</s.IconButtonStyle>
                     ))}
                     <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>

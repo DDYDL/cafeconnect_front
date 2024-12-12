@@ -64,6 +64,16 @@ function CartList() {
     });
   }
 
+  // 이전 상품 추가 버튼 클릭 핸들러 추가
+const handlePreviousOrderClick = () => {
+  if (!prevOrderDateList || prevOrderDateList.length === 0) {
+    alert('이전 주문 상품이 없습니다.');
+    return;
+  }
+  setIsModalOpen(true);
+};
+
+
   //삭제
   const setCartCount = useSetAtom(cartCountAtom);
   const handleDelete = (cartNum) => {
@@ -169,7 +179,7 @@ const handleOrder = () => {
             size="sm"
             theme="brown"
             $hasicon
-            onClick={() => setIsModalOpen(true)}
+            onClick={handlePreviousOrderClick}
           >
             <PlusIcon />
             이전 상품 추가
