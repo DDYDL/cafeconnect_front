@@ -6,10 +6,10 @@ import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 
 function ItemDetail() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const [item, setItem] = useState({
     itemCode: "",
     itemName: "",
@@ -25,7 +25,7 @@ function ItemDetail() {
     itemSubCategoryName: "",
     imageUrl: "",
   });
-  
+
   const { itemCode } = useParams();
   const navigate = useNavigate();
   const fetchData = async () => {
@@ -44,7 +44,9 @@ function ItemDetail() {
   };
   const deleteData = async () => {
     try {
-      await axiosInToken(token).get(`http://localhost:8080/deleteItem/${itemCode}`);
+      await axiosInToken(token).get(
+        `http://localhost:8080/deleteItem/${itemCode}`
+      );
       navigate("/mainItemList");
     } catch (error) {
       alert("삭제에 실패했습니다");
@@ -61,10 +63,9 @@ function ItemDetail() {
   };
 
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchData();
     }
-    
   }, [token]);
 
   return (
@@ -80,56 +81,26 @@ function ItemDetail() {
             </div>
             <div className={styles["background"]}>
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
-                
-                <div className={styles["link"]}>
+                <div
+                  className={styles["small-btn_brown"]}
+                  onClick={handleUpdateItem}
+                  style={{ marginLeft: "620px" }}
+                >
                   <div
-                    className={`${styles["overlap-group"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
                   >
-                    <div
-                      className={`${styles["text"]} ${styles["valign-text-middle"]}`}
-                    >
-                      수정
-                    </div>
-                    <div
-                      className={styles["small-btn_brown"]}
-                      onClick={handleUpdateItem}
-                    >
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
-                      >
-                        수정
-                      </div>
-                    </div>
+                    수정
                   </div>
                 </div>
-                <div className={`${styles["link-1"]} ${styles["link-3"]}`}>
+                <div
+                  className={styles["small-btn_brown"]}
+                  onClick={handleDeleteItem}
+                  style={{ marginLeft: "10px" }}
+                >
                   <div
-                    className={`${styles["overlap-group1-1"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
                   >
-                    <div
-                      className={`${styles["text-8"]} ${styles["valign-text-middle"]}`}
-                    >
-                      삭제
-                    </div>
-                    <div className={`${styles["link-2"]} ${styles["link-3"]}`}>
-                      <div className={styles["overlap-group"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]}`}
-                        >
-                          수정
-                        </div>
-                        <div
-                          className={styles["small-btn_brown"]}
-                          onClick={handleDeleteItem}
-                        >
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
-                          >
-                            삭제
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    삭제
                   </div>
                 </div>
               </div>
@@ -146,7 +117,7 @@ function ItemDetail() {
                 </p>
                 <div
                   className={`${styles["table-body"]} ${styles["notosanskr-medium-black-16px"]}`}
-                  style={{ width: "400px" }}
+                  style={{ width: "400px", marginBottom: "30px" }}
                 >
                   <div className={styles["table-body-item"]} st>
                     <div
@@ -157,12 +128,13 @@ function ItemDetail() {
                     <div className={`${styles["data-2"]} ${styles["data-5"]}`}>
                       <div
                         className={`${styles["text-13"]} ${styles["valign-text-middle"]}`}
+                        style={{ width: "300px" }}
                       >
                         {item.itemName}
                       </div>
                     </div>
                   </div>
-                  <div className={styles["table-body-item"]}>
+                  {/* <div className={styles["table-body-item"]}>
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                     >
@@ -179,7 +151,7 @@ function ItemDetail() {
                         {item.itemCode}
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className={styles["table-body-item"]}>
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}
@@ -270,8 +242,7 @@ function ItemDetail() {
                         item.itemStandard.split("X")[0] !== "" &&
                         item.itemStandard.split("X")[0] !== undefined
                           ? item.itemStandard.split("X")[0]
-                          : ""}
-                        
+                          : "-"}
                       </div>
                     </div>
                   </div>
@@ -289,16 +260,15 @@ function ItemDetail() {
                         className={`${styles["text-16"]} ${styles["valign-text-middle"]}`}
                         style={{ width: "250px" }}
                       >
-                        
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[1] !== "" &&
                         item.itemStandard.split("X")[1] !== undefined
                           ? item.itemStandard.split("X")[1]
-                          : ""}
-                        
+                          : "-"}
                       </div>
                     </div>
-                  </div><div className={styles["table-body-item"]}>
+                  </div>
+                  <div className={styles["table-body-item"]}>
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                     >
@@ -312,17 +282,15 @@ function ItemDetail() {
                         className={`${styles["text-16"]} ${styles["valign-text-middle"]}`}
                         style={{ width: "250px" }}
                       >
-                        
                         {item.itemStandard !== null &&
                         item.itemStandard.split("X")[2] !== "" &&
                         item.itemStandard.split("X")[2] !== undefined
                           ? item.itemStandard.split("X")[2]
-                          : ""}
+                          : "-"}
                       </div>
                     </div>
                   </div>
-                  
-                  
+
                   <div className={styles["table-body-item"]}>
                     <div
                       className={`${styles["data"]} ${styles["valign-text-middle"]}`}

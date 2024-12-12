@@ -573,11 +573,12 @@
   background-color: #54473f;
   border-radius: 5px;
   display: flex;
-  height: 53px;
+  height: 40px;
   left: 0;
-  min-width: 126px;
+  width: 100px;
   padding: 20px 26px;
-  position: absolute;
+  justify-content: center;
+  align-items: center;
   top: 0;
   cursor: pointer;
 }
@@ -590,6 +591,7 @@
   text-align: center;
   white-space: nowrap;
   width: 72px;
+  font-size:14px
 }
 
 .MenuDetail .link-1 {

@@ -540,7 +540,7 @@
     height: 50px;
     
     margin-top: 15px;
-    min-width: 1000px;
+    width: 1000px;
   }
   
   .ItemList .frame-104 {
@@ -1070,7 +1070,7 @@
     top: 0;
     justify-content: center;
     align-items: center;
-    margin-left: 170px;
+    margin-left: 10px;
   }
   
   .ItemList .text-7-1 {

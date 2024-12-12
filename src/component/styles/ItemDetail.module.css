@@ -572,11 +572,12 @@
   background-color: #54473f;
   border-radius: 5px;
   display: flex;
-  height: 53px;
+  height: 40px;
   left: 0;
-  min-width: 126px;
-  padding: 20px 26px;
-  position: absolute;
+  min-width: 100px;
+  align-items: center;
+  justify-content: center;
+  
   top: 0;
   cursor: pointer;
 }
@@ -589,6 +590,7 @@
   text-align: center;
   white-space: nowrap;
   width: 72px;
+  font-size: 14px;
 }
 
 .ItemDetail .link-1 {

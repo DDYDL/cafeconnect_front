@@ -13,9 +13,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 function RepairListCopy() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startPage, setStartPage] = useState(0);
@@ -80,7 +80,7 @@ function RepairListCopy() {
       },
       0
     );
-    fetchMiddleData(value)
+    fetchMiddleData(value);
   };
 
   const handleSelectMiddleCategory = (value) => {
@@ -99,7 +99,25 @@ function RepairListCopy() {
       },
       0
     );
-    fetchMiddleData(value);
+    fetchSubData(value);
+  };
+
+  const handleSelectSubCategory = (value) => {
+    console.log(value);
+    setCategory({
+      ...category,
+      ItemCategorySubName: value,
+    });
+
+    setUsingKeyword(false);
+    setUsingCategory(true);
+    fetchCategoryData(
+      {
+        ...category,
+        ItemCategorySubName: value,
+      },
+      0
+    );
   };
 
   const fetchMajorData = async () => {
@@ -119,6 +137,17 @@ function RepairListCopy() {
         `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
       setMiddleCategoryList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchSubData = async (value) => {
+    try {
+      const response = await axiosInToken(token).get(
+        `http://localhost:8080/subCategoryCopy?categoryName=${value}`
+      );
+      setSubCategoryList(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -206,23 +235,21 @@ function RepairListCopy() {
       // } else {
       //   setHasPrevious(false);
       // }
-      if(response.data.first === true){
+      if (response.data.first === true) {
         setHasPrevious(false);
-        
-      }else{
+      } else {
         setHasPrevious(true);
       }
-      if(response.data.last === true){
-        setHasNext(false)
-      }else{
-        setHasNext(true)
-        
+      if (response.data.last === true) {
+        setHasNext(false);
+      } else {
+        setHasNext(true);
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      setUsingKeyword(true)
-      setUsingCategory(false)
+      setUsingKeyword(true);
+      setUsingCategory(false);
     } catch (error) {
       setError(error);
     } finally {
@@ -315,23 +342,21 @@ function RepairListCopy() {
       // } else {
       //   setHasPrevious(false);
       // }
-      if(response.data.first === true){
+      if (response.data.first === true) {
         setHasPrevious(false);
-        
-      }else{
+      } else {
         setHasPrevious(true);
       }
-      if(response.data.last === true){
-        setHasNext(false)
-      }else{
-        setHasNext(true)
-        
+      if (response.data.last === true) {
+        setHasNext(false);
+      } else {
+        setHasNext(true);
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      setUsingKeyword(false)
-      setUsingCategory(true)
+      setUsingKeyword(false);
+      setUsingCategory(true);
     } catch (error) {
       setError(error);
     } finally {
@@ -340,11 +365,10 @@ function RepairListCopy() {
   };
 
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchKeywordData("", 0);
-    fetchMajorData();
+      fetchMajorData();
     }
-    
   }, [token]);
 
   return (
@@ -365,45 +389,57 @@ function RepairListCopy() {
                 {`총${totalElements}건`}
               </div> */}
               <div className={styles["frame-container"]}>
-              <div
-                className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
-              >
-                {`총${totalElements}건`}
-              </div>
+                <div
+                  className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
+                >
+                  {`총${totalElements}건`}
+                </div>
                 <s.ButtonInnerDiv
                   className="w-16 p-r-2"
                   style={{ width: "120px" }}
                 >
                   {/* <div className="select-wrap" style={{ width: "200px" }}> */}
-                    <Select label="대분류" onChange={handleSelectMajorCategory}>
-                      {majorCategoryList.map((majorCategory, index) => (
-                        <Option value={majorCategory.categoryValue} key={index}>
-                          {majorCategory.categoryName}
-                        </Option>
-                      ))}
-                    </Select>
+                  <Select label="대분류" onChange={handleSelectMajorCategory}>
+                    {majorCategoryList.map((majorCategory, index) => (
+                      <Option value={majorCategory.categoryValue} key={index}>
+                        {majorCategory.categoryName}
+                      </Option>
+                    ))}
+                  </Select>
                   {/* </div> */}
                 </s.ButtonInnerDiv>
 
-                <s.ButtonInnerDiv className="w-16 p-r-2" style={{width:"120px"}}>
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "120px" }}
+                >
                   {/* <div className="select-wrap" style={{ width: "200px" }}> */}
-                    <Select
-                      label="중분류"
-                      onChange={handleSelectMiddleCategory}
-                    >
-                      {middleCategoryList.map((middleCategory, index) => (
-                        <Option
-                          value={middleCategory.categoryValue}
-                          key={index}
-                        >
-                          {middleCategory.categoryName}
-                        </Option>
-                      ))}
-                    </Select>
+                  <Select label="중분류" onChange={handleSelectMiddleCategory}>
+                    {middleCategoryList.map((middleCategory, index) => (
+                      <Option value={middleCategory.categoryValue} key={index}>
+                        {middleCategory.categoryName}
+                      </Option>
+                    ))}
+                  </Select>
                   {/* </div> */}
                 </s.ButtonInnerDiv>
 
-                <div style={{width:"200px",marginLeft:"150px" }}>
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "120px" }}
+                >
+                  {/* <div className="select-wrap" style={{ width: "200px" }}> */}
+                  <Select label="소분류" onChange={handleSelectSubCategory}>
+                    {subCategoryList.map((subCategory, index) => (
+                      <Option value={subCategory.categoryValue} key={index}>
+                        {subCategory.categoryName}
+                      </Option>
+                    ))}
+                  </Select>
+                  {/* </div> */}
+                </s.ButtonInnerDiv>
+
+                <div style={{ width: "200px", marginLeft: "310px" }}>
                   <Input
                     icon={
                       <MagnifyingGlassIcon
@@ -726,7 +762,6 @@ function RepairListCopy() {
 
                       {usingKeyword &&
                         !empty &&
-                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -741,7 +776,6 @@ function RepairListCopy() {
                         ))}
                       {usingCategory &&
                         !empty &&
-                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -765,14 +799,18 @@ function RepairListCopy() {
 
                       {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={()=>fetchKeywordData(keyWord, currentPage + 1)}
+                          onClick={() =>
+                            fetchKeywordData(keyWord, currentPage + 1)
+                          }
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
                       {!empty && hasNext && usingCategory && (
                         <s.IconButtonStyle
-                          onClick={()=>fetchCategoryData(category, currentPage + 1)}
+                          onClick={() =>
+                            fetchCategoryData(category, currentPage + 1)
+                          }
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
