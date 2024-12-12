@@ -70,6 +70,7 @@ const MyStoreManage = () => {
             console.log(res.data);
             alert("가맹점이 추가 되었습니다.");
             setStoreList([...storeList, res.data]);
+            setMember({...member, ['storeCode']:res.data.storeCode});
         })
         .catch(err=>{
             console.log(err);
@@ -108,8 +109,8 @@ const MyStoreManage = () => {
                             <m.StoreButtonDiv>
                                 {store.storeStatus==='active' ? <s.ButtonStyle width='70px'><Link onClick={()=>deleteStore(store.storeCode)}>삭제 신청</Link></s.ButtonStyle>:<></>}
                             </m.StoreButtonDiv>
-                            <m.AlarmInnerDiv><m.AlarmSpan>{store.storeName}</m.AlarmSpan></m.AlarmInnerDiv>
-                            <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>{store.storeAddress}</m.AlarmSpan></m.AlarmInnerDiv>
+                            <m.AlarmInnerDiv paddingBottom='13px'><m.AlarmSpan>{store.storeName}</m.AlarmSpan></m.AlarmInnerDiv>
+                            <m.AlarmInnerDiv paddingBottom='6px'><m.AlarmSpan fontWeight='normal'>{store.storeAddress}</m.AlarmSpan></m.AlarmInnerDiv>
                             <m.AlarmInnerDiv><m.AlarmSpan fontWeight='normal'>{store.storePhone}</m.AlarmSpan></m.AlarmInnerDiv>
                         </m.AlarmDiv>
                     ))

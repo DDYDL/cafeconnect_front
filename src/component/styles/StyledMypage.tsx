@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import ReactSelect from "react-select";
 
 import { Select, Checkbox } from "@material-tailwind/react";
 
@@ -8,6 +9,8 @@ interface Container {
     width:string;
     height:string;
     marginTop:string;
+    paddingBottom:string;
+    paddingTop:string;
 }
 
 export const SelectDiv = styled.div`
@@ -33,15 +36,17 @@ export const SelectBox = styled(Select)`
 
 export const TableInfo = styled.table`
     float:left;
-    width:500px;
+    width:490px;
     margin-top:60px;
+    margin-right:10px;
 `;
 
 export const TableInfoTr = styled.tr`
     height:45px;
 `;
 
-export const TableInfoTh = styled.th`
+export const TableInfoTh = styled.th<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
     font-size:16px;
     font-weight:bold;
     padding-left:20px;
@@ -85,13 +90,21 @@ export const AlarmSpanContent = styled.span`
     font-size:14px;
 `;
 
-export const AlarmInnerDiv = styled.div`
+export const AlarmInnerDiv = styled.div<Container>`
     width:700px;
-    padding-bottom:11px;
+    padding-bottom:${(props) => props.paddingBottom ? props.paddingBottom : "2px"};
+`;
+
+export const AlarmCheckboxDivHeader = styled.div`
+    width:30px;
+    padding-top:15px;
+    display:inline-block;
+    float:right;
 `;
 
 export const AlarmCheckboxDiv = styled.div`
     width:30px;
+    padding-top:0px;
     display:inline-block;
     float:right;
 `;
@@ -123,7 +136,7 @@ export const ModalDialog = styled.div`
     background-color:rgb(255, 255, 255);
     // 맨 앞으로
     z-index: 99;
-    box-shadow : -1px 3px 5px 5px rgba(234, 234, 234, 1);
+    box-shadow : 2px 6px 4px 2px rgba(145, 145, 145, 0.5);
 `;
 
 export const TimePickerPeriodWrap = styled.div`
@@ -158,7 +171,53 @@ border: none;
 `;
 
 export const ReactSelectDiv = styled.div<Container>`
-    width:200px;
+    width:${(props) => props.width ? props.width : "200px"};
+`;
+
+export const DivSide = styled.div`
+    width:400px;
+    height:40px;
+    display:inline-block;
+    text-align:right;
+    vertical-align:baseline;
+    margin-top:30px;
+    right:70px;
+    font-size:12px;
+    position:absolute;
+    padding-bottom:5px;
+`;
+
+export const SelectDivTop = styled.div`
+    display:inline-block;
+    margin-right:20px;
+    width:150px;
+    height:25px;
+    text-align:left;
+    margin-bottom:10px;
+`;
+
+export const ReactSelectDivHeader = styled.div<Container>`
+    width:${(props) => props.width ? props.width : "200px"};
+    height:30px;
+`;
+export const ReactSelectHeader = styled(ReactSelect)`
+    height:30px;
+
+    & > div:nth-child(3) {
+        height:30px;
+        min-height:30px !important;
+        vertical-align:baseline;
+    }
+
+    & > div:nth-child(3) > div {
+        height:30px;
+        min-height:30px !important;
+        align-items: center;
+    }
+    
+    & > div:nth-child(4) {
+        z-index:98;
+    }
 `;
 
 export const DatePickerWrap = styled.div<Container>`
@@ -241,4 +300,10 @@ export const DatePickerPeriodWrap = styled.div`
         text-align: start;
         } 
     }
+`;
+
+export const AlarmTextDiv = styled.div`
+    width:250px;
+    height:50px;
+    overflow: hidden;
 `;

@@ -18,7 +18,7 @@ export const Div = styled.div`
 export const SelectDivTop = styled.div`
     display:inline-block;
     margin-right:20px;
-    width:100px;
+    width:150px;
     height:25px;
     text-align:left;
 `;
@@ -37,17 +37,6 @@ export const SelectInnerDivTop = styled.div`
 
     & label {
         top: -15px;
-        display:none;
-    }
-
-    & label::before {
-        display:none;
-    }
-    & label::text {
-        display:none;
-    }
-    & label::after {
-        display:none;
     }
 
     & span {
@@ -75,7 +64,7 @@ export const DivLogo = styled.div`
 `;
 
 export const DivSide = styled.div`
-    width:250px;
+    width:400px;
     height:30px;
     display:inline-block;
     text-align:right;
