@@ -704,10 +704,10 @@
 
 .RepairDetail .button {
   align-items: flex-start;
-  background: linear-gradient(180deg, rgb(79, 70, 229) 4.27%, rgb(99, 102, 241) 100%);
+  
   border-radius: 4px;
   display: flex;
-  margin-left: 682.3px;
+  margin-left: 790px;
   margin-top: 72px;
   min-width: 172px;
 }
@@ -768,11 +768,11 @@
   height: 30px;
   justify-content: center;
   left: 0;
-  width: 100px;
+  width: 120px;
   align-items: center;
   
   
-  position: absolute;
+  
   top: 0;
 }
 
@@ -783,7 +783,7 @@
   line-height: 18px;
   text-align: center;
   white-space: nowrap;
-  width: 90px;
+  width: 100%;
 }
 
 .RepairDetail .footer {

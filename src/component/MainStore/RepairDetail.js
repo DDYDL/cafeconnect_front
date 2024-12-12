@@ -4,10 +4,10 @@ import styles from "../styles/RepairDetail.module.css";
 import axios from "axios";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 import { useParams, useNavigate } from "react-router";
 function RepairDetail() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const { repairNum } = useParams();
   const navigate = useNavigate();
   const [repair, setRepair] = useState({
@@ -44,7 +44,7 @@ function RepairDetail() {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}년-${month}월-${day}일`;
   };
 
   const fetchData = async () => {
@@ -56,21 +56,21 @@ function RepairDetail() {
       setRepair(response.data);
       console.log(response.data);
       if (response.data.repairStatus === "접수") {
-        activeIng(true);
+        setActiveIng(true);
       }
       if (response.data.repairStatus === "수리중") {
-        activeComplete(true);
+        setActiveComplete(true);
       }
     } catch (error) {
       alert("해당하는 수리내용이 없습니다");
-      navigate("/repairList");
+      console.log(error);
+      // navigate("/repairList");
     }
   };
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchData();
     }
-    
   }, [token]);
   const handleActiveIng = async () => {
     const formData = new FormData();
@@ -300,47 +300,32 @@ function RepairDetail() {
               </div>
             </div>
             <div className={styles["button"]}>
-              <div className={styles["overlap-group1"]}>
+              {activeIng && (
                 <div
-                  className={`${styles["text-11"]} ${styles["valign-text-middle"]}`}
+                  className={styles["small-btn_brown"]}
+                  style={{ cursor: "pointer" }}
+                  onClick={handleActiveIng}
                 >
-                  수리중 변경
-                </div>
-
-                <div className={styles["overlap-group"]}>
                   <div
-                    className={`${styles["text-12"]} ${styles["valign-text-middle"]}`}
+                    className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
                   >
-                    메뉴 등록
+                    수리중 변경
                   </div>
-                  {activeIng && (
-                    <div
-                      className={styles["small-btn_brown"]}
-                      style={{ cursor: "pointer" }}
-                      onClick={handleActiveIng}
-                    >
-                      <div
-                        className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
-                      >
-                        수리중 변경
-                      </div>
-                    </div>
-                  )}
-                  {activeComplete && (
-                    <div
-                      className={styles["small-btn_brown"]}
-                      style={{ cursor: "pointer" }}
-                      onClick={handleActiveComplete}
-                    >
-                      <div
-                        className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
-                      >
-                        수리완료 변경
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </div>
+              )}
+              {activeComplete && (
+                <div
+                  className={styles["small-btn_brown"]}
+                  style={{ cursor: "pointer" }}
+                  onClick={handleActiveComplete}
+                >
+                  <div
+                    className={`${styles["text-13"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                  >
+                    수리완료 변경
+                  </div>
+                </div>
+              )}
             </div>
             <footer className={styles["footer"]}>
               <div className={styles["footer-contents"]}>
