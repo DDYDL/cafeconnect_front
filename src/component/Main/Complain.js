@@ -43,7 +43,7 @@ const Complain = () => {
             <s.ContentListDiv>
             <s.MainTitleText>고객의 소리</s.MainTitleText>
             <s.ButtonDiv width="1000px" style={{ textAlign: 'right' }}>
-            <s.ButtonStyle><Link to="/complainWrite">글 작성</Link></s.ButtonStyle>
+            <s.ButtonStyle height='40px'><Link to="/complainWrite">글 작성</Link></s.ButtonStyle>
             </s.ButtonDiv>
 
             <s.TableList>
@@ -55,7 +55,7 @@ const Complain = () => {
                             <s.TableTextTr key={complain.complainNum}>
                                 <s.TableTextTd>{complain.complainNum}</s.TableTextTd>
                                 <s.TableTextTd>[{complain.storeName}]&nbsp;{complain.complainTitle}</s.TableTextTd>
-                                <s.TableTextTd>{complain.userName}</s.TableTextTd>
+                                <s.TableTextTd>{complain.userName.replace(/(?<!^).(?!$)/g, "*")}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainDateStr}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainStatus ? "전달완료":"전달중"}</s.TableTextTd>
                             </s.TableTextTr>

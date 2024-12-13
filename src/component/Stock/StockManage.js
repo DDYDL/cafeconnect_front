@@ -145,6 +145,7 @@ const StockManage = ({major, middle, sub})=>{
         })
         .catch(err=>{
             console.log(err);
+            setStock({storeCode:0, itemCode:0, stockExpirationDate:'', stockReceiptDate:'', stockCount:0});
             alert("잠시후 다시 시도해주세요.");
         })
     }

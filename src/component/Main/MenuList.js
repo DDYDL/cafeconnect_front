@@ -87,13 +87,13 @@ const MenuList = ({menu}) => {
                 {menuList.map(menu=>(
                     <s.OneImgAndPDiv key={menu.menuCode}>
                         <s.ImgHoverText>
-                            {menu.caffine ? <div style={{paddingBottom:'10px'}}>⚬ 카페인 : {menu.caffine}<br/></div> : <></>}
-                            {menu.calories ? <div style={{paddingBottom:'10px'}}>⚬ 열량(kcal) : {menu.calories}<br/></div> : <></>}
-                            {menu.carbohydrate ? <div style={{paddingBottom:'10px'}}>⚬ 탄수화물(g) : {menu.carbohydrate}<br/></div> : <></>}
-                            {menu.sugar ? <div style={{paddingBottom:'10px'}}>⚬ 당류(g) : {menu.sugar}<br/></div> : <></>}
-                            {menu.protein ? <div style={{paddingBottom:'10px'}}>⚬ 단백질(g) : {menu.protein}<br/></div> : <></>}
-                            {menu.natrium ? <div style={{paddingBottom:'10px'}}>⚬ 나트륨(mg) : {menu.natrium}<br/></div> : <></>}
-                            {menu.fat ? <div>⚬ 지방(g) : {menu.fat}<br/></div> : <></>}
+                            {menu.caffine && menu.caffine!=='0'? <div style={{paddingBottom:'10px'}}>⚬ 카페인 : {menu.caffine}<br/></div> : <></>}
+                            {menu.calories && menu.calories!=='0' ? <div style={{paddingBottom:'10px'}}>⚬ 열량(kcal) : {menu.calories}<br/></div> : <></>}
+                            {menu.carbohydrate && menu.carbohydrate!=='0' ? <div style={{paddingBottom:'10px'}}>⚬ 탄수화물(g) : {menu.carbohydrate}<br/></div> : <></>}
+                            {menu.sugar && menu.sugar!=='0' ? <div style={{paddingBottom:'10px'}}>⚬ 당류(g) : {menu.sugar}<br/></div> : <></>}
+                            {menu.protein && menu.protein!=='0' ? <div style={{paddingBottom:'10px'}}>⚬ 단백질(g) : {menu.protein}<br/></div> : <></>}
+                            {menu.natrium && menu.natrium!=='0' ? <div style={{paddingBottom:'10px'}}>⚬ 나트륨(mg) : {menu.natrium}<br/></div> : <></>}
+                            {menu.fat && menu.fat!=='0' ? <div>⚬ 지방(g) : {menu.fat}<br/></div> : <></>}
                         </s.ImgHoverText>
                     <s.ImgDiv>
                         <s.ImgStyle 
