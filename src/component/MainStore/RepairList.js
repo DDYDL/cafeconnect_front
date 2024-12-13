@@ -508,7 +508,11 @@ function RepairListCopy() {
                   {!empty &&
                     pageList.map((page, index) => (
                       <div className={styles["frame"]}>
-                        <div className={styles["data"]}>
+                        <div className={styles["data"]}
+                        onClick={handleNavigate(index)}
+                        style={{ cursor: "pointer" }}
+                        >
+                          
                           <div
                             className={`${styles["a12345"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                             onClick={handleNavigate(index)}
