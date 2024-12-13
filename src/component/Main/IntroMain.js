@@ -82,7 +82,7 @@ const IntroMain = ()=>{
                     <m.Circle></m.Circle>
                     <m.SignatureMenuDiv>
                         <m.SignatureMenuP fontSize="40px" marginTop="100px">Signature</m.SignatureMenuP>
-                        <m.SignatureMenuP fontSize="25px" marginTop="20px">{signatureMenu.menuName}</m.SignatureMenuP>
+                        <m.SignatureMenuP width='220px' fontSize="25px" marginTop="20px">{signatureMenu.menuName}</m.SignatureMenuP>
                     </m.SignatureMenuDiv>
                 </m.SignatureDiv>
             }
