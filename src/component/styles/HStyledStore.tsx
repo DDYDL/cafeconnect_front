@@ -329,7 +329,6 @@ export const TableTextTd = styled.td`
 width:100px;
 height:60px;
 font-size:14px;
-padding-bottom:12px;
 padding-left:20px;
 padding-right:20px;
 vertical-align:middle;
@@ -337,10 +336,21 @@ text-align:center;
 `;
 
 export const TableInfoTd = styled.td`
+    width:300px;
     font-size:16px;
     padding-left:20px;
     padding-right:20px;
-    width:300px;
+    height:40px;
+    padding-bottom:12px;
+    vertical-align:middle;
+    line-height: 24px;
+    text-align:left;
+`;
+export const ComplainTableInfoTd = styled.td`
+    width:350px;
+    font-size:16px;
+    padding-left:20px;
+    padding-right:20px;
     height:40px;
     padding-bottom:12px;
     vertical-align:middle;
