@@ -13,7 +13,6 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { ko } from 'date-fns/locale';
 import { format, parse } from 'date-fns';
 import ReactSelect from "react-select";
-import Error from '../../Error.js';
 
 const MyStoreInfo = () => {
     // Jotai의 member 가져오기
@@ -154,7 +153,7 @@ const MyStoreInfo = () => {
                 console.log(res.data);
                 alert("수정이 완료되었습니다.");
                 setStore(store);
-                setMember(res.data);
+                setMember({...member, ['username'] : store.username});
             }
         })
         .catch(err=>{
@@ -184,7 +183,7 @@ const MyStoreInfo = () => {
             <s.MainTitleText>가맹점 정보 수정하기</s.MainTitleText>
 
             <m.TableInfo>
-                    <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
+                    <thead><m.TableInfoTh width='130px'></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
@@ -252,7 +251,7 @@ const MyStoreInfo = () => {
             </m.TableInfo>
 
              <m.TableInfo>
-                <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
+                <thead><m.TableInfoTh width='110px'></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>아이디</m.TableTitleSpan></m.TableInfoTd>

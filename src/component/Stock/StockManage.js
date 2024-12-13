@@ -78,8 +78,14 @@ const StockManage = ({major, middle, sub})=>{
         }
     },[itemNameFilter])
 
+    const [direction, setDirection] = useState(1);
+
     const categorySetting = ()=>{
-        setMajorCategory(major);
+
+        // 순서대로 정렬
+        const array = [...major, {'itemCategoryNum':0, 'itemCategoryName':'전체'}];
+        array.sort((a, b)=>a.itemCategoryNum - b.itemCategoryNum);
+        setMajorCategory(array);
         setMiddleCategory(middle);
         setSubCategory(sub);
     }
@@ -198,8 +204,14 @@ const StockManage = ({major, middle, sub})=>{
         const formData = new FormData();
 
         setExpirationDate(expirationDate);
-        setItemCategoryStr(itemCateStr);
-        setItemCategoryNum(itemCateNum);
+
+        if(itemCateNum===0) {
+            itemCateStr = '';
+            setItemCategoryNum(0);
+        } else {
+            setItemCategoryStr(itemCateStr);
+            setItemCategoryNum(itemCateNum);
+        }
 
         formData.append("storeCode", member.storeCode);
         console.log(member.storeCode);
@@ -396,7 +408,6 @@ const StockManage = ({major, middle, sub})=>{
                     </s.ButtonInnerDiv>
                     <s.ButtonInnerDiv>
                         <s.SelectStyle label="대분류" onChange={(e)=>selectCategory('major', e)}>
-                        <Option key='all' value='all' onClick={(e)=>searchCategory(e, expirationDate, '', 0)}>전체</Option>
                         {majorCategory.map(major=>(
                             <Option key={major.itemCategoryNum} value={major.itemCategoryNum} onClick={(e)=>searchCategory(e, expirationDate, 'major', major.itemCategoryNum)}>{major.itemCategoryName}</Option>
                         ))}
@@ -505,10 +516,10 @@ const StockManage = ({major, middle, sub})=>{
                                     {info[index] &&
                                     stock[1].map((stockInner, indexIn)=>(
                                         <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(234, 234, 234, 1)' style={{borderBottom:'1px solid rgba(154, 154, 154, 1)'}}>
-                                            <s.TableTextTd width='400px'>{stockInner.stockNum}</s.TableTextTd>
-                                            <s.TableTextTd width='10px'></s.TableTextTd>
-                                            <s.TableTextTd width='10px'></s.TableTextTd>
-                                            <s.TableTextTd width='10px'></s.TableTextTd>
+                                            <s.TableTextTd width='100px' style={{textAlign:'left', paddingLeft:'30px'}}>재고&nbsp;[{stockInner.stockNum}]</s.TableTextTd>
+                                            <s.TableTextTd width='5px'></s.TableTextTd>
+                                            <s.TableTextTd width='5px'></s.TableTextTd>
+                                            <s.TableTextTd width='5px'></s.TableTextTd>
                                             <s.TableTextTd width='120px'>
                                             <s.DatePickerWrap>
                                                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
@@ -550,7 +561,7 @@ const StockManage = ({major, middle, sub})=>{
                                             </c.QuantityControl>
                                             </s.TableTextTd>
                                             <s.TableTextTd width='70px'><s.ButtonStyle width="50px"><Link onClick={(e)=>updateStock(e, stockInner.stockNum)}>저장</Link></s.ButtonStyle></s.TableTextTd>
-                                            <s.TableTextTd width='70px' style={{marginRight:'5px'}}><s.ButtonStyle width="50px"><Link onClick={()=>deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
+                                            <s.TableTextTd width='70px' style={{marginRight:'30px'}}><s.ButtonStyle width="50px"><Link onClick={()=>deleteStock(stockInner.stockNum)}>삭제</Link></s.ButtonStyle></s.TableTextTd>
                                         </s.TableTextTr>
                                     ))
                                 }

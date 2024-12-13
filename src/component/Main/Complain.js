@@ -47,14 +47,14 @@ const Complain = () => {
             </s.ButtonDiv>
 
             <s.TableList>
-                <s.TableListThead><s.TableTextTh>번호</s.TableTextTh><s.TableTextTh>제목</s.TableTextTh><s.TableTextTh>작성자</s.TableTextTh>
+                <s.TableListThead><s.TableTextTh>번호</s.TableTextTh><s.TableTextTh width='300px'>제목</s.TableTextTh><s.TableTextTh>작성자</s.TableTextTh>
                     <s.TableTextTh>작성일</s.TableTextTh><s.TableTextTh>상태</s.TableTextTh></s.TableListThead>
                 <tbody>
                     {
                         complainList.map(complain=>(
                             <s.TableTextTr key={complain.complainNum}>
                                 <s.TableTextTd>{complain.complainNum}</s.TableTextTd>
-                                <s.TableTextTd>[{complain.storeName}]{complain.complainTitle}</s.TableTextTd>
+                                <s.TableTextTd>[{complain.storeName}]&nbsp;{complain.complainTitle}</s.TableTextTd>
                                 <s.TableTextTd>{complain.userName}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainDateStr}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainStatus ? "전달완료":"전달중"}</s.TableTextTd>

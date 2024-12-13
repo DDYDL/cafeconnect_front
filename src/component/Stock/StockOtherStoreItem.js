@@ -18,6 +18,16 @@ const StockOrderStoreItem = () => {
     const [isStore, setIsStore] = useState(false);
     const [token, setToken] = useAtom(tokenAtom);
 
+    const [store, setStore] = useState({});
+
+    // 지도의 중심좌표
+    const [storeLatLng, setStoreLatLng] = useState({
+        lat: 33.450701,
+        lng: 126.570667,
+    });
+
+    const [isSetStore, setIsSetStore] = useState(false);
+
     // Jotai의 member 가져오기
     const [member, setMember] = useAtom(memberAtom);
 
@@ -37,19 +47,37 @@ const StockOrderStoreItem = () => {
         setLatlngPositions([]);
         setStoreList([]);
         getStoreList();
+        setStore({});
+        getStore();
         // 1. 현재 위치 얻어오기
         navigator.geolocation.getCurrentPosition((pos) => {
             setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         });
     }, [])
 
+    const getStoreCoords = ()=>{
+        // 현재 가맹점 위치 가져오기
+        geocoder.addressSearch(store.storeAddress, function(result, status) {
+            if (status === window.kakao.maps.services.Status.OK) {
+                var coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+                console.log(coords);
+                setStoreLatLng({ lat: coords.Ma, lng: coords.La });
+                setIsSetStore(true);
+            }
+        });
+    }
+
     useEffect(()=>{
-        if(isStore) {
+        getStoreCoords();
+    }, [store])
+
+    useEffect(()=>{
+        if(isStore && isSetStore) {
             getLatLng();
             console.log(latlngPositions);
             setIsStore(false);
         }
-    }, [isStore])
+    }, [isStore, isSetStore])
 
     useEffect(()=>{
         console.log(latlngPositions);
@@ -71,11 +99,27 @@ const StockOrderStoreItem = () => {
         })
     }
 
+    const getStore = ()=>{
+        axiosInToken(token).get(`${url}/selectStore/${member.storeCode}`)
+        .then(res=>{
+            if(res.headers.authorization!=null) {
+                setToken(res.headers.authorization);
+            }
+            console.log(res.data);
+            setStore(res.data);
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("잠시후 다시 시도해주세요.");
+        })
+    }
+
     // 2. store address로 해당 위도, 경도로 바꾸기
     const getLatLng = ()=>{
         const newArray = [];
         // 해당하는 가맹점 개수
         var count = storeList.length;
+
         // 주소로 좌표를 검색 후 위도, 경도 저장
         storeList.forEach(function(store) {
             console.log(store);
@@ -86,7 +130,7 @@ const StockOrderStoreItem = () => {
                     
                     // 3. 위도 경도로 현재 위치에서 범위 안에 있는 store address만 가져오기
                     // 현재 위치와 store의 위치 사이의 거리를 구한다.
-                    let dist = getDistanceFromLatLonInKm(center.lat, center.lng, coords.Ma, coords.La);
+                    let dist = getDistanceFromLatLonInKm(storeLatLng.lat, storeLatLng.lng, coords.Ma, coords.La);
                     var coord = { lat: coords.Ma, lng: coords.La };
                     if(dist <= 2) { // 2km 이하에 있으면 추가
                         newArray.push({"store":store, "coords":coord});
@@ -167,12 +211,12 @@ const StockOrderStoreItem = () => {
                         <Input type='text' value={itemName} disabled/>
                     </s.SearchDiv>
                     <Map
-                        center={center}
+                        center={storeLatLng}
                         style={{ width: '1000px', height: '600px'}}
-                        level={3}>
+                        level={5}>
 
-                        <MapMarker // 현재 내 위치 마커 표시
-                            position={center} // 마커를 표시할 위치
+                        <MapMarker // 현재 내 매장 위치 마커 표시
+                            position={storeLatLng} // 마커를 표시할 위치
                             clickable={true} // 마커 클릭 시 지도 클릭 이벤트 발생 안 하도록 설정
                             title='내 매장 위치' // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
                         />
