@@ -8,7 +8,7 @@
     "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "^2.1.10",
     "@mui/material": "^6.1.9",
-    "@mui/x-date-pickers": "^7.23.0",
+    "@mui/x-date-pickers": "^7.22.3",
     "@tanstack/react-table": "^8.20.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

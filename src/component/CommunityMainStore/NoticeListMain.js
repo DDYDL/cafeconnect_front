@@ -84,8 +84,8 @@ const NoticeListMain = () => {
   // 등록순으로 오름차순
   useEffect(() => {
     if (notice) {
-      const sortedData = [...notice, { noticeDate: notice.noticeDate }].sort(
-        (a, b) => b.noticeDate - a.noticeDate
+      const sortedData = [...notice].sort(
+        (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
       );
       setOrderNotice(sortedData);
     }
