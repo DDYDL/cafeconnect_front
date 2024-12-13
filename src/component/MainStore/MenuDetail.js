@@ -6,10 +6,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 
 function MenuDetail() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const { menuCode } = useParams();
   const navigate = useNavigate();
   const [menu, setMenu] = useState({
@@ -43,7 +43,9 @@ function MenuDetail() {
   };
   const deleteData = async () => {
     try {
-      await axiosInToken(token).get(`http://localhost:8080/deleteMenu/${menuCode}`);
+      await axiosInToken(token).get(
+        `http://localhost:8080/deleteMenu/${menuCode}`
+      );
       navigate("/mainMenuList");
     } catch (error) {
       alert("메뉴 삭제에 실패하였습니다");
@@ -60,10 +62,9 @@ function MenuDetail() {
   };
 
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchData();
     }
-    
   }, [token]);
 
   return (
@@ -79,55 +80,26 @@ function MenuDetail() {
             </div>
             <div className={styles["background"]}>
               <div className={styles["flex-row"]}>
-                <div className={styles["link"]}>
+                <div
+                  className={styles["small-btn_brown"]}
+                  onClick={handleUpdateItem}
+                  style={{ marginLeft: "700px" }}
+                >
                   <div
-                    className={`${styles["overlap-group"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
                   >
-                    <div
-                      className={`${styles["text"]} ${styles["valign-text-middle"]}`}
-                    >
-                      수정
-                    </div>
-                    <div
-                      className={styles["small-btn_brown"]}
-                      onClick={handleUpdateItem}
-                    >
-                      <div
-                        className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
-                      >
-                        수정
-                      </div>
-                    </div>
+                    수정
                   </div>
                 </div>
-                <div className={`${styles["link-1"]} ${styles["link-3"]}`}>
+                <div
+                  className={styles["small-btn_brown"]}
+                  style={{ marginLeft: "10px" }}
+                  onClick={handleDeleteItem}
+                >
                   <div
-                    className={`${styles["overlap-group1-1"]} ${styles["themewagongithubiosemanticheading-6"]}`}
+                    className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
                   >
-                    <div
-                      className={`${styles["text-8"]} ${styles["valign-text-middle"]}`}
-                    >
-                      삭제
-                    </div>
-                    <div className={`${styles["link-2"]} ${styles["link-3"]}`}>
-                      <div className={styles["overlap-group"]}>
-                        <div
-                          className={`${styles["text"]} ${styles["valign-text-middle"]}`}
-                        >
-                          수정
-                        </div>
-                        <div
-                          className={styles["small-btn_brown"]}
-                          onClick={handleDeleteItem}
-                        >
-                          <div
-                            className={`${styles["text-1"]} ${styles["valign-text-middle"]}`}
-                          >
-                            삭제
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    삭제
                   </div>
                 </div>
               </div>
@@ -146,7 +118,7 @@ function MenuDetail() {
                   <div
                     className={`${styles["table-body"]} ${styles["notosanskr-medium-black-16px"]}`}
                   >
-                    <div className={styles["table-body-item"]}>
+                    {/* <div className={styles["table-body-item"]}>
                       <div
                         className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                       >
@@ -163,7 +135,7 @@ function MenuDetail() {
                           {menu.menuCode}
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className={styles["table-body-item"]}>
                       <div
                         className={`${styles["data"]} ${styles["valign-text-middle"]}`}
@@ -182,7 +154,7 @@ function MenuDetail() {
                         </div>
                       </div>
                     </div>
-                    <div className={styles["table-body-item"]}>
+                    {/* <div className={styles["table-body-item"]}>
                       <div
                         className={`${styles["data"]} ${styles["valign-text-middle"]}`}
                       >
@@ -199,7 +171,7 @@ function MenuDetail() {
                           {menu.menuCategoryName}
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className={styles["table-body-item"]}>
                       <div
                         className={`${styles["data"]} ${styles["valign-text-middle"]}`}

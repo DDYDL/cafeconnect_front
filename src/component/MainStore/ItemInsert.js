@@ -8,12 +8,15 @@ import * as s from "../styles/StyledStore.tsx";
 import { Option, Select } from "@material-tailwind/react";
 import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import axios from "axios";
-import logo from '../assets/img/logo.svg'
+import logo from "../assets/img/logo.svg";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 function ItemInsert() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
+
+  const [ableMiddle, setAbleMiddle] = useState(false);
+  const [ableSub, setAbleSub] = useState(false);
   const [item, setItem] = useState({
     itemName: "",
     itemPrice: "",
@@ -38,7 +41,7 @@ function ItemInsert() {
   const [activeSub, setActiveSub] = useState(false);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const [capacityUnit, setCapacityUnit] = useState('');
+  const [capacityUnit, setCapacityUnit] = useState("");
   const imageInput = useRef();
   const navigate = useNavigate();
   const handleInput = (e) => {
@@ -60,26 +63,49 @@ function ItemInsert() {
     setItem({
       ...item,
       itemMajorCategory: value,
+      itemMiddleCategory: "",
+      itemSubCategory: "",
     });
 
     fetchMiddleData(value);
-    setActiveMiddle(true);
-    setActiveMiddle(false);
+  };
+  const handleItemMajorCategorySelectBoxCopy = (e) => {
+    setItem({
+      ...item,
+      itemMajorCategory: e.target.value,
+      itemMiddleCategory: "",
+      itemSubCategory: "",
+    });
+
+    fetchMiddleData(e.target.value);
   };
 
   const handleItemMiddleCategorySelectBox = (value) => {
     setItem({
       ...item,
       itemMiddleCategory: value,
+      itemSubCategory: "",
     });
     fetchSubData(value);
-    setActiveMiddle(true);
-    setActiveMiddle(true);
+  };
+  const handleItemMiddleCategorySelectBoxCopy = (e) => {
+    setItem({
+      ...item,
+      itemMiddleCategory: e.target.value,
+      itemSubCategory: "",
+    });
+    fetchSubData(e.target.value);
   };
   const handleItemSubCategorySelectBox = (value) => {
     setItem({
       ...item,
       itemSubCategory: value,
+    });
+  };
+  const handleItemSubCategorySelectBoxCopy = (e) => {
+    setItem({
+      ...item,
+      itemSubCategory: e.target.value,
     });
   };
   const handleItemUnitSelectbox = (value) => {
@@ -99,7 +125,7 @@ function ItemInsert() {
   };
 
   const handleImageInput = (e) => {
-    if(!e.target.files[0]){
+    if (!e.target.files[0]) {
       return;
     }
     setFile(e.target.files[0]);
@@ -108,7 +134,9 @@ function ItemInsert() {
 
   const fetchMajorData = async () => {
     try {
-      const response = await axiosInToken(token).get(`http://localhost:8080/majorCategory`);
+      const response = await axiosInToken(token).get(
+        `http://localhost:8080/majorCategory`
+      );
       setMajorCategoryList(response.data);
     } catch (error) {
       console.log(error);
@@ -118,9 +146,17 @@ function ItemInsert() {
   const fetchMiddleData = async (value) => {
     try {
       const response = await axiosInToken(token).get(
-        `http://localhost:8080/middleCategory?categoryName=${value}`
+        `http://localhost:8080/middleCategoryCopy?categoryName=${value}`
       );
-      setMiddleCategoryList(response.data);
+      if (response.data.length > 1) {
+        setMiddleCategoryList(response.data);
+
+        setAbleMiddle(true);
+        setAbleSub(false);
+      } else {
+        setAbleMiddle(false);
+        setAbleSub(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -129,37 +165,47 @@ function ItemInsert() {
   const fetchSubData = async (value) => {
     try {
       const response = await axiosInToken(token).get(
-        `http://localhost:8080/subCategory?categoryName=${value}`
+        `http://localhost:8080/subCategoryCopy?categoryName=${value}`
       );
-      setSubCategoryList(response.data);
+      if (response.data.length > 1) {
+        setSubCategoryList(response.data);
+        setAbleSub(true);
+      } else {
+        setAbleSub(false);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  const checkProperties = () =>{
-    if(item.itemName !== '' && item.itemPrice !== '' && item.itemCapacity !== '' &&  item.itemUnitQuantity !== '' &&    
-      item.itemStorage  !== '' && item.itemCountryOrigin !== '' &&  item.itemMajorCategory !== ''
-    ){
+  const checkProperties = () => {
+    if (
+      item.itemName !== "" &&
+      item.itemPrice !== "" &&
+      item.itemCapacity !== "" &&
+      item.itemUnitQuantity !== "" &&
+      item.itemStorage !== "" &&
+      item.itemCountryOrigin !== "" &&
+      item.itemMajorCategory !== ""
+    ) {
       return true;
     }
     return false;
-      
-  }
+  };
   const handleUpload = async () => {
     const formData = new FormData();
-    if(!file){
-      alert('이미지를 등록하세요')
+    if (!file) {
+      alert("이미지를 등록하세요");
       return;
     }
     formData.append("file", file);
-    if(!checkProperties()){
-      alert('등록되지 않은 항목이 존재합니다');
+    if (!checkProperties()) {
+      alert("등록되지 않은 항목이 존재합니다");
       return;
     }
     const itemSaveForm = {
       itemName: item.itemName,
       itemPrice: item.itemPrice,
-      itemCapacity: item.itemCapacity+capacityUnit,
+      itemCapacity: item.itemCapacity + capacityUnit,
       itemUnitQuantity: item.itemUnitQuantity,
       itemUnit: item.itemUnit,
       itemStandard: `${item.itemStandard.itemX}X${item.itemStandard.itemY}X${item.itemStandard.itemZ}`,
@@ -191,10 +237,9 @@ function ItemInsert() {
     handleUpload();
   };
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchMajorData();
     }
-    
   }, [token]);
 
   return (
@@ -247,29 +292,27 @@ function ItemInsert() {
                     >
                       용량
                     </div>
-                    <div style={{display:"flex",gap:"20px"}}>
-                    <s.InputStyle
-                      name="itemCapacity"
-                      width="220px"
-                      type="text"
-                      placeholder="용량을 입력하세요"
-                      onChange={handleInput}
-                    />
-                    <div className="select-wrap" style={{ width: "100px" }}>
-                      <Select
-                        label="용량단위"
-                        onChange={(e)=>(setCapacityUnit(e))}  
-                      >
-                        <Option value="">용량 단위를 선택하세요</Option>
-                        <Option value="kg">kg</Option>
-                        <Option value="g">g</Option>
-                        <Option value="ml">ml</Option>
-                        <Option value="L">L</Option>
-                        
-                      </Select>
+                    <div style={{ display: "flex", gap: "20px" }}>
+                      <s.InputStyle
+                        name="itemCapacity"
+                        width="220px"
+                        type="text"
+                        placeholder="용량을 입력하세요"
+                        onChange={handleInput}
+                      />
+                      <div className="select-wrap" style={{ width: "100px" }}>
+                        <Select
+                          label="용량단위"
+                          onChange={(e) => setCapacityUnit(e)}
+                        >
+                          <Option value="">용량 단위를 선택하세요</Option>
+                          <Option value="kg">kg</Option>
+                          <Option value="g">g</Option>
+                          <Option value="ml">ml</Option>
+                          <Option value="L">L</Option>
+                        </Select>
+                      </div>
                     </div>
-                    </div>
-                    
                   </div>
                   <div className={styles["container-3"]}>
                     <div className={`${styles["flex-col"]} ${styles["flex"]}`}>
@@ -288,7 +331,12 @@ function ItemInsert() {
                       />
                     </div>
                     <div
-                    style={{width:"40px",textAlign:"center",marginBottom:"22px"}}>
+                      style={{
+                        width: "40px",
+                        textAlign: "center",
+                        marginBottom: "22px",
+                      }}
+                    >
                       X
                     </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
@@ -302,7 +350,12 @@ function ItemInsert() {
                       />
                     </div>
                     <div
-                    style={{width:"40px",textAlign:"center",marginBottom:"22px"}}>
+                      style={{
+                        width: "40px",
+                        textAlign: "center",
+                        marginBottom: "22px",
+                      }}
+                    >
                       X
                     </div>
                     <div style={{ width: "120px", marginBottom: "11px" }}>
@@ -332,22 +385,49 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="대분류"
-                              onChange={handleItemMajorCategorySelectBox}
-
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {majorCategoryList.map((majorCategory, index) => (
-                                <Option
-                                  key={index}
-                                  value={majorCategory.categoryName}
-                                >
-                                  {majorCategory.categoryName}
-                                </Option>
-                              ))}
-                            </Select>
+                              {/* <Select
+                                label="대분류"
+                                onChange={handleItemMajorCategorySelectBox}
+                              >
+                                {majorCategoryList.map(
+                                  (majorCategory, index) => (
+                                    <Option
+                                      key={index}
+                                      value={majorCategory.categoryName}
+                                    >
+                                      {majorCategory.categoryName}
+                                    </Option>
+                                  )
+                                )}
+                              </Select> */}
+                              <select
+                                value={item.itemMajorCategory}
+                                onChange={handleItemMajorCategorySelectBoxCopy}
+                                label="대분류"
+                                style={{
+                                  borderRadius: "7px",
+                                  width: "440px",
+                                  height: "40px",
+                                  backgroundColor: "#f8f8f8",
+                                  fontSize: "14px",
+                                  color: "rgb(69,90,100)",
+
+                                  borderColor: "rgba(69,90,100,0.5)",
+                                }}
+                              >
+                                <option value="">대분류를 선택하세요</option>
+                                {majorCategoryList.map(
+                                  (majorCategory, index) => (
+                                    <option value={majorCategory.categoryName}>
+                                      {majorCategory.categoryName}
+                                    </option>
+                                  )
+                                )}
+                              </select>
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -359,22 +439,66 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="중분류"
-                              onChange={handleItemMiddleCategorySelectBox}
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {middleCategoryList.map(
-                                (middleCategory, index) => (
-                                  <Option
-                                    key={index}
-                                    value={middleCategory.categoryName}
-                                  >
-                                    {middleCategory.categoryName}
-                                  </Option>
-                                )
+                              {ableMiddle && (
+                                // <Select
+                                //   label="중분류"
+                                //   onChange={handleItemMiddleCategorySelectBox}
+                                //   value={item.itemMiddleCategory}
+                                // >
+                                //   {middleCategoryList.map(
+                                //     (middleCategory, index) => (
+                                //       <Option
+                                //         key={index}
+                                //         value={middleCategory.categoryName}
+                                //       >
+                                //         {middleCategory.categoryName}
+                                //       </Option>
+                                //     )
+                                //   )}
+                                // </Select>
+                                <select
+                                  value={item.itemMiddleCategory}
+                                  onChange={
+                                    handleItemMiddleCategorySelectBoxCopy
+                                  }
+                                  label="중분류"
+                                  style={{
+                                    borderRadius: "7px",
+                                    width: "440px",
+                                    height: "40px",
+                                    backgroundColor: "#f8f8f8",
+                                    fontSize: "14px",
+                                    color: "rgb(69,90,100)",
+
+                                    borderColor: "rgba(69,90,100,0.5)",
+                                  }}
+                                >
+                                  {middleCategoryList.map(
+                                    (middleCategory, index) => (
+                                      <option
+                                        value={middleCategory.categoryName}
+                                      >
+                                        {middleCategory.categoryName}
+                                      </option>
+                                    )
+                                  )}
+                                </select>
                               )}
-                            </Select>
+
+                              {!ableMiddle && (
+                                <Select
+                                  label="해당하는 중분류가 없습니다"
+                                  disabled
+                                >
+                                  <Option value="">
+                                    해당하는 중분류가 없습니다
+                                  </Option>
+                                </Select>
+                              )}
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -383,20 +507,58 @@ function ItemInsert() {
                             className="w-16"
                             style={{ width: "440px", marginBottom: "20px" }}
                           >
-                            <div className="select-wrap" style={{ width: "440px" }}>
-                            <Select
-                              label="소분류"
-                              onChange={handleItemSubCategorySelectBox}
+                            <div
+                              className="select-wrap"
+                              style={{ width: "440px" }}
                             >
-                              {subCategoryList.map((subCategory, index) => (
-                                <Option
-                                  key={index}
-                                  value={subCategory.categoryName}
+                              {ableSub && (
+                                // <Select
+                                //   label="소분류"
+                                //   onChange={handleItemSubCategorySelectBox}
+                                //   value={item.itemSubCategory}
+                                // >
+                                //   {subCategoryList.map((subCategory, index) => (
+                                //     <Option
+                                //       key={index}
+                                //       value={subCategory.categoryName}
+                                //     >
+                                //       {subCategory.categoryName}
+                                //     </Option>
+                                //   ))}
+                                // </Select>
+                                <select
+                                  value={item.itemSubCategory}
+                                  onChange={handleItemSubCategorySelectBoxCopy}
+                                  label="소분류"
+                                  style={{
+                                    borderRadius: "7px",
+                                    width: "440px",
+                                    height: "40px",
+                                    backgroundColor: "#f8f8f8",
+                                    fontSize: "14px",
+                                    color: "rgb(69,90,100)",
+
+                                    borderColor: "rgba(69,90,100,0.5)",
+                                  }}
                                 >
-                                  {subCategory.categoryName}
-                                </Option>
-                              ))}
-                            </Select>
+                                  {subCategoryList.map((subCategory, index) => (
+                                    <option value={subCategory.categoryName}>
+                                      {subCategory.categoryName}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              {!ableSub && (
+                                <Select
+                                  label="해당하는 소분류가 없습니다"
+                                  disabled
+                                >
+                                  <Option value="">
+                                    해당하는 소분류가 없습니다
+                                  </Option>
+                                </Select>
+                              )}
                             </div>
                           </s.ButtonInnerDiv>
                         </div>
@@ -481,23 +643,36 @@ function ItemInsert() {
                     >
                       이미지 등록
                     </div>
-                    <div
-                      className={styles["border-1"]}
-                      
-                    >
+                    <div className={styles["border-1"]}>
                       <img
-                      className={styles["product-thumb-1bfdce747webp"]}
-                      style={{width:"224px" ,height:"204px",marginRight:"100px", marginTop:"10px",marginBottom:"10px"}}
-                      src={imageUrl === null ? logo : imageUrl}
-                    ></img>
-                      
+                        className={styles["product-thumb-1bfdce747webp"]}
+                        style={{
+                          width: "224px",
+                          height: "204px",
+                          marginRight: "100px",
+                          marginTop: "10px",
+                          marginBottom: "10px",
+                        }}
+                        src={imageUrl === null ? logo : imageUrl}
+                      ></img>
                     </div>
                     <div
                       className={styles["product-thumb-1bfdce747webp"]}
-                      style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer",backgroundColor:"#54473f",borderRadius:"5px",color:"white",height:"30px",fontSize:"14px"}}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        backgroundColor: "#54473f",
+                        borderRadius: "5px",
+                        color: "white",
+                        height: "30px",
+                        fontSize: "14px",
+                      }}
                       onClick={handleUploadImage}
-                      
-                    >업로드</div>
+                    >
+                      이미지 찾기
+                    </div>
                   </div>
                   <input
                     style={{ display: "none" }}

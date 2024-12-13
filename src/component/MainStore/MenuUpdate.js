@@ -11,9 +11,9 @@ import thumb from "../assets/img/product-thumb-1-bfdce747-webp@2x.png";
 import logo from "../assets/img/logo.svg";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 function MenuInsert() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const navigate = useNavigate();
   const imageInput = useRef();
   const { menuCode } = useParams();
@@ -41,7 +41,7 @@ function MenuInsert() {
   };
   const handleCapacityUnit = (e) => {
     setCapacityUnit(e);
-    setMenu({ ...menu, menuCapacity: capacity + e.target.value });
+    setMenu({ ...menu, menuCapacity: capacity + e });
   };
   const [categoryList, setCategoryList] = useState([]);
   const [file, setFile] = useState(null);
@@ -72,7 +72,7 @@ function MenuInsert() {
     imageInput.current.click();
   };
   const handleImageInput = (e) => {
-    if(!e.target.files[0]){
+    if (!e.target.files[0]) {
       return;
     }
     setFile(e.target.files[0]);
@@ -94,9 +94,17 @@ function MenuInsert() {
       menuCategoryName: value,
     });
   };
+  const handleCategoryeSelectboxCopy = (e) => {
+    setMenu({
+      ...menu,
+      menuCategoryName: e.target.value,
+    });
+  };
   const fetchMenuCategory = async () => {
     try {
-      const response = await axiosInToken(token).get(`http://localhost:8080/menuCategory`);
+      const response = await axiosInToken(token).get(
+        `http://localhost:8080/menuCategory`
+      );
       setCategoryList(response.data);
     } catch (error) {
       console.log(error);
@@ -190,11 +198,10 @@ function MenuInsert() {
     handleUpload();
   };
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchData();
-    fetchMenuCategory();
+      fetchMenuCategory();
     }
-    
   }, [token]);
   return (
     <>
@@ -321,10 +328,7 @@ function MenuInsert() {
                     >
                       이미지 등록
                     </div>
-                    <div
-                      className={styles["border-1"]}
-                      
-                    >
+                    <div className={styles["border-1"]}>
                       <img
                         className={styles["product-thumb-1bfdce747webp"]}
                         src={imageUrl === null ? logo : imageUrl}
@@ -350,8 +354,8 @@ function MenuInsert() {
                         marginTop: "20px",
                         borderRadius: "5px",
                         color: "white",
-                        fontSize:"14px",
-                        height:"30px"
+                        fontSize: "14px",
+                        height: "30px",
                       }}
                       alt="image"
                       onClick={handleUploadImage}
@@ -390,7 +394,7 @@ function MenuInsert() {
                       className="select-wrap"
                       style={{ width: "440px", marginBottom: "20px" }}
                     >
-                      <Select
+                      {/* <Select
                         label="카테고리"
                         onChange={handleCategoryeSelectbox}
                       >
@@ -399,7 +403,29 @@ function MenuInsert() {
                             {category.categoryName}
                           </Option>
                         ))}
-                      </Select>
+                      </Select> */}
+                      <select
+                        value={menu.menuCategoryName}
+                        onChange={handleCategoryeSelectboxCopy}
+                        label="카테고리"
+                        style={{
+                          borderRadius: "7px",
+                          width: "440px",
+                          height: "40px",
+                          backgroundColor: "#f8f8f8",
+                          fontSize: "14px",
+                          color: "rgb(69,90,100)",
+
+                          borderColor: "rgba(69,90,100,0.5)",
+                        }}
+                      >
+                        <option value="">카테고리</option>
+                        {categoryList.map((category, index) => (
+                          <option value={category.categoryName}>
+                            {category.categoryName}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className={styles["container"]}>

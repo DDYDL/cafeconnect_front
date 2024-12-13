@@ -12,10 +12,10 @@ import { Select } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { axiosInToken } from "../../config.js";
 import { tokenAtom, memberAtom } from "../../atoms";
-import { useAtomValue,useAtom } from "jotai/react";
+import { useAtomValue, useAtom } from "jotai/react";
 import axios from "axios";
 function MenuList() {
-  const [token,setToken] = useAtom(tokenAtom);
+  const [token, setToken] = useAtom(tokenAtom);
   const [pageList, setPageList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [startPage, setStartPage] = useState(0);
@@ -144,23 +144,21 @@ function MenuList() {
           );
         }
       }
-      
-      if(response.data.first === true){
+
+      if (response.data.first === true) {
         setHasPrevious(false);
-        
-      }else{
+      } else {
         setHasPrevious(true);
       }
-      if(response.data.last === true){
-        setHasNext(false)
-      }else{
-        setHasNext(true)
-        
+      if (response.data.last === true) {
+        setHasNext(false);
+      } else {
+        setHasNext(true);
       }
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      setUsingKeyword(true)
-      setUsingCategory(false)
+      setUsingKeyword(true);
+      setUsingCategory(false);
     } catch (error) {
       setError(error);
     } finally {
@@ -252,23 +250,21 @@ function MenuList() {
       // } else {
       //   setHasPrevious(false);
       // }
-      if(response.data.first === true){
+      if (response.data.first === true) {
         setHasPrevious(false);
-        
-      }else{
+      } else {
         setHasPrevious(true);
       }
-      if(response.data.last === true){
-        setHasNext(false)
-      }else{
-        setHasNext(true)
-        
+      if (response.data.last === true) {
+        setHasNext(false);
+      } else {
+        setHasNext(true);
       }
 
       setPageList(response.data.content);
       setEmpty(response.data.empty);
-      setUsingKeyword(false)
-      setUsingCategory(true)
+      setUsingKeyword(false);
+      setUsingCategory(true);
     } catch (error) {
       setError(error);
     } finally {
@@ -277,11 +273,10 @@ function MenuList() {
   };
 
   useEffect(() => {
-    if(token){
+    if (token) {
       fetchKeywordData("", 0);
-    fetchMenuCategory();
+      fetchMenuCategory();
     }
-    
   }, [token]);
 
   return (
@@ -302,23 +297,26 @@ function MenuList() {
                 {`총${totalElements}건`}
               </div> */}
               <div className={`${styles["flex-row"]} ${styles["flex"]}`}>
-              <div
-                className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
-              >
-                {`총${totalElements}건`}
-              </div>
-                <s.ButtonInnerDiv className="w-16 p-r-2" style={{ width: "120px" }}>
+                <div
+                  className={`${styles["text-1-1"]} ${styles["valign-text-middle"]}`}
+                >
+                  {`총${totalElements}건`}
+                </div>
+                <s.ButtonInnerDiv
+                  className="w-16 p-r-2"
+                  style={{ width: "120px" }}
+                >
                   {/* <div className="select-wrap" style={{ width: "120px" }}> */}
-                    <Select label="분류" onChange={handleChangeCategory}>
-                      {categoryList.map((category, index) => (
-                        <Option value={category.categoryValue}>
-                          {category.categoryName}
-                        </Option>
-                      ))}
-                    </Select>
+                  <Select label="분류" onChange={handleChangeCategory}>
+                    {categoryList.map((category, index) => (
+                      <Option value={category.categoryValue}>
+                        {category.categoryName}
+                      </Option>
+                    ))}
+                  </Select>
                   {/* </div> */}
                 </s.ButtonInnerDiv>
-                <div style={{ marginLeft: "300px",width:"200px" }}>
+                <div style={{ marginLeft: "460px", width: "200px" }}>
                   <Input
                     icon={
                       <MagnifyingGlassIcon
@@ -458,7 +456,7 @@ function MenuList() {
                           <div
                             className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.carbohydrate ? page.carbohydrate+'g' : "-"}
+                            {page.carbohydrate ? page.carbohydrate + "g" : "-"}
                           </div>
                         </div>
                         <div
@@ -467,7 +465,7 @@ function MenuList() {
                           <div
                             className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.sugar ? page.sugar+'g' : "-"}
+                            {page.sugar ? page.sugar + "g" : "-"}
                           </div>
                         </div>
                         <div
@@ -476,7 +474,7 @@ function MenuList() {
                           <div
                             className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
                           >
-                            {page.natrium ? page.natrium +'mg': "-"}
+                            {page.natrium ? page.natrium + "mg" : "-"}
                           </div>
                         </div>
                       </div>
@@ -703,7 +701,6 @@ function MenuList() {
 
                       {usingKeyword &&
                         !empty &&
-                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -718,7 +715,6 @@ function MenuList() {
                         ))}
                       {usingCategory &&
                         !empty &&
-                        
                         pageNumList.map((value, index) => (
                           <s.IconButtonStyle
                             style={
@@ -742,14 +738,18 @@ function MenuList() {
 
                       {!empty && hasNext && usingKeyword && (
                         <s.IconButtonStyle
-                          onClick={() => fetchKeywordData(keyWord, currentPage + 1)}
+                          onClick={() =>
+                            fetchKeywordData(keyWord, currentPage + 1)
+                          }
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>
                       )}
                       {!empty && hasNext && usingCategory && (
                         <s.IconButtonStyle
-                          onClick={()=>fetchCategoryData(category, currentPage + 1)}
+                          onClick={() =>
+                            fetchCategoryData(category, currentPage + 1)
+                          }
                         >
                           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                         </s.IconButtonStyle>

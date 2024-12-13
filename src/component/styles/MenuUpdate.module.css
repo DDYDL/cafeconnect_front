@@ -738,6 +738,7 @@
     align-items: center;
     margin-right: 30px;
     
+    
     width: 100px;
     
     
@@ -751,6 +752,8 @@
     text-align: center;
     white-space: nowrap;
     width: 90px;
+    font-size: 14px;
+    
   }
   
   .MenuUpdate .footer {
@@ -772,6 +775,7 @@
     height: 150px;
     padding: 22.1px 340px;
     width: 1920px;
+    
   }
   
   .MenuUpdate .flex-row {
