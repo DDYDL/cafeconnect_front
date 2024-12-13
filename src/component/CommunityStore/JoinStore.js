@@ -76,11 +76,15 @@ const JoinStore = () => {
       const response = await axios.get(`http://localhost:8080/joinStore/checkStoreCode`, {
         params: {
           storeCode: storeCode,
-        },
+        }
       });
 
       // 조회된 데이터가 있을 경우
       if (response.data) {
+        if (response.data.memberNum){
+          setStoreCodeMessage("이미 가입된 가맹점입니다."); // 조회된 경우 메시지
+          return;
+        }
         setStoreCodeMessage("해당 가맹점 아이디 조회되었습니다."); // 조회된 경우 메시지
         setStoreName(response.data.storeName);
       } else {
