@@ -62,17 +62,17 @@ const ComplainDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>지점명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{complain.storeName}</m.TableInfoTd>
+                        <h.ComplainTableInfoTd>{complain.storeName}</h.ComplainTableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>제목</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{complain.complainTitle}</m.TableInfoTd>
+                        <h.ComplainTableInfoTd className='w-[800px]'>{complain.complainTitle}</h.ComplainTableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>작성자</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{complain.userName}</m.TableInfoTd>
+                        <h.ComplainTableInfoTd>{complain.userName}</h.ComplainTableInfoTd>
                         <m.TableInfoTd><m.TableTitleSpan>작성일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{format(new Date(complain.complainDate),"yyyy.MM.dd")}</m.TableInfoTd>
+                        <h.ComplainTableInfoTd>{format(new Date(complain.complainDate),"yyyy.MM.dd")}</h.ComplainTableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </h.TableInfo>

@@ -54,7 +54,6 @@ const ComplainListMain = ()=>{
                 </s.CategoryButtonGroupDiv>
                 <s.TableList>
                     <s.TableListThead>
-                        <s.TableTextTh width='50px'></s.TableTextTh>
                         <s.TableTextTh width='160px'>작성자</s.TableTextTh>
                         <s.TableTextTh width='300px'>제목</s.TableTextTh>
                         <s.TableTextTh width='130px'>가맹점명</s.TableTextTh>
@@ -64,7 +63,6 @@ const ComplainListMain = ()=>{
                     <tbody>
                     {complainList.map(complain=>(
                         <s.TableTextTr key={complain.complainNum} onClick={e => complainDetail(complain.complainNum)}>
-                            <s.TableTextTd width='50px' name="complainNum">{complain.complainNum}</s.TableTextTd >
                             <h.TableTextTd width='160px'>{complain.userName}</h.TableTextTd >
                             <h.TableTextTd width='300px'>{complain.complainTitle}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{complain.storeName}</h.TableTextTd >
