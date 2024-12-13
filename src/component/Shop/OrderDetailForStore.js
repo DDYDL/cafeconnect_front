@@ -202,10 +202,13 @@ function OrderDetailForStore() {
                 <>
                   <od.PaymentRow>
                     <div className="payment-item">
+                    {orderDetail.paymentDetail?.cardName && (
                       <span className="value">
-                        {orderDetail.paymentDetail?.cardName}(
-                        {orderDetail.paymentDetail?.cardNumber})
-                      </span>
+                      
+                        {orderDetail.paymentDetail?.cardName||"-"}(
+                        {orderDetail.paymentDetail?.cardNumber|| "-"})
+                       </span>
+                    )}<span className="value">-</span>
                     </div>
                   </od.PaymentRow>
                 </>
@@ -214,9 +217,11 @@ function OrderDetailForStore() {
                 <>
                   <od.PaymentRow>
                     <div className="payment-item">
+                    {orderDetail.paymentDetail?.bankName && (
                       <span className="value">
-                        {orderDetail.paymentDetail?.bankName}
+                        {orderDetail.paymentDetail?.bankName|| "-"}
                       </span>
+                    )}<span className="value">-</span>
                     </div>
                   </od.PaymentRow>
                 </>
