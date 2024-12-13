@@ -159,7 +159,7 @@ const StoreHeader = ({alarms})=>{
                 <m.ReactSelectDivHeader width='150px'>
                   <m.ReactSelectHeader
                         isSearchable={false}
-                        placeholder={store.storeName}
+                        placeholder={store && store.storeName}
                         value={selectedStore}
                         options={storeNameList}
                         onChange={(e)=>changeStore(e)}
