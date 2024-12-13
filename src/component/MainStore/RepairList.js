@@ -59,6 +59,7 @@ function RepairListCopy() {
 
   const handleChangeKeyword = (e) => {
     const value = e.target.value;
+    
     setKeyWord(value);
     setUsingKeyword(true);
     setUsingCategory(false);
@@ -126,7 +127,7 @@ function RepairListCopy() {
         `http://localhost:8080/majorCategoryCopy`
       );
       setMajorCategoryList(response.data);
-      console.log(response.data);
+      
     } catch (error) {
       console.log(error);
     }
@@ -154,12 +155,14 @@ function RepairListCopy() {
   };
 
   const fetchKeywordData = async (keyword, pageNum) => {
+    console.log(keyword)
+    console.log(pageNum)
     try {
       setLoading(true);
       const response = await axiosInToken(token).get(
         `http://localhost:8080/repairListByKeyword?keyword=${keyword}&pageNum=${pageNum}&pageSize=10`
       );
-
+      console.log(response.data)
       setCurrentPage(response.data.pageable.pageNumber);
 
       setStartPage(Math.floor(response.data.pageable.pageNumber / 5) * 5);
@@ -255,6 +258,7 @@ function RepairListCopy() {
     } finally {
       setLoading(false);
     }
+    
   };
 
   const fetchCategoryData = async (category, pageNum) => {
@@ -449,6 +453,7 @@ function RepairListCopy() {
                     }
                     label="가맹점 검색"
                     onChange={handleChangeKeyword}
+                    value={keyWord}
                   />
                 </div>
               </div>
@@ -769,7 +774,7 @@ function RepairListCopy() {
                                 ? { backgroundColor: "skyblue" }
                                 : null
                             }
-                            onClick={() => fetchKeywordData("", value)}
+                            onClick={() => fetchKeywordData(keyWord, value)}
                           >
                             {value + 1}
                           </s.IconButtonStyle>
