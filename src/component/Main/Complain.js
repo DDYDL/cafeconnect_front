@@ -52,13 +52,13 @@ const Complain = () => {
                 <tbody>
                     {
                         complainList.map(complain=>(
-                            <s.TableTextTr key={complain.complainNum}>
+                            <s.TableTextTrComplain key={complain.complainNum}>
                                 <s.TableTextTd>{complain.complainNum}</s.TableTextTd>
                                 <s.TableTextTd>[{complain.storeName}]&nbsp;{complain.complainTitle}</s.TableTextTd>
                                 <s.TableTextTd>{complain.userName.replace(/(?<!^).(?!$)/g, "*")}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainDateStr}</s.TableTextTd>
                                 <s.TableTextTd>{complain.complainStatus ? "전달완료":"전달중"}</s.TableTextTd>
-                            </s.TableTextTr>
+                            </s.TableTextTrComplain>
                         ))
                     }
                 </tbody>

@@ -113,7 +113,11 @@ export const MenuBarLinkDiv = styled.div<Container>`
     border-color:rgba(248, 248, 248, 1);
     
     border-left:${(props) => props.borderleft ? props.borderleft : "3px solid rgba(248, 248, 248, 1)"};
-    `;
+
+    &:hover {
+        background-color:rgba(203, 210, 164, 0.7);
+    }
+`;
 
 export const MenuBarLink = styled(NavLink)`
     font-size:16px;
@@ -229,6 +233,18 @@ export const TableTextTd = styled.td<Container>`
 `;
 
 export const TableTextTr = styled.tr<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
+    background-color:${(props) => props.bgColor ? props.bgColor : ""};
+    height:${(props) => props.height ? props.height : "45px"};
+    max-height:45px;
+    border-bottom:1px solid rgba(234, 234, 234, 1);
+
+    &:hover {
+        background-color: rgba(234, 234, 234, 1);
+    }
+`;
+
+export const TableTextTrComplain = styled.tr<Container>`
     width:${(props) => props.width ? props.width : "100px"};
     background-color:${(props) => props.bgColor ? props.bgColor : ""};
     height:${(props) => props.height ? props.height : "45px"};

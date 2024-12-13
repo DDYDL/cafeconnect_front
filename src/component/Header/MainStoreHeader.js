@@ -49,8 +49,8 @@ const MainStoreHeader = ()=>{
                             </h.DivMenuInside>
                         </h.DivMenuItem>
                     </MenuHandler>
-                    <h.MenuListOut style={{ marginLeft: '550px' }}>
-                        <h.MenuListDiv height='140px'>
+                    <h.MenuListOut marginLeft='550px'>
+                        <h.MenuListDiv height='170px'>
                             <MenuItem><NavLink to="/storeListMain">가맹점 조회</NavLink></MenuItem>
                             <MenuItem><NavLink to="/addStoreMain">가맹점 등록</NavLink></MenuItem>
                             <MenuItem><NavLink to="/restoreStoreMain">가맹점 복구</NavLink></MenuItem>
