@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface Container {
     fontSize: string;
     marginTop: string;
+    width:string;
 }
 
 export const CarouselDiv = styled.div`
@@ -63,7 +64,7 @@ export const SignatureMenuImage = styled.img`
 `;
 
 export const SignatureMenuP = styled.p<Container>`
-    width:190px;
+    width:${(props) => props.width ? props.width : "180px"};
     position: relative;
     padding: 0px;
     margin-left:100px;
