@@ -146,7 +146,7 @@ const ModifyStoreMain = ()=>{
                         <m.TableInfoTd><s.InputStyle width='300px' type='text' name='storeName' value={store.storeName} onChange={edit}/></m.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
-                    <m.TableInfoTd style={{verticalAlign:'top', paddingTop:'10px'}}><m.TableTitleSpan for="storeAddress">가맹점 주소<h.Required>*</h.Required></m.TableTitleSpan></m.TableInfoTd>
+                    <m.TableInfoTd style={{verticalAlign:'top', paddingTop:'10px'}}><m.TableTitleSpan for="storeAddress">가맹점 주소</m.TableTitleSpan></m.TableInfoTd>
                         <m.TableInfoTd>
                         <s.SearchDiv width='300px' marginBottom='10px' margin='0px'>
                         <s.InputStyleSearch icon={<h.SearchIcon className="h-5 w-5" onClick={()=>setIsOpen(!isOpen)}/>} value={store.storeAddressNum} onChange={edit} style={{borderColor:'rgba(234, 234, 234, 1)'}}/></s.SearchDiv>
@@ -272,7 +272,7 @@ const ModifyStoreMain = ()=>{
                     <m.TableInfoTr>
                         <m.TableInfoTd colSpan={2}>
                        <s.SearchButtonDiv style={{textAlign:'right'}}>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginRight:'65px'}} onClick={modify}>저장</s.ButtonStyle>
+                            <s.ButtonStyle width='70px' style={{marginRight:'65px'}} onClick={modify}>저장</s.ButtonStyle>
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>
