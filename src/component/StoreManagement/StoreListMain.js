@@ -128,7 +128,7 @@ const StoreListMain = ()=>{
                     <h.ReactSelectDiv>
                         <ReactSelect
                             isSearchable={false}
-                            className="w-full CustomSelect"
+                            className="CustomSelect"
                             placeholder="지역 전체"
                             value={selectedRegion} 
                             options={regionArr} 

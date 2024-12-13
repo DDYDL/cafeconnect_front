@@ -370,20 +370,19 @@ margin-right:10px;
 
 export const ReactSelectDiv = styled.div<Container>`
     margin-right:10px;
+    > div > div {
+        border-radius:5px;
+        background-color:rgb(248, 248, 248);
+        border-color:rgb(176, 190, 197);
+        border-style: solid;
+        border-width:1px;
+        font-size: 14px;
+        color:rgb(69, 90, 100);
+    }
     .CustomSelect {
+        height:40px;
         width:200px;
-        > div {
-                height:40px;
-                border-radius:5px;
-                background-color:rgb(248, 248, 248);
-                border-color:rgb(176, 190, 197);
-                border-style: solid;
-                border-width:1px;
-                font-size: 14px;
-                color:rgb(69, 90, 100);
-                }
-        }
-    > div > div { height:40px; }
+    }
 `;
 
 export const SearchDiv = styled.div<Container>`
