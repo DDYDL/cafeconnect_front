@@ -113,7 +113,11 @@ export const MenuBarLinkDiv = styled.div<Container>`
     border-color:rgba(248, 248, 248, 1);
     
     border-left:${(props) => props.borderleft ? props.borderleft : "3px solid rgba(248, 248, 248, 1)"};
-    `;
+
+    &:hover {
+        background-color:rgba(203, 210, 164, 0.7);
+    }
+`;
 
 export const MenuBarLink = styled(NavLink)`
     font-size:16px;
