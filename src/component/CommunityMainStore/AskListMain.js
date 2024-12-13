@@ -55,7 +55,6 @@ const AskListMain = ()=>{
 
                 <s.TableList>
                     <s.TableListThead>
-                        <s.TableTextTh width='50px'></s.TableTextTh>
                         <h.TableTextTh width='160px'>분류</h.TableTextTh>
                         <h.TableTextTh width='280px'>제목</h.TableTextTh>
                         <h.TableTextTh width='130px'>가맹점명</h.TableTextTh>
@@ -65,7 +64,6 @@ const AskListMain = ()=>{
                     <tbody>
                     {askList.map(ask=>(
                         <s.TableTextTr key={ask.askNum} onClick={e=>askDetail(ask.askNum)}>
-                            <s.TableTextTd width='50px'>{ask.askNum}</s.TableTextTd >
                             <h.TableTextTd width='160px'>{ask.askType}</h.TableTextTd >
                             <h.TableTextTd width='300px'>{ask.askTitle}</h.TableTextTd >
                             <h.TableTextTd width='130px'>{ask.storeName}</h.TableTextTd >
