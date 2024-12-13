@@ -135,7 +135,7 @@ export const ModalDialog = styled.div`
     border-radius:5px;
     background-color:rgb(255, 255, 255);
     // 맨 앞으로
-    z-index: 99;
+    z-index: 97;
     box-shadow : 2px 6px 4px 2px rgba(145, 145, 145, 0.5);
 `;
 

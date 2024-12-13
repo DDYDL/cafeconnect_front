@@ -234,6 +234,18 @@ export const TableTextTr = styled.tr<Container>`
     height:${(props) => props.height ? props.height : "45px"};
     max-height:45px;
     border-bottom:1px solid rgba(234, 234, 234, 1);
+
+    &:hover {
+        background-color: rgba(234, 234, 234, 1);
+    }
+`;
+
+export const TableTextTrComplain = styled.tr<Container>`
+    width:${(props) => props.width ? props.width : "100px"};
+    background-color:${(props) => props.bgColor ? props.bgColor : ""};
+    height:${(props) => props.height ? props.height : "45px"};
+    max-height:45px;
+    border-bottom:1px solid rgba(234, 234, 234, 1);
 `;
 
 export const CategoryButtonGroupDiv = styled.div`
