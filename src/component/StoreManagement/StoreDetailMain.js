@@ -1,5 +1,6 @@
 import * as m from '../styles/StyledMypage.tsx';
 import * as s from '../styles/StyledStore.tsx';
+import * as h from '../styles/HStyledStore.tsx';
 
 // 로그인 토큰
 import { axiosInToken } from '../../config.js'
@@ -52,42 +53,42 @@ const StoreDetailMain = ()=>{
     return (
         <>
             <s.ContentListDiv>
-            <s.MainTitleText>Kosta커피 {store.storeName}</s.MainTitleText>
+            <s.MainTitleText>CnC coffee&nbsp;&nbsp;{store.storeName}</s.MainTitleText>
 
             <m.TableInfo>
                     <thead><m.TableInfoTh></m.TableInfoTh><m.TableInfoTh></m.TableInfoTh></thead>
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 코드</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storeCode}</m.TableInfoTd>
+                        <h.TableInfoTd><m.TableTitleSpan>{store.storeCode}</m.TableTitleSpan></h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점 주소</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>({store.storeAddressNum})&nbsp;{store.storeAddress}</m.TableInfoTd>
+                        <h.TableInfoTd>({store.storeAddressNum})&nbsp;{store.storeAddress}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>가맹점/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storePhone}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.storePhone}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>영업시간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storeOpenTime} ~ {store.storeCloseTime}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.storeOpenTime} ~ {store.storeCloseTime}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>휴무일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.storeCloseDate!==''||"연중무휴"}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.storeCloseDate!==''? "연중무휴": store.storeCloseDate}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약체결일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractDate}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.contractDate}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>계약기간</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.contractPeriodStart} ~ {store.contractPeriodEnd}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.contractPeriodStart} ~ {store.contractPeriodEnd}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>최초개점일</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.openingDate}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.openingDate}</h.TableInfoTd>
                     </m.TableInfoTr>
                 </tbody>
             </m.TableInfo>
@@ -97,25 +98,25 @@ const StoreDetailMain = ()=>{
                 <tbody>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.ownerName}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.ownerName}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>점주/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.ownerPhone}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.ownerPhone}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저명</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.managerName}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.managerName}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd><m.TableTitleSpan>매니저/HP</m.TableTitleSpan></m.TableInfoTd>
-                        <m.TableInfoTd>{store.managerPhone}</m.TableInfoTd>
+                        <h.TableInfoTd>{store.managerPhone}</h.TableInfoTd>
                     </m.TableInfoTr>
                     <m.TableInfoTr>
                         <m.TableInfoTd colSpan={2}>
                        <s.SearchButtonDiv style={{textAlign:'right'}}>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginLeft:'10px'}} onClick={deleteStore}>삭제</s.ButtonStyle>
-                            <s.ButtonStyle width='70px' style={{marginTop:'30px', marginLeft:'10px'}}><Link to={`/modifyStoreMain/${store.storeCode}`}>수정</Link></s.ButtonStyle>
+                            <s.ButtonStyle width='70px' style={{marginLeft:'10px'}} onClick={deleteStore}>삭제</s.ButtonStyle>
+                            <s.ButtonStyle width='70px' style={{marginLeft:'10px'}}><Link to={`/modifyStoreMain/${store.storeCode}`}>수정</Link></s.ButtonStyle>
                         </s.SearchButtonDiv>
                         </m.TableInfoTd>
                     </m.TableInfoTr>

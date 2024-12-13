@@ -329,11 +329,23 @@ export const TableTextTd = styled.td`
 width:100px;
 height:60px;
 font-size:14px;
+padding-bottom:12px;
 padding-left:20px;
 padding-right:20px;
 vertical-align:middle;
 text-align:center;
+`;
 
+export const TableInfoTd = styled.td`
+    font-size:16px;
+    padding-left:20px;
+    padding-right:20px;
+    width:300px;
+    height:40px;
+    padding-bottom:12px;
+    vertical-align:middle;
+    line-height: 24px;
+    text-align:left;
 `;
 
 export const InputStyleSearch = styled(Input)`
@@ -539,6 +551,7 @@ export const DatePickerWrap =styled.div`
   border-radius: 8px;
   padding-top: 20px;
   padding-left: 25px;
+  spellCheck:false;
 
   border: 1px solid #ccc9; /* 90% 불투명한 연한 회색 */
 `;
