@@ -646,7 +646,7 @@ function MenuList() {
                                 ? { backgroundColor: "skyblue" }
                                 : null
                             }
-                            onClick={() => fetchKeywordData("", value)}
+                            onClick={() => fetchKeywordData(keyWord, value)}
                           >
                             {value + 1}
                           </s.IconButtonStyle>
