@@ -122,6 +122,7 @@ function MenuCategory() {
       setCategoryList(ModifyCategoryList);
       setActiveCategoryNum(null);
       setActiveCategoryName(null);
+      alert('삭제완료')
     } catch (error) {
       console.log(error);
       alert("삭제 실패하였습니다");
@@ -148,6 +149,13 @@ function MenuCategory() {
   };
 
   const handleAddSubmit = async() => {
+    console.log(saveText);
+    if(saveText === ''){
+      
+      console.log(saveText);
+      alert('카테고리명에 텍스트를 입력하세요');
+      return;
+    }
     try {
       const response = await axiosInToken(token).get(
         `http://localhost:8080/checkMiddleCategory?categoryName=${saveText}`

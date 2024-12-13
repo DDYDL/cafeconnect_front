@@ -512,11 +512,13 @@ const StockManage = ({major, middle, sub})=>{
                                         <s.TableTextTd width='80px'>-</s.TableTextTd>
                                         <s.TableTextTd width='80px'>-</s.TableTextTd>
                                         <s.TableTextTd width='80px'>{stock[1][0].itemAllCount}</s.TableTextTd>
+                                        <s.TableTextTd width='80px'></s.TableTextTd>
+                                        <s.TableTextTd width='80px'></s.TableTextTd>
                                     </s.TableTextTr>
 
                                     {info[index] &&
                                     stock[1].map((stockInner, indexIn)=>(
-                                        <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(234, 234, 234, 1)' style={{borderBottom:'1px solid rgba(154, 154, 154, 1)'}}>
+                                        <s.TableTextTr key={stockInner.stockNum} height='45px' bgColor='rgba(241, 241, 241, 1)' style={{borderBottom:'1px solid rgba(255, 255, 255, 1)'}}>
                                             <s.TableTextTd width='100px' style={{textAlign:'left', paddingLeft:'30px'}}>재고&nbsp;[{stockInner.stockNum}]</s.TableTextTd>
                                             <s.TableTextTd width='5px'></s.TableTextTd>
                                             <s.TableTextTd width='5px'></s.TableTextTd>
