@@ -342,7 +342,7 @@ function MenuList() {
                 </div>
               </div>
               <div className={styles["overlap-group2"]}>
-                <div className={styles["horizontal-border-1"]}></div>
+                
                 <div className={styles["frame-92"]}>
                   <div className={styles["frame-87"]}>
                     <div className={`${styles["cell-1"]} ${styles["cell-6"]}`}>
@@ -480,72 +480,10 @@ function MenuList() {
                       </div>
                     ))}
 
-                  {/* {!empty &&
-                    emptyList.map((page, index) => (
-                      <div className={styles["frame"]}>
-                        <div className={styles["data"]}>
-                          <div
-                            className={`${styles["text"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                        <div
-                          className={`${styles["data-1"]} ${styles["data-6"]}`}
-                        >
-                          <div className={styles["frame-91"]}>
-                            <div
-                              className={
-                                styles["x39607d95d144c4751fedd9d44017d8b7jpg"]
-                              }
-                            >
-                              <div
-                                className={styles["x2024-10-28-103829-1"]}
-                              ></div>
-                            </div>
-                            <div className={styles["frame-89"]}>
-                              <div
-                                className={`${styles["text-1"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className={`${styles["data-2"]} ${styles["data-6"]}`}
-                        >
-                          <div
-                            className={`${styles["text-2"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                        <div
-                          className={`${styles["data-3"]} ${styles["data-6"]}`}
-                        >
-                          <div
-                            className={`${styles["x591ml"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                        <div
-                          className={`${styles["data-4"]} ${styles["data-6"]}`}
-                        >
-                          <div
-                            className={`${styles["text-22"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                        <div
-                          className={`${styles["data-4"]} ${styles["data-6"]}`}
-                        >
-                          <div
-                            className={`${styles["x63g"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                        <div
-                          className={`${styles["data-5"]} ${styles["data-6"]}`}
-                        >
-                          <div
-                            className={`${styles["x102mg"]} ${styles["valign-text-middle"]} ${styles["notosanskr-light-shark-16px"]}`}
-                          ></div>
-                        </div>
-                      </div>
-                    ))} */}
+                  
                 </div>
+                
+
               </div>
               <div
                 className={`${styles["flex-row-1"]} ${styles["flex-row-3"]}`}
@@ -758,24 +696,7 @@ function MenuList() {
                   </s.PageButtonGroupDiv>
                 </div>
               </div>
-              <div className={styles["overlap-group-1"]}>
-                <div
-                  className={`${styles["text-61"]} ${styles["valign-text-middle"]}`}
-                >
-                  메뉴 등록
-                </div>
-                {/* <div
-                  className={styles["small-btn_brown"]}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate("/menuInsert")}
-                >
-                  <div
-                    className={`${styles["text-62"]} ${styles["valign-text-middle"]} ${styles["themewagongithubiosemanticheading-6"]}`}
-                  >
-                    메뉴등록
-                  </div>
-                </div> */}
-              </div>
+              
             </div>
             <footer className={styles["footer"]}>
               <div className={styles["footer-contents"]}>
