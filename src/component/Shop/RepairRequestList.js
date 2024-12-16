@@ -21,7 +21,9 @@ function RepairRequestList() {
   const [token,setToken] = useAtom(tokenAtom);
   const store = useAtomValue(memberAtom);
   const [isModalOpen, setIsModalOpen] = useState(false);
+ 
   const [selectedRepair, setSelectedRepair] = useState({});//modal에 넘김
+
   const [repairList,setRepairList] = useState([]);
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -39,29 +41,24 @@ function RepairRequestList() {
 
   useEffect(()=>{
     getRepairRequest(1);
-  },[token,store.storeCode,searchType]);
+  },[token,searchType]);
 
   // 목록 불러오기 
   const getRepairRequest=(page)=>{
     const formData  = new FormData();
     formData.append("storeCode",store.storeCode);
     formData.append("page",page);
-    // searchType이 있을 때만 검색 조건 추가
-  if(searchType) {
-    formData.append("keyword", searchKeyword);
+   // searchType이 있을 때만 검색 조건 추가
+   if (searchType) {
     formData.append("type", searchType);
+    formData.append("keyword", searchKeyword);
   } else {
-    formData.append("keyword", "");
     formData.append("type", "");
+    formData.append("keyword", "");
   }
     axiosInToken(token).post('repairRequestList',formData)
     .then (res=>{
-
-      if(res.headers.authorization!=null) {
-        setToken(res.headers.authorization)
-    }
         let pageInfo = res.data.pageInfo;
-        console.log(pageInfo);
         let page = [];
           for(let i=pageInfo.startPage; i<=pageInfo.endPage; i++) {
               page.push(i);
@@ -99,36 +96,18 @@ function RepairRequestList() {
     let newDate = format(new Date(date),'yyyy-MM-dd');
     return newDate;
   }
-
   const search=()=>{
-     
-    if(!searchType) {
+    if (!searchType) {
       return; // 전체 선택시 검색 불가
-      }
-      if(!searchKeyword.trim()) {
-        alert("검색어를 입력해주세요");
-        return;
-      }
+    }
+    if (!searchKeyword.trim()) {
+      alert("검색어를 입력해주세요");
+      return;
+    }
       getRepairRequest(1);    
   }
-
-  const handlePrevPage = () => {
-    if (pageInfo.curPage > 1) {
-      getRepairRequest(pageInfo.curPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (pageInfo.curPage < pageInfo.endPage) {
-      getRepairRequest(pageInfo.curPage + 1);
-    }
-  };
-
-  
   //모달
   const RepairDetailModal = ({ open, handleClose, repairData }) => {
-    console.log('repairData:', repairData);
-    console.log('repairDate:', repairData?.repairDate);
     return (
       <r.StyledDialog open={open} handler={handleClose} size="lg">
       <r.StyledDialogHeader className="flex items-center justify-between">
@@ -139,13 +118,12 @@ function RepairRequestList() {
       <r.StyledDialogBody divider>
         <r.DetailSection>
           <r.ProductInfo>
-            <img src={`${url}/image/${repairData.itemFileName}`}alt={repairData.itemFileName} />
+            <img src={repairData?.imageUrl || "/image/machine.jpg"} alt="기계" />
             <div>
               <r.InfoLabel>상품명</r.InfoLabel>
               <r.InfoValue>{repairData?.itemName}</r.InfoValue>
               <r.InfoLabel>접수일</r.InfoLabel>
               <r.InfoValue>{repairData.repairDate && formatDate(repairData.repairDate)}</r.InfoValue> 
-              
             </div>
           </r.ProductInfo>
 
@@ -200,15 +178,15 @@ function RepairRequestList() {
             <form>
               <div className="select-wrap">
                 <Select
+                  label="검색구분"
                   value={searchType}
                   onChange={(val) => {
-                    setSearchType(val);  
-                    if (!val) {  // 전체 선택 시
-                      setSearchKeyword('');  // 검색어 초기화
+                    setSearchType(val)
+                    if (!val) {  // 전체 선택 
+                      setSearchKeyword("");  // 검색어 초기화
                       getRepairRequest(1);   // 전체 목록 조회
-                    }  
-                  }}
-                  label="검색구분"
+                    }}
+                  }
                 >
                   <Option value="">전체</Option>
                   <Option value="name">상품명</Option>
@@ -217,14 +195,13 @@ function RepairRequestList() {
                 </Select>
               </div>
               <div className="input-wrap">
-              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" 
-                onClick={search}/> } 
-                label="검색어를 입력하세요"
-                onKeyDown={(e)=>e.preventDefault()}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                value={searchKeyword}
-                disabled={!searchType}  // searchType이 없을 때(전체) disabled
-                />
+              <Input icon={<MagnifyingGlassIcon className="h-5 w-5" onClick={search}/> } 
+              label="검색어를 입력하세요"  
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              value={searchKeyword}
+              disabled={!searchType}  // searchType이 없으면 disabled (전체선택)
+              />
+               
               </div>
             </form>
             <StyledButton size="md" theme="brown" onClick={()=>navigate("/repairRequest")}>
@@ -241,8 +218,8 @@ function RepairRequestList() {
           {repairList && repairList.map((item) => (
             <r.RepairItem key={item.repairNum} onClick={() => handleOpenModal(item)}> 
               <div className="flex items-center gap-4">
-                <img src={`${url}/image/${item?.itemFileName}`} alt={item.itemFileName}  className="w-20 h-20" />
-                <div className="text-left">
+                <img src="/image/machine.jpg" alt="상품" className="w-20 h-20" />
+                <div>
                   <div className="text-sm text-gray-500">{formatCategory(item)}</div>
                   <div>{item.itemName}</div>
                 </div>
@@ -257,23 +234,17 @@ function RepairRequestList() {
       
         <s.PageButtonGroupDiv>
                   <s.ButtonGroupStyle variant="outlined">
-                    <s.IconButtonStyle
-                     onClick={handlePrevPage}
-                     disabled={pageInfo.curPage === 1}
-                     >
+                    <s.IconButtonStyle>
                       <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" previous/>
                     </s.IconButtonStyle>
                     {pageBtn.map(page=>(
-                    <s.IconButtonStyle key={page} onClick={()=>{getRepairRequest(page)}}>{page}</s.IconButtonStyle>
+                    <s.IconButtonStyle key={page}>{page}</s.IconButtonStyle>
                     ))}
-                    <s.IconButtonStyle
-                    onClick={handleNextPage}
-                    disabled={pageInfo.endPage === pageInfo.curPage}
-                    >
+                    <s.IconButtonStyle>
                       <ArrowRightIcon strokeWidth={2} className="h-4 w-4" next/>
                     </s.IconButtonStyle>
                   </s.ButtonGroupStyle>
-       </s.PageButtonGroupDiv> 
+                </s.PageButtonGroupDiv> 
         {/* 모달컴포넌트 */}
         <RepairDetailModal
           open={isModalOpen}
